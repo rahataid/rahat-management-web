@@ -58,7 +58,7 @@ const DashboardView = () => {
           <PhotoGallery list={_appFeatured} sx={{ height: '100%' }} />
         </Grid>
       </Grid>
-      <Grid container spacing={3}>
+      <Grid mt={3} container spacing={3}>
         <Grid item xs={12} md={3}>
           <Piechart
             title="Gender-wise Distribution"
@@ -104,7 +104,7 @@ const DashboardView = () => {
           />
         </Grid>
       </Grid>
-      <Grid container>
+      <Grid container mt={3}>
         <Grid item xs={12} md={6}>
           <Bargraph
             title="Beneficiaries by distribution point"
