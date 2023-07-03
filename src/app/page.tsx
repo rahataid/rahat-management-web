@@ -1,8 +1,5 @@
-'use client';
-
 // sections
-import { AuthGuard } from '@guard';
-import DashboardLayout from '@layouts/dashboard/layout';
+import { HomeView } from 'src/sections/home/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,9 +8,5 @@ export const metadata = {
 };
 
 export default function HomePage() {
-  return (
-    <AuthGuard>
-      <DashboardLayout>Dashboard</DashboardLayout>
-    </AuthGuard>
-  );
+  return <HomeView />;
 }
