@@ -55,7 +55,7 @@ const DashboardView = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          <PhotoGallery list={_appFeatured} sx={{ height: '100%' }} />
+          <PhotoGallery list={_appFeatured} />
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>
