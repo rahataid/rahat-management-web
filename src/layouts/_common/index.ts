@@ -1,4 +1,5 @@
 export { default as AccountPopover } from './account-popover';
+export { default as WalletConnectPopover } from './connect-wallet';
 export { default as HeaderShadow } from './header-shadow';
 export { default as HeaderSimple } from './header-simple';
 export { default as LanguagePopover } from './language-popover';

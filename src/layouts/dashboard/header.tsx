@@ -14,7 +14,7 @@ import Logo from 'src/components/logo';
 import { useSettingsContext } from 'src/components/settings';
 import SvgColor from 'src/components/svg-color';
 //
-import { AccountPopover, NotificationsPopover, Searchbar, SettingsButton } from '../_common';
+import { AccountPopover, SettingsButton, WalletConnectPopover } from '../_common';
 import { HEADER, NAV } from '../config-layout';
 
 // ----------------------------------------------------------------------
@@ -48,8 +48,6 @@ export default function Header({ onOpenNav }: Props) {
         </IconButton>
       )}
 
-      <Searchbar />
-
       <Stack
         flexGrow={1}
         direction="row"
@@ -57,7 +55,7 @@ export default function Header({ onOpenNav }: Props) {
         justifyContent="flex-end"
         spacing={{ xs: 0.5, sm: 1 }}
       >
-        <NotificationsPopover />
+        <WalletConnectPopover />
 
         <SettingsButton />
 
