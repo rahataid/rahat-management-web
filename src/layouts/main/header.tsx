@@ -16,6 +16,7 @@ import { bgBlur } from 'src/theme/css';
 import { paths } from 'src/routes/paths';
 // components
 import Label from 'src/components/label';
+import Logo from 'src/components/logo';
 //
 import { HEADER } from '../config-layout';
 import { navConfig } from './config-navigation';
@@ -78,8 +79,7 @@ export default function Header() {
               </Link>
             }
           >
-            Rahat
-            {/* <Logo /> */}
+            <Logo />
           </Badge>
 
           <Box sx={{ flexGrow: 1 }} />
