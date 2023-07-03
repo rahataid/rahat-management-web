@@ -1,28 +1,28 @@
 import { m, useScroll } from 'framer-motion';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 // @mui
-import { styled, alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
-import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { alpha, styled, useTheme } from '@mui/material/styles';
 // routes
 import { paths } from 'src/routes/paths';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // theme
+import { bgBlur, bgGradient, textGradient } from 'src/theme/css';
 import { secondaryFont } from 'src/theme/typography';
-import { textGradient, bgGradient, bgBlur } from 'src/theme/css';
 // layouts
 import { HEADER } from 'src/layouts/config-layout';
 // components
+import { MotionContainer, varFade } from 'src/components/animate';
 import Iconify from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
-import { MotionContainer, varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -184,8 +184,9 @@ export default function HomeHero() {
             textAlign: 'center',
           }}
         >
-          Start a <br />
-          New Project with
+          Start
+          <br />
+          tracking tokens with
         </Typography>
       </m.div>
 
@@ -199,14 +200,14 @@ export default function HomeHero() {
             repeat: Infinity,
           }}
         >
-          Minimal
+          Rahat
         </StyledTextGradient>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          The starting point for your next project is based on MUI.Easy customization Helps you
-          build apps faster and better.
+          An open-source blockchain-based Cash and Voucher Assistance platform to support vulnerable
+          communities.
         </Typography>
       </m.div>
 

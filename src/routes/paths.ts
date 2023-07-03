@@ -19,14 +19,7 @@ export const paths = {
   page403: '/403',
   page404: '/404',
   page500: '/500',
-  product: {
-    root: `/product`,
-    checkout: `/product/checkout`,
-    details: (id: string) => `/product/${id}`,
-    demo: {
-      details: `/product/${MOCK_ID}`,
-    },
-  },
+
   post: {
     root: `/post`,
     details: (title: string) => `/post/${paramCase(title)}`,
