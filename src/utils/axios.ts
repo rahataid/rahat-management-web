@@ -25,6 +25,9 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 
 // ----------------------------------------------------------------------
 
+/**
+ * DO NOT USE THIS, IT will be REMOVED
+ */
 export const endpoints = {
   chat: '/api/chat',
   kanban: '/api/kanban',

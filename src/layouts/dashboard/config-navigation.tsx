@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 // routes
 import { paths } from 'src/routes/paths';
 // locales
-import { useLocales } from 'src/locales';
 // components
 import SvgColor from 'src/components/svg-color';
 
@@ -23,20 +22,18 @@ const ICONS = {
 // ----------------------------------------------------------------------
 
 export function useNavData() {
-  const { t } = useLocales();
-
   const data = useMemo(
     () => [
       // OVERVIEW
       // ----------------------------------------------------------------------
       {
-        subheader: t('overview'),
-        items: [{ title: t('app'), path: paths.dashboard.root, icon: ICONS.dashboard }],
+        subheader: 'overview',
+        items: [{ title: 'app', path: paths.dashboard.root, icon: ICONS.dashboard }],
       },
 
       // DEMO MENU STATES
     ],
-    [t]
+    []
   );
 
   return data;

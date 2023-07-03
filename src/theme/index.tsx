@@ -6,19 +6,18 @@ import { useMemo } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider as MuiThemeProvider, ThemeOptions } from '@mui/material/styles';
 // locales
-import { useLocales } from 'src/locales';
 // components
 import { useSettingsContext } from 'src/components/settings';
 // system
+import { customShadows } from './custom-shadows';
+import { componentsOverrides } from './overrides';
 import { palette } from './palette';
 import { shadows } from './shadows';
 import { typography } from './typography';
-import { customShadows } from './custom-shadows';
-import { componentsOverrides } from './overrides';
 // options
-import { presets } from './options/presets';
-import { darkMode } from './options/dark-mode';
 import { contrast } from './options/contrast';
+import { darkMode } from './options/dark-mode';
+import { presets } from './options/presets';
 import RTL, { direction } from './options/right-to-left';
 
 // ----------------------------------------------------------------------
@@ -28,8 +27,6 @@ type Props = {
 };
 
 export default function ThemeProvider({ children }: Props) {
-  const { currentLang } = useLocales();
-
   const settings = useSettingsContext();
 
   const darkModeOption = darkMode(settings.themeMode);
@@ -72,10 +69,7 @@ export default function ThemeProvider({ children }: Props) {
 
   theme.components = merge(componentsOverrides(theme), contrastOption.components);
 
-  const themeWithLocale = useMemo(
-    () => createTheme(theme, currentLang.systemValue),
-    [currentLang.systemValue, theme]
-  );
+  const themeWithLocale = useMemo(() => createTheme(theme), [theme]);
 
   return (
     <MuiThemeProvider theme={themeWithLocale}>

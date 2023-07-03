@@ -27,7 +27,22 @@
       }
     ],
     "paths": {
-      "@web3/*": ["src/web3/*"]
+      "@components/*": ["src/components/*"],
+      "@constants/*": ["src/constants/*"],
+      "@constants": ["src/constants"],
+      "@utils/*": ["src/utils/*"],
+      "@routes/*": ["src/routes/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@services/*": ["src/services/*"],
+      "@services": ["src/services"],
+      "@guard": ["src/auth/guard"],
+      "@contexts/*": ["src/contexts/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@web3/*": ["src/web3/*"],
+      "@sections/*": ["src/sections/*"],
+      "@config": ["src/config-global.ts"],
+      "@types/*": ["src/types/*"],
+      "@assets/*": ["src/assets/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

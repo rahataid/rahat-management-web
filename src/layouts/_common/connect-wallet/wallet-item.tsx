@@ -5,7 +5,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import { ConnectWithSelect } from '@web3/components/ConnectWithSelect';
 import { Status } from '@web3/components/Status';
 import { hooks, metaMask } from '@web3/connectors/metaMask';
 import Iconify from 'src/components/iconify/iconify';
@@ -123,14 +122,14 @@ export default function WalletItem({
         {walletAction}
       </ListItemButton>
       {/* TODO: for testing only */}
-      <ConnectWithSelect
+      {/* <ConnectWithSelect
         connector={connector}
         activeChainId={activeChainId}
         isActivating={isActivating}
         isActive={isActive}
         error={error}
         setError={setError}
-      />
+      /> */}
     </>
   );
 }
