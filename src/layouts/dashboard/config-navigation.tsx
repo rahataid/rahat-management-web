@@ -28,7 +28,18 @@ export function useNavData() {
       // ----------------------------------------------------------------------
       {
         subheader: 'overview',
-        items: [{ title: 'app', path: paths.dashboard.root, icon: ICONS.dashboard }],
+        items: [
+          {
+            title: 'dashboard',
+            path: paths.dashboard.root,
+            icon: ICONS.dashboard,
+          },
+          {
+            title: 'test',
+            path: paths.dashboard.user.list,
+            icon: ICONS.dashboard,
+          },
+        ],
       },
 
       // DEMO MENU STATES

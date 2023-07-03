@@ -1,11 +1,7 @@
 'use client';
 
-import NetworkCard from '@web3/components/connectorCards/NetworkCard';
+import { DashboardView } from '@sections/dashboard';
 
 export default function Dashboard() {
-  return (
-    <div>
-      <NetworkCard />
-    </div>
-  );
+  return <DashboardView />;
 }
