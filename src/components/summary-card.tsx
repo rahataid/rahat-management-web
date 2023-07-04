@@ -5,12 +5,10 @@ import * as React from 'react';
 
 type SummaryCardProps = {
   sx?: React.CSSProperties;
-  chart?: object;
-  color?: 'primary' | 'secondary' | 'info' | 'danger' | 'success' | 'warning';
+  color?: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
   title: string;
   subtitle: string;
   total: string;
-  percent?: number;
   icon?: IconifyProps;
   showTooltip?: boolean;
   tooltipText?: string;
@@ -19,7 +17,7 @@ type SummaryCardProps = {
 export default function SummaryCard({
   title,
   total,
-  icon,
+  icon = '',
   subtitle,
   color = 'primary',
   sx,
@@ -27,7 +25,6 @@ export default function SummaryCard({
   tooltipText,
 }: SummaryCardProps): JSX.Element {
   const theme = useTheme();
-
   const darkerColor = theme.palette[color].darker;
   const lighterColor = theme.palette[color].lighter;
   const darkColor = theme.palette[color].dark;

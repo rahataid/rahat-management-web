@@ -5,31 +5,27 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
+import type { Web3ReactHooks } from '@web3-react/core';
 import { Status } from '@web3/components/Status';
-import { hooks, metaMask } from '@web3/connectors/metaMask';
+import { hooks } from '@web3/connectors/metaMask';
 import Iconify from 'src/components/iconify/iconify';
 import { truncateEthAddress } from 'src/utils/strings';
 
-// utils
-// components
-
-// ----------------------------------------------------------------------
+import { MetaMask } from '@web3-react/metamask';
 
 const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
 type WalletItemProps = {
-  walletAvatar: string;
-  title: string;
-  description: string;
-  connector: typeof metaMask;
-  activeChainId: ReturnType<typeof useChainId>;
-  isActivating: ReturnType<typeof useIsActivating>;
-  isActive: ReturnType<typeof useIsActive>;
+  connector: MetaMask;
+  activeChainId: ReturnType<Web3ReactHooks['useChainId']>;
+  isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
+  isActive: ReturnType<Web3ReactHooks['useIsActive']>;
   error: Error | undefined;
   setError: (error: Error | undefined) => void;
-  accounts: ReturnType<typeof useAccounts>;
-  provider: ReturnType<typeof useProvider>;
-  ENSNames: ReturnType<typeof useENSNames>;
+  accounts?: string[];
+  title: string;
+  description: string;
+  walletAvatar: string;
 };
 
 export default function WalletItem({
@@ -39,13 +35,10 @@ export default function WalletItem({
   isActivating,
   isActive,
   connector,
-  provider,
   setError,
   accounts,
   error,
   activeChainId,
-  ENSNames,
-  chainIds,
 }: WalletItemProps) {
   const renderAvatar = (
     <ListItemAvatar>
@@ -85,9 +78,9 @@ export default function WalletItem({
           variant="contained"
           onClick={() => {
             if (connector?.deactivate) {
-              void connector.deactivate();
+              connector.deactivate();
             } else {
-              void connector.resetState();
+              connector.resetState();
             }
           }}
         >

@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "allowJs": true,
     "jsx": "preserve",

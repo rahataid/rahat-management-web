@@ -18,11 +18,11 @@ const DashboardView = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <SummaryCard
-                color="warning"
+                color="primary"
                 icon="material-symbols:person-4"
                 title="Beneficiaries"
-                total={'102'}
-                subtitle={'households'}
+                total="102"
+                subtitle="households"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -30,8 +30,8 @@ const DashboardView = () => {
                 color="info"
                 icon="mdi:wheel-barrow"
                 title="H2O wheels"
-                total={'102'}
-                subtitle={'disbursed'}
+                total="102"
+                subtitle="disbursed"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -39,8 +39,8 @@ const DashboardView = () => {
                 color="success"
                 icon="pajamas:project"
                 title="Projects"
-                total={'102'}
-                subtitle={'involved'}
+                total="102"
+                subtitle="involved"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -48,8 +48,8 @@ const DashboardView = () => {
                 color="secondary"
                 icon="maki:village"
                 title="Village(s)"
-                total={'102'}
-                subtitle={'impacted'}
+                total="102"
+                subtitle="impacted"
               />
             </Grid>
           </Grid>

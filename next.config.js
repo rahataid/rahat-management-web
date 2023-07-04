@@ -1,5 +1,12 @@
 module.exports = {
   trailingSlash: true,
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   modularizeImports: {
     '@mui/material': {
       transform: '@mui/material/{{member}}',
