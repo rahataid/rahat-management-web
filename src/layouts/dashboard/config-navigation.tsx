@@ -39,6 +39,11 @@ export function useNavData() {
             path: paths.dashboard.user.list,
             icon: ICONS.dashboard,
           },
+          {
+            title: 'transactions',
+            path: paths.dashboard.general.transactions.list,
+            icon: ICONS.dashboard,
+          },
         ],
       },
 
