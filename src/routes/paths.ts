@@ -11,6 +11,7 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
+  PROJECTS: '/projects',
 };
 
 // ----------------------------------------------------------------------
@@ -72,6 +73,9 @@ export const paths = {
 
     general: {
       app: `${ROOTS.DASHBOARD}/app`,
+      projects: {
+        list: `${ROOTS.PROJECTS}`,
+      },
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
       banking: `${ROOTS.DASHBOARD}/banking`,

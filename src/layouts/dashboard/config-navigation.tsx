@@ -35,8 +35,8 @@ export function useNavData() {
             icon: ICONS.dashboard,
           },
           {
-            title: 'test',
-            path: paths.dashboard.user.list,
+            title: 'projects',
+            path: paths.dashboard.general.projects.list,
             icon: ICONS.dashboard,
           },
         ],

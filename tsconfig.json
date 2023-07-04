@@ -41,7 +41,6 @@
       "@web3/*": ["src/web3/*"],
       "@sections/*": ["src/sections/*"],
       "@config": ["src/config-global.ts"],
-      "@types/*": ["src/types/*"],
       "@assets/*": ["src/assets/*"]
     }
   },
