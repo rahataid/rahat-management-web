@@ -75,8 +75,8 @@ export default function TransactionListView() {
   //   );
 
   const handleViewRow = useCallback(
-    (id: string) => {
-      router.push(paths.dashboard.general.transactions.details(id));
+    (hash: string) => {
+      router.push(paths.dashboard.general.transactions.details(hash));
     },
     [router]
   );
