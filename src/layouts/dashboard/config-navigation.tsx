@@ -3,20 +3,16 @@ import { useMemo } from 'react';
 import { paths } from 'src/routes/paths';
 // locales
 // components
-import SvgColor from 'src/components/svg-color';
+import Iconify from '@components/iconify/iconify';
 
 // ----------------------------------------------------------------------
 
-const icon = (name: string) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
-  // OR
-  // <Iconify icon="fluent:mail-24-filled" />
-  // https://icon-sets.iconify.design/solar/
-  // https://www.streamlinehq.com/icons
-);
+const icon = (name: string) => <Iconify icon={name} />;
 
 const ICONS = {
-  dashboard: icon('ic_dashboard'),
+  dashboard: icon('material-symbols:dashboard-outline-rounded'),
+  projects: icon('octicon:project-16'),
+  transactions: icon('solar:hand-money-outline'),
 };
 
 // ----------------------------------------------------------------------
@@ -37,12 +33,12 @@ export function useNavData() {
           {
             title: 'projects',
             path: paths.dashboard.general.projects.list,
-            icon: ICONS.dashboard,
+            icon: ICONS.projects,
           },
           {
             title: 'transactions',
             path: paths.dashboard.general.transactions.list,
-            icon: ICONS.dashboard,
+            icon: ICONS.transactions,
           },
         ],
       },

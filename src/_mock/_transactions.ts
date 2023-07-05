@@ -1,37 +1,23 @@
-import {
-  TransactionItem,
-  TransactionList,
-  TransactionStats
-} from 'src/types/transactions';
+import { Method, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
+import { _mock } from './_mock';
 
-export const transactionList: TransactionList = [
-  {
-    timestamp: '1688489466',
-    hash: '0x11111111111aa',
-    method: 'Method 1',
-  },
-  {
-    timestamp: '1688489468',
-    hash: '0x2222222222bb',
-    method: 'Method 2',
-  },
-  {
-    timestamp: '1688489470',
-    hash: '0x3333333333cc',
-    method: 'Method 3',
-  },
-];
+export const transactionList: TransactionList = [...Array(30)].map((_, index) => ({
+  id: index,
+  timestamp: String(_mock.time(index)),
+  hash: `0x11111111111aa${index}`,
+  method: Method.QR,
+}));
 
 export const transaction: TransactionItem = {
+  id: 2,
   timestamp: '1688489466',
   hash: '0x123456abcde',
-  method: 'hello',
+  method: Method.QR,
 };
 
-// TODO:this should be objects, not array, the cards should be placed manually not by mapping,
 export const transactionStats: TransactionStats = {
   bankedCash: 100,
   unbankedCash: 200,
   bankedToken: 300,
-  unbankedToken: 400
-}
+  unbankedToken: 400,
+};

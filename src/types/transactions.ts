@@ -1,36 +1,32 @@
 export enum Mode {
-    online = 'online',
-    offline = 'offline'
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
 }
 
-export enum TransactionType {
-    'Cash Distributed' = 'Cash Distributed',
-    'Token Issued' = 'Token Issued',
-}
-
-export enum BeneficiaryType {
-    'Banked Beneficiary' = 'Banked Beneficiary',
-    'Unbanked Beneficiary' = 'Unbanked Beneficiary',
+export enum Method {
+  SMS = 'SMS',
+  EMAIL = 'EMAIL',
+  QR = 'QR',
 }
 
 export type TransactionItem = {
-    timestamp: string,
-    hash: string,
-    method: string,
-}
-  
+  id: number;
+  timestamp: string;
+  hash: string;
+  method: Method;
+};
+
 export type TransactionList = TransactionItem[];
 
 export type TransactionStats = {
-    bankedCash: number,
-    unbankedCash: number,
-    bankedToken: number,
-    unbankedToken: number
-}
+  bankedCash: number;
+  unbankedCash: number;
+  bankedToken: number;
+  unbankedToken: number;
+};
 
 export type TransactionFilter = {
-    timestamp: string,
-    hash: string,
-    method: string,
-}
-  
+  timestamp: string;
+  hash: string;
+  method: string;
+};

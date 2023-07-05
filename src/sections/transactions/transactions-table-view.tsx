@@ -24,7 +24,6 @@ import {
   useTable,
 } from 'src/components/table';
 // types
-import { TransactionFilter } from 'src/types/transactions';
 //
 import { Stack } from '@mui/material';
 import TransactionsCards from './transaction-cards';
@@ -33,17 +32,11 @@ import TransactionTableRow from './transaction-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'timestamp', label: 'Timestamp'},
+  { id: 'timestamp', label: 'Timestamp' },
   { id: 'hash', label: 'TxHash' },
   { id: 'method', label: 'Method' },
-  { id: 'actions', label: 'Actions', width:'88px', align: 'center'},
+  { id: 'actions', label: 'Actions', width: '88px', align: 'center' },
 ];
-
-const defaultFilters: TransactionFilter = {
-  timestamp: '',
-  hash: '',
-  method: 'all',
-};
 
 // ----------------------------------------------------------------------
 
@@ -83,12 +76,8 @@ export default function TransactionListView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="List"
-        links={[
-          { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Transactions', href: paths.dashboard.user.root },
-          { name: 'List' },
-        ]}
+        heading="Transactions: List"
+        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}

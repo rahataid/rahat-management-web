@@ -8,14 +8,13 @@ import { useParams } from 'src/routes/hook';
 import { useSettingsContext } from 'src/components/settings';
 
 export default function TransactionDetailsView() {
-    const params = useParams();
-    const { hash } = params;
+  const { hash } = useParams();
 
-    const settings = useSettingsContext();
+  const settings = useSettingsContext();
 
-    return (
-        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-            <div>This Is Transaction Details View Of {hash}</div>
-        </Container>
-    )
+  return (
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <div>This Is Transaction Details View Of {hash}</div>
+    </Container>
+  );
 }
