@@ -1,2 +1,1 @@
-export { default as TransactionsView } from './TransactionsView';
-
+export { default as TransactionsView } from './transactions-table-view';
