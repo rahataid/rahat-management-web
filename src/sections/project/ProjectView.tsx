@@ -1,7 +1,8 @@
 "use client"
 import { useSettingsContext } from '@components/settings';
 import { useTheme } from '@emotion/react';
-import { Container } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
+import Grid from '@mui/system/Unstable_Grid/Grid';
 
 const ProjectView = () => {
     const theme = useTheme();
@@ -9,7 +10,14 @@ const ProjectView = () => {
 
     return (
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-            <h1>Project</h1>
+            <Grid container>
+                <Grid xs={10}>
+                    <Typography variant='h4'>Project</Typography>
+                </Grid>
+                <Grid xs={2}>
+                    <Button color="success" variant="outlined">Add Project</Button>
+                </Grid>
+            </Grid>
         </Container>
     )
 }
