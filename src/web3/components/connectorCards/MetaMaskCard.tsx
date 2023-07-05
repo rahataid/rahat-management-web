@@ -21,10 +21,13 @@ type MetamaskCardProps = {
     ENSNames: ReturnType<Web3ReactHooks['useENSNames']>;
     provider?: ReturnType<Web3ReactHooks['useProvider']>;
     accounts?: string[];
-    title?: string;
-    description?: string;
-    walletAvatar?: string;
+    title: string;
+    description: string;
+    walletAvatar: string;
   }>;
+  title: string;
+  description: string;
+  walletAvatar: string;
 };
 
 export default function MetaMaskCard({

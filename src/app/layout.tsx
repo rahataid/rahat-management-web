@@ -36,7 +36,6 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // auth
 import { AuthConsumer, AuthProvider } from 'src/auth/context/jwt';
-import Web3Provider from 'src/web3/components/Provider';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
@@ -83,7 +82,7 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
-        <Web3Provider />
+        {/* <Web3Provider /> */}
         <AuthProvider>
           <ReduxProvider>
             <SettingsProvider

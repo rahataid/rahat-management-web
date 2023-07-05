@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "allowJs": true,
     "jsx": "preserve",
@@ -41,7 +41,6 @@
       "@web3/*": ["src/web3/*"],
       "@sections/*": ["src/sections/*"],
       "@config": ["src/config-global.ts"],
-      "@types/*": ["src/types/*"],
       "@assets/*": ["src/assets/*"]
     }
   },
