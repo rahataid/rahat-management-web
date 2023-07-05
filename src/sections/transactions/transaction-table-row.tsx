@@ -11,16 +11,16 @@ import { TransactionItem } from 'src/types/transactions';
 // components
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label';
-//
 
 // ----------------------------------------------------------------------
 
 type Props = {
   selected: boolean;
   row: TransactionItem;
+  onViewRow: VoidFunction;
 };
 
-export default function TransactionTableRow({ row, selected }: Props) {
+export default function TransactionTableRow({ row, selected, onViewRow }: Props) {  
   const { hash, timestamp, method } = row;
 
   const quickEdit = useBoolean();
@@ -63,9 +63,9 @@ export default function TransactionTableRow({ row, selected }: Props) {
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="Details" placement="top" arrow>
-          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-            <Iconify icon="iconamoon:eye-light" />
-          </IconButton>
+            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
+              <Iconify icon="iconamoon:eye-light" />
+            </IconButton>
         </Tooltip>
 
         {/* <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>

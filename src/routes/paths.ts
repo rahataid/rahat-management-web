@@ -84,6 +84,7 @@ export const paths = {
       file: `${ROOTS.DASHBOARD}/file`,
       transactions: {
         list: `${ROOTS.TRANSACTIONS}`,
+        details: (hash: string) => `${ROOTS.TRANSACTIONS}/${paramCase(hash)}`,
       },
     },
     user: {

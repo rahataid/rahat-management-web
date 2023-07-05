@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -74,6 +74,12 @@ export default function TransactionListView() {
   //     [router]
   //   );
 
+  const handleViewRow = useCallback(
+    (id: string) => {
+      router.push(paths.dashboard.general.transactions.details(id));
+    },
+    [router]
+  );
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -116,6 +122,7 @@ export default function TransactionListView() {
                       key={row.hash}
                       row={row}
                       selected={table.selected.includes(row.hash)}
+                      onViewRow={() => handleViewRow(row.hash)}
                     />
                   ))}
 
