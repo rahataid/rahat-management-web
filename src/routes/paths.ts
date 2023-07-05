@@ -12,6 +12,7 @@ const ROOTS = {
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
   PROJECTS: '/projects',
+  PHOTO_GALLERY: '/photo-gallery',
 };
 
 // ----------------------------------------------------------------------
@@ -76,6 +77,7 @@ export const paths = {
       projects: {
         list: `${ROOTS.PROJECTS}`,
       },
+      photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
       banking: `${ROOTS.DASHBOARD}/banking`,

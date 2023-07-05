@@ -1,22 +1,23 @@
+import Iconify from '@components/iconify/iconify';
 import { useMemo } from 'react';
 // routes
 import { paths } from 'src/routes/paths';
 // locales
 // components
-import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
 const icon = (name: string) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  // <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
   // OR
-  // <Iconify icon="fluent:mail-24-filled" />
+  <Iconify icon={name} />
   // https://icon-sets.iconify.design/solar/
   // https://www.streamlinehq.com/icons
 );
 
 const ICONS = {
-  dashboard: icon('ic_dashboard'),
+  dashboard: icon('akar-icons:dashboard'),
+  gallery: icon('material-symbols:gallery-thumbnail-outline-rounded'),
 };
 
 // ----------------------------------------------------------------------
@@ -38,6 +39,11 @@ export function useNavData() {
             title: 'projects',
             path: paths.dashboard.general.projects.list,
             icon: ICONS.dashboard,
+          },
+          {
+            title: 'Photo Gallery',
+            path: paths.dashboard.general.photoGallery,
+            icon: ICONS.gallery,
           },
         ],
       },
