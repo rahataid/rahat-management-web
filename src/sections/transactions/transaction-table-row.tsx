@@ -7,9 +7,8 @@ import Tooltip from '@mui/material/Tooltip';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
-import { IUserItem } from 'src/types/user';
+import { TransactionItem } from 'src/types/transactions';
 // components
-import { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label';
 //
@@ -18,15 +17,15 @@ import Label from 'src/components/label';
 
 type Props = {
   selected: boolean;
-  row: IUserItem;
+  row: TransactionItem;
 };
 
 export default function TransactionTableRow({ row, selected }: Props) {
-  const { name, status, email } = row;
+  const { hash, timestamp, method } = row;
 
   const quickEdit = useBoolean();
 
-  const popover = usePopover();
+  // const popover = usePopover();
 
   return (
     <TableRow hover selected={selected}>
@@ -34,12 +33,17 @@ export default function TransactionTableRow({ row, selected }: Props) {
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+      <TableCell>
         <ListItemText
-          primary={name}
-          secondary={email}
+          primary={timestamp}
           primaryTypographyProps={{ typography: 'body2' }}
-          secondaryTypographyProps={{ component: 'span', color: 'text.disabled' }}
+        />
+      </TableCell>
+
+      <TableCell>
+        <ListItemText
+          primary={hash}
+          primaryTypographyProps={{ typography: 'body2' }}
         />
       </TableCell>
 
@@ -47,26 +51,26 @@ export default function TransactionTableRow({ row, selected }: Props) {
         <Label
           variant="soft"
           color={
-            (status === 'active' && 'success') ||
-            (status === 'pending' && 'warning') ||
-            (status === 'banned' && 'error') ||
+            (method === 'Method 1' && 'success') ||
+            (method === 'Method 2' && 'warning') ||
+            (method === 'Method 3' && 'error') ||
             'default'
           }
         >
-          {status}
+          {method}
         </Label>
       </TableCell>
 
-      <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-        <Tooltip title="Quick Edit" placement="top" arrow>
+      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <Tooltip title="Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-            <Iconify icon="solar:pen-bold" />
+            <Iconify icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
 
-        <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+        {/* <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
           <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+        </IconButton> */}
       </TableCell>
     </TableRow>
   );

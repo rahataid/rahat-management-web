@@ -16,19 +16,21 @@ export enum BeneficiaryType {
 export type TransactionItem = {
     timestamp: string,
     hash: string,
-    beneficiary: number,
-    amount: number,
-    ward: number,
     method: string,
-    mode: Mode
 }
   
-export type TransactionsList = TransactionItem[];
+export type TransactionList = TransactionItem[];
 
 export type TransactionStats = {
     bankedCash: number,
     unbankedCash: number,
     bankedToken: number,
     unbankedToken: number
+}
+
+export type TransactionFilter = {
+    timestamp: string,
+    hash: string,
+    method: string,
 }
   

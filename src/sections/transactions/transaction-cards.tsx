@@ -3,15 +3,6 @@ import { useTransactions } from 'src/api/transactions';
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
-/**
- * {
- *  "bankedCash":50,
- * "unBankedCash":40,
- * "bankedToken":23,
- * "unbankedToken":50
- * }
- */
-
 const TransactionsCards = () => {
   const { transactionStats } = useTransactions();
   return (

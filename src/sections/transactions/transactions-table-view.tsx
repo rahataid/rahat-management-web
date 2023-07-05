@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
-import { _userList } from 'src/_mock';
+import { transactionList } from 'src/_mock/_transactions';
 // hooks
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -24,7 +24,7 @@ import {
   useTable,
 } from 'src/components/table';
 // types
-import { IUserTableFilters } from 'src/types/user';
+import { TransactionFilter } from 'src/types/transactions';
 //
 import { Stack } from '@mui/material';
 import TransactionsCards from './transaction-cards';
@@ -33,16 +33,16 @@ import TransactionTableRow from './transaction-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Timestamp' },
-  { id: 'phoneNumber', label: 'TxHash', width: 180 },
-  { id: 'status', label: 'Method', width: 100 },
-  { id: '', width: 88 },
+  { id: 'timestamp', label: 'Timestamp'},
+  { id: 'hash', label: 'TxHash' },
+  { id: 'method', label: 'Method' },
+  { id: 'actions', label: 'Actions', width:'88px', align: 'center'},
 ];
 
-const defaultFilters: IUserTableFilters = {
-  name: '',
-  role: [],
-  status: 'all',
+const defaultFilters: TransactionFilter = {
+  timestamp: '',
+  hash: '',
+  method: 'all',
 };
 
 // ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ export default function TransactionListView() {
 
   const router = useRouter();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(transactionList);
 
   const dataFiltered = tableData;
 
@@ -113,9 +113,9 @@ export default function TransactionListView() {
                   )
                   .map((row) => (
                     <TransactionTableRow
-                      key={row.id}
+                      key={row.hash}
                       row={row}
-                      selected={table.selected.includes(row.id)}
+                      selected={table.selected.includes(row.hash)}
                     />
                   ))}
 
