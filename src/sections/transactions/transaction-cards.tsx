@@ -18,22 +18,42 @@ const TransactionsCards = () => {
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
         <Grid container spacing={2}>
-          {transactionStats?.length &&
-            transactionStats.map((el) => (
-              <Grid item xs={12} md={3}>
-                <SummaryCard
-                  color={el.beneficiaryType === 'Banked Beneficiary' ? 'warning' : 'success'}
-                  icon={
-                    el.transactionType === 'Token Issued'
-                      ? 'material-symbols:token'
-                      : 'material-symbols:paid'
-                  }
-                  title={el.transactionType}
-                  total={el.total.toString()}
-                  subtitle={el.beneficiaryType}
-                />
-              </Grid>
-            ))}
+          <Grid item xs={12} md={3}>
+            <SummaryCard
+              color='success'
+              icon='material-symbols:paid'
+              title='Cash Distributed'
+              total={transactionStats.bankedCash}
+              subtitle='Banked Beneficiary'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <SummaryCard
+              color='success'
+              icon='material-symbols:paid'
+              title='Cash Distributed'
+              total={transactionStats.unbankedCash}
+              subtitle='Unbanked Beneficiary'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <SummaryCard
+              color='warning'
+              icon='material-symbols:token'
+              title='Token Issued'
+              total={transactionStats.bankedToken}
+              subtitle='Banked Beneficiary'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <SummaryCard
+              color='warning'
+              icon='material-symbols:token'
+              title='Token Issued'
+              total={transactionStats.unbankedToken}
+              subtitle='Unbanked Beneficiary'
+            />
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

@@ -25,11 +25,10 @@ export type TransactionItem = {
   
 export type TransactionsList = TransactionItem[];
 
-export type TransactionStatsItem = {
-    transactionType: TransactionType,
-    total: number,
-    beneficiaryType: BeneficiaryType
+export type TransactionStats = {
+    bankedCash: number,
+    unbankedCash: number,
+    bankedToken: number,
+    unbankedToken: number
 }
-
-export type TransactionStatsList = TransactionStatsItem[];
   

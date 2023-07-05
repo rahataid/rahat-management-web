@@ -8,7 +8,7 @@ type SummaryCardProps = {
   color?: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
   title: string;
   subtitle: string;
-  total: string;
+  total: number;
   icon?: IconifyProps;
   showTooltip?: boolean;
   tooltipText?: string;

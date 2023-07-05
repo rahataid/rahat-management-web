@@ -1,10 +1,8 @@
 import {
-  BeneficiaryType,
   Mode,
   TransactionItem,
-  TransactionStatsList,
-  TransactionType,
   TransactionsList,
+  TransactionStats
 } from 'src/types/transactions';
 
 export const transactionsList: TransactionsList = [
@@ -48,25 +46,9 @@ export const transaction: TransactionItem = {
 };
 
 // TODO:this should be objects, not array, the cards should be placed manually not by mapping,
-export const transactionStats: TransactionStatsList = [
-  {
-    transactionType: TransactionType['Cash Distributed'],
-    total: 100,
-    beneficiaryType: BeneficiaryType['Banked Beneficiary'],
-  },
-  {
-    transactionType: TransactionType['Cash Distributed'],
-    total: 200,
-    beneficiaryType: BeneficiaryType['Banked Beneficiary'],
-  },
-  {
-    transactionType: TransactionType['Token Issued'],
-    total: 300,
-    beneficiaryType: BeneficiaryType['Unbanked Beneficiary'],
-  },
-  {
-    transactionType: TransactionType['Token Issued'],
-    total: 400,
-    beneficiaryType: BeneficiaryType['Unbanked Beneficiary'],
-  },
-];
+export const transactionStats: TransactionStats = {
+  bankedCash: 100,
+  unbankedCash: 200,
+  bankedToken: 300,
+  unbankedToken: 400
+}
