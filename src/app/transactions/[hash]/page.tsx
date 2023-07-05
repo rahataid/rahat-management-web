@@ -7,8 +7,6 @@ export const metadata = {
   title: 'Transaction: Details',
 };
 
-export default function ProductShopDetailsPage() {    
-  return (   
-        <TransactionDetailsView />   
-  );
+export default function ProductShopDetailsPage() {
+  return <TransactionDetailsView />;
 }
