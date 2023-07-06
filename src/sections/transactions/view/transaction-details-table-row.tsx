@@ -8,38 +8,26 @@ type Props = {
   row: TransactionDetailsTableItem;
 };
 
-export default function TransactionDetailsTableRow({ row, selected }: Props) {  
-  const { name, amount, to, from} = row;
+export default function TransactionDetailsTableRow({ row, selected }: Props) {
+  const { name, amount, to, from } = row;
 
   return (
     <TableRow hover selected={selected}>
       <TableCell>
-        <ListItemText
-          primary={name}
-          primaryTypographyProps={{ typography: 'body2' }}
-        />
+        <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
-        <ListItemText
-          primary={amount}
-          primaryTypographyProps={{ typography: 'body2' }}
-        />
+        <ListItemText primary={amount} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
-        <ListItemText
-            primary={from}
-            primaryTypographyProps={{ typography: 'body2' }}
-        />
+        <ListItemText primary={from} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-        <ListItemText
-                primary={to}
-                primaryTypographyProps={{ typography: 'body2' }}
-            />
-        </TableCell>
+      <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <ListItemText primary={to} primaryTypographyProps={{ typography: 'body2' }} />
+      </TableCell>
     </TableRow>
   );
 }

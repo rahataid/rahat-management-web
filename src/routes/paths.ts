@@ -13,6 +13,8 @@ const ROOTS = {
   DASHBOARD: '/dashboard',
   TRANSACTIONS: '/transactions',
   PROJECTS: '/projects',
+  PHOTO_GALLERY: '/photo-gallery',
+  VENDORS: '/vendors',
 };
 
 // ----------------------------------------------------------------------
@@ -76,6 +78,11 @@ export const paths = {
       app: `${ROOTS.DASHBOARD}/app`,
       projects: {
         list: `${ROOTS.PROJECTS}`,
+      },
+      photoGallery: `${ROOTS.PHOTO_GALLERY}`,
+      vendors: {
+        list: `${ROOTS.VENDORS}`,
+        details: (address: string) => `${ROOTS.VENDORS}/${address}`,
       },
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
