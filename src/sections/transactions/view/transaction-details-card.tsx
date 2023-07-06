@@ -49,7 +49,7 @@ function TransactionDetailsCard( {data}: Props ) {
   return (
     <Card sx={{ p: 3, mb:2 }}>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">Transaction Hash:</Typography>
                     </Grid>
@@ -69,7 +69,7 @@ function TransactionDetailsCard( {data}: Props ) {
                 </Grid>
             </Stack>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">Status:</Typography>
                     </Grid>
@@ -90,7 +90,7 @@ function TransactionDetailsCard( {data}: Props ) {
                 </Grid>
             </Stack>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">Timestamp:</Typography>
                     </Grid>
@@ -102,7 +102,7 @@ function TransactionDetailsCard( {data}: Props ) {
                 </Grid>
             </Stack>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">Transaction Mode:</Typography>
                     </Grid>
@@ -114,7 +114,7 @@ function TransactionDetailsCard( {data}: Props ) {
                 </Grid>
             </Stack>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">From:</Typography>
                     </Grid>
@@ -134,7 +134,7 @@ function TransactionDetailsCard( {data}: Props ) {
                 </Grid>
             </Stack>
             <Stack sx={gridRow} spacing={12}>
-                <Grid container md={12} spacing={3}> 
+                <Grid container spacing={3}> 
                     <Grid item md={4}>
                         <Typography variant="subtitle2">To:</Typography>
                     </Grid>

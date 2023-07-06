@@ -1,4 +1,4 @@
-import { Method, Mode, Status, TransactionDetails, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
+import { Method, Mode, Status, TransactionDetails, TransactionDetailsTableList, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
 import { _mock } from './_mock';
 
 export const transactionList: TransactionList = [...Array(30)].map((_, index) => ({
@@ -30,3 +30,10 @@ export const transactionDetails: TransactionDetails = {
   from: '0x222222abcde',
   to: '0x333333abcde'
 }
+
+export const transactionDetailsTableList: TransactionDetailsTableList = [...Array(30)].map((_, index) => ({
+  name: `Transaction Name ${index}`,
+  amount: 100,
+  to: '0x1111',
+  from: '0x2222'
+}));

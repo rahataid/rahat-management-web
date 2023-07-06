@@ -44,3 +44,12 @@ export type TransactionDetails = {
   from: string;
   to: string;
 }
+
+export type TransactionDetailsTableItem = {
+  name: string,
+  amount: number,
+  from: string,
+  to: string
+}
+
+export type TransactionDetailsTableList = TransactionDetailsTableItem[];
