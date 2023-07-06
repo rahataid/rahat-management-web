@@ -1,4 +1,4 @@
-import { Method, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
+import { Method, Mode, Status, TransactionDetails, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
 import { _mock } from './_mock';
 
 export const transactionList: TransactionList = [...Array(30)].map((_, index) => ({
@@ -21,3 +21,12 @@ export const transactionStats: TransactionStats = {
   bankedToken: 300,
   unbankedToken: 400,
 };
+
+export const transactionDetails: TransactionDetails = {
+  hash: '0x111111abcde',
+  status: Status.ACTIVE,
+  timestamp: '1688489470',
+  mode: Mode.ONLINE,
+  from: '0x222222abcde',
+  to: '0x333333abcde'
+}

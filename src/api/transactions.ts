@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
-import { transactionList, transactionStats } from 'src/_mock/_transactions';
+import { transactionDetails, transactionList, transactionStats } from 'src/_mock/_transactions';
 
 export function useTransactions() {
   const memoizedValue = useMemo(
     () => ({
       transactions: transactionList,
       transactionStats,
+      transactionDetails,
       transactionsLoading: false,
       transactionsError: null,
       transactionsValidating: false,
