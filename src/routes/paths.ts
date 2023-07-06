@@ -11,7 +11,10 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
+  TRANSACTIONS: '/transactions',
   PROJECTS: '/projects',
+  PHOTO_GALLERY: '/photo-gallery',
+  VENDORS: '/vendors',
 };
 
 // ----------------------------------------------------------------------
@@ -76,11 +79,20 @@ export const paths = {
       projects: {
         list: `${ROOTS.PROJECTS}`,
       },
+      photoGallery: `${ROOTS.PHOTO_GALLERY}`,
+      vendors: {
+        list: `${ROOTS.VENDORS}`,
+        details: (address: string) => `${ROOTS.VENDORS}/${address}`,
+      },
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
       banking: `${ROOTS.DASHBOARD}/banking`,
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
+      transactions: {
+        list: `${ROOTS.TRANSACTIONS}`,
+        details: (hash: string) => `${ROOTS.TRANSACTIONS}/${paramCase(hash)}`,
+      },
     },
     user: {
       root: `${ROOTS.DASHBOARD}/user`,

@@ -1,0 +1,39 @@
+import { Method, Mode, Status, TransactionDetails, TransactionDetailsTableList, TransactionItem, TransactionList, TransactionStats } from 'src/types/transactions';
+import { _mock } from './_mock';
+
+export const transactionList: TransactionList = [...Array(30)].map((_, index) => ({
+  id: index,
+  timestamp: String(_mock.time(index)),
+  hash: `0x11111111111aa${index}`,
+  method: Method.QR,
+}));
+
+export const transaction: TransactionItem = {
+  id: 2,
+  timestamp: '1688489466',
+  hash: '0x123456abcde',
+  method: Method.QR,
+};
+
+export const transactionStats: TransactionStats = {
+  bankedCash: 100,
+  unbankedCash: 200,
+  bankedToken: 300,
+  unbankedToken: 400,
+};
+
+export const transactionDetails: TransactionDetails = {
+  hash: '0x111111abcde',
+  status: Status.ACTIVE,
+  timestamp: '1688489470',
+  mode: Mode.ONLINE,
+  from: '0x222222abcde',
+  to: '0x333333abcde'
+}
+
+export const transactionDetailsTableList: TransactionDetailsTableList = [...Array(30)].map((_, index) => ({
+  name: `Transaction Name ${index}`,
+  amount: 100,
+  to: '0x1111',
+  from: '0x2222'
+}));

@@ -1,5 +1,3 @@
-// i18n
-
 // scroll bar
 import 'simplebar-react/dist/simplebar.min.css';
 
