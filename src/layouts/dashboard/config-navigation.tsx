@@ -18,6 +18,7 @@ const icon = (name: string) => (
 const ICONS = {
   dashboard: icon('akar-icons:dashboard'),
   gallery: icon('material-symbols:gallery-thumbnail-outline-rounded'),
+  vendors: icon('material-symbols:anchor'),
 };
 
 // ----------------------------------------------------------------------
@@ -44,6 +45,11 @@ export function useNavData() {
             title: 'Photo Gallery',
             path: paths.dashboard.general.photoGallery,
             icon: ICONS.gallery,
+          },
+          {
+            title: 'Vendors',
+            path: paths.dashboard.general.vendors.list,
+            icon: ICONS.vendors,
           },
         ],
       },
