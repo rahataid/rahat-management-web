@@ -11,7 +11,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 // types
-import { BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+import { IBeneficiariesTableFilters, IBeneficiariesTableFilterValue } from 'src/types/beneficiaries';
 // components
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
@@ -19,8 +19,8 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 type Props = {
-  filters: BeneficiariesTableFilters;
-  onFilters: (name: string, value: BeneficiariesTableFilterValue) => void;
+  filters: IBeneficiariesTableFilters;
+  onFilters: (name: string, value: IBeneficiariesTableFilterValue) => void;
   distributionPointOptions: string[];
   statusOptions: string[];
   tokenAssignedOptions: string[];

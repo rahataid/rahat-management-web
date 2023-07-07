@@ -12,13 +12,13 @@ import { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
-import { BeneficiariesItem } from 'src/types/beneficiaries';
+import { IBeneficiariesItem } from 'src/types/beneficiaries';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   selected: boolean;
-  row: BeneficiariesItem;
+  row: IBeneficiariesItem;
   onViewRow: VoidFunction
 };
 

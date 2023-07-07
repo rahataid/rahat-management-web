@@ -32,7 +32,7 @@ import {
   useTable,
 } from 'src/components/table';
 // types
-import { BeneficiariesItem, BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+import { IBeneficiariesItem, IBeneficiariesTableFilters, IBeneficiariesTableFilterValue } from 'src/types/beneficiaries';
 //
 import { distributionPointOptions, statusFilterOptions, tokenAssignedFilterOptions, tokenClaimedFilterOptions } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
@@ -52,7 +52,7 @@ const TABLE_HEAD = [
   { id: '', width: '88px', align: 'center' },
 ];
 
-const defaultFilters: BeneficiariesTableFilters = {  
+const defaultFilters: IBeneficiariesTableFilters = {  
   distributionPoint: [],
   status: [],
   tokenAssignedStatus: [],
@@ -94,7 +94,7 @@ export default function BeneficiariesListView() {
     const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
     const handleFilters = useCallback(
-        (name: string, value: BeneficiariesTableFilterValue) => {
+        (name: string, value: IBeneficiariesTableFilterValue) => {
         table.onResetPage();
         setFilters((prevState) => ({
             ...prevState,
@@ -153,7 +153,7 @@ export default function BeneficiariesListView() {
                     onSelectAllRows={(checked) =>
                         table.onSelectAllRows(
                         checked,
-                        tableData.map((row) => row.cnicNumber.toString())
+                        tableData.map((row: IBeneficiariesItem) => row.cnicNumber.toString())
                         )
                     }
                     action={
@@ -224,9 +224,9 @@ function applyFilter({
   comparator,
   filters,
 }: {
-  inputData: BeneficiariesItem[];
+  inputData: IBeneficiariesItem[];
   comparator: (a: any, b: any) => number;
-  filters: BeneficiariesTableFilters;
+  filters: IBeneficiariesTableFilters;
 }) {
   const { name, distributionPoint, tokenAssignedStatus, tokenClaimedStatus, status } = filters;
 

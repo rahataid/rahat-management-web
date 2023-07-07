@@ -5,15 +5,15 @@ import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Stack, { StackProps } from '@mui/material/Stack';
 // types
-import { BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+import { IBeneficiariesTableFilters, IBeneficiariesTableFilterValue } from 'src/types/beneficiaries';
 // components
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
 type Props = StackProps & {
-  filters: BeneficiariesTableFilters;
-  onFilters: (name: string, value: BeneficiariesTableFilterValue) => void;
+  filters: IBeneficiariesTableFilters;
+  onFilters: (name: string, value: IBeneficiariesTableFilterValue) => void;
   //
   onResetFilters: VoidFunction;
   //

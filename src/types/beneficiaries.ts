@@ -1,13 +1,3 @@
-export type BeneficiariesTableFilters = {
-    distributionPoint: string[];
-    status: string[];
-    tokenAssignedStatus: string[];
-    tokenClaimedStatus: string[];
-    name: string;
-};
-
-export type BeneficiariesTableFilterValue = string | string[];
-
 export enum InternetAccess {
     YES = 'YES',
     NO = 'NO'
@@ -18,7 +8,23 @@ export enum Status {
     INACTIVE = 'INACTIVE'
 }
 
-export type BeneficiariesItem = {
+export enum Gender {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+    OTHERS = 'OTHERS'
+}
+
+export type IBeneficiariesTableFilters = {
+    distributionPoint: string[];
+    status: string[];
+    tokenAssignedStatus: string[];
+    tokenClaimedStatus: string[];
+    name: string;
+};
+
+export type IBeneficiariesTableFilterValue = string | string[];
+
+export type IBeneficiariesItem = {
     name: string;
     cnicNumber: number;
     hasInternetAccess: InternetAccess.YES;
@@ -29,21 +35,15 @@ export type BeneficiariesItem = {
     address: string;
 }
 
-export type BeneficiariesList = BeneficiariesItem[];
+export type IBeneficiariesList = IBeneficiariesItem[];
 
-export type DistributionPoint = string[];
+export type IDistributionPoint = string[];
 
-export type StatusFilterOptions = string[];
+export type IStatusFilterOptions = string[];
 
-export type TokenAssignedFilterOptions = string[];
+export type ITokenAssignedFilterOptions = string[];
 
-export type TokenClaimedFilterOptions = string[];
-
-export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHERS = 'OTHERS'
-}
+export type ITokenClaimedFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
     name: string,
