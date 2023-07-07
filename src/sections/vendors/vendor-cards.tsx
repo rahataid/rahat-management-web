@@ -1,10 +1,10 @@
-import { useTransactions } from 'src/api/transactions';
+import { useGetVendors } from 'src/api/vendors';
 
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
-const TransactionsCards = () => {
-  const { transactionStats } = useTransactions();
+const VendorsCards = () => {
+  const { transactionStats } = useGetVendors();
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -51,4 +51,4 @@ const TransactionsCards = () => {
   );
 };
 
-export default TransactionsCards;
+export default VendorsCards;
