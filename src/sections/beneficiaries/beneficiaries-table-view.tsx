@@ -22,14 +22,14 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-    emptyRows,
-    getComparator,
-    TableEmptyRows,
-    TableHeadCustom,
-    TableNoData,
-    TablePaginationCustom,
-    TableSelectedAction,
-    useTable,
+  emptyRows,
+  getComparator,
+  TableEmptyRows,
+  TableHeadCustom,
+  TableNoData,
+  TablePaginationCustom,
+  TableSelectedAction,
+  useTable,
 } from 'src/components/table';
 // types
 import { BeneficiariesItem, BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
@@ -109,8 +109,8 @@ export default function BeneficiariesListView() {
     }, []);
 
     const handleViewRow = useCallback(
-        (hash: string) => {
-        router.push(paths.dashboard.general.transactions.details(hash));
+        (address: string) => {
+        router.push(paths.dashboard.general.beneficiaries.details(address));
         },
         [router]
     );
@@ -184,10 +184,10 @@ export default function BeneficiariesListView() {
                             )
                             .map((row) => (
                             <BeneficiariesTableRow
-                                key={row.cnicNumber}
+                                key={row.address}
                                 row={row}
-                                selected={table.selected.includes(row.cnicNumber.toString())}
-                                onViewRow={() => handleViewRow(row.cnicNumber.toString())}
+                                selected={table.selected.includes(row.address.toString())}
+                                onViewRow={() => handleViewRow(row.address.toString())}
                             />
                             ))}
 

@@ -26,6 +26,7 @@ export type BeneficiariesItem = {
     tokensAssigned: number;
     tokensClaimed: number;
     distributionPoint: string;
+    address: string;
 }
 
 export type BeneficiariesList = BeneficiariesItem[];
@@ -37,3 +38,28 @@ export type StatusFilterOptions = string[];
 export type TokenAssignedFilterOptions = string[];
 
 export type TokenClaimedFilterOptions = string[];
+
+export enum Gender {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+    OTHERS = 'OTHERS'
+}
+
+export type IBeneficiaryDetails = {
+    name: string,
+    phone: number,
+    gender: Gender.MALE,
+    cnicNumber: number,
+    district: string,
+    dailyWaterConsumption: number,
+    dailyDistanceCovered: number,
+    status: Status.ACTIVE
+}
+
+export type IBeneficiaryClaimsDetails = {
+    claimedDate: string,
+    receivedDate: string,
+    claimedAmount: number,
+    receivedAmount: number,
+    walletAddress: string
+}
