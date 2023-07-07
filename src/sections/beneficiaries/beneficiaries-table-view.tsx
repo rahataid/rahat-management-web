@@ -44,12 +44,12 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', width: 200 },
+  { id: 'name', label: 'Name', width: 340 },
   { id: 'hasInternetAccess', label: 'Has Internet Access' },
   { id: 'status', label: 'Status'},
-  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 100 },
-  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 100 },
-  { id: '' },
+  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 200 },
+  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 200 },
+  { id: '', width: '88px', align: 'center' },
 ];
 
 const defaultFilters: BeneficiariesTableFilters = {  
