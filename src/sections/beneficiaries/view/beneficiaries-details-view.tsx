@@ -8,14 +8,15 @@ import { paths } from '@routes/paths';
 import { useParams } from 'src/routes/hook';
 // components
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
-import { Grid, Stack } from '@mui/material';
+import { Card, Grid, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
 import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card';
+import BeneficiaryDetailsTableView from './beneficiaries-details-table-view';
 
 export default function BeneficiariesDetailsView() {
-  const { beneficiary, beneficiaryClaimsDetails } = useBeneficiary();
+  const { beneficiary, beneficiaryClaimsDetails, beneficiaryTransactionList } = useBeneficiary();
   const { hash } = useParams();
   const settings = useSettingsContext();
 
@@ -28,8 +29,10 @@ export default function BeneficiariesDetailsView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <Stack direction="column" spacing={3}>
-        <Grid container xs={12} md={12} spacing={2}>
+      
+        <Grid container spacing={2} sx={{
+          mb: { xs: 3, md: 5 },
+        }}>
           <Grid item xs={12} md={7}>
             <BeneficiariesDetailsCard data={beneficiary}/>
           </Grid>
@@ -37,7 +40,13 @@ export default function BeneficiariesDetailsView() {
             <BeneficiariesDetailsClaimsCard data={beneficiaryClaimsDetails}/>
           </Grid>          
         </Grid>
-      </Stack>
+
+      <Card>
+        <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
+          Transaction History
+        </Typography>
+        <BeneficiaryDetailsTableView data={beneficiaryTransactionList}/>
+      </Card>
     </Container>
   );
 }

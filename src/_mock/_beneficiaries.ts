@@ -1,6 +1,7 @@
-import { BeneficiariesList, DistributionPoint, Gender, IBeneficiaryClaimsDetails, IBeneficiaryDetails, InternetAccess, Status, StatusFilterOptions, TokenAssignedFilterOptions, TokenClaimedFilterOptions } from "src/types/beneficiaries";
+import { Gender, IBeneficiariesList, IBeneficiaryClaimsDetails, IBeneficiaryDetails, IBeneficiaryDetailsTableList, IDistributionPoint, IStatusFilterOptions, ITokenAssignedFilterOptions, ITokenClaimedFilterOptions, InternetAccess, Status } from "src/types/beneficiaries";
+import { _mock } from './_mock';
 
-export const beneficiariesList: BeneficiariesList = [...Array(30)].map((_, index) => ({
+export const beneficiariesList: IBeneficiariesList = [...Array(30)].map((_, index) => ({
   name: `Beneficiary Name ${index}`,
   cnicNumber: index,
   hasInternetAccess: InternetAccess.YES,
@@ -11,23 +12,23 @@ export const beneficiariesList: BeneficiariesList = [...Array(30)].map((_, index
   address: '0x11111abcde'
 }));
 
-export const distributionPointOptions: DistributionPoint = [
+export const distributionPointOptions: IDistributionPoint = [
   'Kathmandu',
   'Pokhara',
   'Hetauda'
 ]
 
-export const statusFilterOptions: StatusFilterOptions = [
+export const statusFilterOptions: IStatusFilterOptions = [
   'ACTIVE',
   'INACTIVE'
 ]
 
-export const tokenAssignedFilterOptions: TokenAssignedFilterOptions = [
+export const tokenAssignedFilterOptions: ITokenAssignedFilterOptions = [
   'ASSIGNED ACTIVE',
   'ASSIGNED INACTIVE'
 ]
 
-export const tokenClaimedFilterOptions: TokenClaimedFilterOptions = [
+export const tokenClaimedFilterOptions: ITokenClaimedFilterOptions = [
   'CLAIMED ACTIVE',
   'CLAIMED INACTIVE'
 ]
@@ -50,3 +51,10 @@ export const beneficiaryClaimsDetails: IBeneficiaryClaimsDetails = {
   receivedAmount: 100,
   walletAddress: '0x77777abcde'
 }
+
+ export const beneficiaryTransactionList: IBeneficiaryDetailsTableList = [...Array(30)].map((_, index) => ({
+  timestamp: String(_mock.time(index)),
+  hash: `0x11111abcde${index}`,
+  event: 'Currency Exchange Event',
+  amount: 200000
+}));

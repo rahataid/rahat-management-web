@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { beneficiariesList, beneficiaryClaimsDetails, beneficiaryDetails } from 'src/_mock/_beneficiaries';
+import { beneficiariesList, beneficiaryClaimsDetails, beneficiaryDetails, beneficiaryTransactionList } from 'src/_mock/_beneficiaries';
 
 export function useBeneficiaries() {
   const memoizedValue = useMemo(
@@ -21,6 +21,7 @@ export function useBeneficiary() {
     () => ({
       beneficiary: beneficiaryDetails,
       beneficiaryClaimsDetails,
+      beneficiaryTransactionList,
       beneficiariesLoading: false,
       beneficiariesError: null,
       beneficiariesValidating: false,

@@ -63,3 +63,12 @@ export type IBeneficiaryClaimsDetails = {
     receivedAmount: number,
     walletAddress: string
 }
+
+export type IBeneficiaryDetailsTableItem = {
+    timestamp: string,
+    hash: string,
+    event: string,
+    amount: number
+}
+
+export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
