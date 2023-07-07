@@ -1,3 +1,4 @@
+import { ProjectView } from '@sections/project';
 import { useGetProjects } from 'src/api/project';
 
 export const metadata = {
@@ -6,7 +7,7 @@ export const metadata = {
 
 function Projects(): JSX.Element {
   const { projects } = useGetProjects();
-  return <div>{JSON.stringify(projects)}</div>;
+  return <ProjectView />;
 }
 
 export default Projects;
