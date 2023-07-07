@@ -1,7 +1,8 @@
 export type IProjectItem = {
   id: number;
   title: string;
-  description: string;
+  budget: number,
+  createdAt: string,
   image?: string;
 };
 

@@ -1,7 +1,7 @@
 "use client"
 import { useSettingsContext } from '@components/settings';
 import { useTheme } from '@emotion/react';
-import { Button, Container, Typography } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
 import Grid from '@mui/system/Unstable_Grid/Grid';
 import ProjectCards from './project-cards';
 
@@ -18,8 +18,10 @@ const ProjectView = () => {
                 <Grid xs={2}>
                     <Button color="success" variant="outlined">Add Project</Button>
                 </Grid>
-                <ProjectCards />
             </Grid>
+            <Stack direction='row' spacing={3} mt={3}>
+                <ProjectCards />
+            </Stack>
         </Container>
     )
 }

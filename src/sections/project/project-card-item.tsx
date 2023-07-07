@@ -3,28 +3,33 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import { IProjectItem } from 'src/types/project';
 
-export default function ProjectCard() {
+type ProjectCard = {
+    card: IProjectItem
+}
+
+export default function ProjectCard({ card }: ProjectCard) {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardMedia
-                sx={{ height: 140 }}
-                image="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2023/06/guy-chatting.jpg?q=50&fit=crop&w=200&h=140&dpr=1.5"
+                sx={{ height: 240 }}
+                image={card.image}
                 title="green iguana"
             />
             <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                    Lizard
+                <Typography gutterBottom variant="h6" component="div">
+                    {card.title}
                 </Typography>
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
                 }}>
                     <Typography variant="body2" gutterBottom>
-                        Jul-06-2023
+                        {card.createdAt}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                        $5000
+                        ${card.budget}
                     </Typography>
                 </Box>
             </CardContent>
