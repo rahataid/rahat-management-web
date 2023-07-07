@@ -7,52 +7,40 @@ import Tooltip from '@mui/material/Tooltip';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
-import { TransactionItem } from 'src/types/transactions';
 // components
 import Iconify from 'src/components/iconify';
-import Label from 'src/components/label';
+import { IVendorItem } from 'src/types/vendors';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  selected: boolean;
-  row: TransactionItem;
+  row: IVendorItem;
   onViewRow: VoidFunction;
 };
 
-export default function TransactionTableRow({ row, selected, onViewRow }: Props) {
-  const { hash, timestamp, method } = row;
+export default function VendorTableRow({ row, onViewRow }: Props) {
+  const { address, id, name, phone, projectInvolved } = row;
 
   const quickEdit = useBoolean();
 
   // const popover = usePopover();
 
   return (
-    <TableRow hover selected={selected}>
+    <TableRow hover>
       {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
       <TableCell>
-        <ListItemText primary={timestamp} primaryTypographyProps={{ typography: 'body2' }} />
+        <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
-        <ListItemText primary={hash} primaryTypographyProps={{ typography: 'body2' }} />
+        <ListItemText primary={projectInvolved} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
-        <Label
-          variant="soft"
-          color={
-            (method === 'Method 1' && 'success') ||
-            (method === 'Method 2' && 'warning') ||
-            (method === 'Method 3' && 'error') ||
-            'default'
-          }
-        >
-          {method}
-        </Label>
+        <ListItemText primary={phone} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>

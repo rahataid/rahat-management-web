@@ -1,13 +1,11 @@
 'use client';
 
-import { GalleryView } from '@sections/photo-gallery';
+import { VendorsView } from '@sections/vendors';
 
-function PhotoGallery(): JSX.Element {
-  return (
-    <div>
-      <GalleryView />
-    </div>
-  );
+// export const metadata = {
+//   title: 'Dashboard: Transactions',
+// };
+
+export default function Transactions() {
+  return <VendorsView />;
 }
-
-export default PhotoGallery;
