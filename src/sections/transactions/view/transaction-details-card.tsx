@@ -1,6 +1,6 @@
 
 import { useCallback } from 'react';
-import { TransactionDetails } from "src/types/transactions";
+import { ITransactionDetails } from "src/types/transactions";
 // mui
 import { Grid, Tooltip } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -16,7 +16,7 @@ import { useSnackbar } from 'src/components/snackbar';
 
 
 type Props = {
-  data: TransactionDetails
+  data: ITransactionDetails
 };
 
 type Copy = {

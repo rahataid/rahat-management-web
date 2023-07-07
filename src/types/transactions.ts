@@ -14,29 +14,29 @@ export enum Status {
   INACTIVE = 'INACTIVE'
 }
 
-export type TransactionItem = {
+export type ITransactionItem = {
   id: number;
   timestamp: string;
   hash: string;
   method: Method;
 };
 
-export type TransactionList = TransactionItem[];
+export type ITransactionList = ITransactionItem[];
 
-export type TransactionStats = {
+export type ITransactionStats = {
   bankedCash: number;
   unbankedCash: number;
   bankedToken: number;
   unbankedToken: number;
 };
 
-export type TransactionFilter = {
+export type ITransactionFilter = {
   timestamp: string;
   hash: string;
   method: string;
 };
 
-export type TransactionDetails = {
+export type ITransactionDetails = {
   hash: string;
   status: Status;
   timestamp: string;
@@ -45,11 +45,11 @@ export type TransactionDetails = {
   to: string;
 }
 
-export type TransactionDetailsTableItem = {
+export type ITransactionDetailsTableItem = {
   name: string,
   amount: number,
   from: string,
   to: string
 }
 
-export type TransactionDetailsTableList = TransactionDetailsTableItem[];
+export type ITransactionDetailsTableList = ITransactionDetailsTableItem[];

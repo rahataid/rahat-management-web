@@ -9,8 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
-import { transactionList } from 'src/_mock/_transactions';
-// hooks
+import { useTransactions } from 'src/api/transactions';
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Scrollbar from 'src/components/scrollbar';
@@ -23,7 +22,6 @@ import {
   TablePaginationCustom,
   useTable,
 } from 'src/components/table';
-// types
 //
 import { Stack } from '@mui/material';
 import TransactionsCards from './transaction-cards';
@@ -35,19 +33,21 @@ const TABLE_HEAD = [
   { id: 'timestamp', label: 'Timestamp' },
   { id: 'hash', label: 'TxHash' },
   { id: 'method', label: 'Method' },
-  { id: 'actions', label: 'Actions', width: '88px', align: 'center' },
+  { id: '', width: '88px', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function TransactionListView() {
+  const { transactions, transactionStats } = useTransactions();
+  
   const table = useTable();
 
   const settings = useSettingsContext();
 
   const router = useRouter();
 
-  const [tableData, setTableData] = useState(transactionList);
+  const [tableData, setTableData] = useState(transactions);
 
   const dataFiltered = tableData;
 
@@ -59,13 +59,6 @@ export default function TransactionListView() {
   const denseHeight = table.dense ? 52 : 72;
 
   const notFound = !dataFiltered.length;
-
-  //   const handleEditRow = useCallback(
-  //     (id: string) => {
-  //       router.push(paths.dashboard.user.edit(id));
-  //     },
-  //     [router]
-  //   );
 
   const handleViewRow = useCallback(
     (hash: string) => {
@@ -84,7 +77,7 @@ export default function TransactionListView() {
       />
 
       <Stack mb={2}>
-        <TransactionsCards />
+        <TransactionsCards data={transactionStats} />
       </Stack>
 
       <Card>
