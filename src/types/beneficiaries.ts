@@ -3,7 +3,7 @@ export type BeneficiariesTableFilters = {
     status: string[];
     tokenAssignedStatus: string[];
     tokenClaimedStatus: string[];
-    cnicNumber: string;
+    name: string;
 };
 
 export type BeneficiariesTableFilterValue = string | string[];

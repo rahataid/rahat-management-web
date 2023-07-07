@@ -35,15 +35,12 @@ export default function BeneficiariesTableToolbar({
   tokenAssignedOptions,
   tokenClaimedOptions
 }: Props) {
-
-  // console.log('token assigned option',tokenAssignedOptions);
-  // console.log( 'token claimed option', tokenClaimedOptions);
   
   const popover = usePopover();
 
-  const handleFilterCnicNumber = useCallback(
+  const handleFilterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      onFilters('cnicNumber', event.target.value);
+      onFilters('name', event.target.value);
     },
     [onFilters]
   );
@@ -221,9 +218,9 @@ export default function BeneficiariesTableToolbar({
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
-            value={filters.cnicNumber}
-            onChange={handleFilterCnicNumber}
-            placeholder="Enter CNIC Number"
+            value={filters.name}
+            onChange={handleFilterName}
+            placeholder="Enter Name"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

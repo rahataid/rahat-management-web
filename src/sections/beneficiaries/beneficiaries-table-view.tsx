@@ -34,7 +34,7 @@ import {
 // types
 import { BeneficiariesItem, BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
 //
-import { distributionPoint, statusFilterOptions, tokenAssignedFilterOptions, tokenClaimedFilterOptions } from 'src/_mock/_beneficiaries';
+import { distributionPointOptions, statusFilterOptions, tokenAssignedFilterOptions, tokenClaimedFilterOptions } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
@@ -45,12 +45,11 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', width: 200 },
-  { id: 'cnicNumber', label: 'CNIC Number', width: 180 },
   { id: 'hasInternetAccess', label: 'Has Internet Access' },
   { id: 'status', label: 'Status'},
   { id: 'tokensAssigned', label: 'Tokens Assigned', width: 100 },
   { id: 'tokensClaimed', label: 'Tokens Claimed', width: 100 },
-  { id: 'action', label: 'Action', width: 88 },
+  { id: '' },
 ];
 
 const defaultFilters: BeneficiariesTableFilters = {  
@@ -58,7 +57,7 @@ const defaultFilters: BeneficiariesTableFilters = {
   status: [],
   tokenAssignedStatus: [],
   tokenClaimedStatus: [],
-  cnicNumber: '',
+  name: '',
 };
 
 // ----------------------------------------------------------------------
@@ -117,8 +116,7 @@ export default function BeneficiariesListView() {
     );
 
     return (
-        <>
-            <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
             <CustomBreadcrumbs
                 heading="Beneficiaries: List"
                 links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
@@ -127,13 +125,11 @@ export default function BeneficiariesListView() {
                 }}
             />
 
-                <Card>
-
+            <Card>
                 <BeneficiariesTableToolbar
                     filters={filters}
                     onFilters={handleFilters}
-                    //
-                    distributionPointOptions={distributionPoint}
+                    distributionPointOptions={distributionPointOptions}
                     statusOptions={statusFilterOptions}
                     tokenAssignedOptions={tokenAssignedFilterOptions}
                     tokenClaimedOptions={tokenClaimedFilterOptions}
@@ -216,32 +212,8 @@ export default function BeneficiariesListView() {
                     dense={table.dense}
                     onChangeDense={table.onChangeDense}
                 />
-                </Card>
-            </Container>
-
-            {/* <ConfirmDialog
-                open={confirm.value}
-                onClose={confirm.onFalse}
-                title="Delete"
-                content={
-                <>
-                    Are you sure want to delete <strong> {table.selected.length} </strong> items?
-                </>
-                }
-                action={
-                <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                    handleDeleteRows();
-                    confirm.onFalse();
-                    }}
-                >
-                    Delete
-                </Button>
-                }
-            /> */}
-        </>
+            </Card>
+        </Container>
     );
 }
 
@@ -256,7 +228,7 @@ function applyFilter({
   comparator: (a: any, b: any) => number;
   filters: BeneficiariesTableFilters;
 }) {
-  const { cnicNumber, distributionPoint, tokenAssignedStatus, tokenClaimedStatus } = filters;
+  const { name, distributionPoint, tokenAssignedStatus, tokenClaimedStatus, status } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index] as const);
 
@@ -268,14 +240,18 @@ function applyFilter({
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (cnicNumber) {
+  if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(cnicNumber) !== -1
+      (user) => user.name.toLowerCase().indexOf(name) !== -1
     );
   }
 
   if (distributionPoint.length) {
     inputData = inputData.filter((beneficiaries) => distributionPoint.includes(beneficiaries.distributionPoint));
+  }
+
+  if (status.length) {
+    inputData = inputData.filter((beneficiaries) => status.includes(beneficiaries.status));
   }
 
   if (tokenAssignedStatus.length) {

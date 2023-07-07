@@ -10,7 +10,7 @@ export const beneficiariesList: BeneficiariesList = [...Array(30)].map((_, index
   distributionPoint: 'Kathmandu'
 }));
 
-export const distributionPoint: DistributionPoint = [
+export const distributionPointOptions: DistributionPoint = [
   'Kathmandu',
   'Pokhara',
   'Hetauda'
