@@ -1,0 +1,290 @@
+'use client';
+
+import isEqual from 'lodash/isEqual';
+import { useCallback, useState } from 'react';
+// @mui
+import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableContainer from '@mui/material/TableContainer';
+import Tooltip from '@mui/material/Tooltip';
+// routes
+import { useRouter } from 'src/routes/hook';
+import { paths } from 'src/routes/paths';
+// _mock
+// hooks
+import { useBoolean } from 'src/hooks/use-boolean';
+// components
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import Iconify from 'src/components/iconify';
+import Scrollbar from 'src/components/scrollbar';
+import { useSettingsContext } from 'src/components/settings';
+import {
+    emptyRows,
+    getComparator,
+    TableEmptyRows,
+    TableHeadCustom,
+    TableNoData,
+    TablePaginationCustom,
+    TableSelectedAction,
+    useTable,
+} from 'src/components/table';
+// types
+import { BeneficiariesItem, BeneficiariesTableFilters, BeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+//
+import { distributionPoint, statusFilterOptions, tokenAssignedFilterOptions, tokenClaimedFilterOptions } from 'src/_mock/_beneficiaries';
+import { useBeneficiaries } from 'src/api/beneficiaries';
+import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
+import BeneficiariesTableRow from './beneficiaries-table-row';
+import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
+
+// ----------------------------------------------------------------------
+
+
+const TABLE_HEAD = [
+  { id: 'name', label: 'Name', width: 200 },
+  { id: 'cnicNumber', label: 'CNIC Number', width: 180 },
+  { id: 'hasInternetAccess', label: 'Has Internet Access' },
+  { id: 'status', label: 'Status'},
+  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 100 },
+  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 100 },
+  { id: 'action', label: 'Action', width: 88 },
+];
+
+const defaultFilters: BeneficiariesTableFilters = {  
+  distributionPoint: [],
+  status: [],
+  tokenAssignedStatus: [],
+  tokenClaimedStatus: [],
+  cnicNumber: '',
+};
+
+// ----------------------------------------------------------------------
+
+export default function BeneficiariesListView() {
+    const { beneficiaries } = useBeneficiaries();
+    const table = useTable();
+
+    const settings = useSettingsContext();
+
+    const router = useRouter();
+
+    const confirm = useBoolean();
+
+    const [tableData, setTableData] = useState(beneficiaries);
+
+    const [filters, setFilters] = useState(defaultFilters);
+
+    const dataFiltered = applyFilter({
+        inputData: tableData,
+        comparator: getComparator(table.order, table.orderBy),
+        filters,
+    });
+
+    const dataInPage = dataFiltered.slice(
+        table.page * table.rowsPerPage,
+        table.page * table.rowsPerPage + table.rowsPerPage
+    );
+
+    const denseHeight = table.dense ? 52 : 72;
+
+    const canReset = !isEqual(defaultFilters, filters);
+
+    const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+
+    const handleFilters = useCallback(
+        (name: string, value: BeneficiariesTableFilterValue) => {
+        table.onResetPage();
+        setFilters((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+        },
+        [table]
+    );
+
+    const handleResetFilters = useCallback(() => {
+        setFilters(defaultFilters);
+    }, []);
+
+    const handleViewRow = useCallback(
+        (hash: string) => {
+        router.push(paths.dashboard.general.transactions.details(hash));
+        },
+        [router]
+    );
+
+    return (
+        <>
+            <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+            <CustomBreadcrumbs
+                heading="Beneficiaries: List"
+                links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
+                sx={{
+                mb: { xs: 3, md: 5 },
+                }}
+            />
+
+                <Card>
+
+                <BeneficiariesTableToolbar
+                    filters={filters}
+                    onFilters={handleFilters}
+                    //
+                    distributionPointOptions={distributionPoint}
+                    statusOptions={statusFilterOptions}
+                    tokenAssignedOptions={tokenAssignedFilterOptions}
+                    tokenClaimedOptions={tokenClaimedFilterOptions}
+                />
+
+                {canReset && (
+                    <BeneficiariesTableFiltersResult
+                    filters={filters}
+                    onFilters={handleFilters}
+                    onResetFilters={handleResetFilters}
+                    results={dataFiltered.length}
+                    sx={{ p: 2.5, pt: 0 }}
+                    />
+                )}
+
+                <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                    <TableSelectedAction
+                    dense={table.dense}
+                    numSelected={table.selected.length}
+                    rowCount={tableData.length}
+                    onSelectAllRows={(checked) =>
+                        table.onSelectAllRows(
+                        checked,
+                        tableData.map((row) => row.cnicNumber.toString())
+                        )
+                    }
+                    action={
+                        <Tooltip title="Delete">
+                        <IconButton color="primary" onClick={confirm.onTrue}>
+                            <Iconify icon="solar:trash-bin-trash-bold" />
+                        </IconButton>
+                        </Tooltip>
+                    }
+                    />
+
+                    <Scrollbar>
+                    <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                        <TableHeadCustom
+                        order={table.order}
+                        orderBy={table.orderBy}
+                        headLabel={TABLE_HEAD}
+                        rowCount={tableData.length}
+                        numSelected={table.selected.length}
+                        onSort={table.onSort}
+                        />
+
+                        <TableBody>
+                        {dataFiltered
+                            .slice(
+                            table.page * table.rowsPerPage,
+                            table.page * table.rowsPerPage + table.rowsPerPage
+                            )
+                            .map((row) => (
+                            <BeneficiariesTableRow
+                                key={row.cnicNumber}
+                                row={row}
+                                selected={table.selected.includes(row.cnicNumber.toString())}
+                                onViewRow={() => handleViewRow(row.cnicNumber.toString())}
+                            />
+                            ))}
+
+                        <TableEmptyRows
+                            height={denseHeight}
+                            emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                        />
+
+                        <TableNoData notFound={notFound} />
+                        </TableBody>
+                    </Table>
+                    </Scrollbar>
+                </TableContainer>
+
+                <TablePaginationCustom
+                    count={dataFiltered.length}
+                    page={table.page}
+                    rowsPerPage={table.rowsPerPage}
+                    onPageChange={table.onChangePage}
+                    onRowsPerPageChange={table.onChangeRowsPerPage}
+                    //
+                    dense={table.dense}
+                    onChangeDense={table.onChangeDense}
+                />
+                </Card>
+            </Container>
+
+            {/* <ConfirmDialog
+                open={confirm.value}
+                onClose={confirm.onFalse}
+                title="Delete"
+                content={
+                <>
+                    Are you sure want to delete <strong> {table.selected.length} </strong> items?
+                </>
+                }
+                action={
+                <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                    handleDeleteRows();
+                    confirm.onFalse();
+                    }}
+                >
+                    Delete
+                </Button>
+                }
+            /> */}
+        </>
+    );
+}
+
+// ----------------------------------------------------------------------
+
+function applyFilter({
+  inputData,
+  comparator,
+  filters,
+}: {
+  inputData: BeneficiariesItem[];
+  comparator: (a: any, b: any) => number;
+  filters: BeneficiariesTableFilters;
+}) {
+  const { cnicNumber, distributionPoint, tokenAssignedStatus, tokenClaimedStatus } = filters;
+
+  const stabilizedThis = inputData.map((el, index) => [el, index] as const);
+
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+
+  inputData = stabilizedThis.map((el) => el[0]);
+
+  if (cnicNumber) {
+    inputData = inputData.filter(
+      (user) => user.name.toLowerCase().indexOf(cnicNumber) !== -1
+    );
+  }
+
+  if (distributionPoint.length) {
+    inputData = inputData.filter((beneficiaries) => distributionPoint.includes(beneficiaries.distributionPoint));
+  }
+
+  if (tokenAssignedStatus.length) {
+    inputData = inputData.filter((beneficiaries) => tokenAssignedStatus.includes(beneficiaries.tokensAssigned.toString()));
+  }
+
+  if (tokenClaimedStatus.length) {
+    inputData = inputData.filter((beneficiaries) => tokenClaimedStatus.includes(beneficiaries.tokensClaimed.toString()));
+  }
+
+  return inputData;
+}
