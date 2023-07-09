@@ -1,11 +1,11 @@
 import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { TransactionDetailsTableItem } from 'src/types/transactions';
+import { ITransactionDetailsTableItem } from 'src/types/transactions';
 
 type Props = {
   selected: boolean;
-  row: TransactionDetailsTableItem;
+  row: ITransactionDetailsTableItem;
 };
 
 export default function TransactionDetailsTableRow({ row, selected }: Props) {
