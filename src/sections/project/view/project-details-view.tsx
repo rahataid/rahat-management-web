@@ -1,10 +1,7 @@
+const ProjectDetailsView = () => (
+  <div>
+    <h1>lol</h1>
+  </div>
+);
 
-const ProjectDetailsView = () => {
-    return (
-        <div>
-            <h1>lol</h1>
-        </div>
-    )
-}
-
-export default ProjectDetailsView
+export default ProjectDetailsView;

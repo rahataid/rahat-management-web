@@ -19,7 +19,7 @@ type Props = {
 };
 
 export default function VendorTableRow({ row, onViewRow }: Props) {
-  const { address, id, name, phone, projectInvolved } = row;
+  const { name, phone, projectInvolved } = row;
 
   const quickEdit = useBoolean();
 

@@ -9,17 +9,15 @@ const _carouselsExample = [...Array(20)].map((_, index) => ({
   description: _mock.description(index),
 }));
 
-const GalleryView = () => {
-  return (
-    <Stack spacing={3}>
-      <Card>
-        <CardHeader title="Carousel Thumbnail" />
-        <CardContent>
-          <CarouselThumbnail data={_carouselsExample.slice(0, 12)} />
-        </CardContent>
-      </Card>
-    </Stack>
-  );
-};
+const GalleryView = () => (
+  <Stack spacing={3}>
+    <Card>
+      <CardHeader title="Carousel Thumbnail" />
+      <CardContent>
+        <CarouselThumbnail data={_carouselsExample.slice(0, 12)} />
+      </CardContent>
+    </Card>
+  </Stack>
+);
 
 export default GalleryView;
