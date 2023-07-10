@@ -1,6 +1,6 @@
 import Label from '@components/label/label';
 import { Card, CardContent, Grid, Stack, Typography } from '@mui/material';
-import { IBeneficiaryDetails } from 'src/types/beneficiaries';
+import { IBeneficiaryDetails, Status } from 'src/types/beneficiaries';
 
 type Props = {
   data: IBeneficiaryDetails;
@@ -25,7 +25,9 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           <Label
             variant="outlined"
             color={
-              (status === 'ACTIVE' && 'success') || (status === 'INACTIVE' && 'error') || 'default'
+              (status === Status.ACTIVE && 'success') ||
+              (status === Status.INACTIVE && 'error') ||
+              'default'
             }
           >
             {status}

@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 // ----------------------------------------------------------------------
@@ -13,9 +14,13 @@ type ReturnType = {
 
 export function useCopyToClipboard(): ReturnType {
   const [copiedText, setCopiedText] = useState<CopiedValue>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const copy: CopyFn = async (text) => {
     if (!navigator?.clipboard) {
+      enqueueSnackbar('Clipboard not supported', {
+        variant: 'error',
+      });
       console.warn('Clipboard not supported');
       return false;
     }
@@ -24,10 +29,16 @@ export function useCopyToClipboard(): ReturnType {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedText(text);
+      enqueueSnackbar('Copied!');
+
       return true;
     } catch (error) {
       console.warn('Copy failed', error);
       setCopiedText(null);
+      enqueueSnackbar('Copied!', {
+        variant: 'error',
+      });
+
       return false;
     }
   };
