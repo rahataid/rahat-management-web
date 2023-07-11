@@ -1,39 +1,51 @@
 export enum InternetAccess {
-    YES = 'YES',
-    NO = 'NO'
+  YES = 'YES',
+  NO = 'NO',
 }
 
 export enum Status {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE'
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHERS = 'OTHERS'
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHERS = 'OTHERS',
+}
+
+export enum PhoneType {
+  SMARTPHONE = 'SMARTPHONE',
+  FEATUREPHONE = 'FEATUREPHONE',
+  DUMBPHONE = 'DUMBPHONE',
+}
+
+export enum Village {
+  DARCHULA = 'DARCHULA',
+  MORANG = 'MORANG',
+  BIRENDRANAGAR = 'BIRENDRANAGAR',
 }
 
 export type IBeneficiariesTableFilters = {
-    distributionPoint: string[];
-    status: string[];
-    tokenAssignedStatus: string[];
-    tokenClaimedStatus: string[];
-    name: string;
+  distributionPoint: string[];
+  status: string[];
+  tokenAssignedStatus: string[];
+  tokenClaimedStatus: string[];
+  name: string;
 };
 
 export type IBeneficiariesTableFilterValue = string | string[];
 
 export type IBeneficiariesItem = {
-    name: string;
-    cnicNumber: number;
-    hasInternetAccess: InternetAccess.YES;
-    status: Status.ACTIVE;
-    tokensAssigned: number;
-    tokensClaimed: number;
-    distributionPoint: string;
-    address: string;
-}
+  name: string;
+  cnicNumber: number;
+  hasInternetAccess: InternetAccess.YES;
+  status: Status.ACTIVE;
+  tokensAssigned: number;
+  tokensClaimed: number;
+  distributionPoint: string;
+  address: string;
+};
 
 export type IBeneficiariesList = IBeneficiariesItem[];
 
@@ -46,29 +58,45 @@ export type ITokenAssignedFilterOptions = string[];
 export type ITokenClaimedFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
-    name: string,
-    phone: number,
-    gender: Gender.MALE,
-    cnicNumber: number,
-    district: string,
-    dailyWaterConsumption: number,
-    dailyDistanceCovered: number,
-    status: Status.ACTIVE
-}
+  name: string;
+  phone: number;
+  gender: Gender.MALE;
+  cnicNumber: number;
+  district: string;
+  dailyWaterConsumption: number;
+  dailyDistanceCovered: number;
+  status: Status.ACTIVE;
+};
 
 export type IBeneficiaryClaimsDetails = {
-    claimedDate: string,
-    receivedDate: string,
-    claimedAmount: number,
-    receivedAmount: number,
-    walletAddress: string
-}
+  claimedDate: string;
+  receivedDate: string;
+  claimedAmount: number;
+  receivedAmount: number;
+  walletAddress: string;
+};
 
 export type IBeneficiaryDetailsTableItem = {
-    timestamp: string,
-    hash: string,
-    event: string,
-    amount: number
-}
+  timestamp: string;
+  hash: string;
+  event: string;
+  amount: number;
+};
 
 export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
+
+export type IBeneficiariesCreateItem = {
+  name: string;
+  phoneNumber: string;
+  cnicNumber?: string;
+  gender: Gender;
+  village: Village;
+  phoneOwnership: string;
+  phoneType: PhoneType;
+};
+
+export type IVillageFilterOptions = string[];
+
+export type IGenderFilterOptions = string[];
+
+export type IPhoneTypeFilterOptions = string[];
