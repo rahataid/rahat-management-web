@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 // @mui
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -15,9 +15,9 @@ import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
-import CustomDatePicker from '@components/custom-date-picker';
 import Iconify from '@components/iconify/iconify';
 import { Button, MenuItem, Tooltip } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { villageFilterOptions } from 'src/_mock/_beneficiaries';
 import {
   bankStatusFilterOptions,
@@ -47,10 +47,10 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
     phoneStatus: Yup.string().required('Phone Type is required'),
     bankStatus: Yup.string().required('Bank status is required'),
     internetStatus: Yup.string().required('Internet status is required'),
-    dob: Yup.string().required('DOB is required'),
+    dob: Yup.mixed<any>().nullable().required('DOB is required'),
     walletAddress: Yup.string().required('Wallet address is required'),
-    longitude: Yup.number().required('Longitude is required'),
-    latitude: Yup.number().required('Latitude is required'),
+    longitude: Yup.number(),
+    latitude: Yup.number(),
   });
 
   const defaultValues = useMemo(
@@ -65,8 +65,8 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
       internetStatus: currentBeneficiary?.internetStatus || '',
       dob: currentBeneficiary?.dob || null,
       walletAddress: currentBeneficiary?.walletAddress || '',
-      longitude: currentBeneficiary?.longitude || undefined,
-      latitude: currentBeneficiary?.latitude || undefined,
+      longitude: currentBeneficiary?.longitude || 0,
+      latitude: currentBeneficiary?.latitude || 0,
     }),
     [currentBeneficiary]
   );
@@ -79,7 +79,7 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
     setValue,
     control,
     trigger,
@@ -129,18 +129,24 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
                 ))}
               </RHFSelect>
 
-              {/* <LocalizationProvider dateAdapter={AdapterDateFns} >
-                <DatePicker label="Select DOB"  onChange={(event) => {  setValue('dob', event) }}/>
-              </LocalizationProvider> */}
-
-              <CustomDatePicker
+              <Controller
                 name="dob"
                 control={control}
-                label="Enter DOB"
-                error={errors?.dob?.message}
-                onChange={(event) => {
-                  setValue('dob', event);
-                }}
+                render={({ field, fieldState: { error } }) => (
+                  <DatePicker
+                    {...field}
+                    disableFuture
+                    label="Date Of Birth"
+                    format="dd/MM/yyyy"
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!error,
+                        helperText: error?.message,
+                      },
+                    }}
+                  />
+                )}
               />
 
               <RHFSelect name="village" label="Village">
