@@ -33,10 +33,9 @@ import ProgressBar from 'src/components/progress-bar';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // auth
+import Web3Provider from '@web3/components/Provider';
 import { AuthConsumer, AuthProvider } from 'src/auth/context/jwt';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
-// import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
+import QueryProvider from './query-provider';
 
 // ----------------------------------------------------------------------
 
@@ -80,31 +79,33 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
-        {/* <Web3Provider /> */}
-        <AuthProvider>
-          <ReduxProvider>
-            <SettingsProvider
-              defaultSettings={{
-                themeMode: 'light', // 'light' | 'dark'
-                themeDirection: 'ltr', //  'rtl' | 'ltr'
-                themeContrast: 'default', // 'default' | 'bold'
-                themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                themeColorPresets: 'cyan', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                themeStretch: false,
-              }}
-            >
-              <ThemeProvider>
-                <MotionLazy>
-                  <SnackbarProvider>
-                    <SettingsDrawer />
-                    <ProgressBar />
-                    <AuthConsumer>{children}</AuthConsumer>
-                  </SnackbarProvider>
-                </MotionLazy>
-              </ThemeProvider>
-            </SettingsProvider>
-          </ReduxProvider>
-        </AuthProvider>
+        <Web3Provider />
+        <QueryProvider>
+          <AuthProvider>
+            <ReduxProvider>
+              <SettingsProvider
+                defaultSettings={{
+                  themeMode: 'light', // 'light' | 'dark'
+                  themeDirection: 'ltr', //  'rtl' | 'ltr'
+                  themeContrast: 'default', // 'default' | 'bold'
+                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                  themeColorPresets: 'cyan', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                  themeStretch: false,
+                }}
+              >
+                <ThemeProvider>
+                  <MotionLazy>
+                    <SnackbarProvider>
+                      <SettingsDrawer />
+                      <ProgressBar />
+                      <AuthConsumer>{children}</AuthConsumer>
+                    </SnackbarProvider>
+                  </MotionLazy>
+                </ThemeProvider>
+              </SettingsProvider>
+            </ReduxProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

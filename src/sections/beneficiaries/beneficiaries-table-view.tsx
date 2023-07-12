@@ -11,7 +11,7 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
 // routes
-import { useRouter } from 'src/routes/hook';
+import { usePathname, useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
@@ -23,7 +23,6 @@ import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
   emptyRows,
-  getComparator,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
@@ -52,9 +51,10 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', width: 340 },
-  { id: 'hasInternetAccess', label: 'Has Internet Access' },
-  { id: 'status', label: 'Status' },
+  { id: 'name', label: 'Name', width: 250 },
+  { id: 'internetStatus', label: 'Internet Access', width: 200 },
+  { id: 'phoneStatus', label: 'Phone', width: 200 },
+  { id: 'bankStatus', label: 'Bank', width: 200 },
   { id: 'tokensAssigned', label: 'Tokens Assigned', width: 200 },
   { id: 'tokensClaimed', label: 'Tokens Claimed', width: 200 },
   { id: '', width: '88px', align: 'center' },
@@ -71,8 +71,33 @@ const defaultFilters: IBeneficiariesTableFilters = {
 // ----------------------------------------------------------------------
 
 export default function BeneficiariesListView() {
-  const { beneficiaries } = useBeneficiaries();
   const table = useTable();
+
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { push } = useRouter();
+
+  const [filters, setFilters] = useState(defaultFilters);
+
+  // const [apiFilters, setApiFilters] = useState<IBeneficiaryApiFilters>({});
+
+  // const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
+  //   const queryParams = Object.entries(params)
+  //     .filter(([_, value]) => Boolean(value))
+  //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+  //     .join('&');
+
+  //   return queryParams === '' ? '' : `${queryParams}`;
+  // }, []);
+
+  const { beneficiaries, meta } = useBeneficiaries({
+    perPage: table.rowsPerPage,
+    page: table.page + 1,
+    orderBy: table.orderBy,
+    order: table.order,
+  });
+
+  console.log('filters', filters);
 
   const settings = useSettingsContext();
 
@@ -80,26 +105,11 @@ export default function BeneficiariesListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(beneficiaries);
-
-  const [filters, setFilters] = useState(defaultFilters);
-
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-    comparator: getComparator(table.order, table.orderBy),
-    filters,
-  });
-
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
-
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = (!beneficiaries.length && canReset) || !beneficiaries.length;
 
   const handleFilters = useCallback(
     (name: string, value: IBeneficiariesTableFilterValue) => {
@@ -108,13 +118,24 @@ export default function BeneficiariesListView() {
         ...prevState,
         [name]: value,
       }));
+      // const updatedParams = {
+      //   ...filters,
+      //   ...Object.fromEntries(searchParams.entries()),
+      //   [name]: value,
+      // };
+      // const queryString = createQueryString(updatedParams);
+      // push(`${paths.dashboard.general.beneficiaries.list}?${queryString}`);
     },
-    [table]
+    [
+      table,
+      // createQueryString, push, searchParams, filters
+    ]
   );
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-  }, []);
+    push(paths.dashboard.general.beneficiaries.list);
+  }, [push]);
 
   const handleViewRow = useCallback(
     (address: string) => {
@@ -148,7 +169,7 @@ export default function BeneficiariesListView() {
             filters={filters}
             onFilters={handleFilters}
             onResetFilters={handleResetFilters}
-            results={dataFiltered.length}
+            results={beneficiaries.length}
             sx={{ p: 2.5, pt: 0 }}
           />
         )}
@@ -157,11 +178,11 @@ export default function BeneficiariesListView() {
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={tableData.length}
+            rowCount={beneficiaries.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                tableData.map((row: IBeneficiariesItem) => row.cnicNumber.toString())
+                beneficiaries.map((row: IBeneficiariesItem) => row.name.toString())
               )
             }
             action={
@@ -179,29 +200,23 @@ export default function BeneficiariesListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={tableData.length}
+                rowCount={beneficiaries.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
 
               <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <BeneficiariesTableRow
-                      key={row.address}
-                      row={row}
-                      selected={table.selected.includes(row.address.toString())}
-                      onViewRow={() => handleViewRow(row.address.toString())}
-                    />
-                  ))}
+                {beneficiaries.map((row: IBeneficiariesItem) => (
+                  <BeneficiariesTableRow
+                    key={row.walletAddress}
+                    row={row}
+                    onViewRow={() => handleViewRow(row.walletAddress)}
+                  />
+                ))}
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(table?.page, table?.rowsPerPage, meta?.total || 0)}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -211,9 +226,9 @@ export default function BeneficiariesListView() {
         </TableContainer>
 
         <TablePaginationCustom
-          count={dataFiltered.length}
+          count={meta?.total || 0}
           page={table.page}
-          rowsPerPage={table.rowsPerPage}
+          rowsPerPage={table?.rowsPerPage}
           onPageChange={table.onChangePage}
           onRowsPerPageChange={table.onChangeRowsPerPage}
           //
@@ -223,56 +238,4 @@ export default function BeneficiariesListView() {
       </Card>
     </Container>
   );
-}
-
-// ----------------------------------------------------------------------
-
-function applyFilter({
-  inputData,
-  comparator,
-  filters,
-}: {
-  inputData: IBeneficiariesItem[];
-  comparator: (a: any, b: any) => number;
-  filters: IBeneficiariesTableFilters;
-}) {
-  const { name, distributionPoint, tokenAssignedStatus, tokenClaimedStatus, status } = filters;
-
-  const stabilizedThis = inputData.map((el, index) => [el, index] as const);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis.map((el) => el[0]);
-
-  if (name) {
-    inputData = inputData.filter((user) => user.name.toLowerCase().indexOf(name) !== -1);
-  }
-
-  if (distributionPoint.length) {
-    inputData = inputData.filter((beneficiaries) =>
-      distributionPoint.includes(beneficiaries.distributionPoint)
-    );
-  }
-
-  if (status.length) {
-    inputData = inputData.filter((beneficiaries) => status.includes(beneficiaries.status));
-  }
-
-  if (tokenAssignedStatus.length) {
-    inputData = inputData.filter((beneficiaries) =>
-      tokenAssignedStatus.includes(beneficiaries.tokensAssigned.toString())
-    );
-  }
-
-  if (tokenClaimedStatus.length) {
-    inputData = inputData.filter((beneficiaries) =>
-      tokenClaimedStatus.includes(beneficiaries.tokensClaimed.toString())
-    );
-  }
-
-  return inputData;
 }
