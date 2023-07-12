@@ -5,7 +5,6 @@ import {
   IBeneficiaryDetails,
   IBeneficiaryDetailsTableList,
   IDistributionPoint,
-  IGenderFilterOptions,
   IPhoneTypeFilterOptions,
   IStatusFilterOptions,
   ITokenAssignedFilterOptions,
@@ -70,8 +69,6 @@ export const beneficiaryTransactionList: IBeneficiaryDetailsTableList = [...Arra
 );
 
 export const villageFilterOptions: IVillageFilterOptions = ['DARCHULA', 'MORANG', 'BIRENDRANAGAR'];
-
-export const genderFilterOptions: IGenderFilterOptions = ['MALE', 'FEMALE', 'OTHERS'];
 
 export const phoneTypeFilterOptions: IPhoneTypeFilterOptions = [
   'SMARTPHONE',

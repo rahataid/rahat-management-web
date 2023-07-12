@@ -14,13 +14,18 @@ import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // types
 // assets
-import {
-  genderFilterOptions,
-  phoneTypeFilterOptions,
-  villageFilterOptions,
-} from 'src/_mock/_beneficiaries';
 // components
-import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import CustomDatePicker from '@components/custom-date-picker';
+import Iconify from '@components/iconify/iconify';
+import { Button, MenuItem, Tooltip } from '@mui/material';
+import { villageFilterOptions } from 'src/_mock/_beneficiaries';
+import {
+  bankStatusFilterOptions,
+  genderFilterOptions,
+  internetStatusFilterOptions,
+  phoneStatusFilterOptions,
+} from 'src/api/beneficiaries';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { IBeneficiariesCreateItem } from 'src/types/beneficiaries';
 
@@ -39,7 +44,13 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
     gender: Yup.string().required('Gender is required'),
     village: Yup.string().required('Village is required'),
     phoneOwnership: Yup.string().required('Phone Owner is required'),
-    phoneType: Yup.string().required('Phone Type is required'),
+    phoneStatus: Yup.string().required('Phone Type is required'),
+    bankStatus: Yup.string().required('Bank status is required'),
+    internetStatus: Yup.string().required('Internet status is required'),
+    dob: Yup.string().required('DOB is required'),
+    walletAddress: Yup.string().required('Wallet address is required'),
+    longitude: Yup.number().required('Longitude is required'),
+    latitude: Yup.number().required('Latitude is required'),
   });
 
   const defaultValues = useMemo(
@@ -49,7 +60,13 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
       gender: currentBeneficiary?.gender || '',
       village: currentBeneficiary?.village || '',
       phoneOwnership: currentBeneficiary?.phoneOwnership || '',
-      phoneType: currentBeneficiary?.phoneType || '',
+      phoneStatus: currentBeneficiary?.phoneStatus || '',
+      bankStatus: currentBeneficiary?.bankStatus || '',
+      internetStatus: currentBeneficiary?.internetStatus || '',
+      dob: currentBeneficiary?.dob || null,
+      walletAddress: currentBeneficiary?.walletAddress || '',
+      longitude: currentBeneficiary?.longitude || undefined,
+      latitude: currentBeneficiary?.latitude || undefined,
     }),
     [currentBeneficiary]
   );
@@ -62,11 +79,20 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    setValue,
+    control,
+    trigger,
   } = methods;
+
+  const handleGenerateWalletAddress = () => {
+    setValue('walletAddress', '0x123456abcde');
+    trigger('walletAddress');
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      console.log('HERE');
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentBeneficiary ? 'Update success!' : 'Create success!');
@@ -92,37 +118,112 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
               }}
             >
               <RHFTextField name="name" label="Name" />
+
               <RHFTextField name="phoneNumber" label="Phone Number" />
 
-              <RHFAutocomplete
-                name="gender"
-                label="Gender"
-                options={genderFilterOptions.map((gender) => gender)}
-                getOptionLabel={(option) => option}
-                isOptionEqualToValue={(option, value) => option === value}
+              <RHFSelect name="gender" label="Gender">
+                {genderFilterOptions.map((gender) => (
+                  <MenuItem key={gender.value} value={gender.value}>
+                    {gender.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              {/* <LocalizationProvider dateAdapter={AdapterDateFns} >
+                <DatePicker label="Select DOB"  onChange={(event) => {  setValue('dob', event) }}/>
+              </LocalizationProvider> */}
+
+              <CustomDatePicker
+                name="dob"
+                control={control}
+                label="Enter DOB"
+                error={errors?.dob?.message}
+                onChange={(event) => {
+                  setValue('dob', event);
+                }}
               />
 
-              <RHFAutocomplete
-                name="village"
-                label="Village"
-                options={villageFilterOptions.map((village) => village)}
-                getOptionLabel={(option) => option}
-                isOptionEqualToValue={(option, value) => option === value}
-              />
+              <RHFSelect name="village" label="Village">
+                {villageFilterOptions.map((village) => (
+                  <MenuItem key={village} value={village}>
+                    {village}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
 
               <RHFTextField name="phoneOwnership" label="Phone Ownership" />
 
-              <RHFAutocomplete
-                name="phoneType"
-                label="Phone Type"
-                options={phoneTypeFilterOptions.map((phoneType) => phoneType)}
-                getOptionLabel={(option) => option}
-                isOptionEqualToValue={(option, value) => option === value}
+              <RHFSelect name="phoneStatus" label="Phone Type">
+                {phoneStatusFilterOptions.map((phoneStatus) => (
+                  <MenuItem key={phoneStatus.value} value={phoneStatus.value}>
+                    {phoneStatus.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name="bankStatus" label="Bank Status">
+                {bankStatusFilterOptions.map((bankStatus) => (
+                  <MenuItem key={bankStatus.value} value={bankStatus.value}>
+                    {bankStatus.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name="internetStatus" label="Internet Status">
+                {internetStatusFilterOptions.map((internetStatus) => (
+                  <MenuItem key={internetStatus.value} value={internetStatus.value}>
+                    {internetStatus.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <RHFTextField
+                name="walletAddress"
+                label="Wallet Address"
+                InputProps={{
+                  endAdornment: (
+                    <Tooltip title="Generate Wallet Address" sx={{ margin: '0 !important' }}>
+                      <Button
+                        sx={{
+                          padding: 0,
+                          margin: 0,
+                          minWidth: '40px !important',
+                          width: '40px !important',
+                          height: '40px !important',
+                          borderRadius: '50%',
+                          marginRight: '-12px !important',
+                        }}
+                        startIcon={
+                          <Iconify
+                            sx={{
+                              width: 24,
+                              height: 24,
+                              margin: '0px !important',
+                              marginRight: '-12px !important',
+                            }}
+                            icon="ph:wallet-duotone"
+                            onClick={handleGenerateWalletAddress}
+                          />
+                        }
+                      />
+                    </Tooltip>
+                  ),
+                }}
+                sx={{ padding: '0 !important' }}
               />
+
+              <RHFTextField name="longitude" label="Longitude" type="number" />
+
+              <RHFTextField name="latitude" label="Latitude" type="number" />
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+              <LoadingButton
+                type="submit"
+                variant="outlined"
+                color="success"
+                loading={isSubmitting}
+              >
                 {!currentBeneficiary ? 'Create Beneficiary' : 'Save Changes'}
               </LoadingButton>
             </Stack>

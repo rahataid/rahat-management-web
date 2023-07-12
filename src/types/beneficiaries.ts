@@ -8,12 +8,6 @@ export enum Status {
   INACTIVE = 'INACTIVE',
 }
 
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  OTHERS = 'OTHERS',
-}
-
 export enum PhoneType {
   SMARTPHONE = 'SMARTPHONE',
   FEATUREPHONE = 'FEATUREPHONE',
@@ -24,6 +18,34 @@ export enum Village {
   DARCHULA = 'DARCHULA',
   MORANG = 'MORANG',
   BIRENDRANAGAR = 'BIRENDRANAGAR',
+}
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHERS = 'OTHERS',
+  UNKNOWN = 'UNKNOWN',
+}
+
+export enum BANK_STATUS {
+  UNKNOWN = 'UNKNOWN',
+  UNBANKED = 'UNBANKED',
+  BANKED = 'BANKED',
+  UNDERBANKED = 'UNDERBANKED',
+}
+
+export enum PHONE_STATUS {
+  UNKNOWN = 'UNKNOWN',
+  NO_PHONE = 'NO_PHONE',
+  FEATURE_PHONE = 'FEATURE_PHONE',
+  SMART_PHONE = 'SMART_PHONE',
+}
+
+export enum INTERNET_STATUS {
+  UNKNOWN = 'UNKNOWN',
+  NO_INTERNET = 'NO_INTERNET',
+  PHONE_INTERNET = 'PHONE_INTERNET',
+  HOME_INTERNET = 'HOME_INTERNET',
 }
 
 export type IBeneficiariesTableFilters = {
@@ -92,7 +114,13 @@ export type IBeneficiariesCreateItem = {
   gender: Gender;
   village: Village;
   phoneOwnership: string;
-  phoneType: PhoneType;
+  phoneStatus: PhoneType;
+  bankStatus: BANK_STATUS;
+  internetStatus: INTERNET_STATUS;
+  dob: string;
+  walletAddress: string;
+  longitude: number;
+  latitude: number;
 };
 
 export type IVillageFilterOptions = string[];
