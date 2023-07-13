@@ -18,6 +18,7 @@ import { paths } from 'src/routes/paths';
 import Iconify from '@components/iconify/iconify';
 import { Button, MenuItem, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { generateWalletAddress } from '@web3/utils';
 import {
   bankStatusFilterOptions,
   genderFilterOptions,
@@ -41,7 +42,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
     name: Yup.string().required('Name is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     gender: Yup.string().required('Gender is required'),
-    phoneOwnership: Yup.string().required('Phone Owner is required'),
     phoneStatus: Yup.string().required('Phone Type is required'),
     bankStatus: Yup.string().required('Bank status is required'),
     internetStatus: Yup.string().required('Internet status is required'),
@@ -56,7 +56,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
       name: currentBeneficiary?.name || '',
       phoneNumber: currentBeneficiary?.phoneNumber || '',
       gender: currentBeneficiary?.gender || '',
-      phoneOwnership: currentBeneficiary?.phoneOwnership || '',
       phoneStatus: currentBeneficiary?.phoneStatus || '',
       bankStatus: currentBeneficiary?.bankStatus || '',
       internetStatus: currentBeneficiary?.internetStatus || '',
@@ -83,7 +82,8 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
   } = methods;
 
   const handleGenerateWalletAddress = () => {
-    setValue('walletAddress', '0x123456abcde');
+    const { address } = generateWalletAddress();
+    setValue('walletAddress', address);
     trigger('walletAddress');
   };
 
@@ -144,8 +144,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
                   />
                 )}
               />
-
-              <RHFTextField name="phoneOwnership" label="Phone Ownership" />
 
               <RHFSelect name="phoneStatus" label="Phone Type">
                 {phoneStatusFilterOptions.map((phoneStatus) => (
