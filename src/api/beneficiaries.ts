@@ -17,8 +17,6 @@ export function useBeneficiaries(params?: IBeneficiaryApiFilters): Beneficiaries
     },
   });
 
-  console.log({ data, isError, isLoading, error, status });
-
   const memoizedValue = useMemo(
     () => ({
       beneficiaries: data?.data?.rows || [],

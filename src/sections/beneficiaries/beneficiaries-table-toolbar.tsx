@@ -11,7 +11,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 // types
-import { IBeneficiariesTableFilters, IBeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+import {
+  IBeneficiariesTableFilters,
+  IBeneficiariesTableFilterValue,
+} from 'src/types/beneficiaries';
 // components
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
@@ -21,7 +24,7 @@ import Iconify from 'src/components/iconify';
 type Props = {
   filters: IBeneficiariesTableFilters;
   onFilters: (name: string, value: IBeneficiariesTableFilterValue) => void;
-  distributionPointOptions: string[];
+  internetAccessOptions: string[];
   statusOptions: string[];
   tokenAssignedOptions: string[];
   tokenClaimedOptions: string[];
@@ -30,12 +33,11 @@ type Props = {
 export default function BeneficiariesTableToolbar({
   filters,
   onFilters,
-  distributionPointOptions,
+  internetAccessOptions,
   statusOptions,
   tokenAssignedOptions,
-  tokenClaimedOptions
+  tokenClaimedOptions,
 }: Props) {
-  
   const popover = usePopover();
 
   const handleFilterName = useCallback(
@@ -45,10 +47,12 @@ export default function BeneficiariesTableToolbar({
     [onFilters]
   );
 
-  const handleFilterDistributionPoint = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
+  console.log('internetAccessOptions', internetAccessOptions);
+
+  const handleInternetAccessOptions = useCallback(
+    (event: SelectChangeEvent<string>) => {
       onFilters(
-        'distributionPoint',
+        'internetAccess',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
@@ -105,23 +109,20 @@ export default function BeneficiariesTableToolbar({
             width: { xs: 1, md: 200 },
           }}
         >
-          <InputLabel>Distribution Point</InputLabel>
+          <InputLabel>Internet Access</InputLabel>
 
           <Select
-            multiple
-            value={filters.distributionPoint}
-            onChange={handleFilterDistributionPoint}
-            input={<OutlinedInput label="Distribution Point" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            value={filters.internetAccess}
+            onChange={handleInternetAccessOptions}
+            input={<OutlinedInput label="Internet Access" />}
             MenuProps={{
               PaperProps: {
                 sx: { maxHeight: 240 },
               },
             }}
           >
-            {distributionPointOptions.map((option) => (
+            {internetAccessOptions.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.distributionPoint.includes(option)} />
                 {option}
               </MenuItem>
             ))}
@@ -179,7 +180,11 @@ export default function BeneficiariesTableToolbar({
           >
             {tokenAssignedOptions?.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.tokenAssignedStatus.includes(option)} />
+                <Checkbox
+                  disableRipple
+                  size="small"
+                  checked={filters.tokenAssignedStatus.includes(option)}
+                />
                 {option}
               </MenuItem>
             ))}
@@ -208,7 +213,11 @@ export default function BeneficiariesTableToolbar({
           >
             {tokenClaimedOptions?.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.tokenClaimedStatus.includes(option)} />
+                <Checkbox
+                  disableRipple
+                  size="small"
+                  checked={filters.tokenClaimedStatus.includes(option)}
+                />
                 {option}
               </MenuItem>
             ))}

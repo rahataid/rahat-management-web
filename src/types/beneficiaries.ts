@@ -14,7 +14,6 @@ export enum BANK_STATUS {
 
 export enum PHONE_STATUS {
   UNKNOWN = 'UNKNOWN',
-
   NO_PHONE = 'NO_PHONE',
   FEATURE_PHONE = 'FEATURE_PHONE',
   SMART_PHONE = 'SMART_PHONE',
@@ -41,7 +40,7 @@ export type IBeneficiaryApiFilters = {
 };
 
 export type IBeneficiariesTableFilters = {
-  distributionPoint: string[];
+  internetAccess: string;
   status: string[];
   tokenAssignedStatus: string[];
   tokenClaimedStatus: string[];
@@ -80,7 +79,7 @@ export type IBeneficiariesList = {
   rows: IBeneficiariesItem[];
 };
 
-export type IDistributionPoint = string[];
+export type IInternetStatusOptions = string[];
 
 export type IStatusFilterOptions = string[];
 

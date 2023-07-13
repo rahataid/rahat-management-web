@@ -5,7 +5,10 @@ import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Stack, { StackProps } from '@mui/material/Stack';
 // types
-import { IBeneficiariesTableFilters, IBeneficiariesTableFilterValue } from 'src/types/beneficiaries';
+import {
+  IBeneficiariesTableFilters,
+  IBeneficiariesTableFilterValue,
+} from 'src/types/beneficiaries';
 // components
 import Iconify from 'src/components/iconify';
 
@@ -32,13 +35,13 @@ export default function BeneficiariesTableFiltersResult({
     onFilters('status', newValue);
   };
 
-  const handleRemoveDistributionPoint = (inputValue: string) => {
-    const newValue = filters.distributionPoint.filter((item) => item !== inputValue);
-    onFilters('distributionPoint', newValue);
+  const handleRemoveInternetAccess = () => {
+    onFilters('internetAccess', '');
   };
 
   const handleRemoveTokenAssignedStatus = (inputValue: string) => {
     const newValue = filters.tokenAssignedStatus.filter((item) => item !== inputValue);
+    console.log('newValue', newValue);
     onFilters('tokenAssignedStatus', newValue);
   };
 
@@ -57,19 +60,26 @@ export default function BeneficiariesTableFiltersResult({
       </Box>
 
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
-
-        {!!filters.distributionPoint.length && (
-          <Block label="Distribution Point:">
-            {filters.distributionPoint.map((item) => (
-              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveDistributionPoint(item)} />
-            ))}
+        {!!filters.internetAccess.length && (
+          <Block label="Internet Access:">
+            <Chip
+              key={filters.internetAccess}
+              label={filters.internetAccess}
+              size="small"
+              onDelete={() => handleRemoveInternetAccess()}
+            />
           </Block>
         )}
 
         {!!filters.status.length && (
           <Block label="Distribution Point:">
             {filters.status.map((item) => (
-              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveStatus(item)} />
+              <Chip
+                key={item}
+                label={item}
+                size="small"
+                onDelete={() => handleRemoveStatus(item)}
+              />
             ))}
           </Block>
         )}
@@ -77,7 +87,12 @@ export default function BeneficiariesTableFiltersResult({
         {!!filters.tokenAssignedStatus.length && (
           <Block label="Token Assigned Status:">
             {filters.tokenAssignedStatus.map((item) => (
-              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveTokenAssignedStatus(item)} />
+              <Chip
+                key={item}
+                label={item}
+                size="small"
+                onDelete={() => handleRemoveTokenAssignedStatus(item)}
+              />
             ))}
           </Block>
         )}
@@ -85,10 +100,15 @@ export default function BeneficiariesTableFiltersResult({
         {!!filters.tokenClaimedStatus.length && (
           <Block label="Token Claimed Status:">
             {filters.tokenClaimedStatus.map((item) => (
-              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveTokenClaimedStatus(item)} />
+              <Chip
+                key={item}
+                label={item}
+                size="small"
+                onDelete={() => handleRemoveTokenClaimedStatus(item)}
+              />
             ))}
           </Block>
-        )}        
+        )}
 
         <Button
           color="error"

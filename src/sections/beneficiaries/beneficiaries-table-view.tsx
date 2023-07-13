@@ -38,7 +38,7 @@ import {
 } from 'src/types/beneficiaries';
 //
 import {
-  distributionPointOptions,
+  internetAccessOptions,
   statusFilterOptions,
   tokenAssignedFilterOptions,
   tokenClaimedFilterOptions,
@@ -61,7 +61,7 @@ const TABLE_HEAD = [
 ];
 
 const defaultFilters: IBeneficiariesTableFilters = {
-  distributionPoint: [],
+  internetAccess: '',
   status: [],
   tokenAssignedStatus: [],
   tokenClaimedStatus: [],
@@ -96,8 +96,6 @@ export default function BeneficiariesListView() {
     orderBy: table.orderBy,
     order: table.order,
   });
-
-  console.log('filters', filters);
 
   const settings = useSettingsContext();
 
@@ -158,7 +156,7 @@ export default function BeneficiariesListView() {
         <BeneficiariesTableToolbar
           filters={filters}
           onFilters={handleFilters}
-          distributionPointOptions={distributionPointOptions}
+          internetAccessOptions={internetAccessOptions}
           statusOptions={statusFilterOptions}
           tokenAssignedOptions={tokenAssignedFilterOptions}
           tokenClaimedOptions={tokenClaimedFilterOptions}

@@ -3,14 +3,17 @@ import {
   IBeneficiaryClaimsDetails,
   IBeneficiaryDetails,
   IBeneficiaryDetailsTableList,
-  IDistributionPoint,
+  IInternetStatusOptions,
+  INTERNET_STATUS,
   IStatusFilterOptions,
   ITokenAssignedFilterOptions,
   ITokenClaimedFilterOptions,
 } from 'src/types/beneficiaries';
 import { _mock } from './_mock';
 
-export const distributionPointOptions: IDistributionPoint = ['Kathmandu', 'Pokhara', 'Hetauda'];
+export const internetAccessOptions: IInternetStatusOptions = Object.values(
+  INTERNET_STATUS
+) as string[];
 
 export const statusFilterOptions: IStatusFilterOptions = ['ACTIVE', 'INACTIVE'];
 
