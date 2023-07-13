@@ -1,9 +1,17 @@
-import { ITransactionDetails, ITransactionDetailsTableList, ITransactionItem, ITransactionList, ITransactionStats, Method, Mode, Status } from 'src/types/transactions';
-import { _mock } from './_mock';
+import {
+  ITransactionDetails,
+  ITransactionDetailsTableList,
+  ITransactionItem,
+  ITransactionList,
+  ITransactionStats,
+  Method,
+  Mode,
+  Status,
+} from 'src/types/transactions';
 
 export const transactionList: ITransactionList = [...Array(30)].map((_, index) => ({
   id: index,
-  timestamp: String(_mock.time(index)),
+  timestamp: String('223/213'),
   hash: `0x11111111111aa${index}`,
   method: Method.QR,
 }));
@@ -28,12 +36,14 @@ export const transactionDetails: ITransactionDetails = {
   timestamp: '1688489470',
   mode: Mode.ONLINE,
   from: '0x222222abcde',
-  to: '0x333333abcde'
-}
+  to: '0x333333abcde',
+};
 
-export const transactionDetailsTableList: ITransactionDetailsTableList = [...Array(30)].map((_, index) => ({
-  name: `Transaction Name ${index}`,
-  amount: 100,
-  to: '0x1111',
-  from: '0x2222'
-}));
+export const transactionDetailsTableList: ITransactionDetailsTableList = [...Array(30)].map(
+  (_, index) => ({
+    name: `Transaction Name ${index}`,
+    amount: 100,
+    to: '0x1111',
+    from: '0x2222',
+  })
+);

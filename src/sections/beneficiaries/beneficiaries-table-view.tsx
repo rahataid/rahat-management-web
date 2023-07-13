@@ -1,7 +1,7 @@
 'use client';
 
 import isEqual from 'lodash/isEqual';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -33,15 +33,14 @@ import {
 // types
 import {
   IBeneficiariesItem,
-  IBeneficiariesTableFilters,
   IBeneficiariesTableFilterValue,
+  IBeneficiaryApiFilters,
 } from 'src/types/beneficiaries';
 //
 import {
+  bankStatusOptions,
   internetAccessOptions,
-  statusFilterOptions,
-  tokenAssignedFilterOptions,
-  tokenClaimedFilterOptions,
+  phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
@@ -60,42 +59,40 @@ const TABLE_HEAD = [
   { id: '', width: '88px', align: 'center' },
 ];
 
-const defaultFilters: IBeneficiariesTableFilters = {
-  internetAccess: '',
-  status: [],
-  tokenAssignedStatus: [],
-  tokenClaimedStatus: [],
-  name: '',
-};
-
 // ----------------------------------------------------------------------
 
 export default function BeneficiariesListView() {
   const table = useTable();
 
+  const defaultFilters: IBeneficiaryApiFilters = useMemo(
+    () => ({
+      internetStatus: '',
+      bankStatus: '',
+      phoneStatus: '',
+      name: '',
+      perPage: table.rowsPerPage,
+      page: table.page + 1,
+      orderBy: table.orderBy,
+      order: table.order,
+    }),
+    [table.order, table.orderBy, table.page, table.rowsPerPage]
+  );
+  const [filters, setFilters] = useState(defaultFilters);
+  const { beneficiaries, meta } = useBeneficiaries(filters);
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
+
   const { push } = useRouter();
 
-  const [filters, setFilters] = useState(defaultFilters);
+  const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
+    const queryParams = Object.entries(params)
+      .filter(([_, value]) => Boolean(value))
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
 
-  // const [apiFilters, setApiFilters] = useState<IBeneficiaryApiFilters>({});
-
-  // const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
-  //   const queryParams = Object.entries(params)
-  //     .filter(([_, value]) => Boolean(value))
-  //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-  //     .join('&');
-
-  //   return queryParams === '' ? '' : `${queryParams}`;
-  // }, []);
-
-  const { beneficiaries, meta } = useBeneficiaries({
-    perPage: table.rowsPerPage,
-    page: table.page + 1,
-    orderBy: table.orderBy,
-    order: table.order,
-  });
+    return queryParams === '' ? '' : `${queryParams}`;
+  }, []);
 
   const settings = useSettingsContext();
 
@@ -116,24 +113,22 @@ export default function BeneficiariesListView() {
         ...prevState,
         [name]: value,
       }));
-      // const updatedParams = {
-      //   ...filters,
-      //   ...Object.fromEntries(searchParams.entries()),
-      //   [name]: value,
-      // };
-      // const queryString = createQueryString(updatedParams);
-      // push(`${paths.dashboard.general.beneficiaries.list}?${queryString}`);
+
+      const updatedParams = {
+        ...filters,
+        ...Object.fromEntries(searchParams.entries()),
+        [name]: value,
+      };
+      const queryString = createQueryString(updatedParams);
+      push(`${pathname}?${queryString}`);
     },
-    [
-      table,
-      // createQueryString, push, searchParams, filters
-    ]
+    [table, createQueryString, push, searchParams, filters, pathname]
   );
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-    push(paths.dashboard.general.beneficiaries.list);
-  }, [push]);
+    push(pathname);
+  }, [push, defaultFilters, pathname]);
 
   const handleViewRow = useCallback(
     (address: string) => {
@@ -141,6 +136,14 @@ export default function BeneficiariesListView() {
     },
     [router]
   );
+
+  useEffect(() => {
+    const searchFilters: IBeneficiaryApiFilters = {
+      ...defaultFilters,
+      ...Object.fromEntries(searchParams.entries()),
+    };
+    setFilters(searchFilters);
+  }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -157,9 +160,8 @@ export default function BeneficiariesListView() {
           filters={filters}
           onFilters={handleFilters}
           internetAccessOptions={internetAccessOptions}
-          statusOptions={statusFilterOptions}
-          tokenAssignedOptions={tokenAssignedFilterOptions}
-          tokenClaimedOptions={tokenClaimedFilterOptions}
+          bankStatusOptions={bankStatusOptions}
+          phoneStatusOptions={phoneStatusOptions}
         />
 
         {canReset && (

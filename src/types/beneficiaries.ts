@@ -30,21 +30,13 @@ export type IBeneficiaryApiFilters = {
   status?: string;
   name?: string;
   gender?: Gender;
-  internetStatus?: INTERNET_STATUS;
-  bankStatus?: BANK_STATUS;
-  phoneStatus?: PHONE_STATUS;
+  internetStatus?: INTERNET_STATUS | string;
+  bankStatus?: BANK_STATUS | string;
+  phoneStatus?: PHONE_STATUS | string;
   orderBy?: string;
   order?: 'asc' | 'desc';
   perPage?: number;
   page?: number;
-};
-
-export type IBeneficiariesTableFilters = {
-  internetAccess: string;
-  status: string[];
-  tokenAssignedStatus: string[];
-  tokenClaimedStatus: string[];
-  name: string;
 };
 
 export type IBeneficiariesTableFilterValue = string | string[];
@@ -79,13 +71,7 @@ export type IBeneficiariesList = {
   rows: IBeneficiariesItem[];
 };
 
-export type IInternetStatusOptions = string[];
-
-export type IStatusFilterOptions = string[];
-
-export type ITokenAssignedFilterOptions = string[];
-
-export type ITokenClaimedFilterOptions = string[];
+export type IFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
   address: {

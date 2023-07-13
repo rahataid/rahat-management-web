@@ -5,17 +5,14 @@ import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Stack, { StackProps } from '@mui/material/Stack';
 // types
-import {
-  IBeneficiariesTableFilters,
-  IBeneficiariesTableFilterValue,
-} from 'src/types/beneficiaries';
+import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 // components
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
 type Props = StackProps & {
-  filters: IBeneficiariesTableFilters;
+  filters: IBeneficiaryApiFilters;
   onFilters: (name: string, value: IBeneficiariesTableFilterValue) => void;
   //
   onResetFilters: VoidFunction;
@@ -30,24 +27,16 @@ export default function BeneficiariesTableFiltersResult({
   results,
   ...other
 }: Props) {
-  const handleRemoveStatus = (inputValue: string) => {
-    const newValue = filters.status.filter((item) => item !== inputValue);
-    onFilters('status', newValue);
-  };
-
   const handleRemoveInternetAccess = () => {
-    onFilters('internetAccess', '');
+    onFilters('internetStatus', '');
   };
 
-  const handleRemoveTokenAssignedStatus = (inputValue: string) => {
-    const newValue = filters.tokenAssignedStatus.filter((item) => item !== inputValue);
-    console.log('newValue', newValue);
-    onFilters('tokenAssignedStatus', newValue);
+  const handleRemovePhoneStatus = () => {
+    onFilters('phoneStatus', '');
   };
 
-  const handleRemoveTokenClaimedStatus = (inputValue: string) => {
-    const newValue = filters.tokenClaimedStatus.filter((item) => item !== inputValue);
-    onFilters('tokenClaimedStatus', newValue);
+  const handleRemoveBankStatus = () => {
+    onFilters('bankStatus', '');
   };
 
   return (
@@ -60,53 +49,34 @@ export default function BeneficiariesTableFiltersResult({
       </Box>
 
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
-        {!!filters.internetAccess.length && (
+        {!!filters.internetStatus && (
           <Block label="Internet Access:">
             <Chip
-              key={filters.internetAccess}
-              label={filters.internetAccess}
+              key={filters.internetStatus}
+              label={filters.internetStatus}
               size="small"
               onDelete={() => handleRemoveInternetAccess()}
             />
           </Block>
         )}
-
-        {!!filters.status.length && (
-          <Block label="Distribution Point:">
-            {filters.status.map((item) => (
-              <Chip
-                key={item}
-                label={item}
-                size="small"
-                onDelete={() => handleRemoveStatus(item)}
-              />
-            ))}
+        {!!filters.phoneStatus && (
+          <Block label="Phone Status:">
+            <Chip
+              key={filters.phoneStatus}
+              label={filters.phoneStatus}
+              size="small"
+              onDelete={() => handleRemovePhoneStatus()}
+            />
           </Block>
         )}
-
-        {!!filters.tokenAssignedStatus.length && (
-          <Block label="Token Assigned Status:">
-            {filters.tokenAssignedStatus.map((item) => (
-              <Chip
-                key={item}
-                label={item}
-                size="small"
-                onDelete={() => handleRemoveTokenAssignedStatus(item)}
-              />
-            ))}
-          </Block>
-        )}
-
-        {!!filters.tokenClaimedStatus.length && (
-          <Block label="Token Claimed Status:">
-            {filters.tokenClaimedStatus.map((item) => (
-              <Chip
-                key={item}
-                label={item}
-                size="small"
-                onDelete={() => handleRemoveTokenClaimedStatus(item)}
-              />
-            ))}
+        {!!filters.bankStatus && (
+          <Block label="Bank Status:">
+            <Chip
+              key={filters.bankStatus}
+              label={filters.bankStatus}
+              size="small"
+              onDelete={() => handleRemoveBankStatus()}
+            />
           </Block>
         )}
 

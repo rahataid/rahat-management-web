@@ -9,25 +9,20 @@ import {
 import { BeneficiariesListHookReturn, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 
 export function useBeneficiaries(params?: IBeneficiaryApiFilters): BeneficiariesListHookReturn {
-  const { data, isError, isLoading, error, status } = useQuery({
-    queryKey: ['beneficiaries', params],
-    queryFn: async () => {
-      const res = await BeneficiaryService.list(params);
-      return res;
-    },
+  const { data, isLoading, error } = useQuery(['beneficiaries', params], async () => {
+    const res = await BeneficiaryService.list(params);
+    return res;
   });
 
-  const memoizedValue = useMemo(
-    () => ({
-      beneficiaries: data?.data?.rows || [],
-      loading: isLoading,
-      error,
-      meta: data?.data?.meta || {},
-    }),
-    [data?.data?.rows, error, isLoading, data?.data?.meta]
-  );
+  const beneficiaries = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
+  const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
-  return memoizedValue;
+  return {
+    beneficiaries,
+    loading: isLoading,
+    error,
+    meta,
+  };
 }
 
 export function useBeneficiary() {

@@ -3,7 +3,6 @@
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
-import { _appFeatured } from 'src/_mock';
 import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
@@ -55,7 +54,8 @@ const DashboardView = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          <PhotoGallery list={_appFeatured} />
+          {/* TODO:Make it dynamic */}
+          <PhotoGallery list={[]} />
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>

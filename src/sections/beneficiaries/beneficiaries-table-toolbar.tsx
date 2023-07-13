@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 // @mui
-import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -11,10 +10,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 // types
-import {
-  IBeneficiariesTableFilters,
-  IBeneficiariesTableFilterValue,
-} from 'src/types/beneficiaries';
+import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 // components
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
@@ -22,21 +18,19 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 type Props = {
-  filters: IBeneficiariesTableFilters;
+  filters: IBeneficiaryApiFilters;
   onFilters: (name: string, value: IBeneficiariesTableFilterValue) => void;
   internetAccessOptions: string[];
-  statusOptions: string[];
-  tokenAssignedOptions: string[];
-  tokenClaimedOptions: string[];
+  bankStatusOptions: string[];
+  phoneStatusOptions: string[];
 };
 
 export default function BeneficiariesTableToolbar({
   filters,
   onFilters,
   internetAccessOptions,
-  statusOptions,
-  tokenAssignedOptions,
-  tokenClaimedOptions,
+  bankStatusOptions,
+  phoneStatusOptions,
 }: Props) {
   const popover = usePopover();
 
@@ -47,42 +41,28 @@ export default function BeneficiariesTableToolbar({
     [onFilters]
   );
 
-  console.log('internetAccessOptions', internetAccessOptions);
-
   const handleInternetAccessOptions = useCallback(
     (event: SelectChangeEvent<string>) => {
       onFilters(
-        'internetAccess',
+        'internetStatus',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
     [onFilters]
   );
-
-  const handleFilterStatus = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
+  const handleBankStatusOptions = useCallback(
+    (event: SelectChangeEvent<string>) => {
       onFilters(
-        'status',
+        'bankStatus',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
     [onFilters]
   );
-
-  const handleFilterTokenClaimedStatus = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
+  const handlePhoneStatusOptions = useCallback(
+    (event: SelectChangeEvent<string>) => {
       onFilters(
-        'tokenClaimedStatus',
-        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
-      );
-    },
-    [onFilters]
-  );
-
-  const handleFilterTokenAssignedStatus = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
-      onFilters(
-        'tokenAssignedStatus',
+        'phoneStatus',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
@@ -112,7 +92,7 @@ export default function BeneficiariesTableToolbar({
           <InputLabel>Internet Access</InputLabel>
 
           <Select
-            value={filters.internetAccess}
+            value={filters.internetStatus}
             onChange={handleInternetAccessOptions}
             input={<OutlinedInput label="Internet Access" />}
             MenuProps={{
@@ -129,95 +109,54 @@ export default function BeneficiariesTableToolbar({
           </Select>
         </FormControl>
 
+        {/* Bank Status */}
         <FormControl
           sx={{
             flexShrink: 0,
             width: { xs: 1, md: 200 },
           }}
         >
-          <InputLabel>Status</InputLabel>
+          <InputLabel>Bank Status</InputLabel>
 
           <Select
-            multiple
-            value={filters.status}
-            onChange={handleFilterStatus}
-            input={<OutlinedInput label="Status" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            value={filters.bankStatus}
+            onChange={handleBankStatusOptions}
+            input={<OutlinedInput label="Bank Status" />}
             MenuProps={{
               PaperProps: {
                 sx: { maxHeight: 240 },
               },
             }}
           >
-            {statusOptions?.map((option) => (
+            {bankStatusOptions.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.status.includes(option)} />
                 {option}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
+        {/* Phone Status Filter */}
         <FormControl
           sx={{
             flexShrink: 0,
             width: { xs: 1, md: 200 },
           }}
         >
-          <InputLabel>Token Assigned Status</InputLabel>
+          <InputLabel>Phone Status</InputLabel>
 
           <Select
-            multiple
-            value={filters.tokenAssignedStatus}
-            onChange={handleFilterTokenAssignedStatus}
-            input={<OutlinedInput label="Token Assigned Status" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            value={filters.phoneStatus}
+            onChange={handlePhoneStatusOptions}
+            input={<OutlinedInput label="Internet Access" />}
             MenuProps={{
               PaperProps: {
                 sx: { maxHeight: 240 },
               },
             }}
           >
-            {tokenAssignedOptions?.map((option) => (
+            {phoneStatusOptions.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox
-                  disableRipple
-                  size="small"
-                  checked={filters.tokenAssignedStatus.includes(option)}
-                />
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl
-          sx={{
-            flexShrink: 0,
-            width: { xs: 1, md: 200 },
-          }}
-        >
-          <InputLabel>Token Claimed Status</InputLabel>
-
-          <Select
-            multiple
-            value={filters.tokenClaimedStatus}
-            onChange={handleFilterTokenClaimedStatus}
-            input={<OutlinedInput label="Token Claimed Status" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
-            MenuProps={{
-              PaperProps: {
-                sx: { maxHeight: 240 },
-              },
-            }}
-          >
-            {tokenClaimedOptions?.map((option) => (
-              <MenuItem key={option} value={option}>
-                <Checkbox
-                  disableRipple
-                  size="small"
-                  checked={filters.tokenClaimedStatus.includes(option)}
-                />
                 {option}
               </MenuItem>
             ))}

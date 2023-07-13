@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useReducer, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
 // utils
-import axios, { endpoints } from 'src/utils/axios';
+import { axiosInstance, endpoints } from 'src/utils/axios';
 //
+import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';
-import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 
 // ----------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: Props) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const response = await axios.get(endpoints.auth.me);
+        const response = await axiosInstance.get(endpoints.auth.me);
 
         const { user } = response.data;
 
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: Props) {
       password,
     };
 
-    const response = await axios.post(endpoints.auth.login, data);
+    const response = await axiosInstance.post(endpoints.auth.login, data);
 
     const { accessToken, user } = response.data;
 
@@ -155,7 +155,7 @@ export function AuthProvider({ children }: Props) {
         lastName,
       };
 
-      const response = await axios.post(endpoints.auth.register, data);
+      const response = await axiosInstance.post(endpoints.auth.register, data);
 
       const { accessToken, user } = response.data;
 
