@@ -20,11 +20,11 @@ import { Button, MenuItem, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { generateWalletAddress } from '@web3/utils';
 import {
-  bankStatusFilterOptions,
-  genderFilterOptions,
-  internetStatusFilterOptions,
-  phoneStatusFilterOptions,
-} from 'src/api/beneficiaries';
+  bankStatusOptions,
+  genderOptions,
+  internetAccessOptions,
+  phoneStatusOptions,
+} from 'src/_mock/_beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { IBeneficiariesCreateItem } from 'src/types/beneficiaries';
@@ -118,9 +118,9 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
               <RHFTextField name="phoneNumber" label="Phone Number" />
 
               <RHFSelect name="gender" label="Gender">
-                {genderFilterOptions.map((gender) => (
-                  <MenuItem key={gender.value} value={gender.value}>
-                    {gender.label}
+                {genderOptions.map((gender) => (
+                  <MenuItem key={gender} value={gender}>
+                    {gender}
                   </MenuItem>
                 ))}
               </RHFSelect>
@@ -146,25 +146,25 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
               />
 
               <RHFSelect name="phoneStatus" label="Phone Type">
-                {phoneStatusFilterOptions.map((phoneStatus) => (
-                  <MenuItem key={phoneStatus.value} value={phoneStatus.value}>
-                    {phoneStatus.label}
+                {phoneStatusOptions.map((phoneStatus) => (
+                  <MenuItem key={phoneStatus} value={phoneStatus}>
+                    {phoneStatus}
                   </MenuItem>
                 ))}
               </RHFSelect>
 
               <RHFSelect name="bankStatus" label="Bank Status">
-                {bankStatusFilterOptions.map((bankStatus) => (
-                  <MenuItem key={bankStatus.value} value={bankStatus.value}>
-                    {bankStatus.label}
+                {bankStatusOptions.map((bankStatus) => (
+                  <MenuItem key={bankStatus} value={bankStatus}>
+                    {bankStatus}
                   </MenuItem>
                 ))}
               </RHFSelect>
 
               <RHFSelect name="internetStatus" label="Internet Status">
-                {internetStatusFilterOptions.map((internetStatus) => (
-                  <MenuItem key={internetStatus.value} value={internetStatus.value}>
-                    {internetStatus.label}
+                {internetAccessOptions.map((internetStatus) => (
+                  <MenuItem key={internetStatus} value={internetStatus}>
+                    {internetStatus}
                   </MenuItem>
                 ))}
               </RHFSelect>
