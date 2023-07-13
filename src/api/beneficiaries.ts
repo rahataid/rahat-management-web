@@ -9,7 +9,7 @@ import {
 import {
   BANK_STATUS,
   BeneficiariesListHookReturn,
-  Gender,
+  GENDER,
   IBeneficiaryApiFilters,
   INTERNET_STATUS,
   PHONE_STATUS,
@@ -53,10 +53,10 @@ export function useBeneficiary() {
 }
 
 export const genderFilterOptions = [
-  { value: Gender.FEMALE, label: 'Female' },
-  { value: Gender.MALE, label: 'Male' },
-  { value: Gender.OTHERS, label: 'Others' },
-  { value: Gender.UNKNOWN, label: 'Unknown' },
+  { value: GENDER.FEMALE, label: 'Female' },
+  { value: GENDER.MALE, label: 'Male' },
+  { value: GENDER.OTHERS, label: 'Others' },
+  { value: GENDER.UNKNOWN, label: 'Unknown' },
 ];
 
 export const internetStatusFilterOptions = [

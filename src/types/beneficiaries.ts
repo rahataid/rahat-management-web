@@ -1,4 +1,4 @@
-export enum Gender {
+export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
   OTHERS = 'OTHERS',
@@ -29,7 +29,7 @@ export enum INTERNET_STATUS {
 export type IBeneficiaryApiFilters = {
   status?: string;
   name?: string;
-  gender?: Gender;
+  gender?: GENDER;
   internetStatus?: INTERNET_STATUS;
   bankStatus?: BANK_STATUS;
   phoneStatus?: PHONE_STATUS;
@@ -87,6 +87,14 @@ export type ITokenAssignedFilterOptions = string[];
 
 export type ITokenClaimedFilterOptions = string[];
 
+export type IVillageFilterOptions = string[];
+
+export type IGenderFilterOptions = string[];
+
+export type IPhoneStatusFilterOptions = string[];
+
+export type IBankStatusFilterOptions = string[];
+
 export type IBeneficiaryDetails = {
   address: {
     location: string;
@@ -136,7 +144,7 @@ export type IBeneficiariesCreateItem = {
   name: string;
   phoneNumber: string;
   cnicNumber?: string;
-  gender: Gender;
+  gender: GENDER;
   phoneOwnership: string;
   phoneStatus: PHONE_STATUS;
   bankStatus: BANK_STATUS;
@@ -146,9 +154,3 @@ export type IBeneficiariesCreateItem = {
   longitude: number;
   latitude: number;
 };
-
-export type IVillageFilterOptions = string[];
-
-export type IGenderFilterOptions = string[];
-
-export type IPhoneTypeFilterOptions = string[];
