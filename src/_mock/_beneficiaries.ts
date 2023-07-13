@@ -1,32 +1,19 @@
 import {
   Gender,
-  IBeneficiariesList,
   IBeneficiaryClaimsDetails,
   IBeneficiaryDetails,
   IBeneficiaryDetailsTableList,
-  IDistributionPoint,
-  IPhoneTypeFilterOptions,
+  IInternetStatusOptions,
+  INTERNET_STATUS,
   IStatusFilterOptions,
   ITokenAssignedFilterOptions,
   ITokenClaimedFilterOptions,
-  IVillageFilterOptions,
-  InternetAccess,
-  Status,
 } from 'src/types/beneficiaries';
 import { _mock } from './_mock';
 
-export const beneficiariesList: IBeneficiariesList = [...Array(30)].map((_, index) => ({
-  name: `Beneficiary Name ${index}`,
-  cnicNumber: index,
-  hasInternetAccess: InternetAccess.YES,
-  status: Status.ACTIVE,
-  tokensAssigned: 200,
-  tokensClaimed: 300,
-  distributionPoint: 'Kathmandu',
-  address: '0x11111abcde',
-}));
-
-export const distributionPointOptions: IDistributionPoint = ['Kathmandu', 'Pokhara', 'Hetauda'];
+export const internetAccessOptions: IInternetStatusOptions = Object.values(
+  INTERNET_STATUS
+) as string[];
 
 export const statusFilterOptions: IStatusFilterOptions = ['ACTIVE', 'INACTIVE'];
 
@@ -42,13 +29,7 @@ export const tokenClaimedFilterOptions: ITokenClaimedFilterOptions = [
 
 export const beneficiaryDetails: IBeneficiaryDetails = {
   name: 'Cristiano Ronaldo',
-  phone: 9841123456,
   gender: Gender.MALE,
-  cnicNumber: 70707070707,
-  district: 'Darchula',
-  dailyWaterConsumption: 100,
-  dailyDistanceCovered: 20,
-  status: Status.ACTIVE,
 };
 
 export const beneficiaryClaimsDetails: IBeneficiaryClaimsDetails = {
@@ -67,11 +48,3 @@ export const beneficiaryTransactionList: IBeneficiaryDetailsTableList = [...Arra
     amount: 200000,
   })
 );
-
-export const villageFilterOptions: IVillageFilterOptions = ['DARCHULA', 'MORANG', 'BIRENDRANAGAR'];
-
-export const phoneTypeFilterOptions: IPhoneTypeFilterOptions = [
-  'SMARTPHONE',
-  'FEATUREPHONE',
-  'DUMBPHONE',
-];

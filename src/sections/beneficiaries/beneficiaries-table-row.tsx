@@ -8,7 +8,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
-import { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
@@ -17,61 +16,44 @@ import { IBeneficiariesItem } from 'src/types/beneficiaries';
 // ----------------------------------------------------------------------
 
 type Props = {
-  selected: boolean;
   row: IBeneficiariesItem;
-  onViewRow: VoidFunction
+  onViewRow: VoidFunction;
 };
 
-export default function BeneficiariesTableRow({
-  row,
-  selected,
-  onViewRow
-}: Props) {
-  const { name, cnicNumber, hasInternetAccess, status, tokensAssigned, tokensClaimed } = row;
-
-  const confirm = useBoolean();
+export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
+  const { name, bankStatus, internetStatus, phoneStatus, tokensAssigned, tokensClaimed } = row;
 
   const quickEdit = useBoolean();
 
-  const popover = usePopover();
-
   return (
-      <TableRow hover selected={selected}>
+    <TableRow hover>
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
+      </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>       
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+        {' '}
+        <Label variant="soft">{internetStatus}</Label>
+      </TableCell>
 
-          <ListItemText
-            primary={name}           
-            primaryTypographyProps={{ typography: 'body2' }}            
-          />
-        </TableCell>
+      <TableCell>
+        <Label variant="soft">{phoneStatus}</Label>
+      </TableCell>
+      <TableCell>
+        <Label variant="soft">{bankStatus}</Label>
+      </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{hasInternetAccess}</TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensAssigned}</TableCell>
 
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'ACTIVE' && 'success') ||
-              (status === 'INACTIVE' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
-        </TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensClaimed}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensAssigned}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensClaimed}</TableCell>
-
-        <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="View Details" placement="top" arrow>
-              <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
-                <Iconify color='#118D57' icon="iconamoon:eye-light" />
-              </IconButton>
-          </Tooltip>
-        </TableCell>
-      </TableRow>
+      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <Tooltip title="View Details" placement="top" arrow>
+          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
+            <Iconify color="#118D57" icon="iconamoon:eye-light" />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
   );
 }

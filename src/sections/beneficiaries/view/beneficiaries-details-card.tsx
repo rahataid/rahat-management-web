@@ -1,4 +1,3 @@
-import Label from '@components/label/label';
 import { Card, CardContent, Grid, Stack, Typography } from '@mui/material';
 import { IBeneficiaryDetails } from 'src/types/beneficiaries';
 
@@ -22,14 +21,16 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">{name}</Typography>
-          <Label
+          {/* <Label
             variant="outlined"
             color={
-              (status === 'ACTIVE' && 'success') || (status === 'INACTIVE' && 'error') || 'default'
+              (status === Status.ACTIVE && 'success') ||
+              (status === Status.INACTIVE && 'error') ||
+              'default'
             }
           >
             {status}
-          </Label>
+          </Label> */}
         </Stack>
 
         <Stack

@@ -1,25 +1,3 @@
-export enum InternetAccess {
-  YES = 'YES',
-  NO = 'NO',
-}
-
-export enum Status {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
-export enum PhoneType {
-  SMARTPHONE = 'SMARTPHONE',
-  FEATUREPHONE = 'FEATUREPHONE',
-  DUMBPHONE = 'DUMBPHONE',
-}
-
-export enum Village {
-  DARCHULA = 'DARCHULA',
-  MORANG = 'MORANG',
-  BIRENDRANAGAR = 'BIRENDRANAGAR',
-}
-
 export enum Gender {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
@@ -48,8 +26,21 @@ export enum INTERNET_STATUS {
   HOME_INTERNET = 'HOME_INTERNET',
 }
 
+export type IBeneficiaryApiFilters = {
+  status?: string;
+  name?: string;
+  gender?: Gender;
+  internetStatus?: INTERNET_STATUS;
+  bankStatus?: BANK_STATUS;
+  phoneStatus?: PHONE_STATUS;
+  orderBy?: string;
+  order?: 'asc' | 'desc';
+  perPage?: number;
+  page?: number;
+};
+
 export type IBeneficiariesTableFilters = {
-  distributionPoint: string[];
+  internetAccess: string;
   status: string[];
   tokenAssignedStatus: string[];
   tokenClaimedStatus: string[];
@@ -58,20 +49,37 @@ export type IBeneficiariesTableFilters = {
 
 export type IBeneficiariesTableFilterValue = string | string[];
 
-export type IBeneficiariesItem = {
-  name: string;
-  cnicNumber: number;
-  hasInternetAccess: InternetAccess.YES;
-  status: Status.ACTIVE;
-  tokensAssigned: number;
-  tokensClaimed: number;
-  distributionPoint: string;
-  address: string;
+export type IBeneficiaryPagination = {
+  currentPage?: number;
+  total?: number;
+  perPage: number;
+  lastPage?: number;
 };
 
-export type IBeneficiariesList = IBeneficiariesItem[];
+export type IBeneficiariesItem = {
+  bankStatus: BANK_STATUS;
+  createdAt: string;
+  deletedAt: string | null;
+  internetStatus: INTERNET_STATUS;
+  isApproved: boolean;
+  latitude: number;
+  longitude: number;
+  name: string;
+  phone: string | null;
+  phoneStatus: PHONE_STATUS;
+  tokensAssigned: number;
+  tokensClaimed: number;
+  updatedAt: string;
+  uuid: string;
+  walletAddress: string;
+};
 
-export type IDistributionPoint = string[];
+export type IBeneficiariesList = {
+  meta: IBeneficiaryPagination;
+  rows: IBeneficiariesItem[];
+};
+
+export type IInternetStatusOptions = string[];
 
 export type IStatusFilterOptions = string[];
 
@@ -80,14 +88,31 @@ export type ITokenAssignedFilterOptions = string[];
 export type ITokenClaimedFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
+  address: {
+    location: string;
+  };
+  bankStatus: string;
+  createdAt: string;
+  deletedAt: string | null;
+  dob: string | null;
+  email: string | null;
+  gender: string;
+  id: number;
+  internetStatus: string;
+  isApproved: boolean;
+  latitude: number;
+  longitude: number;
   name: string;
-  phone: number;
-  gender: Gender.MALE;
-  cnicNumber: number;
-  district: string;
-  dailyWaterConsumption: number;
-  dailyDistanceCovered: number;
-  status: Status.ACTIVE;
+  phone: string | null;
+  phoneStatus: string;
+  tokensAssigned: number;
+  tokensClaimed: number;
+  updatedAt: string;
+  uuid: string;
+  walletAddress: string;
+  _count: {
+    projects: number;
+  };
 };
 
 export type IBeneficiaryClaimsDetails = {
@@ -112,9 +137,8 @@ export type IBeneficiariesCreateItem = {
   phoneNumber: string;
   cnicNumber?: string;
   gender: Gender;
-  village: Village;
   phoneOwnership: string;
-  phoneStatus: PhoneType;
+  phoneStatus: PHONE_STATUS;
   bankStatus: BANK_STATUS;
   internetStatus: INTERNET_STATUS;
   dob: string;
