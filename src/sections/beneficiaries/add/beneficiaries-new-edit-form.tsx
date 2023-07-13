@@ -33,7 +33,7 @@ type Props = {
   currentBeneficiary?: IBeneficiariesCreateItem;
 };
 
-export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) {
+export default function BeneficiariesForm({ currentBeneficiary }: Props) {
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -49,8 +49,8 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
     internetStatus: Yup.string().required('Internet status is required'),
     dob: Yup.mixed<any>().nullable().required('DOB is required'),
     walletAddress: Yup.string().required('Wallet address is required'),
-    longitude: Yup.number(),
-    latitude: Yup.number(),
+    longitude: Yup.number().nullable().optional(),
+    latitude: Yup.number().nullable().optional(),
   });
 
   const defaultValues = useMemo(
@@ -65,8 +65,8 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
       internetStatus: currentBeneficiary?.internetStatus || '',
       dob: currentBeneficiary?.dob || null,
       walletAddress: currentBeneficiary?.walletAddress || '',
-      longitude: currentBeneficiary?.longitude || 0,
-      latitude: currentBeneficiary?.latitude || 0,
+      longitude: currentBeneficiary?.longitude || null,
+      latitude: currentBeneficiary?.latitude || null,
     }),
     [currentBeneficiary]
   );
@@ -92,7 +92,6 @@ export default function BeneficiariesNewEditForm({ currentBeneficiary }: Props) 
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log('HERE');
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentBeneficiary ? 'Update success!' : 'Create success!');

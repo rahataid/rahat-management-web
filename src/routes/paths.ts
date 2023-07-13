@@ -47,7 +47,7 @@ export const paths = {
       beneficiaries: {
         list: `${ROOTS.BENEFICIARIES}`,
         details: (address: string) => `${ROOTS.BENEFICIARIES}/${paramCase(address)}`,
-        new: `${ROOTS.BENEFICIARIES}/new`,
+        add: `${ROOTS.BENEFICIARIES}/add`,
       },
     },
   },

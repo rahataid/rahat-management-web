@@ -8,7 +8,7 @@ import { paths } from 'src/routes/paths';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useSettingsContext } from 'src/components/settings';
 //
-import BeneficiariesNewEditForm from '../beneficiaries-new-edit-form';
+import BeneficiariesNewEditForm from '../add/beneficiaries-new-edit-form';
 
 export default function BeneficiariesCreateView() {
   const settings = useSettingsContext();

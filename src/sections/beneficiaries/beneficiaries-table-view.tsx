@@ -136,7 +136,7 @@ export default function BeneficiariesListView() {
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.general.beneficiaries.new}
+            href={paths.dashboard.general.beneficiaries.add}
             variant="outlined"
             startIcon={<Iconify icon="mingcute:add-line" />}
             color="success"
