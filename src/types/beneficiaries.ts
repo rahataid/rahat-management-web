@@ -1,4 +1,4 @@
-export enum Gender {
+export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
   OTHERS = 'OTHERS',
@@ -29,7 +29,7 @@ export enum INTERNET_STATUS {
 export type IBeneficiaryApiFilters = {
   status?: string;
   name?: string;
-  gender?: Gender;
+  gender?: GENDER;
   internetStatus?: INTERNET_STATUS | string;
   bankStatus?: BANK_STATUS | string;
   phoneStatus?: PHONE_STATUS | string;
@@ -137,7 +137,7 @@ export type IBeneficiariesCreateItem = {
   name: string;
   phoneNumber: string;
   cnicNumber?: string;
-  gender: Gender;
+  gender: GENDER;
   phoneOwnership: string;
   phoneStatus: PHONE_STATUS;
   bankStatus: BANK_STATUS;

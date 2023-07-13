@@ -47,7 +47,7 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
             <Typography variant="body2">{gender}</Typography>
-            <Typography variant="body2">Gender</Typography>
+            <Typography variant="body2">GENDER</Typography>
           </Grid>
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">

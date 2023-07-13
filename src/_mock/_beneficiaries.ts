@@ -1,6 +1,6 @@
 import {
   BANK_STATUS,
-  Gender,
+  GENDER,
   IBeneficiaryClaimsDetails,
   IBeneficiaryDetails,
   IBeneficiaryDetailsTableList,
@@ -14,6 +14,8 @@ export const internetAccessOptions: IFilterOptions = Object.values(INTERNET_STAT
 export const bankStatusOptions: IFilterOptions = Object.values(BANK_STATUS) as string[];
 export const phoneStatusOptions: IFilterOptions = Object.values(PHONE_STATUS) as string[];
 
+export const genderOptions: IFilterOptions = Object.values(GENDER) as string[];
+
 export const beneficiaryDetails: IBeneficiaryDetails = {
   address: {
     location: 'Darchula',
@@ -22,7 +24,7 @@ export const beneficiaryDetails: IBeneficiaryDetails = {
   createdAt: '123456',
   dob: '01-01-1990',
   email: 'cr7@ronaldo.com',
-  gender: Gender.MALE,
+  gender: GENDER.MALE,
   id: 7,
   internetStatus: INTERNET_STATUS.HOME_INTERNET,
   isApproved: true,

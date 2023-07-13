@@ -61,7 +61,7 @@ const DashboardView = () => {
       <Grid mt={3} container spacing={3}>
         <Grid item xs={12} md={3}>
           <Piechart
-            title="Gender-wise Distribution"
+            title="GENDER-wise Distribution"
             chart={{
               series: [
                 { label: 'Male', value: 12244 },
