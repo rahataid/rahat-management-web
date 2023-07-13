@@ -37,6 +37,8 @@ import {
   IBeneficiaryApiFilters,
 } from 'src/types/beneficiaries';
 //
+import { Button } from '@mui/material';
+import { RouterLink } from '@routes/components';
 import {
   bankStatusOptions,
   internetAccessOptions,
@@ -153,6 +155,17 @@ export default function BeneficiariesListView() {
         sx={{
           mb: { xs: 3, md: 5 },
         }}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.dashboard.general.beneficiaries.add}
+            variant="outlined"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+            color="success"
+          >
+            Add Beneficiary
+          </Button>
+        }
       />
 
       <Card>

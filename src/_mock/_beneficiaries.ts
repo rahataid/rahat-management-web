@@ -15,31 +15,31 @@ export const bankStatusOptions: IFilterOptions = Object.values(BANK_STATUS) as s
 export const phoneStatusOptions: IFilterOptions = Object.values(PHONE_STATUS) as string[];
 
 export const beneficiaryDetails: IBeneficiaryDetails = {
-  name: 'Cristiano Ronaldo',
-  gender: Gender.MALE,
-  dob: '07/Jul/2023',
-  phone: '0123456789',
-  email: '',
   address: {
-    location: '213',
+    location: 'Darchula',
   },
   bankStatus: BANK_STATUS.BANKED,
-  phoneStatus: PHONE_STATUS.FEATURE_PHONE,
+  createdAt: '123456',
+  dob: '01-01-1990',
+  email: 'cr7@ronaldo.com',
+  gender: Gender.MALE,
+  id: 7,
   internetStatus: INTERNET_STATUS.HOME_INTERNET,
-  tokensClaimed: 20,
-  tokensAssigned: 20,
   isApproved: true,
-  walletAddress: '0xwe123',
-  latitude: 2002312,
-  longitude: 123123,
-  createdAt: '23123',
-  updatedAt: '23123',
-  id: 2,
+  latitude: 100,
+  longitude: 200,
+  name: 'Cristiano Ronaldo',
+  walletAddress: '0x0002',
   uuid: '213123hasd23210',
+  tokensClaimed: 20,
+  tokensAssigned: 10,
   _count: {
     projects: 22,
   },
   deletedAt: null,
+  updatedAt: '21312',
+  phone: '23123',
+  phoneStatus: PHONE_STATUS.FEATURE_PHONE,
 };
 
 export const beneficiaryClaimsDetails: IBeneficiaryClaimsDetails = {

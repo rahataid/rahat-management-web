@@ -71,7 +71,22 @@ export type IBeneficiariesList = {
   rows: IBeneficiariesItem[];
 };
 
+export interface BeneficiariesListHookReturn {
+  beneficiaries: IBeneficiariesList['rows'];
+  loading: boolean;
+  error: any;
+  meta: IBeneficiariesList['meta'];
+}
+
 export type IFilterOptions = string[];
+
+export type IVillageFilterOptions = string[];
+
+export type IGenderFilterOptions = string[];
+
+export type IPhoneStatusFilterOptions = string[];
+
+export type IBankStatusFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
   address: {
@@ -118,9 +133,17 @@ export type IBeneficiaryDetailsTableItem = {
 
 export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
 
-export interface BeneficiariesListHookReturn {
-  beneficiaries: IBeneficiariesList['rows'];
-  loading: boolean;
-  error: any;
-  meta: IBeneficiariesList['meta'];
-}
+export type IBeneficiariesCreateItem = {
+  name: string;
+  phoneNumber: string;
+  cnicNumber?: string;
+  gender: Gender;
+  phoneOwnership: string;
+  phoneStatus: PHONE_STATUS;
+  bankStatus: BANK_STATUS;
+  internetStatus: INTERNET_STATUS;
+  dob: string;
+  walletAddress: string;
+  longitude: number;
+  latitude: number;
+};
