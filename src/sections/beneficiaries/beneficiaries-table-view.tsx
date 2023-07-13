@@ -50,13 +50,13 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', width: 250 },
-  { id: 'internetStatus', label: 'Internet Access', width: 200 },
-  { id: 'phoneStatus', label: 'Phone', width: 200 },
-  { id: 'bankStatus', label: 'Bank', width: 200 },
-  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 200 },
-  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 200 },
-  { id: '', width: '88px', align: 'center' },
+  { id: 'name', label: 'Name', width: 200 },
+  { id: 'internetStatus', label: 'Internet Access', width: 150 },
+  { id: 'phoneStatus', label: 'Phone', width: 150 },
+  { id: 'bankStatus', label: 'Bank', width: 150 },
+  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 150 },
+  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 150 },
+  { id: '', width: 20 },
 ];
 
 // ----------------------------------------------------------------------
