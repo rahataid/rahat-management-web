@@ -18,7 +18,6 @@ import { paths } from 'src/routes/paths';
 import Iconify from '@components/iconify/iconify';
 import { Button, MenuItem, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { villageFilterOptions } from 'src/_mock/_beneficiaries';
 import {
   bankStatusFilterOptions,
   genderFilterOptions,
@@ -42,7 +41,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
     name: Yup.string().required('Name is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     gender: Yup.string().required('Gender is required'),
-    village: Yup.string().required('Village is required'),
     phoneOwnership: Yup.string().required('Phone Owner is required'),
     phoneStatus: Yup.string().required('Phone Type is required'),
     bankStatus: Yup.string().required('Bank status is required'),
@@ -58,7 +56,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
       name: currentBeneficiary?.name || '',
       phoneNumber: currentBeneficiary?.phoneNumber || '',
       gender: currentBeneficiary?.gender || '',
-      village: currentBeneficiary?.village || '',
       phoneOwnership: currentBeneficiary?.phoneOwnership || '',
       phoneStatus: currentBeneficiary?.phoneStatus || '',
       bankStatus: currentBeneficiary?.bankStatus || '',
@@ -147,14 +144,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
                   />
                 )}
               />
-
-              <RHFSelect name="village" label="Village">
-                {villageFilterOptions.map((village) => (
-                  <MenuItem key={village} value={village}>
-                    {village}
-                  </MenuItem>
-                ))}
-              </RHFSelect>
 
               <RHFTextField name="phoneOwnership" label="Phone Ownership" />
 
