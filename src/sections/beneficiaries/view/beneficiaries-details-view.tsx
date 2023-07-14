@@ -29,23 +29,27 @@ export default function BeneficiariesDetailsView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-      
-        <Grid container spacing={2} sx={{
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
           mb: { xs: 3, md: 5 },
-        }}>
-          <Grid item xs={12} md={7}>
-            <BeneficiariesDetailsCard data={beneficiary}/>
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <BeneficiariesDetailsClaimsCard data={beneficiaryClaimsDetails}/>
-          </Grid>          
+        }}
+      >
+        <Grid item xs={12} md={7}>
+          <BeneficiariesDetailsCard data={beneficiary} />
         </Grid>
+        <Grid item xs={12} md={5}>
+          <BeneficiariesDetailsClaimsCard data={beneficiaryClaimsDetails} />
+        </Grid>
+      </Grid>
 
       <Card>
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
           Transaction History
         </Typography>
-        <BeneficiaryDetailsTableView data={beneficiaryTransactionList}/>
+        <BeneficiaryDetailsTableView data={beneficiaryTransactionList} />
       </Card>
     </Container>
   );

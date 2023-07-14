@@ -1,4 +1,5 @@
 import Iconify from '@components/iconify/iconify';
+import { useBoolean } from '@hooks/use-boolean';
 import {
   Button,
   Card,
@@ -9,13 +10,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { projectsList } from 'src/_mock/_project';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import { IBeneficiaryClaimsDetails } from 'src/types/beneficiaries';
+import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
+import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
 type Props = {
   data: IBeneficiaryClaimsDetails;
 };
-
 const copyBtn = {
   padding: '0 0 0 6px',
 };
@@ -24,16 +27,53 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
   const { claimedDate, receivedDate, walletAddress, claimedAmount, receivedAmount } = data;
 
   const { copy } = useCopyToClipboard();
+  const assignProjectDialog = useBoolean();
+  const assignTokenDialog = useBoolean();
 
   return (
     <Card>
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">Claims Details</Typography>
-          <Button variant="outlined" color="success">
+          <Button
+            variant="outlined"
+            size="small"
+            color="success"
+            onClick={assignProjectDialog.onTrue}
+            sx={{ fontSize: 'x-small' }}
+          >
             Assign Project
           </Button>
-          <Button variant="outlined" color="error">
+
+          <BeneficiariesAssignProjectModal
+            onClose={assignProjectDialog.onFalse}
+            open={assignProjectDialog.value}
+            onOk={() => {
+              console.log('assigned');
+            }}
+            projects={projectsList}
+          />
+
+          <Button
+            variant="outlined"
+            size="small"
+            color="success"
+            onClick={assignTokenDialog.onTrue}
+            sx={{ fontSize: 'x-small' }}
+          >
+            Assign Token
+          </Button>
+
+          <BeneficiariesAssignTokenModal
+            onClose={assignTokenDialog.onFalse}
+            open={assignTokenDialog.value}
+            onOk={() => {
+              console.log('assigned');
+            }}
+            projects={projectsList}
+          />
+
+          <Button variant="outlined" size="small" color="error" sx={{ fontSize: 'x-small' }}>
             Delete
           </Button>
         </Stack>

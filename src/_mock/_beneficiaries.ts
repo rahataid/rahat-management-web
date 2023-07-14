@@ -41,7 +41,7 @@ export const beneficiaryDetails: IBeneficiaryDetails = {
   deletedAt: null,
   updatedAt: '21312',
   phone: '23123',
-  phoneStatus: PHONE_STATUS.FEATURE_PHONE,
+  phoneStatus: PHONE_STATUS.FEATURE,
 };
 
 export const beneficiaryClaimsDetails: IBeneficiaryClaimsDetails = {
