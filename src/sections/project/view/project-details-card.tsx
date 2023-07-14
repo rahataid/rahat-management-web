@@ -53,19 +53,6 @@ export const ProjectDetailsCard = () => {
                     spacing={5}
                 >
                     <Grid container direction="column" justifyContent="center" alignItems="center">
-                        <Button variant="contained" color="error" sx={{ borderRadius: '25px', padding: '5px 25px' }} >
-                            Response Not Triggered
-                        </Button>
-                    </Grid>
-                </Stack>
-                <Stack
-                    sx={{ p: 2 }}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={5}
-                >
-                    <Grid container direction="column" justifyContent="center" alignItems="center">
                         <Typography>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim nulla, odio natus similique minus voluptatum corrupti ducimus suscipit quae animi </Typography>
                     </Grid>
                 </Stack>

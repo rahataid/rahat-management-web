@@ -30,7 +30,7 @@ const StyledContentItem = styled('div')(({ theme }) => ({
 
 type Props = {
     data: {
-        id: string;
+        id: number;
         title: string;
         coverUrl: string;
         description: string;

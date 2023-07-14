@@ -1,9 +1,12 @@
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
-import { useTransactions } from 'src/api/transactions';
+import { ITransactionStats } from 'src/types/transactions';
 
-const ProjectStatsCard = () => {
-    const { transactionStats } = useTransactions();
+interface Props {
+    data: ITransactionStats
+}
+
+const ProjectStatsCard = ({ data }: Props) => {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={12}>
@@ -13,7 +16,7 @@ const ProjectStatsCard = () => {
                             color="success"
                             icon="material-symbols:paid"
                             title="Cash Distributed"
-                            total={transactionStats.bankedCash}
+                            total={data.bankedCash}
                             subtitle="Banked Beneficiary"
                         />
                     </Grid>
@@ -22,7 +25,7 @@ const ProjectStatsCard = () => {
                             color="success"
                             icon="material-symbols:paid"
                             title="Cash Distributed"
-                            total={transactionStats.unbankedCash}
+                            total={data.unbankedCash}
                             subtitle="Unbanked Beneficiary"
                         />
                     </Grid>
@@ -31,7 +34,7 @@ const ProjectStatsCard = () => {
                             color="warning"
                             icon="material-symbols:token"
                             title="Token Issued"
-                            total={transactionStats.bankedToken}
+                            total={data.bankedToken}
                             subtitle="Banked Beneficiary"
                         />
                     </Grid>
@@ -40,7 +43,7 @@ const ProjectStatsCard = () => {
                             color="warning"
                             icon="material-symbols:token"
                             title="Token Issued"
-                            total={transactionStats.unbankedToken}
+                            total={data.unbankedToken}
                             subtitle="Unbanked Beneficiary"
                         />
                     </Grid>
@@ -49,7 +52,7 @@ const ProjectStatsCard = () => {
                             color="warning"
                             icon="material-symbols:token"
                             title="Token Issued"
-                            total={transactionStats.bankedToken}
+                            total={data.bankedToken}
                             subtitle="Banked Beneficiary"
                         />
                     </Grid>
@@ -58,7 +61,7 @@ const ProjectStatsCard = () => {
                             color="warning"
                             icon="material-symbols:token"
                             title="Token Issued"
-                            total={transactionStats.unbankedToken}
+                            total={data.unbankedToken}
                             subtitle="Unbanked Beneficiary"
                         />
                     </Grid>
