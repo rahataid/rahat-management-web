@@ -32,6 +32,23 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
 
   return (
     <Card>
+      <BeneficiariesAssignProjectModal
+        onClose={assignProjectDialog.onFalse}
+        open={assignProjectDialog.value}
+        onOk={() => {
+          console.log('assigned');
+        }}
+        projects={projectsList}
+      />
+      <BeneficiariesAssignTokenModal
+        onClose={assignTokenDialog.onFalse}
+        open={assignTokenDialog.value}
+        onOk={() => {
+          console.log('assigned');
+        }}
+        projects={projectsList}
+      />
+
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">Claims Details</Typography>
@@ -45,15 +62,6 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
             Assign Project
           </Button>
 
-          <BeneficiariesAssignProjectModal
-            onClose={assignProjectDialog.onFalse}
-            open={assignProjectDialog.value}
-            onOk={() => {
-              console.log('assigned');
-            }}
-            projects={projectsList}
-          />
-
           <Button
             variant="outlined"
             size="small"
@@ -63,15 +71,6 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           >
             Assign Token
           </Button>
-
-          <BeneficiariesAssignTokenModal
-            onClose={assignTokenDialog.onFalse}
-            open={assignTokenDialog.value}
-            onOk={() => {
-              console.log('assigned');
-            }}
-            projects={projectsList}
-          />
 
           <Button variant="outlined" size="small" color="error" sx={{ fontSize: 'x-small' }}>
             Delete
