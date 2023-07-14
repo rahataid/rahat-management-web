@@ -1,7 +1,7 @@
 export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
-  OTHERS = 'OTHERS',
+  OTHER = 'OTHER',
   UNKNOWN = 'UNKNOWN',
 }
 
@@ -15,8 +15,8 @@ export enum BANK_STATUS {
 export enum PHONE_STATUS {
   UNKNOWN = 'UNKNOWN',
   NO_PHONE = 'NO_PHONE',
-  FEATURE_PHONE = 'FEATURE_PHONE',
-  SMART_PHONE = 'SMART_PHONE',
+  FEATURE = 'FEATURE',
+  SMART = 'SMART',
 }
 
 export enum INTERNET_STATUS {
@@ -135,21 +135,20 @@ export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
 
 export type IBeneficiariesCreateItem = {
   name: string;
-  phone?: string;
-  gender: GENDER;
-  phoneOwnership: string;
-  phoneStatus: PHONE_STATUS;
-  bankStatus: BANK_STATUS;
-  internetStatus: INTERNET_STATUS;
-  dob: string;
+  phone: string | null;
+  gender: GENDER | null;
+  phoneStatus: PHONE_STATUS | null;
+  bankStatus: BANK_STATUS | null;
+  internetStatus: INTERNET_STATUS | null;
+  dob: Date | null;
   walletAddress: string;
-  longitude: number;
-  latitude: number;
+  longitude: number | null;
+  latitude: number | null;
 };
 
 export type IApiResponseError = {
   group: string;
-  meta?: string | null;
+  meta?: Record<string, string[]> | null;
   message: string;
   name: string;
   success: boolean;

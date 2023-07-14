@@ -1,98 +1,104 @@
+import Iconify from '@components/iconify/iconify';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-// @mui
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Alert, AlertTitle, Button, MenuItem, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
-// utils
-// routes
-import { useRouter } from 'src/routes/hook';
-// types
-// assets
-// components
-import Iconify from '@components/iconify/iconify';
-import { Alert, AlertTitle, Button, MenuItem, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { paths } from '@routes/paths';
+import BeneficiaryService from '@services/beneficiaries';
+import { useMutation } from '@tanstack/react-query';
 import { generateWalletAddress } from '@web3/utils';
-
+import { useSnackbar } from 'notistack';
+import { memo, useCallback, useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   bankStatusOptions,
   genderOptions,
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
-import { useBeneficiaryCreate } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
-import { IBeneficiariesCreateItem } from 'src/types/beneficiaries';
+import { useRouter } from 'src/routes/hook';
+import {
+  GENDER,
+  IApiResponseError,
+  IBeneficiariesCreateItem,
+  IBeneficiaryDetails,
+} from 'src/types/beneficiaries';
+import * as Yup from 'yup';
 
-type Props = {
-  currentBeneficiary?: IBeneficiariesCreateItem;
-};
+interface FormValues extends IBeneficiariesCreateItem {}
 
-export default function BeneficiariesForm({ currentBeneficiary }: Props) {
-  const router = useRouter();
+const BeneficiariesForm: React.FC = () => {
+  const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { mutate, error, isSuccess, loading } = useBeneficiaryCreate();
+  const { error, isLoading, mutate } = useMutation<
+    IBeneficiaryDetails,
+    IApiResponseError,
+    IBeneficiariesCreateItem
+  >({
+    mutationFn: async (createData: IBeneficiariesCreateItem) => {
+      const response = await BeneficiaryService.create(createData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error creating beneficiary', { variant: 'error' });
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar('Beneficiary created successfully', { variant: 'success' });
+      reset();
+
+      push(`${paths.dashboard.general.beneficiaries.list}/${data?.uuid}`);
+    },
+  });
 
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    phone: Yup.string().required('Phone number is required'),
-    gender: Yup.string().required('GENDER is required'),
-    phoneStatus: Yup.string().required('Phone Type is required'),
-    bankStatus: Yup.string().required('Bank status is required'),
-    internetStatus: Yup.string().required('Internet status is required'),
-    dob: Yup.mixed<any>().nullable().required('DOB is required'),
-    walletAddress: Yup.string().required('Wallet address is required'),
+    phone: Yup.string().nullable().optional(),
+    gender: Yup.mixed<GENDER>().nullable().optional(),
+    phoneStatus: Yup.string().nullable().optional(),
+    bankStatus: Yup.string().nullable().optional(),
+    internetStatus: Yup.string().nullable().optional(),
+    dob: Yup.date().nullable().optional(),
+    walletAddress: Yup.string().nullable().required('Wallet address is required'),
     longitude: Yup.number().nullable().optional(),
     latitude: Yup.number().nullable().optional(),
   });
 
-  const defaultValues = useMemo(
+  const defaultValues = useMemo<FormValues>(
     () => ({
-      name: currentBeneficiary?.name || '',
-      phone: currentBeneficiary?.phone || '',
-      gender: currentBeneficiary?.gender || '',
-      phoneStatus: currentBeneficiary?.phoneStatus || '',
-      bankStatus: currentBeneficiary?.bankStatus || '',
-      internetStatus: currentBeneficiary?.internetStatus || '',
-      dob: currentBeneficiary?.dob || null,
-      walletAddress: currentBeneficiary?.walletAddress || '',
-      longitude: currentBeneficiary?.longitude || null,
-      latitude: currentBeneficiary?.latitude || null,
+      name: '',
+      phone: null,
+      gender: null,
+      phoneStatus: null,
+      bankStatus: null,
+      internetStatus: null,
+      dob: null,
+      walletAddress: '',
+      longitude: null,
+      latitude: null,
     }),
-    [currentBeneficiary]
+    []
   );
 
-  const methods = useForm({
+  const methods = useForm<FormValues>({
     resolver: yupResolver(NewBeneficiarySchema),
     defaultValues,
   });
 
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitting },
-    setValue,
-    control,
-    trigger,
-  } = methods;
+  const { reset, handleSubmit, setValue, control, trigger } = methods;
 
-  const handleGenerateWalletAddress = () => {
+  const handleGenerateWalletAddress = useCallback(() => {
     const { address } = generateWalletAddress();
     setValue('walletAddress', address);
     trigger('walletAddress');
-  };
+  }, [setValue, trigger]);
 
-  const onSubmit = async (data) => {
-    mutate(data);
-    if (error) {
-      console.log('error', error);
-    }
-  };
+  const onSubmit = useCallback((data: IBeneficiariesCreateItem) => mutate(data), [mutate]);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -129,21 +135,25 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
               <Controller
                 name="dob"
                 control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <DatePicker
-                    {...field}
-                    disableFuture
-                    label="Date Of Birth"
-                    format="dd/MM/yyyy"
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: !!error,
-                        helperText: error?.message,
-                      },
-                    }}
-                  />
-                )}
+                render={({ field, fieldState }) => {
+                  const { error: fieldError } = fieldState;
+
+                  return (
+                    <DatePicker
+                      {...field}
+                      disableFuture
+                      label="Date Of Birth"
+                      format="dd/MM/yyyy"
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!fieldError,
+                          helperText: fieldError?.message,
+                        },
+                      }}
+                    />
+                  );
+                }}
               />
 
               <RHFSelect name="phoneStatus" label="Phone Type">
@@ -211,13 +221,8 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton
-                type="submit"
-                variant="outlined"
-                color="success"
-                loading={isSubmitting}
-              >
-                {!currentBeneficiary ? 'Create Beneficiary' : 'Save Changes'}
+              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+                Create Beneficiary
               </LoadingButton>
             </Stack>
           </Card>
@@ -225,4 +230,6 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
       </Grid>
     </FormProvider>
   );
-}
+};
+
+export default memo(BeneficiariesForm);

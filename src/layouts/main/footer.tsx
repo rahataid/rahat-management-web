@@ -1,44 +1,26 @@
 // @mui
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Unstable_Grid2';
+import { alpha } from '@mui/material/styles';
 // routes
-import { paths } from 'src/routes/paths';
-import { usePathname } from 'src/routes/hook';
 import { RouterLink } from 'src/routes/components';
+import { usePathname } from 'src/routes/hook';
 // _mock
-import { _socials } from 'src/_mock';
 // components
-import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
+import Logo from 'src/components/logo';
 
 // ----------------------------------------------------------------------
 
 const LINKS = [
   {
     headline: 'Minimal',
-    children: [
-      { name: 'About us', href: paths.about },
-      { name: 'Contact us', href: paths.contact },
-      { name: 'FAQs', href: paths.faqs },
-    ],
-  },
-  {
-    headline: 'Legal',
-    children: [
-      { name: 'Terms and Condition', href: '#' },
-      { name: 'Privacy Policy', href: '#' },
-    ],
-  },
-  {
-    headline: 'Contact',
-    children: [{ name: 'support@minimals.cc', href: '#' }],
   },
 ];
 
@@ -117,7 +99,7 @@ export default function Footer() {
                 mb: { xs: 5, md: 0 },
               }}
             >
-              {_socials.map((social) => (
+              {[].map((social) => (
                 <IconButton
                   key={social.name}
                   sx={{
@@ -145,7 +127,7 @@ export default function Footer() {
                     {list.headline}
                   </Typography>
 
-                  {list.children.map((link) => (
+                  {list?.children.map((link) => (
                     <Link
                       key={link.name}
                       component={RouterLink}
