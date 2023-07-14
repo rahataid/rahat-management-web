@@ -6,6 +6,7 @@ import { project } from 'src/_mock/_project';
 import { useTransactions } from "src/api/transactions";
 import ProjectActions from "./project-actions-card";
 import { ProjectDetailsCard } from './project-details-card';
+import ProjectDetailsChart from "./project-details-chart";
 import CarouselBasic4 from "./project-gallery-view";
 import ProjectStatsCard from "./project-stats-card";
 
@@ -32,6 +33,36 @@ export default function ProjectDetailsView() {
                 </Grid>
                 <Grid item xs={12} md={6} lg={8}>
                     <ProjectStatsCard data={transactionStats} />
+                </Grid>
+                <Grid item xs={12} md={6} lg={8}>
+                    <ProjectDetailsChart
+                        title="Beneficiaries Per Distribution Point"
+                        subheader="this is sub heading"
+                        chart={{
+                            categories: [
+                                'Darchula',
+                                'Dadeldhura',
+                                'Argakhachi',
+                                'Morang',
+                                'Solukhumbu',
+                                'Manang',
+                            ],
+                            series: [
+                                {
+                                    type: 'Week',
+                                    data: [{ name: 'Amount', data: [100, 410, 350, 1510, 490, 620] }],
+                                },
+                                {
+                                    type: 'Month',
+                                    data: [{ name: 'Amount', data: [1480, 910, 690, 620, 490, 5100] }],
+                                },
+                                {
+                                    type: 'Year',
+                                    data: [{ name: 'Amount', data: [760, 420, 290, 410, 270, 1380] }],
+                                },
+                            ],
+                        }}
+                    />
                 </Grid>
             </Grid>
         </Container>
