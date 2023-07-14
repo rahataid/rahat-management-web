@@ -19,7 +19,7 @@ function Child() {
   return null;
 }
 
-export default function Provider() {
+export default function Web3Provider() {
   return (
     <Web3ReactProvider connectors={connectors}>
       <Child />

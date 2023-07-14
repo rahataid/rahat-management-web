@@ -4,16 +4,28 @@
   "version": "5.1.0",
   "description": "Next & TypeScript",
   "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "yarn prettier --write",
+      "yarn eslint --fix"
+    ]
+  },
   "scripts": {
     "dev": "next dev  -p 3006",
     "start": "next start",
     "build": "next build",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
-    "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "prettier": "prettier --write",
     "clear-all": "rm -rf node_modules .next out dist build",
     "re-start": "rm -rf node_modules .next out dist build && yarn install && yarn dev",
-    "re-build": "rm -rf node_modules .next out dist build && yarn install && yarn build"
+    "re-build": "rm -rf node_modules .next out dist build && yarn install && yarn build",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.1.1",
@@ -44,6 +56,7 @@
     "@mui/x-date-pickers": "^6.8.0",
     "@react-pdf/renderer": "^3.1.12",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^4.29.19",
     "@web3-react/core": "^8.2.0",
     "@web3-react/eip1193": "^8.2.0",
     "@web3-react/empty": "^8.2.0",
@@ -58,6 +71,7 @@
     "date-fns": "^2.30.0",
     "encoding": "^0.1.13",
     "eth-provider": "^0.13.6",
+    "ethers": "^6.6.3",
     "firebase": "^9.22.2",
     "framer-motion": "^10.12.16",
     "highlight.js": "^11.8.0",
@@ -98,7 +112,6 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@web3-react/types": "^8.2.0",
     "@babel/core": "^7.22.5",
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-transform-react-jsx": "^7.22.5",
@@ -116,6 +129,7 @@
     "@types/stylis": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
+    "@web3-react/types": "^8.2.0",
     "csstype": "^3.1.2",
     "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -130,6 +144,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.3",
     "prettier": "^2.8.8",
     "typescript": "^5.1.3"
   }

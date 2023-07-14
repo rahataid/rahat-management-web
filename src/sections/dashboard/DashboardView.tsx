@@ -1,14 +1,13 @@
+'use client';
+
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { _appFeatured } from 'src/_mock';
 import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
 const DashboardView = () => {
-  const theme = useTheme();
   const settings = useSettingsContext();
 
   return (
@@ -21,7 +20,7 @@ const DashboardView = () => {
                 color="primary"
                 icon="material-symbols:person-4"
                 title="Beneficiaries"
-                total="102"
+                total={102}
                 subtitle="households"
               />
             </Grid>
@@ -30,7 +29,7 @@ const DashboardView = () => {
                 color="info"
                 icon="mdi:wheel-barrow"
                 title="H2O wheels"
-                total="102"
+                total={102}
                 subtitle="disbursed"
               />
             </Grid>
@@ -39,7 +38,7 @@ const DashboardView = () => {
                 color="success"
                 icon="pajamas:project"
                 title="Projects"
-                total="102"
+                total={102}
                 subtitle="involved"
               />
             </Grid>
@@ -48,20 +47,21 @@ const DashboardView = () => {
                 color="secondary"
                 icon="maki:village"
                 title="Village(s)"
-                total="102"
+                total={102}
                 subtitle="impacted"
               />
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          <PhotoGallery list={_appFeatured} />
+          {/* TODO:Make it dynamic */}
+          <PhotoGallery list={[]} />
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>
         <Grid item xs={12} md={3}>
           <Piechart
-            title="Gender-wise Distribution"
+            title="GENDER-wise Distribution"
             chart={{
               series: [
                 { label: 'Male', value: 12244 },

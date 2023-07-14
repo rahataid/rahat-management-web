@@ -23,7 +23,7 @@ interface Props extends CardProps {
   list: ItemProps[];
 }
 
-export default function PhotoGallery({ list, ...other }: Props) {
+export default function PhotoGallery({ list = [], ...other }: Props) {
   const carousel = useCarousel({
     speed: 800,
     autoplay: true,

@@ -8,6 +8,7 @@ const ROOTS = {
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
   TRANSACTIONS: '/transactions',
+  BENEFICIARIES: '/beneficiaries',
   PROJECTS: '/projects',
   PHOTO_GALLERY: '/photo-gallery',
   VENDORS: '/vendors',
@@ -32,6 +33,7 @@ export const paths = {
       app: `${ROOTS.DASHBOARD}/app`,
       projects: {
         list: `${ROOTS.PROJECTS}`,
+        add: `${ROOTS.PROJECTS}/add`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {
@@ -42,6 +44,11 @@ export const paths = {
       transactions: {
         list: `${ROOTS.TRANSACTIONS}`,
         details: (hash: string) => `${ROOTS.TRANSACTIONS}/${paramCase(hash)}`,
+      },
+      beneficiaries: {
+        list: `${ROOTS.BENEFICIARIES}`,
+        details: (address: string) => `${ROOTS.BENEFICIARIES}/${paramCase(address)}`,
+        add: `${ROOTS.BENEFICIARIES}/add`,
       },
     },
   },

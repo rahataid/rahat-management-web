@@ -1,10 +1,14 @@
-import { useTransactions } from 'src/api/transactions';
+import { ITransactionStats } from 'src/types/transactions';
 
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
-const TransactionsCards = () => {
-  const { transactionStats } = useTransactions();
+type Props = {
+  data: ITransactionStats
+}
+
+const TransactionsCards = ({ data } : Props) => {
+  const { bankedCash, unbankedCash, bankedToken, unbankedToken } = data;
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -14,7 +18,7 @@ const TransactionsCards = () => {
               color="success"
               icon="material-symbols:paid"
               title="Cash Distributed"
-              total={transactionStats.bankedCash}
+              total={bankedCash}
               subtitle="Banked Beneficiary"
             />
           </Grid>
@@ -23,7 +27,7 @@ const TransactionsCards = () => {
               color="success"
               icon="material-symbols:paid"
               title="Cash Distributed"
-              total={transactionStats.unbankedCash}
+              total={unbankedCash}
               subtitle="Unbanked Beneficiary"
             />
           </Grid>
@@ -32,7 +36,7 @@ const TransactionsCards = () => {
               color="warning"
               icon="material-symbols:token"
               title="Token Issued"
-              total={transactionStats.bankedToken}
+              total={bankedToken}
               subtitle="Banked Beneficiary"
             />
           </Grid>
@@ -41,7 +45,7 @@ const TransactionsCards = () => {
               color="warning"
               icon="material-symbols:token"
               title="Token Issued"
-              total={transactionStats.unbankedToken}
+              total={unbankedToken}
               subtitle="Unbanked Beneficiary"
             />
           </Grid>

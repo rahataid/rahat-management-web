@@ -1,5 +1,7 @@
 'use client';
 
+import { ethers } from 'ethers';
+
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
@@ -10,4 +12,8 @@ export function getName(connector: Connector) {
   if (connector instanceof Network) return 'Network';
   if (connector instanceof GnosisSafe) return 'Gnosis Safe';
   return 'Unknown';
+}
+
+export function generateWalletAddress() {
+  return ethers.Wallet.createRandom();
 }

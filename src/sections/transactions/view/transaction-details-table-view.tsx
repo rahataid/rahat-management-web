@@ -9,12 +9,12 @@ import {
   emptyRows,
   useTable,
 } from 'src/components/table';
-import { TransactionDetailsTableItem, TransactionDetailsTableList } from 'src/types/transactions';
+import { ITransactionDetailsTableItem, ITransactionDetailsTableList } from 'src/types/transactions';
 
 import TransactionDetailsTableRow from './transaction-details-table-row';
 
 type Props = {
-  data: TransactionDetailsTableList;
+  data: ITransactionDetailsTableList;
 };
 
 const TABLE_HEAD = [
@@ -52,7 +52,7 @@ export default function TransactionDetailsTableView({ data }: Props) {
                   table.page * table.rowsPerPage,
                   table.page * table.rowsPerPage + table.rowsPerPage
                 )
-                .map((row: TransactionDetailsTableItem) => (
+                .map((row: ITransactionDetailsTableItem) => (
                   <TransactionDetailsTableRow
                     key={row.name}
                     row={row}

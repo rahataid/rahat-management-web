@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransactions } from 'src/api/transactions';
+import { useTransaction } from 'src/api/transactions';
 // mui
 import { Card, Stack, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -12,7 +12,7 @@ import TransactionDetailsCard from './transaction-details-card';
 import TransactionDetailsTableView from './transaction-details-table-view';
 
 export default function TransactionDetailsView() {
-  const { transactionDetails, transactionDetailsTableList } = useTransactions();
+  const { transactionDetails, transactionDetailsTableList } = useTransaction();
   const { hash } = useParams();
   const settings = useSettingsContext();
 
