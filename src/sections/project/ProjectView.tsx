@@ -4,6 +4,8 @@ import { useSettingsContext } from '@components/settings';
 import { useTheme } from '@emotion/react';
 import { Button, Container, Stack, Typography } from '@mui/material';
 import Grid from '@mui/system/Unstable_Grid/Grid';
+import { RouterLink } from '@routes/components';
+import { paths } from '@routes/paths';
 import ProjectCards from './project-cards';
 
 const ProjectView = () => {
@@ -17,7 +19,12 @@ const ProjectView = () => {
           <Typography variant="h4">Project</Typography>
         </Grid>
         <Grid xs={2}>
-          <Button color="success" variant="outlined">
+          <Button
+            color="success"
+            variant="outlined"
+            component={RouterLink}
+            href={paths.dashboard.general.projects.add}
+          >
             Add Project
           </Button>
         </Grid>
