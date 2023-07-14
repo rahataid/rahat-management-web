@@ -57,11 +57,15 @@ export const projectsList: IProjectsList = [
 ];
 
 export const project: IProjectItem = {
-  id: 1,
-  title: 'Project 1',
-  image: 'sdad',
-  budget: 5000,
+  id: 6,
+  title: 'Godwari PwD Community',
+  image: 'https://assets.rumsan.com/rahat/communities/0x31C24d29036FEFac9Bf8cA2f399400037b8b072F/QmSRcUor2q24QEpgaXFhJcNKiV7yD5YTBms1Npt59ALcim',
+  budget: 54000,
   createdAt: '15 Jul 2023',
+  projectManager: 'Rumee Singh',
+  locations: 'Jaleshwor',
+  tokenIssued: 50,
+  tokenRedeemed: 24,
 };
 
 export const projectTypeOptions: IProjectTypeFilterOptions = Object.values(
