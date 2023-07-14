@@ -1,18 +1,10 @@
-import { Button, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Stack, Typography } from "@mui/material";
 
 
 export const ProjectDetailsCard = () => {
     return (
         <Card>
             <CardContent>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Button variant="outlined" color="success">
-                        Beneficiary List
-                    </Button>
-                    <Button variant="outlined" color="primary">
-                        Actions
-                    </Button>
-                </Stack>
                 <Stack
                     sx={{ p: 2 }}
                     direction="row"

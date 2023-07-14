@@ -4,6 +4,7 @@ import { useSettingsContext } from "@components/settings";
 import { Container, Grid } from "@mui/material";
 import { project } from 'src/_mock/_project';
 import { useTransactions } from "src/api/transactions";
+import ProjectActions from "./project-actions-card";
 import { ProjectDetailsCard } from './project-details-card';
 import CarouselBasic4 from "./project-gallery-view";
 import ProjectStatsCard from "./project-stats-card";
@@ -26,6 +27,7 @@ export default function ProjectDetailsView() {
                     <CarouselBasic4 data={_carouselsExample.slice(0, 4)} />
                 </Grid>
                 <Grid item xs={12} md={6} lg={4}>
+                    <ProjectActions />
                     <ProjectDetailsCard />
                 </Grid>
                 <Grid item xs={12} md={6} lg={8}>
