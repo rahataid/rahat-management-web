@@ -16,6 +16,7 @@ axiosInstance.interceptors.response.use(
 export const endpoints = {
   beneficiary: {
     list: '/beneficiaries',
+    create: '/beneficiaries',
   },
 
   chat: '/api/chat',

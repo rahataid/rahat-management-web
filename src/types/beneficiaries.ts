@@ -135,8 +135,7 @@ export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
 
 export type IBeneficiariesCreateItem = {
   name: string;
-  phoneNumber: string;
-  cnicNumber?: string;
+  phone?: string;
   gender: GENDER;
   phoneOwnership: string;
   phoneStatus: PHONE_STATUS;
@@ -146,4 +145,13 @@ export type IBeneficiariesCreateItem = {
   walletAddress: string;
   longitude: number;
   latitude: number;
+};
+
+export type IApiResponseError = {
+  group: string;
+  meta?: string | null;
+  message: string;
+  name: string;
+  success: boolean;
+  timestamp: number;
 };

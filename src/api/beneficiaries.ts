@@ -1,5 +1,5 @@
 import BeneficiaryService from '@services/beneficiaries';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import {
   beneficiaryClaimsDetails,
@@ -7,7 +7,12 @@ import {
   beneficiaryTransactionList,
 } from 'src/_mock/_beneficiaries';
 
-import { BeneficiariesListHookReturn, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
+import {
+  BeneficiariesListHookReturn,
+  IApiResponseError,
+  IBeneficiariesCreateItem,
+  IBeneficiaryApiFilters,
+} from 'src/types/beneficiaries';
 
 export function useBeneficiaries(params?: IBeneficiaryApiFilters): BeneficiariesListHookReturn {
   const { data, isLoading, error } = useQuery(['beneficiaries', params], async () => {
@@ -40,4 +45,20 @@ export function useBeneficiary() {
     []
   );
   return memoizedValue;
+}
+
+export function useBeneficiaryCreate() {
+  const create = useMutation({
+    mutationFn: async (data: IBeneficiariesCreateItem) => {
+      const response = await BeneficiaryService.create(data);
+      return response;
+    },
+  });
+
+  return {
+    loading: create.isLoading,
+    error: create.error as IApiResponseError,
+    mutate: create.mutate,
+    isSuccess: create.isSuccess,
+  };
 }

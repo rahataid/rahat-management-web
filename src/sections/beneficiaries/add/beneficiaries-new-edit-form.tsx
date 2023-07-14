@@ -11,12 +11,11 @@ import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
 import { useRouter } from 'src/routes/hook';
-import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
 import Iconify from '@components/iconify/iconify';
-import { Button, MenuItem, Tooltip } from '@mui/material';
+import { Alert, AlertTitle, Button, MenuItem, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { generateWalletAddress } from '@web3/utils';
 
@@ -26,8 +25,8 @@ import {
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
+import { useBeneficiaryCreate } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
-import { useSnackbar } from 'src/components/snackbar';
 import { IBeneficiariesCreateItem } from 'src/types/beneficiaries';
 
 type Props = {
@@ -37,11 +36,11 @@ type Props = {
 export default function BeneficiariesForm({ currentBeneficiary }: Props) {
   const router = useRouter();
 
-  const { enqueueSnackbar } = useSnackbar();
+  const { mutate, error, isSuccess, loading } = useBeneficiaryCreate();
 
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
+    phone: Yup.string().required('Phone number is required'),
     gender: Yup.string().required('GENDER is required'),
     phoneStatus: Yup.string().required('Phone Type is required'),
     bankStatus: Yup.string().required('Bank status is required'),
@@ -55,7 +54,7 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
   const defaultValues = useMemo(
     () => ({
       name: currentBeneficiary?.name || '',
-      phoneNumber: currentBeneficiary?.phoneNumber || '',
+      phone: currentBeneficiary?.phone || '',
       gender: currentBeneficiary?.gender || '',
       phoneStatus: currentBeneficiary?.phoneStatus || '',
       bankStatus: currentBeneficiary?.bankStatus || '',
@@ -88,20 +87,21 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
     trigger('walletAddress');
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentBeneficiary ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.general.beneficiaries.list);
-      console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
+  const onSubmit = async (data) => {
+    mutate(data);
+    if (error) {
+      console.log('error', error);
     }
-  });
+  };
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error Creating Beneficiary</AlertTitle>
+          {error?.message}
+        </Alert>
+      )}
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
@@ -116,7 +116,7 @@ export default function BeneficiariesForm({ currentBeneficiary }: Props) {
             >
               <RHFTextField name="name" label="Name" />
 
-              <RHFTextField name="phoneNumber" label="Phone Number" />
+              <RHFTextField name="phone" label="Phone Number" />
 
               <RHFSelect name="gender" label="GENDER">
                 {genderOptions.map((gender) => (
