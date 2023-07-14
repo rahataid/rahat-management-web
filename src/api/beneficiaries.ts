@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import {
   beneficiaryClaimsDetails,
   beneficiaryDetails,
+  beneficiaryList,
   beneficiaryTransactionList,
 } from 'src/_mock/_beneficiaries';
 
@@ -19,7 +20,9 @@ export function useBeneficiaries(params?: IBeneficiaryApiFilters): Beneficiaries
   const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
   return {
-    beneficiaries,
+    // TEMP for stage
+    beneficiaries: beneficiaryList,
+    // beneficiaries,
     loading: isLoading,
     error,
     meta,

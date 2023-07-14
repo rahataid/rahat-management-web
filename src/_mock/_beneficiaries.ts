@@ -1,6 +1,7 @@
 import {
   BANK_STATUS,
   GENDER,
+  IBeneficiariesItem,
   IBeneficiaryClaimsDetails,
   IBeneficiaryDetails,
   IBeneficiaryDetailsTableList,
@@ -53,3 +54,23 @@ export const beneficiaryClaimsDetails: IBeneficiaryClaimsDetails = {
 };
 
 export const beneficiaryTransactionList: IBeneficiaryDetailsTableList = [];
+
+export const beneficiaryList: IBeneficiariesItem[] = [...Array(30)].map((_, index) => ({
+  id: index,
+  bankStatus: BANK_STATUS.BANKED,
+  name: `Beneficiary ${index + 1}`,
+  gender: GENDER.FEMALE,
+  internetStatus: INTERNET_STATUS.HOME_INTERNET,
+  phoneStatus: PHONE_STATUS.FEATURE,
+  uuid: `sadadh-12312${index}`,
+  createdAt: '2133',
+  updatedAt: '2133',
+  isApproved: true,
+  tokensAssigned: 10,
+  tokensClaimed: 20,
+  deletedAt: null,
+  dob: '01-01-1990',
+  latitude: 23123,
+  longitude: 23123,
+  walletAddress: '0x0002',
+}));

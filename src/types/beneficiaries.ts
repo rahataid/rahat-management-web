@@ -57,7 +57,7 @@ export type IBeneficiariesItem = {
   latitude: number;
   longitude: number;
   name: string;
-  phone: string | null;
+  phone?: string | null;
   phoneStatus: PHONE_STATUS;
   tokensAssigned: number;
   tokensClaimed: number;
