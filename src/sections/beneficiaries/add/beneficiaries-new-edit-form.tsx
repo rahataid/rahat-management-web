@@ -60,9 +60,9 @@ const BeneficiariesForm: React.FC = () => {
     name: Yup.string().required('Name is required'),
     phone: Yup.string().nullable().optional(),
     gender: Yup.mixed<GENDER>().nullable().optional(),
-    phoneStatus: Yup.string().nullable().optional(),
+    phoneOwnership: Yup.string().nullable().optional(),
     bankStatus: Yup.string().nullable().optional(),
-    internetStatus: Yup.string().nullable().optional(),
+    internetAccess: Yup.string().nullable().optional(),
     dob: Yup.date().nullable().optional(),
     walletAddress: Yup.string().nullable().required('Wallet address is required'),
     longitude: Yup.number().nullable().optional(),
@@ -74,9 +74,9 @@ const BeneficiariesForm: React.FC = () => {
       name: '',
       phone: null,
       gender: null,
-      phoneStatus: null,
+      phoneOwnership: null,
       bankStatus: null,
-      internetStatus: null,
+      internetAccess: null,
       dob: null,
       walletAddress: '',
       longitude: null,
@@ -156,10 +156,10 @@ const BeneficiariesForm: React.FC = () => {
                 }}
               />
 
-              <RHFSelect name="phoneStatus" label="Phone Type">
-                {phoneStatusOptions.map((phoneStatus) => (
-                  <MenuItem key={phoneStatus} value={phoneStatus}>
-                    {phoneStatus}
+              <RHFSelect name="phoneOwnership" label="Phone Ownership">
+                {phoneStatusOptions.map((phoneOwnership) => (
+                  <MenuItem key={phoneOwnership} value={phoneOwnership}>
+                    {phoneOwnership}
                   </MenuItem>
                 ))}
               </RHFSelect>
@@ -172,10 +172,10 @@ const BeneficiariesForm: React.FC = () => {
                 ))}
               </RHFSelect>
 
-              <RHFSelect name="internetStatus" label="Internet Status">
-                {internetAccessOptions.map((internetStatus) => (
-                  <MenuItem key={internetStatus} value={internetStatus}>
-                    {internetStatus}
+              <RHFSelect name="internetAccess" label="Internet Access">
+                {internetAccessOptions.map((internetAccess) => (
+                  <MenuItem key={internetAccess} value={internetAccess}>
+                    {internetAccess}
                   </MenuItem>
                 ))}
               </RHFSelect>

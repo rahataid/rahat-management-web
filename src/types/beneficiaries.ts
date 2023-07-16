@@ -12,14 +12,14 @@ export enum BANK_STATUS {
   UNDERBANKED = 'UNDERBANKED',
 }
 
-export enum PHONE_STATUS {
+export enum PHONE_OWNERSHIP {
   UNKNOWN = 'UNKNOWN',
   NO_PHONE = 'NO_PHONE',
   FEATURE = 'FEATURE',
   SMART = 'SMART',
 }
 
-export enum INTERNET_STATUS {
+export enum INTERNET_ACCESS {
   UNKNOWN = 'UNKNOWN',
   NO_INTERNET = 'NO_INTERNET',
   PHONE_INTERNET = 'PHONE_INTERNET',
@@ -30,9 +30,9 @@ export type IBeneficiaryApiFilters = {
   status?: string;
   name?: string;
   gender?: GENDER;
-  internetStatus?: INTERNET_STATUS | string;
+  internetAccess?: INTERNET_ACCESS | string;
   bankStatus?: BANK_STATUS | string;
-  phoneStatus?: PHONE_STATUS | string;
+  phoneOwnership?: PHONE_OWNERSHIP | string;
   orderBy?: string;
   order?: 'asc' | 'desc';
   perPage?: number;
@@ -52,13 +52,13 @@ export type IBeneficiariesItem = {
   bankStatus: BANK_STATUS;
   createdAt: string;
   deletedAt: string | null;
-  internetStatus: INTERNET_STATUS;
+  internetAccess: INTERNET_ACCESS;
   isApproved: boolean;
   latitude: number;
   longitude: number;
   name: string;
   phone?: string | null;
-  phoneStatus: PHONE_STATUS;
+  phoneOwnership: PHONE_OWNERSHIP;
   tokensAssigned: number;
   tokensClaimed: number;
   updatedAt: string;
@@ -99,13 +99,13 @@ export type IBeneficiaryDetails = {
   email: string | null;
   gender: string;
   id: number;
-  internetStatus: string;
+  internetAccess: string;
   isApproved: boolean;
   latitude: number;
   longitude: number;
   name: string;
   phone: string | null;
-  phoneStatus: string;
+  phoneOwnership: string;
   tokensAssigned: number;
   tokensClaimed: number;
   updatedAt: string;
@@ -137,9 +137,9 @@ export type IBeneficiariesCreateItem = {
   name: string;
   phone: string | null;
   gender: GENDER | null;
-  phoneStatus: PHONE_STATUS | null;
+  phoneOwnership: PHONE_OWNERSHIP | null;
   bankStatus: BANK_STATUS | null;
-  internetStatus: INTERNET_STATUS | null;
+  internetAccess: INTERNET_ACCESS | null;
   dob: Date | null;
   walletAddress: string;
   longitude: number | null;

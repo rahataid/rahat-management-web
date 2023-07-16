@@ -28,11 +28,11 @@ export default function BeneficiariesTableFiltersResult({
   ...other
 }: Props) {
   const handleRemoveInternetAccess = () => {
-    onFilters('internetStatus', '');
+    onFilters('internetAccess', '');
   };
 
   const handleRemovePhoneStatus = () => {
-    onFilters('phoneStatus', '');
+    onFilters('phoneOwnership', '');
   };
 
   const handleRemoveBankStatus = () => {
@@ -49,21 +49,21 @@ export default function BeneficiariesTableFiltersResult({
       </Box>
 
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
-        {!!filters.internetStatus && (
+        {!!filters.internetAccess && (
           <Block label="Internet Access:">
             <Chip
-              key={filters.internetStatus}
-              label={filters.internetStatus}
+              key={filters.internetAccess}
+              label={filters.internetAccess}
               size="small"
               onDelete={() => handleRemoveInternetAccess()}
             />
           </Block>
         )}
-        {!!filters.phoneStatus && (
+        {!!filters.phoneOwnership && (
           <Block label="Phone Status:">
             <Chip
-              key={filters.phoneStatus}
-              label={filters.phoneStatus}
+              key={filters.phoneOwnership}
+              label={filters.phoneOwnership}
               size="small"
               onDelete={() => handleRemovePhoneStatus()}
             />

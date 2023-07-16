@@ -53,8 +53,8 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', width: 200 },
-  { id: 'internetStatus', label: 'Internet Access', width: 150 },
-  { id: 'phoneStatus', label: 'Phone', width: 150 },
+  { id: 'internetAccess', label: 'Internet Access', width: 150 },
+  { id: 'phoneOwnership', label: 'Phone', width: 150 },
   { id: 'bankStatus', label: 'Bank', width: 150 },
   { id: 'tokensAssigned', label: 'Tokens Assigned', width: 150 },
   { id: 'tokensClaimed', label: 'Tokens Claimed', width: 150 },
@@ -68,9 +68,9 @@ export default function BeneficiariesListView() {
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
-      internetStatus: '',
+      internetAccess: '',
       bankStatus: '',
-      phoneStatus: '',
+      phoneOwnership: '',
       name: '',
       perPage: table.rowsPerPage,
       page: table.page + 1,

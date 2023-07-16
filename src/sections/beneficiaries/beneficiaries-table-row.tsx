@@ -21,7 +21,7 @@ type Props = {
 };
 
 export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
-  const { name, bankStatus, internetStatus, phoneStatus, tokensAssigned, tokensClaimed } = row;
+  const { name, bankStatus, internetAccess, phoneOwnership, tokensAssigned, tokensClaimed } = row;
 
   const quickEdit = useBoolean();
 
@@ -33,11 +33,11 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
 
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
-        <Label variant="soft">{internetStatus}</Label>
+        <Label variant="soft">{internetAccess}</Label>
       </TableCell>
 
       <TableCell>
-        <Label variant="soft">{phoneStatus}</Label>
+        <Label variant="soft">{phoneOwnership}</Label>
       </TableCell>
       <TableCell>
         <Label variant="soft">{bankStatus}</Label>

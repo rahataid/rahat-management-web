@@ -44,7 +44,7 @@ export default function BeneficiariesTableToolbar({
   const handleInternetAccessOptions = useCallback(
     (event: SelectChangeEvent<string>) => {
       onFilters(
-        'internetStatus',
+        'internetAccess',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
@@ -62,7 +62,7 @@ export default function BeneficiariesTableToolbar({
   const handlePhoneStatusOptions = useCallback(
     (event: SelectChangeEvent<string>) => {
       onFilters(
-        'phoneStatus',
+        'phoneOwnership',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
       );
     },
@@ -92,7 +92,7 @@ export default function BeneficiariesTableToolbar({
           <InputLabel>Internet Access</InputLabel>
 
           <Select
-            value={filters.internetStatus}
+            value={filters.internetAccess}
             onChange={handleInternetAccessOptions}
             input={<OutlinedInput label="Internet Access" />}
             MenuProps={{
@@ -143,10 +143,10 @@ export default function BeneficiariesTableToolbar({
             width: { xs: 1, md: 200 },
           }}
         >
-          <InputLabel>Phone Status</InputLabel>
+          <InputLabel>Phone Ownership</InputLabel>
 
           <Select
-            value={filters.phoneStatus}
+            value={filters.phoneOwnership}
             onChange={handlePhoneStatusOptions}
             input={<OutlinedInput label="Internet Access" />}
             MenuProps={{
