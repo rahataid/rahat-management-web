@@ -1,32 +1,18 @@
-import Iconify from '@components/iconify/iconify';
+import TruncatedAddressButton from '@components/wallet-address-button';
 import { useBoolean } from '@hooks/use-boolean';
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import { projectsList } from 'src/_mock/_project';
-import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import { IBeneficiaryClaimsDetails } from 'src/types/beneficiaries';
 import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
 import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
-type Props = {
-  data: IBeneficiaryClaimsDetails;
-};
-const copyBtn = {
-  padding: '0 0 0 6px',
-};
-
-export default function BeneficiariesDetailsCard({ data }: Props) {
-  const { claimedDate, receivedDate, walletAddress, claimedAmount, receivedAmount } = data;
-
-  const { copy } = useCopyToClipboard();
+export default function BeneficiariesDetailsCard({
+  // claimedDate,
+  // receivedDate,
+  walletAddress,
+}: // claimedAmount,
+// receivedAmount,
+IBeneficiaryClaimsDetails) {
   const assignProjectDialog = useBoolean();
   const assignTokenDialog = useBoolean();
 
@@ -83,17 +69,11 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           alignItems="center"
           spacing={5}
         >
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">Claimed</Typography>
-          </Grid>
+          <Typography variant="body2">Claimed</Typography>
 
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{claimedDate}</Typography>
-          </Grid>
+          <Typography variant="body2">Jan 16, 2023</Typography>
 
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{claimedAmount}</Typography>
-          </Grid>
+          <Typography variant="body2">{20}</Typography>
         </Stack>
         <Stack
           sx={{ p: 2 }}
@@ -102,42 +82,16 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           alignItems="center"
           spacing={5}
         >
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">Received</Typography>
-          </Grid>
+          <Typography variant="body2">Received</Typography>
 
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{receivedDate}</Typography>
-          </Grid>
+          <Typography variant="body2">Jan 16, 2023</Typography>
 
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{receivedAmount}</Typography>
-          </Grid>
+          <Typography variant="body2">{200}</Typography>
         </Stack>
-        <Stack
-          sx={{ p: 2 }}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={5}
-        >
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">Wallet</Typography>
-          </Grid>
+        <Stack sx={{ p: 2 }} direction="row" alignItems="center" spacing={5}>
+          <Typography variant="body2">Wallet</Typography>
 
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography color="#118D57" variant="body2" sx={{ fontWeight: 'bold' }}>
-              {walletAddress}
-            </Typography>
-          </Grid>
-
-          <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Tooltip title="Copy Address" placement="top" arrow>
-              <IconButton sx={copyBtn} color="success" onClick={() => copy(walletAddress)}>
-                <Iconify icon="ph:copy" />
-              </IconButton>
-            </Tooltip>
-          </Grid>
+          <TruncatedAddressButton address={walletAddress} />
         </Stack>
       </CardContent>
     </Card>

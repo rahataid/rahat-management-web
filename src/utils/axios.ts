@@ -17,6 +17,7 @@ export const endpoints = {
   beneficiary: {
     list: '/beneficiaries',
     create: '/beneficiaries',
+    details: (address: string) => `/beneficiaries/${address}`,
   },
 
   chat: '/api/chat',

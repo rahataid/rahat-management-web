@@ -1,4 +1,5 @@
 import { Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import { calculateAge } from '@utils/format-time';
 import { IBeneficiaryDetails } from 'src/types/beneficiaries';
 
 type Props = {
@@ -6,16 +7,7 @@ type Props = {
 };
 
 export default function BeneficiariesDetailsCard({ data }: Props) {
-  const {
-    name,
-    status,
-    phone,
-    gender,
-    cnicNumber,
-    district,
-    dailyWaterConsumption,
-    dailyDistanceCovered,
-  } = data;
+  const { name, bankStatus, dob, internetAccess, phoneOwnership, gender, phone, isApproved } = data;
   return (
     <Card>
       <CardContent>
@@ -24,12 +16,12 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           {/* <Label
             variant="outlined"
             color={
-              (status === Status.ACTIVE && 'success') ||
-              (status === Status.INACTIVE && 'error') ||
+              (isApproved && 'success') ||
+              (!isApproved && 'error') ||
               'default'
             }
           >
-            {status}
+            {isApproved?:"Approved":"Not Approved"}
           </Label> */}
         </Stack>
 
@@ -41,18 +33,18 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           spacing={10}
         >
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{phone}</Typography>
-            <Typography variant="body2">Phone</Typography>
+            <Typography variant="body1">{phone}</Typography>
+            <Typography variant="caption">Phone</Typography>
           </Grid>
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{gender}</Typography>
-            <Typography variant="body2">GENDER</Typography>
+            <Typography variant="body1">{gender}</Typography>
+            <Typography variant="caption">GENDER</Typography>
           </Grid>
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{cnicNumber}</Typography>
-            <Typography variant="body2">CNIC Number</Typography>
+            <Typography variant="body1">{calculateAge(dob)}</Typography>
+            <Typography variant="caption">Age</Typography>
           </Grid>
         </Stack>
 
@@ -64,18 +56,18 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           spacing={10}
         >
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{district}</Typography>
-            <Typography variant="body2">District</Typography>
+            <Typography variant="body1">{bankStatus}</Typography>
+            <Typography variant="caption">Bank Status</Typography>
           </Grid>
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{dailyWaterConsumption}</Typography>
-            <Typography variant="body2">Daily Water Consumption</Typography>
+            <Typography variant="body1">{internetAccess}</Typography>
+            <Typography variant="caption">Internet Access</Typography>
           </Grid>
 
           <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-            <Typography variant="body2">{dailyDistanceCovered}</Typography>
-            <Typography variant="body2">Daily Distance Covered</Typography>
+            <Typography variant="body1">{phoneOwnership}</Typography>
+            <Typography variant="caption">Phone Ownership</Typography>
           </Grid>
         </Stack>
       </CardContent>

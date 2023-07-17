@@ -1,4 +1,4 @@
-import { format, getTime, formatDistanceToNow } from 'date-fns';
+import { differenceInCalendarYears, format, formatDistanceToNow, getTime, parse } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -26,4 +26,10 @@ export function fToNow(date: InputValue) {
         addSuffix: true,
       })
     : '';
+}
+
+export function calculateAge(dob) {
+  const date = parse(dob, 'dd/MM/yyyy', new Date());
+  const age = differenceInCalendarYears(new Date(), date);
+  return age;
 }
