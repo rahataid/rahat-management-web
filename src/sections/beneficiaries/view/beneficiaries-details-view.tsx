@@ -16,8 +16,9 @@ import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card'
 import BeneficiaryDetailsTableView from './beneficiaries-details-table-view';
 
 export default function BeneficiariesDetailsView() {
-  const { beneficiary, beneficiaryClaimsDetails, beneficiaryTransactionList } = useBeneficiary();
-  const { hash } = useParams();
+  const { uuid } = useParams();
+  const { beneficiary } = useBeneficiary(uuid as string);
+  console.log('beneficiary', beneficiary);
   const settings = useSettingsContext();
 
   return (
@@ -41,7 +42,7 @@ export default function BeneficiariesDetailsView() {
           <BeneficiariesDetailsCard data={beneficiary} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <BeneficiariesDetailsClaimsCard data={beneficiaryClaimsDetails} />
+          <BeneficiariesDetailsClaimsCard walletAddress={beneficiary?.walletAddress} />
         </Grid>
       </Grid>
 
@@ -49,7 +50,7 @@ export default function BeneficiariesDetailsView() {
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
           Transaction History
         </Typography>
-        <BeneficiaryDetailsTableView data={beneficiaryTransactionList} />
+        <BeneficiaryDetailsTableView data={[]} />
       </Card>
     </Container>
   );

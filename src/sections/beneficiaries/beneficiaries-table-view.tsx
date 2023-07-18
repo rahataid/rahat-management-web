@@ -133,8 +133,8 @@ export default function BeneficiariesListView() {
   }, [push, defaultFilters, pathname]);
 
   const handleViewRow = useCallback(
-    (address: string) => {
-      router.push(paths.dashboard.general.beneficiaries.details(address));
+    (uuid: string) => {
+      router.push(paths.dashboard.general.beneficiaries.details(uuid));
     },
     [router]
   );
@@ -223,7 +223,7 @@ export default function BeneficiariesListView() {
                   <BeneficiariesTableRow
                     key={row.walletAddress}
                     row={row}
-                    onViewRow={() => handleViewRow(row.walletAddress)}
+                    onViewRow={() => handleViewRow(row.uuid)}
                   />
                 ))}
 

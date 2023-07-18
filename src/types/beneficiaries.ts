@@ -71,22 +71,23 @@ export type IBeneficiariesList = {
   rows: IBeneficiariesItem[];
 };
 
+/**
+ * hooks returns
+ */
+
 export interface BeneficiariesListHookReturn {
   beneficiaries: IBeneficiariesList['rows'];
   loading: boolean;
   error: any;
   meta: IBeneficiariesList['meta'];
 }
+export interface BeneficiariesDetailsHookReturn {
+  beneficiary: IBeneficiaryDetails;
+  isLoading: boolean;
+  error: IApiResponseError;
+}
 
 export type IFilterOptions = string[];
-
-export type IVillageFilterOptions = string[];
-
-export type IGenderFilterOptions = string[];
-
-export type IPhoneStatusFilterOptions = string[];
-
-export type IBankStatusFilterOptions = string[];
 
 export type IBeneficiaryDetails = {
   address: {
@@ -117,8 +118,8 @@ export type IBeneficiaryDetails = {
 };
 
 export type IBeneficiaryClaimsDetails = {
-  claimedDate: string;
   receivedDate: string;
+  claimedDate: string;
   claimedAmount: number;
   receivedAmount: number;
   walletAddress: string;
