@@ -1,3 +1,12 @@
+export type IApiResponseError = {
+  group: string;
+  meta?: Record<string, string[]> | null;
+  message: string;
+  name: string;
+  success: boolean;
+  timestamp: number;
+};
+
 export enum CAMPAIGN_TYPES {
   EMAIL = 'EMAIL',
   SMS = 'SMS',
@@ -45,7 +54,7 @@ export type ICampaignsListApiResponse = {
   rows: ICampaignItem[];
 };
 
-export interface CampaignssListHookReturn {
+export interface CampaignsListHookReturn {
   campaigns: ICampaignsListApiResponse['rows'];
   isLoading: boolean;
   error: any;
@@ -53,3 +62,95 @@ export interface CampaignssListHookReturn {
 }
 
 export type IFilterOptions = string[];
+
+interface IVR {
+  url: string;
+  method: string;
+}
+
+interface Audio {
+  url: string;
+  method: string;
+}
+
+interface TwiML {
+  ivr: IVR;
+  audio: Audio;
+}
+
+interface AudienceDetails {
+  name: string;
+  email: string;
+  phone: string;
+  discordId: string;
+  discordToken: string;
+}
+
+interface Audience {
+  id: number;
+  details: AudienceDetails;
+  appId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+}
+
+interface TransportDetails {
+  api: string;
+  sid: string;
+  token: string;
+}
+
+interface Transport {
+  id: number;
+  name: string;
+  details: TransportDetails;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+}
+
+export interface ICampaignItemApiResponse {
+  id: number;
+  appId: string;
+  name: string;
+  startTime: string;
+  type: string;
+  details: {
+    from: string;
+    twiml: TwiML;
+    callbackUrl: string;
+    countryCode: string;
+  };
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  transportId: number;
+  deletedAt: null | string;
+  transport: Transport;
+  audiences: Audience[];
+}
+
+export type ICampaignLogItem = {
+  id: number;
+  status: COMMUNICATION_DELIVERY_STATUS;
+  details: null;
+  createdAt: string;
+  audience: Audience;
+};
+
+export type ICampaignLogsApiResponse = {
+  meta: ICampaignPagination;
+  rows: ICampaignLogItem[];
+};
+
+export type ICampaignDetailsHookReturn = {
+  campaign: ICampaignItemApiResponse;
+  isLoading: boolean;
+  error: IApiResponseError;
+};
+export type ICampaignLogsHookReturn = {
+  logs: ICampaignLogsApiResponse;
+  isLoading: boolean;
+  error: IApiResponseError;
+};

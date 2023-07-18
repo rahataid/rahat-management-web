@@ -54,6 +54,7 @@ export const paths = {
       campaigns: {
         list: `${ROOTS.CAMPAIGNS}`,
         add: `${ROOTS.CAMPAIGNS}/add`,
+        edit: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/edit`,
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
       },
     },

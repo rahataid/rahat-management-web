@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
 import Iconify from 'src/components/iconify';
@@ -23,8 +22,6 @@ type Props = {
 
 export default function CampaignsTableRow({ row, onViewRow }: Props) {
   const { name, status, createdAt, totalAudiences, transport, type } = row;
-
-  const quickEdit = useBoolean();
 
   return (
     <TableRow hover>
@@ -62,7 +59,7 @@ export default function CampaignsTableRow({ row, onViewRow }: Props) {
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
-          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
+          <IconButton color="inherit" onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
