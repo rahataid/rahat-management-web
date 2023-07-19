@@ -36,9 +36,14 @@ jobs:
 
       - name: build and push web
         id: build-push-web
+        if: github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
           push: true
           tags: esatya/rahat-frontend-web:stage
+
+      - name: Build Docker image
+        if: github.event_name == 'pull_request'
+        run: docker build -t myimage:${{ github.sha }} .
