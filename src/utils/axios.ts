@@ -45,6 +45,6 @@ export const endpoints = {
     search: '/api/product/search',
   },
   vendors: {
-    list: '/api/vendors/list',
+    list: '/vendors',
   },
 };
