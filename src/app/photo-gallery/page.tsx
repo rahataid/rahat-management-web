@@ -3,11 +3,7 @@
 import { GalleryView } from '@sections/photo-gallery';
 
 function PhotoGallery(): JSX.Element {
-  return (
-    <div>
-      <GalleryView />
-    </div>
-  );
+  return <GalleryView />;
 }
 
 export default PhotoGallery;
