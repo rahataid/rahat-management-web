@@ -57,6 +57,7 @@ export default function VendorListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
+
   const { vendors, meta } = useVendors(filters);
 
   const searchParams = useSearchParams();
