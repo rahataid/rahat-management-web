@@ -1,22 +1,20 @@
+import { SplashScreen } from '@components/loading-screen';
 import { Card, CardContent, CardHeader, Stack } from '@mui/material';
+import { useFlickr } from 'src/api/flickr';
 import CarouselThumbnail from './carousel-thumbnail';
 
-const _carouselsExample = [...Array(20)].map((_, index) => ({
-  id: `${index}`,
-  title: '23',
-  coverUrl: '',
-  description: 'sdas',
-}));
-
-const GalleryView = () => (
-  <Stack spacing={3}>
-    <Card>
-      <CardHeader title="Carousel Thumbnail" />
-      <CardContent>
-        <CarouselThumbnail data={_carouselsExample.slice(0, 12)} />
-      </CardContent>
-    </Card>
-  </Stack>
-);
+const GalleryView = () => {
+  const { flickr, isLoading } = useFlickr();
+  return (
+    <Stack spacing={3}>
+      <Card>
+        <CardHeader title="Photo Gallery" />
+        <CardContent>
+          {isLoading ? <SplashScreen /> : <CarouselThumbnail data={flickr?.photo} />}
+        </CardContent>
+      </Card>
+    </Stack>
+  );
+};
 
 export default GalleryView;
