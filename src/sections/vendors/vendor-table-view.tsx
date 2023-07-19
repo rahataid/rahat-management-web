@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -6,7 +6,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 // routes
-import { useRouter } from 'src/routes/hook';
+import { useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
@@ -24,7 +24,9 @@ import {
 } from 'src/components/table';
 // types
 //
-import { useGetVendors } from 'src/api/vendors';
+import { isEqual } from 'lodash';
+import { useVendors } from 'src/api/vendors';
+import { IVendorItem, IVendorsApiFilters } from 'src/types/vendors';
 import VendorTableRow from './vendor-table-row';
 
 // ----------------------------------------------------------------------
@@ -40,31 +42,34 @@ const TABLE_HEAD = [
 
 export default function VendorListView() {
   const table = useTable();
-  const { vendors } = useGetVendors();
+
+  const defaultFilters: IVendorsApiFilters = useMemo(
+    () => ({
+      name: '',
+      projectInvolved: '',
+      phone: '',
+      address: '',
+      perPage: table.rowsPerPage,
+      page: table.page + 1,
+      orderBy: table.orderBy,
+      order: table.order,
+    }),
+    [table.order, table.orderBy, table.page, table.rowsPerPage]
+  );
+  const [filters, setFilters] = useState(defaultFilters);
+  const { vendors, meta } = useVendors(filters);
+
+  const searchParams = useSearchParams();
 
   const settings = useSettingsContext();
 
   const router = useRouter();
 
-  const [tableData, setTableData] = useState(vendors);
-
-  const dataFiltered = tableData;
-
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
-
   const denseHeight = table.dense ? 52 : 72;
 
-  const notFound = !dataFiltered.length;
+  const canReset = !isEqual(defaultFilters, filters);
 
-  //   const handleEditRow = useCallback(
-  //     (id: string) => {
-  //       router.push(paths.dashboard.user.edit(id));
-  //     },
-  //     [router]
-  //   );
+  const notFound = (!vendors.length && canReset) || !vendors.length;
 
   const handleViewRow = useCallback(
     (address: string) => {
@@ -72,6 +77,15 @@ export default function VendorListView() {
     },
     [router]
   );
+
+  useEffect(() => {
+    const searchFilters: IVendorsApiFilters = {
+      ...defaultFilters,
+      ...Object.fromEntries(searchParams.entries()),
+    };
+    setFilters(searchFilters);
+  }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -94,28 +108,23 @@ export default function VendorListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={tableData.length}
+                rowCount={vendors.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
 
               <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <VendorTableRow
-                      key={row.id}
-                      row={row}
-                      onViewRow={() => handleViewRow(row.address)}
-                    />
-                  ))}
+                {vendors.map((row: IVendorItem) => (
+                  <VendorTableRow
+                    key={row.address}
+                    row={row}
+                    onViewRow={() => handleViewRow(row.address)}
+                  />
+                ))}
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(table?.page, table?.rowsPerPage, meta?.total || 0)}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -125,7 +134,7 @@ export default function VendorListView() {
         </TableContainer>
 
         <TablePaginationCustom
-          count={dataFiltered.length}
+          count={meta?.total || 0}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}

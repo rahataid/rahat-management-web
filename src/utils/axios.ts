@@ -23,4 +23,7 @@ export const endpoints = {
   campaigns: {
     list: '/campaigns',
   },
+  vendors: {
+    list: '/vendors',
+  },
 };

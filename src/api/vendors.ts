@@ -1,32 +1,22 @@
+import VendorsService from '@services/vendors';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { VENDOR, VENDORS } from 'src/_mock/_vendors';
 
-export function useGetVendors() {
-  const memoizedValue = useMemo(
-    () => ({
-      vendors: VENDORS,
-      vendorsLoading: false,
-      vendorsError: null,
-      vendorsValidating: false,
-      vendorsEmpty: false,
-    }),
-    []
-  );
+import { IVendorsApiFilters, VendorsListHookReturn } from 'src/types/vendors';
 
-  return memoizedValue;
-}
+export function useVendors(params?: IVendorsApiFilters): VendorsListHookReturn {
+  const { data, isLoading, error } = useQuery(['vendors', params], async () => {
+    const res = await VendorsService.list(params);
+    return res;
+  });
 
-export function useGetVendor() {
-  const memoizedValue = useMemo(
-    () => ({
-      vendor: VENDOR,
-      vendorLoading: false,
-      vendorError: null,
-      vendorValidating: false,
-      vendorEmpty: false,
-    }),
-    []
-  );
+  const vendors = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
+  const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
-  return memoizedValue;
+  return {
+    vendors,
+    loading: isLoading,
+    error,
+    meta,
+  };
 }
