@@ -1,10 +1,10 @@
 export type IVendorItem = {
   id: number;
   name: string;
-  // todo: make it array of objects
-  projectInvolved: string;
+  isApproved: boolean;
   phone: string;
   address: string;
+  walletAddress: string;
 };
 
 export type IVendors = IVendorItem[];
