@@ -35,6 +35,8 @@ export const paths = {
       projects: {
         list: `${ROOTS.PROJECTS}`,
         add: `${ROOTS.PROJECTS}/add`,
+        details: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}`,
+        edit: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/edit`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {
