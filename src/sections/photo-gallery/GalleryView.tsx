@@ -1,23 +1,34 @@
 'use client';
 
+import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { SplashScreen } from '@components/loading-screen';
-import { Card, CardContent, CardHeader, Stack } from '@mui/material';
+import { useSettingsContext } from '@components/settings';
+import { Card, CardContent, Container, Stack } from '@mui/material';
 import { useFlickr } from 'src/api/flickr';
+import { paths } from 'src/routes/paths';
 import CarouselThumbnail from './carousel-thumbnail';
 
 const GalleryView = () => {
+  const settings = useSettingsContext();
+
   const { flickr, isLoading } = useFlickr();
   return (
-    <Stack spacing={3}>
-      <Card>
-        {/* todo: wrap with container and bread crumbs,:refer to section of other page views,  remove  card header and wrapping of cards */}
-        {/* TODO: the images are all cropped,show the full images */}
-        <CardHeader title="Photo Gallery" />
-        <CardContent>
-          {isLoading ? <SplashScreen /> : <CarouselThumbnail data={flickr?.photo} />}
-        </CardContent>
-      </Card>
-    </Stack>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <CustomBreadcrumbs
+        heading="Photo Gallery"
+        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Photos' }]}
+        sx={{
+          mb: { xs: 3, md: 5 },
+        }}
+      />
+      <Stack spacing={3}>
+        <Card>
+          <CardContent>
+            {isLoading ? <SplashScreen /> : <CarouselThumbnail data={flickr?.photo} />}
+          </CardContent>
+        </Card>
+      </Stack>
+    </Container>
   );
 };
 
