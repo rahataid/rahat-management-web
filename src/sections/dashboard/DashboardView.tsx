@@ -4,6 +4,7 @@ import { SplashScreen } from '@components/loading-screen';
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
+import MapView from '@sections/map-view';
 import { useFlickr } from 'src/api/flickr';
 import Bargraph from './bar-graph';
 import { shuffleArray } from './helper-function';
@@ -110,7 +111,7 @@ const DashboardView = () => {
           />
         </Grid>
       </Grid>
-      <Grid container mt={3}>
+      <Grid container mt={3} spacing={2}>
         <Grid item xs={12} md={6}>
           <Bargraph
             title="Beneficiaries by distribution point"
@@ -162,7 +163,7 @@ const DashboardView = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          Map
+          <MapView />
         </Grid>
       </Grid>
     </Container>
