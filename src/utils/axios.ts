@@ -47,4 +47,7 @@ export const endpoints = {
   vendors: {
     list: '/vendors',
   },
+  transactions: {
+    list: '/transactions',
+  },
 };

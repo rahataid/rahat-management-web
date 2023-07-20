@@ -11,17 +11,15 @@ export enum Method {
 
 export enum Status {
   ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE'
+  INACTIVE = 'INACTIVE',
 }
 
 export type ITransactionItem = {
   id: number;
   timestamp: string;
-  hash: string;
+  txHash: string;
   method: Method;
 };
-
-export type ITransactionList = ITransactionItem[];
 
 export type ITransactionStats = {
   bankedCash: number;
@@ -43,13 +41,46 @@ export type ITransactionDetails = {
   mode: Mode;
   from: string;
   to: string;
-}
+};
 
 export type ITransactionDetailsTableItem = {
-  name: string,
-  amount: number,
-  from: string,
-  to: string
-}
+  name: string;
+  amount: number;
+  from: string;
+  to: string;
+};
 
 export type ITransactionDetailsTableList = ITransactionDetailsTableItem[];
+
+export type ITransactionApiFilters = {
+  orderBy?: string;
+  order?: 'asc' | 'desc';
+  perPage?: number;
+  page?: number;
+};
+
+export type ITransactionTableFilterValue = string | string[];
+
+export type ITransactionPagination = {
+  currentPage?: number;
+  total?: number;
+  perPage: number;
+  lastPage?: number;
+};
+
+export type ITransactionList = {
+  meta: ITransactionPagination;
+  rows: ITransactionItem[];
+};
+
+/**
+ * hooks returns
+ */
+
+export interface TransactionListHookReturn {
+  transactions: ITransactionList['rows'];
+  transactionStats: ITransactionStats;
+  loading: boolean;
+  error: any;
+  meta: ITransactionList['meta'];
+}
