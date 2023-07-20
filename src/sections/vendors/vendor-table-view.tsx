@@ -32,10 +32,10 @@ import VendorTableRow from './vendor-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'Name', label: 'Name' },
-  { id: 'Projects Involved', label: 'Projects Involved' },
-  { id: 'phone', label: 'Phone' },
-  { id: 'actions', label: 'Actions', width: '88px', align: 'center' },
+  { id: 'name', label: 'Name' },
+  { id: 'isApproved', label: 'Is Approved' },
+  { id: 'walletAddress', label: 'Wallet Address' },
+  { id: '', label: '', width: '20', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
@@ -117,9 +117,9 @@ export default function VendorListView() {
               <TableBody>
                 {vendors.map((row: IVendorItem) => (
                   <VendorTableRow
-                    key={row.address}
+                    key={row.walletAddress}
                     row={row}
-                    onViewRow={() => handleViewRow(row.address)}
+                    onViewRow={() => handleViewRow(row.walletAddress)}
                   />
                 ))}
 

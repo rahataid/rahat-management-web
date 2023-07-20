@@ -8,6 +8,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
+import Label from '@components/label/label';
+import { truncateEthAddress } from '@utils/strings';
 import Iconify from 'src/components/iconify';
 import { IVendorItem } from 'src/types/vendors';
 
@@ -19,7 +21,7 @@ type Props = {
 };
 
 export default function VendorTableRow({ row, onViewRow }: Props) {
-  const { name, phone, projectInvolved } = row;
+  const { name, isApproved, walletAddress } = row;
 
   const quickEdit = useBoolean();
 
@@ -36,23 +38,24 @@ export default function VendorTableRow({ row, onViewRow }: Props) {
       </TableCell>
 
       <TableCell>
-        <ListItemText primary={projectInvolved} primaryTypographyProps={{ typography: 'body2' }} />
+        <Label variant="soft" color={isApproved ? 'success' : 'error'}>
+          {isApproved ? 'Approved' : 'Not Approved'}
+        </Label>
       </TableCell>
 
       <TableCell>
-        <ListItemText primary={phone} primaryTypographyProps={{ typography: 'body2' }} />
+        <ListItemText
+          primary={truncateEthAddress(walletAddress, 6)}
+          primaryTypographyProps={{ typography: 'body2' }}
+        />
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-        <Tooltip title="Details" placement="top" arrow>
+        <Tooltip title="View Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
-            <Iconify icon="iconamoon:eye-light" />
+            <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-
-        {/* <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton> */}
       </TableCell>
     </TableRow>
   );
