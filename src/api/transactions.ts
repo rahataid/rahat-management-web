@@ -1,14 +1,15 @@
 import TransactionsService from '@services/transactions';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { transactionDetailsTableList, transactionStats } from 'src/_mock/_transactions';
 import {
-  transactionDetails,
-  transactionDetailsTableList,
-  transactionStats,
-} from 'src/_mock/_transactions';
-import { ITransactionApiFilters, TransactionListHookReturn } from 'src/types/transactions';
+  ITransactionApiFilters,
+  ITransactionDetails,
+  ITransactionDetailsHookReturn,
+  ITransactionListHookReturn,
+} from 'src/types/transactions';
 
-export function useTransactions(params?: ITransactionApiFilters): TransactionListHookReturn {
+export function useTransactions(params?: ITransactionApiFilters): ITransactionListHookReturn {
   const { data, isLoading, error } = useQuery(['transactions', params], async () => {
     const res = await TransactionsService.list(params);
     return res;
@@ -26,10 +27,24 @@ export function useTransactions(params?: ITransactionApiFilters): TransactionLis
   };
 }
 
-export function useTransaction() {
+export function useTransaction(txHash: string): ITransactionDetailsHookReturn {
+  const { data, isLoading, error } = useQuery(['transactions', txHash], async () => {
+    const res = await TransactionsService.details(txHash);
+    return res;
+  });
+
+  const transaction = useMemo(() => data?.data || ({} as ITransactionDetails), [data?.data]);
+
+  return {
+    transaction,
+    isLoading,
+    error,
+  };
+}
+
+export function useTransactionDetailsTable(txHash: string) {
   const memoizedValue = useMemo(
     () => ({
-      transactionDetails,
       transactionDetailsTableList,
       transactionsLoading: false,
       transactionsError: null,

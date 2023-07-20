@@ -43,13 +43,13 @@ export default function TransactionTableRow({ row, selected, onViewRow }: Props)
         <Label
           variant="soft"
           color={
-            (method === 'Method 1' && 'success') ||
-            (method === 'Method 2' && 'warning') ||
-            (method === 'Method 3' && 'error') ||
+            (method === 'SMS' && 'success') ||
+            (method === 'EMAIL' && 'warning') ||
+            (method === 'QR' && 'error') ||
             'default'
           }
         >
-          {method}
+          {method || '-'}
         </Label>
       </TableCell>
 

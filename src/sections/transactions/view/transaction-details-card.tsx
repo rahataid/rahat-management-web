@@ -1,6 +1,5 @@
-
 import { useCallback } from 'react';
-import { ITransactionDetails } from "src/types/transactions";
+import { ITransactionDetails } from 'src/types/transactions';
 // mui
 import { Grid, Tooltip } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -14,147 +13,141 @@ import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 
-
 type Props = {
-  data: ITransactionDetails
+  data: ITransactionDetails;
 };
 
 type Copy = {
-    hash?: string;
-    from?: string;
-    to?: string;
-}
+  txHash?: string;
+  from?: string;
+  to?: string;
+};
 
 const gridRow = {
-    padding: 2,
-    height: 45
+  padding: 2,
+  height: 45,
 };
 
 const copyBtn = {
-    padding: '0 0 0 6px'
-}
+  padding: '0 0 0 6px',
+};
 
-function TransactionDetailsCard( {data}: Props ) {
-    const { hash, status, timestamp, mode, from, to} = data;
-    const { enqueueSnackbar } = useSnackbar();
-    const { copy } = useCopyToClipboard();
+function TransactionDetailsCard({ data }: Props) {
+  const { txHash, txStatus, timestamp, mode, from, to } = data;
+  const { enqueueSnackbar } = useSnackbar();
+  const { copy } = useCopyToClipboard();
 
-    const handleCopy = useCallback(({ hash: copyHash, from: copyFrom , to: copyTo} : Copy) => {
+  const handleCopy = useCallback(
+    ({ txHash: copyHash, from: copyFrom, to: copyTo }: Copy) => {
+      if (copyHash || copyFrom || copyTo) {
+        if (copyHash) copy(copyHash);
+        else if (copyFrom) copy(copyFrom);
+        else if (copyTo) copy(copyTo);
         enqueueSnackbar('Copied!');
-        if(copyHash) copy(copyHash);
-        else if(copyFrom) copy(copyFrom);
-        else if(copyTo) copy(copyTo);
-      }, [copy, enqueueSnackbar]);
-    
+      }
+    },
+    [copy, enqueueSnackbar]
+  );
+
   return (
-    <Card sx={{ p: 3, mb:2 }}>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">Transaction Hash:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            {hash}
-                            <Tooltip title="Copy Hash" placement="top" arrow>
-                                <IconButton
-                                    sx= {copyBtn}
-                                    color='success'
-                                    onClick={() => handleCopy({ hash })}>
-                                    <Iconify icon="ph:copy" />
-                                </IconButton>
-                            </Tooltip>
-                        </Typography>
-                    </Grid>  
-                </Grid>
-            </Stack>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">Status:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            <Label
-                            variant="soft"
-                            color={
-                                (status === 'ACTIVE' && 'success') ||
-                                (status === 'INACTIVE' && 'error') ||
-                                'default'
-                            }
-                            >
-                            {status}
-                            </Label>
-                        </Typography>
-                    </Grid>  
-                </Grid>
-            </Stack>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">Timestamp:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            {timestamp}
-                        </Typography>
-                    </Grid>  
-                </Grid>
-            </Stack>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">Transaction Mode:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            {mode}
-                        </Typography>
-                    </Grid>  
-                </Grid>
-            </Stack>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">From:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            {from}
-                            <Tooltip title="Copy From Address" placement="top" arrow>
-                                <IconButton
-                                    sx= {copyBtn}
-                                    color='success'
-                                    onClick={() => handleCopy({ from })}>
-                                    <Iconify icon="ph:copy" />
-                                </IconButton>
-                            </Tooltip>
-                        </Typography>
-                    </Grid>   
-                </Grid>
-            </Stack>
-            <Stack sx={gridRow} spacing={12}>
-                <Grid container spacing={3}> 
-                    <Grid item md={4}>
-                        <Typography variant="subtitle2">To:</Typography>
-                    </Grid>
-                    <Grid item md={8}>
-                        <Typography variant="subtitle2">
-                            {to}
-                            <Tooltip title="Copy To Address" placement="top" arrow>
-                                <IconButton
-                                    sx= {copyBtn}
-                                    color='success'
-                                    onClick={() => handleCopy({ to })}>
-                                    <Iconify icon="ph:copy" />
-                                </IconButton>
-                            </Tooltip>
-                        </Typography>
-                    </Grid>   
-                </Grid>
-            </Stack>
+    <Card sx={{ p: 3, mb: 2 }}>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">Transaction Hash:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">
+              {txHash || '-'}
+              <Tooltip title="Copy Hash" placement="top" arrow>
+                <IconButton sx={copyBtn} color="success" onClick={() => handleCopy({ txHash })}>
+                  <Iconify icon="ph:copy" />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Stack>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">Status:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">
+              <Label
+                variant="soft"
+                color={
+                  (txStatus === 'SUCCESS' && 'success') ||
+                  (txStatus === 'PENDING' && 'warning') ||
+                  (txStatus === 'NEW' && 'primary') ||
+                  (txStatus === 'FAIL' && 'error') ||
+                  (txStatus === 'ERROR' && 'error') ||
+                  'default'
+                }
+              >
+                {txStatus || '-'}
+              </Label>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Stack>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">Timestamp:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">{timestamp || '-'}</Typography>
+          </Grid>
+        </Grid>
+      </Stack>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">Transaction Mode:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">{mode || '-'}</Typography>
+          </Grid>
+        </Grid>
+      </Stack>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">From:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">
+              {from || '-'}
+              <Tooltip title="Copy From Address" placement="top" arrow>
+                <IconButton sx={copyBtn} color="success" onClick={() => handleCopy({ from })}>
+                  <Iconify icon="ph:copy" />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Stack>
+      <Stack sx={gridRow} spacing={12}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <Typography variant="subtitle2">To:</Typography>
+          </Grid>
+          <Grid item md={8}>
+            <Typography variant="subtitle2">
+              {to || '-'}
+              <Tooltip title="Copy To Address" placement="top" arrow>
+                <IconButton sx={copyBtn} color="success" onClick={() => handleCopy({ to })}>
+                  <Iconify icon="ph:copy" />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Stack>
     </Card>
-  )
+  );
 }
 
-export default TransactionDetailsCard
+export default TransactionDetailsCard;

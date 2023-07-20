@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransaction } from 'src/api/transactions';
+import { useTransaction, useTransactionDetailsTable } from 'src/api/transactions';
 // mui
 import { Button, Card, Stack, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -16,8 +16,9 @@ import TransactionDetailsCard from './transaction-details-card';
 import TransactionDetailsTableView from './transaction-details-table-view';
 
 export default function TransactionDetailsView() {
-  const { transactionDetails, transactionDetailsTableList } = useTransaction();
   const { txHash } = useParams();
+  const { transaction } = useTransaction(txHash as string);
+  const { transactionDetailsTableList } = useTransactionDetailsTable(txHash as string);
   const settings = useSettingsContext();
 
   return (
@@ -40,7 +41,7 @@ export default function TransactionDetailsView() {
           </Button>
         }
       />
-      <TransactionDetailsCard data={transactionDetails} />
+      <TransactionDetailsCard data={transaction} />
       <Card>
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
           Events
