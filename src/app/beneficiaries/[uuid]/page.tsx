@@ -7,6 +7,6 @@ export const metadata = {
   title: 'Beneficiaries: Details',
 };
 
-export default function ProductShopDetailsPage() {
+export default function BeneficiaryDetailsPage() {
   return <BeneficiariesDetailsView />;
 }

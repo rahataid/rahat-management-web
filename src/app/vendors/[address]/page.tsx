@@ -6,6 +6,6 @@ import { VendorDetailsView } from '@sections/vendors/view';
 
 // ----------------------------------------------------------------------
 
-export default function ProductShopDetailsPage() {
+export default function VendorDetailsPage() {
   return <VendorDetailsView />;
 }
