@@ -15,7 +15,7 @@ import { IProjectsList } from 'src/types/project';
 type Props = {
   open: boolean;
   onClose: () => void;
-  projects: IProjectsList;
+  projects: IProjectsList['rows'];
   onOk: () => void;
 };
 
@@ -49,8 +49,8 @@ const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Prop
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             {projects.map((option) => (
-              <MenuItem key={option.id} value={option.title}>
-                {option.title}
+              <MenuItem key={option.id} value={option.name}>
+                {option.name}
               </MenuItem>
             ))}
           </RHFSelect>

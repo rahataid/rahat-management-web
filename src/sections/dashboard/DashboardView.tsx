@@ -6,15 +6,15 @@ import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
 import { useFlickr } from 'src/api/flickr';
 import Bargraph from './bar-graph';
-import { shuffleArray } from './helper-function';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
 const DashboardView = () => {
-  const { flickr, isLoading } = useFlickr();
-  const photos = flickr?.photo;
-  const randomThreePhotos =
-    flickr?.photo?.length >= 3 ? shuffleArray(photos.slice()).slice(0, 3) : [];
+  const { flickr, isLoading } = useFlickr({
+    per_page: 3,
+    page: 1,
+  });
+
   const settings = useSettingsContext();
 
   return (
@@ -61,7 +61,7 @@ const DashboardView = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          {isLoading ? <SplashScreen /> : <PhotoGallery list={randomThreePhotos} />}
+          {isLoading ? <SplashScreen /> : <PhotoGallery list={flickr} />}
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>

@@ -24,7 +24,7 @@ const GalleryView = () => {
       <Stack spacing={3}>
         <Card>
           <CardContent>
-            {isLoading ? <SplashScreen /> : <CarouselThumbnail data={flickr?.photo} />}
+            {isLoading ? <SplashScreen /> : <CarouselThumbnail data={flickr} />}
           </CardContent>
         </Card>
       </Stack>

@@ -16,7 +16,7 @@ export interface IFlickrResponse {
 }
 
 export interface IFlickerHookReturn {
-  flickr: FlickrPhotoset;
+  flickr: FlickrPhoto[];
   isLoading: boolean;
   error: any;
 }

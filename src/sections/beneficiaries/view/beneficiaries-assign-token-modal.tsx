@@ -1,16 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { IProjectsList } from 'src/types/project';
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  projects: IProjectsList;
   onOk: () => void;
 };
 
-const BeneficiariesAssignTokenModal = ({ open, onClose, projects, onOk }: Props) => {
+const BeneficiariesAssignTokenModal = ({ open, onClose, onOk }: Props) => {
   const methods = useForm({
     // resolver: yupResolver(FormSchema),
     // defaultValues,

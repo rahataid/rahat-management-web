@@ -46,6 +46,7 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
         position: 'absolute',
         p: '2px 6px 2px 4px',
         typography: 'subtitle2',
+        color: isApproved ? 'success' : 'error',
       }}
     />
   );

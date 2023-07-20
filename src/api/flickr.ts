@@ -13,19 +13,16 @@ export function useFlickr(params?: IFlickrParams): IFlickerHookReturn {
     return response.data;
   });
 
-  const flickr = useMemo(() => {
-    const photos =
+  const flickr = useMemo(
+    () =>
       data?.photoset.photo.map((item) => ({
         title: item.title,
         coverUrl: `https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_b.jpg`,
         id: item.id,
         description: '',
-      })) || [];
-
-    return {
-      photo: photos,
-    };
-  }, [data]);
+      })) || [],
+    [data]
+  );
 
   return {
     flickr,
