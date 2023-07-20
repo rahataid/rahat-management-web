@@ -21,7 +21,7 @@ export const endpoints = {
 
 const CampaignsService = {
   list: () => axiosInstance.get(endpoints.campaigns.list),
-  create: (data) => axiosInstance.post(endpoints.campaigns.create, { ...data }),
+  create: (data: any) => axiosInstance.post(endpoints.campaigns.create, { ...data }),
   details: (id: number) => axiosInstance.get(endpoints.campaigns.details(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
 };

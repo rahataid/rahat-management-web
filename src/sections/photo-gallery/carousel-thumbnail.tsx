@@ -82,7 +82,7 @@ export default function CarouselThumbnail({ data }: Props) {
     focusOnSelect: true,
     variableWidth: true,
     centerPadding: '0px',
-    slidesToShow: data.length > 3 ? 3 : data.length,
+    slidesToShow: data?.length > 3 ? 3 : data?.length,
   });
 
   useEffect(() => {
@@ -104,14 +104,14 @@ export default function CarouselThumbnail({ data }: Props) {
         asNavFor={carouselThumb.nav}
         ref={carouselLarge.carouselRef}
       >
-        {data.map((item) => (
+        {data?.map((item) => (
           <Image key={item.id} alt={item.title} src={item.coverUrl} ratio="16/9" />
         ))}
       </Carousel>
 
       <CarouselArrowIndex
         index={carouselLarge.currentIndex}
-        total={data.length}
+        total={data?.length}
         onNext={carouselThumb.onNext}
         onPrev={carouselThumb.onPrev}
       />
@@ -119,13 +119,13 @@ export default function CarouselThumbnail({ data }: Props) {
   );
 
   const renderThumbnails = (
-    <StyledThumbnailsContainer length={data.length}>
+    <StyledThumbnailsContainer length={data?.length}>
       <Carousel
         {...carouselThumb.carouselSettings}
         asNavFor={carouselLarge.nav}
         ref={carouselThumb.carouselRef}
       >
-        {data.map((item, index) => (
+        {data?.map((item, index) => (
           <Box key={item.id} sx={{ px: 0.5 }}>
             <Avatar
               variant="rounded"
