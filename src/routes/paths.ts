@@ -46,7 +46,7 @@ export const paths = {
 
       transactions: {
         list: `${ROOTS.TRANSACTIONS}`,
-        details: (hash: string) => `${ROOTS.TRANSACTIONS}/${paramCase(hash)}`,
+        details: (txHash: string) => `${ROOTS.TRANSACTIONS}/${paramCase(txHash)}`,
       },
       beneficiaries: {
         list: `${ROOTS.BENEFICIARIES}`,
