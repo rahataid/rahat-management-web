@@ -1,13 +1,11 @@
-'use client';
-
 import { GalleryView } from '@sections/photo-gallery';
 
+export const metadata = {
+  title: 'Dashboard: Photo Gallery',
+};
+
 function PhotoGallery(): JSX.Element {
-  return (
-    <div>
-      <GalleryView />
-    </div>
-  );
+  return <GalleryView />;
 }
 
 export default PhotoGallery;

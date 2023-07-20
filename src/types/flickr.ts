@@ -9,6 +9,12 @@ export interface FlickrPhotoset {
   photo: FlickrPhoto[];
 }
 
+export interface IFlickrResponse {
+  photoset: {
+    photo: any[];
+  };
+}
+
 export interface IFlickerHookReturn {
   flickr: FlickrPhotoset;
   isLoading: boolean;
@@ -22,5 +28,5 @@ export type FlickrParams = {
   format: string;
   nojsoncallback: number;
   extras: string;
-  params?: any;
+  params?: Record<string, string>;
 };
