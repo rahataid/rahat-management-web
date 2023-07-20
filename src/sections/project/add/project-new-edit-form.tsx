@@ -15,10 +15,8 @@ import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
-import { MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { projectTypeOptions } from 'src/_mock/_project';
-import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { IProjectCreateItem } from 'src/types/project';
 
@@ -146,13 +144,13 @@ export default function ProjectAddForm({ currentProject }: Props) {
                 />
               </Stack>
 
-              <RHFSelect name="projectType" label="Project Type">
+              {/* <RHFSelect name="projectType" label="Project Type">
                 {projectTypeOptions.map((projectType) => (
                   <MenuItem key={projectType} value={projectType}>
                     {projectType}
                   </MenuItem>
                 ))}
-              </RHFSelect>
+              </RHFSelect> */}
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

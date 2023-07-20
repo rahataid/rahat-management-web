@@ -19,6 +19,11 @@ export const endpoints = {
     create: '/beneficiaries',
     details: (address: string) => `/beneficiaries/${address}`,
   },
+  projects: {
+    list: '/projects',
+    create: '/projects',
+    details: (contractAddress: string) => `/projects/${contractAddress}`,
+  },
 
   campaigns: {
     list: '/campaigns',
