@@ -10,10 +10,6 @@ export type IVendorItem = {
 export type IVendors = IVendorItem[];
 
 export type IVendorsApiFilters = {
-  name?: string;
-  projectInvolved?: string;
-  phone?: string;
-  address?: string;
   orderBy?: string;
   order?: 'asc' | 'desc';
   perPage?: number;

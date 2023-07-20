@@ -45,10 +45,6 @@ export default function VendorListView() {
 
   const defaultFilters: IVendorsApiFilters = useMemo(
     () => ({
-      name: '',
-      projectInvolved: '',
-      phone: '',
-      address: '',
       perPage: table.rowsPerPage,
       page: table.page + 1,
       orderBy: table.orderBy,
