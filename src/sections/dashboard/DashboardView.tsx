@@ -1,13 +1,20 @@
 'use client';
 
+import { SplashScreen } from '@components/loading-screen';
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
+import { useFlickr } from 'src/api/flickr';
 import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
 const DashboardView = () => {
+  const { flickr, isLoading } = useFlickr({
+    per_page: 3,
+    page: 1,
+  });
+
   const settings = useSettingsContext();
 
   return (
@@ -54,8 +61,7 @@ const DashboardView = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          {/* TODO:Make it dynamic */}
-          <PhotoGallery list={[]} />
+          {isLoading ? <SplashScreen /> : <PhotoGallery list={flickr} />}
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>

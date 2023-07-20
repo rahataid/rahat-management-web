@@ -38,33 +38,6 @@ const ProjectStatsCard = ({ data }: Props) => {
                             subtitle="Banked Beneficiary"
                         />
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <SummaryCard
-                            color="warning"
-                            icon="material-symbols:token"
-                            title="Token Issued"
-                            total={data.unbankedToken}
-                            subtitle="Unbanked Beneficiary"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <SummaryCard
-                            color="warning"
-                            icon="material-symbols:token"
-                            title="Token Issued"
-                            total={data.bankedToken}
-                            subtitle="Banked Beneficiary"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <SummaryCard
-                            color="warning"
-                            icon="material-symbols:token"
-                            title="Token Issued"
-                            total={data.unbankedToken}
-                            subtitle="Unbanked Beneficiary"
-                        />
-                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

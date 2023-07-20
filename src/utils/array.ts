@@ -12,3 +12,7 @@ export function flattenArray<T>(list: T[], key = 'children'): T[] {
 
   return flatten?.concat(children.length ? flattenArray(children, key) : children);
 }
+
+export function shuffleArray<T>(array: T[]): T[] {
+  return array.sort(() => Math.random() - 0.5);
+}

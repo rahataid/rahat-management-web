@@ -3,11 +3,11 @@ import { IBeneficiariesCreateItem, IBeneficiaryApiFilters } from 'src/types/bene
 
 const BeneficiaryService = {
   list: (params?: IBeneficiaryApiFilters) =>
-    axiosInstance.get(endpoints.beneficiary.list, { params }),
+    axiosInstance.get(endpoints.beneficiaries.list, { params }),
   create: (data: IBeneficiariesCreateItem) =>
-    axiosInstance.post(endpoints.beneficiary.create, { ...data }),
+    axiosInstance.post(endpoints.beneficiaries.create, { ...data }),
 
-  details: (uuid: string) => axiosInstance.get(endpoints.beneficiary.details(uuid)),
+  details: (uuid: string) => axiosInstance.get(endpoints.beneficiaries.details(uuid)),
 };
 
 export default BeneficiaryService;

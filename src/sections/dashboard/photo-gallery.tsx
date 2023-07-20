@@ -1,7 +1,6 @@
 import { m } from 'framer-motion';
 // @mui
 import Card, { CardProps } from '@mui/material/Card';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -23,7 +22,7 @@ interface Props extends CardProps {
   list: ItemProps[];
 }
 
-export default function PhotoGallery({ list = [], ...other }: Props) {
+export default function AppFeatured({ list, ...other }: Props) {
   const carousel = useCarousel({
     speed: 800,
     autoplay: true,
@@ -98,11 +97,15 @@ function CarouselItem({ item, active }: CarouselItemProps) {
         }}
       >
         <m.div variants={varFade().inRight}>
-          <Link color="inherit" underline="none">
-            <Typography variant="h5" noWrap>
-              {title}
-            </Typography>
-          </Link>
+          <Typography variant="overline" sx={{ color: 'primary.light' }}>
+            Featured
+          </Typography>
+        </m.div>
+
+        <m.div variants={varFade().inRight}>
+          <Typography variant="body2" noWrap>
+            {title}
+          </Typography>
         </m.div>
       </Stack>
 

@@ -1,5 +1,5 @@
 // utils
-import { flattenArray } from 'src/utils/flatten-array';
+import { flattenArray } from '@utils/array';
 // components
 import { NavListProps, NavSectionProps } from 'src/components/nav-section';
 

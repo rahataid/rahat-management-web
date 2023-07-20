@@ -16,6 +16,7 @@ const ICONS = {
   beneficiaries: icon('ion:people-outline'),
   vendors: icon('material-symbols:anchor'),
   gallery: icon('material-symbols:gallery-thumbnail-outline-rounded'),
+  // campaigns: icon('carbon:communication-unified'),
 };
 
 // ----------------------------------------------------------------------
@@ -58,6 +59,18 @@ export function useNavData() {
             path: paths.dashboard.general.vendors.list,
             icon: ICONS.vendors,
           },
+          // {
+          //   title: 'Campaigns',
+          //   path: paths.dashboard.general.campaigns.list,
+          //   icon: ICONS.campaigns,
+          //   children: [
+          //     {
+          //       title: 'List',
+          //       path: paths.dashboard.general.campaigns.list,
+          //       icon: icon('cil:list'),
+          //     },
+          //   ],
+          // },
         ],
       },
 

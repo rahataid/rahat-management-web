@@ -5,7 +5,12 @@ import { paths } from 'src/routes/paths';
 // ----------------------------------------------------------------------
 
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
+export const CAMPAIGN_HOST_API = process.env.NEXT_PUBLIC_HOST_CAMPAIGN;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
+
+export const FLICKR_APIKEY = process.env.NEXT_PUBLIC_FLICKR_APIKEY;
+export const FLICKR_PHOTOSET = process.env.NEXT_PUBLIC_FLICKR_PHOTOSET;
+export const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 export const FIREBASE_API = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

@@ -12,6 +12,7 @@ const ROOTS = {
   PROJECTS: '/projects',
   PHOTO_GALLERY: '/photo-gallery',
   VENDORS: '/vendors',
+  CAMPAIGNS: '/campaigns',
 };
 
 // ----------------------------------------------------------------------
@@ -34,6 +35,8 @@ export const paths = {
       projects: {
         list: `${ROOTS.PROJECTS}`,
         add: `${ROOTS.PROJECTS}/add`,
+        details: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}`,
+        edit: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/edit`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {
@@ -49,6 +52,12 @@ export const paths = {
         list: `${ROOTS.BENEFICIARIES}`,
         details: (address: string) => `${ROOTS.BENEFICIARIES}/${paramCase(address)}`,
         add: `${ROOTS.BENEFICIARIES}/add`,
+      },
+      campaigns: {
+        list: `${ROOTS.CAMPAIGNS}`,
+        add: `${ROOTS.CAMPAIGNS}/add`,
+        edit: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/edit`,
+        details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
       },
     },
   },

@@ -1,17 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+'use client';
+
+import { useCallback } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import Tooltip from '@mui/material/Tooltip';
 // routes
-import { useRouter, useSearchParams } from 'src/routes/hook';
+import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
+import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
@@ -20,102 +26,112 @@ import {
   TableHeadCustom,
   TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
   useTable,
 } from 'src/components/table';
 // types
 //
-import { isEqual } from 'lodash';
-import { useVendors } from 'src/api/vendors';
-import { IVendorItem, IVendorsApiFilters } from 'src/types/vendors';
-import VendorTableRow from './vendor-table-row';
+import { Button } from '@mui/material';
+import { RouterLink } from '@routes/components';
+import { useCampaigns } from 'src/api/campaigns';
+import { ICampaignItem } from 'src/types/campaigns';
+import CampaignsTableRow from './campaigns-table-row';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name' },
-  { id: 'isApproved', label: 'Is Approved' },
-  { id: 'walletAddress', label: 'Wallet Address' },
-  { id: '', label: '', width: '20', align: 'center' },
+  { id: 'name', label: 'Name', width: 200 },
+  { id: 'startTime', label: 'Start Time', width: 150 },
+  { id: 'type', label: 'Type', width: 150 },
+  { id: 'status', label: 'Status', width: 150 },
+  { id: 'transport', label: 'Transport', width: 150 },
+  { id: 'totalAudiences', label: 'Total Audiences', width: 150 },
+  { id: '', width: 20 },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function VendorListView() {
+export default function BeneficiariesListView() {
   const table = useTable();
 
-  const defaultFilters: IVendorsApiFilters = useMemo(
-    () => ({
-      perPage: table.rowsPerPage,
-      page: table.page + 1,
-      orderBy: table.orderBy,
-      order: table.order,
-    }),
-    [table.order, table.orderBy, table.page, table.rowsPerPage]
-  );
-  const [filters, setFilters] = useState(defaultFilters);
+  const { campaigns, meta } = useCampaigns();
 
-  const { vendors, meta } = useVendors(filters);
-
-  const searchParams = useSearchParams();
+  const { push } = useRouter();
 
   const settings = useSettingsContext();
 
-  const router = useRouter();
+  const confirm = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
-  const canReset = !isEqual(defaultFilters, filters);
-
-  const notFound = (!vendors.length && canReset) || !vendors.length;
+  const notFound = !campaigns.length;
 
   const handleViewRow = useCallback(
-    (address: string) => {
-      router.push(paths.dashboard.general.vendors.details(address));
+    (id: number) => {
+      push(paths.dashboard.general.campaigns.details(id));
     },
-    [router]
+    [push]
   );
-
-  useEffect(() => {
-    const searchFilters: IVendorsApiFilters = {
-      ...defaultFilters,
-      ...Object.fromEntries(searchParams.entries()),
-    };
-    setFilters(searchFilters);
-  }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Vendors: List"
+        heading="Campaigns: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.dashboard.general.campaigns.add}
+            variant="outlined"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+            color="success"
+          >
+            Add Campaign
+          </Button>
+        }
       />
-
-      {/* <Stack mb={2}>
-        <VendorCards />
-      </Stack> */}
 
       <Card>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableSelectedAction
+            dense={table.dense}
+            numSelected={table.selected.length}
+            rowCount={campaigns.length}
+            onSelectAllRows={(checked) =>
+              table.onSelectAllRows(
+                checked,
+                campaigns.map((row: ICampaignItem) => row.name.toString())
+              )
+            }
+            action={
+              <Tooltip title="Delete">
+                <IconButton color="primary" onClick={confirm.onTrue}>
+                  <Iconify icon="solar:trash-bin-trash-bold" />
+                </IconButton>
+              </Tooltip>
+            }
+          />
+
           <Scrollbar>
             <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={vendors.length}
+                rowCount={campaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
 
               <TableBody>
-                {vendors.map((row: IVendorItem) => (
-                  <VendorTableRow
-                    key={row.walletAddress}
+                {campaigns.map((row) => (
+                  <CampaignsTableRow
+                    key={row.id}
                     row={row}
-                    onViewRow={() => handleViewRow(row.walletAddress)}
+                    onViewRow={() => handleViewRow(row.id)}
                   />
                 ))}
 
@@ -133,9 +149,10 @@ export default function VendorListView() {
         <TablePaginationCustom
           count={meta?.total || 0}
           page={table.page}
-          rowsPerPage={table.rowsPerPage}
+          rowsPerPage={table?.rowsPerPage}
           onPageChange={table.onChangePage}
           onRowsPerPageChange={table.onChangeRowsPerPage}
+          //
           dense={table.dense}
           onChangeDense={table.onChangeDense}
         />
