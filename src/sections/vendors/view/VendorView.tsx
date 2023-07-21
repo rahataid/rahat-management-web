@@ -2,6 +2,7 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
+import MapView from '@sections/map-view';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
 import BasicInfoCard from './basic-info-card';
@@ -36,7 +37,7 @@ const VendorView = () => {
             <TransactionTable />
           </Grid>
           <Grid item xs={12} md={6}>
-            <BasicInfoCard data={vendor} />
+            <MapView />
           </Grid>
         </Grid>
       </Stack>
