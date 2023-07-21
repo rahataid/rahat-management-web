@@ -23,9 +23,9 @@ export default function ProjectDetailsView() {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
-          {/* <CarouselBasic4 data={_carouselsExample.slice(0, 4)} /> */}
+          {/* <CarouselBasic4 data={[]} title={'Project Title'} /> */}
         </Grid>
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} md={6} lg={4} spacing={2}>
           <ProjectActions />
           <ProjectDetailsCard />
         </Grid>
