@@ -4,8 +4,12 @@ import { IProjectApiFilters, IProjectCreateItem } from 'src/types/project';
 const ProjectsService = {
   list: (params?: IProjectApiFilters) => axiosInstance.get(endpoints.projects.list, { params }),
   create: (data: IProjectCreateItem) => axiosInstance.post(endpoints.projects.create, { ...data }),
+  // update: ({ uuid, ...rest }: Partial<IProjectCreateItem>) =>
+  //   axiosInstance.put(endpoints.projects.update(uuid), { ...rest }),
+  // delete: (uuid: string) => axiosInstance.delete(endpoints.projects.delete(uuid)),
 
-  details: (uuid: string) => axiosInstance.get(endpoints.projects.details(uuid)),
+  details: (contractAddress: string) =>
+    axiosInstance.get(endpoints.projects.details(contractAddress)),
 };
 
 export default ProjectsService;

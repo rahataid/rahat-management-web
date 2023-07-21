@@ -60,6 +60,20 @@ export interface ProjectsListHookReturn {
   meta: IProjectsList['meta'];
 }
 
+export interface IProjectItemApiResponse extends IProjectItem {
+  projectManager: string;
+  _count: {
+    beneficiaries: number;
+    vendors: number;
+  };
+}
+
+export interface IProjectDetailsHookReturn {
+  project: IProjectItemApiResponse;
+  loading: boolean;
+  error: any;
+}
+
 export type IProjectCreateItem = {
   name: string;
   location: string;
