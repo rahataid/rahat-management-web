@@ -2,24 +2,16 @@ import {
   ITransactionDetails,
   ITransactionDetailsTableList,
   ITransactionItem,
-  ITransactionList,
   ITransactionStats,
   Method,
   Mode,
-  Status,
+  txStatus,
 } from 'src/types/transactions';
-
-export const transactionList: ITransactionList = [...Array(30)].map((_, index) => ({
-  id: index,
-  timestamp: String('223/213'),
-  hash: `0x11111111111aa${index}`,
-  method: Method.QR,
-}));
 
 export const transaction: ITransactionItem = {
   id: 2,
   timestamp: '1688489466',
-  hash: '0x123456abcde',
+  txHash: '0x123456abcde',
   method: Method.QR,
 };
 
@@ -31,8 +23,8 @@ export const transactionStats: ITransactionStats = {
 };
 
 export const transactionDetails: ITransactionDetails = {
-  hash: '0x111111abcde',
-  status: Status.ACTIVE,
+  txHash: '0x111111abcde',
+  txStatus: txStatus.SUCCESS,
   timestamp: '1688489470',
   mode: Mode.ONLINE,
   from: '0x222222abcde',

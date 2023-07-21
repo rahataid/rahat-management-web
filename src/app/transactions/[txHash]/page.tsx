@@ -7,6 +7,6 @@ export const metadata = {
   title: 'Transaction: Details',
 };
 
-export default function ProductShopDetailsPage() {
+export default function TransactionDetailsPage() {
   return <TransactionDetailsView />;
 }

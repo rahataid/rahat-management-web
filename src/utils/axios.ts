@@ -31,4 +31,8 @@ export const endpoints = {
   vendors: {
     list: '/vendors',
   },
+  transactions: {
+    list: '/transactions',
+    details: (txHash: string) => `/transactions/${txHash}`,
+  },
 };

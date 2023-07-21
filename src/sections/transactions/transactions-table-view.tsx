@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -6,10 +6,9 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 // routes
-import { useRouter } from 'src/routes/hook';
+import { usePathname, useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
-import { useTransactions } from 'src/api/transactions';
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Scrollbar from 'src/components/scrollbar';
@@ -24,6 +23,9 @@ import {
 } from 'src/components/table';
 //
 import { Stack } from '@mui/material';
+import { isEqual } from 'lodash';
+import { useTransactions } from 'src/api/transactions';
+import { ITransactionApiFilters, ITransactionTableFilterValue } from 'src/types/transactions';
 import TransactionsCards from './transaction-cards';
 import TransactionTableRow from './transaction-table-row';
 
@@ -31,7 +33,7 @@ import TransactionTableRow from './transaction-table-row';
 
 const TABLE_HEAD = [
   { id: 'timestamp', label: 'Timestamp' },
-  { id: 'hash', label: 'TxHash' },
+  { id: 'txHash', label: 'TxHash' },
   { id: 'method', label: 'Method' },
   { id: '', width: '88px', align: 'center' },
 ];
@@ -39,33 +41,84 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function TransactionListView() {
-  const { transactions, transactionStats } = useTransactions();
-  
   const table = useTable();
 
   const settings = useSettingsContext();
 
   const router = useRouter();
 
-  const [tableData, setTableData] = useState(transactions);
-
-  const dataFiltered = tableData;
-
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
-
   const denseHeight = table.dense ? 52 : 72;
 
-  const notFound = !dataFiltered.length;
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const { push } = useRouter();
+
+  const defaultFilters: ITransactionApiFilters = useMemo(
+    () => ({
+      perPage: table.rowsPerPage,
+      page: table.page + 1,
+      orderBy: table.orderBy,
+      order: table.order,
+    }),
+    [table.order, table.orderBy, table.page, table.rowsPerPage]
+  );
+
+  const [filters, setFilters] = useState(defaultFilters);
+  const { transactions, transactionStats, meta } = useTransactions(filters);
+
+  const canReset = !isEqual(defaultFilters, filters);
+
+  const notFound = (!transactions.length && canReset) || !transactions.length;
+
+  const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
+    const queryParams = Object.entries(params)
+      .filter(([_, value]) => Boolean(value))
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    return queryParams === '' ? '' : `${queryParams}`;
+  }, []);
+
+  const handleFilters = useCallback(
+    (name: string, value: ITransactionTableFilterValue) => {
+      table.onResetPage();
+      setFilters((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+
+      const updatedParams = {
+        ...filters,
+        ...Object.fromEntries(searchParams.entries()),
+        [name]: value,
+      };
+      const queryString = createQueryString(updatedParams);
+      push(`${pathname}?${queryString}`);
+    },
+    [table, createQueryString, push, searchParams, filters, pathname]
+  );
+
+  const handleResetFilters = useCallback(() => {
+    setFilters(defaultFilters);
+    push(pathname);
+  }, [push, defaultFilters, pathname]);
 
   const handleViewRow = useCallback(
-    (hash: string) => {
-      router.push(paths.dashboard.general.transactions.details(hash));
+    (txHash: string) => {
+      router.push(paths.dashboard.general.transactions.details(txHash));
     },
     [router]
   );
+
+  useEffect(() => {
+    const searchFilters: ITransactionApiFilters = {
+      ...defaultFilters,
+      ...Object.fromEntries(searchParams.entries()),
+    };
+    setFilters(searchFilters);
+  }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -88,29 +141,29 @@ export default function TransactionListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={tableData.length}
+                rowCount={transactions?.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
 
               <TableBody>
-                {dataFiltered
-                  .slice(
+                {transactions
+                  ?.slice(
                     table.page * table.rowsPerPage,
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
                     <TransactionTableRow
-                      key={row.hash}
+                      key={row.txHash}
                       row={row}
-                      selected={table.selected.includes(row.hash)}
-                      onViewRow={() => handleViewRow(row.hash)}
+                      selected={table.selected.includes(row.txHash)}
+                      onViewRow={() => handleViewRow(row.txHash)}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(table?.page, table?.rowsPerPage, meta?.total || 0)}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -120,7 +173,7 @@ export default function TransactionListView() {
         </TableContainer>
 
         <TablePaginationCustom
-          count={dataFiltered.length}
+          count={meta?.total || 0}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
