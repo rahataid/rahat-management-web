@@ -1,16 +1,16 @@
 'use client';
 
-import { SplashScreen } from '@components/loading-screen';
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
+import MapView from '@sections/map-view';
 import { useFlickr } from 'src/api/flickr';
 import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
 const DashboardView = () => {
-  const { flickr, isLoading } = useFlickr({
+  const { flickr } = useFlickr({
     per_page: 3,
     page: 1,
   });
@@ -61,7 +61,7 @@ const DashboardView = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          {isLoading ? <SplashScreen /> : <PhotoGallery list={flickr} />}
+          <PhotoGallery list={flickr} />
         </Grid>
       </Grid>
       <Grid mt={3} container spacing={3}>
@@ -110,7 +110,7 @@ const DashboardView = () => {
           />
         </Grid>
       </Grid>
-      <Grid container mt={3}>
+      <Grid container mt={3} spacing={2}>
         <Grid item xs={12} md={6}>
           <Bargraph
             title="Beneficiaries by distribution point"
@@ -162,7 +162,7 @@ const DashboardView = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          Map
+          <MapView />
         </Grid>
       </Grid>
     </Container>
