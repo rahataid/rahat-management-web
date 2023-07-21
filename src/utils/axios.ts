@@ -30,6 +30,7 @@ export const endpoints = {
   },
   vendors: {
     list: '/vendors',
+    details: (walletAddress: string) => `/vendors/${walletAddress}`,
   },
   transactions: {
     list: '/transactions',

@@ -1,3 +1,20 @@
+export type IOwner = {
+  name: string;
+  id: number;
+};
+
+export type IProject = {
+  name: string;
+  id: number;
+  isApproved: boolean;
+  owner: IOwner[];
+  projectType: string;
+};
+
+export type IAddress = {
+  location: string;
+};
+
 export type IVendorItem = {
   id: number;
   name: string;
@@ -5,6 +22,19 @@ export type IVendorItem = {
   phone: string;
   address: string;
   walletAddress: string;
+};
+
+export type IVendorDetails = {
+  name: string;
+  phone: string;
+  walletAddress: string;
+  projects: IProject[];
+  email: string;
+  address: IAddress;
+  isApproved: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  deletedAt?: string;
 };
 
 export type IVendors = IVendorItem[];
@@ -32,9 +62,15 @@ export type IVendorsList = {
  * hooks returns
  */
 
-export interface VendorsListHookReturn {
+export interface IVendorsListHookReturn {
   vendors: IVendorsList['rows'];
   loading: boolean;
   error: any;
   meta: IVendorsList['meta'];
+}
+
+export interface IVendorDetailsHookReturn {
+  vendor: IVendorDetails;
+  isLoading: boolean;
+  error: any;
 }

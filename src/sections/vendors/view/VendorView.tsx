@@ -2,13 +2,17 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
-
+import MapView from '@sections/map-view';
+import { useVendor } from 'src/api/vendors';
+import { useParams } from 'src/routes/hook';
 import BasicInfoCard from './basic-info-card';
 import VendorsCards from './transaction-info-card';
 import TransactionTable from './transaction-list-card';
 
 const VendorView = () => {
   const settings = useSettingsContext();
+  const { address } = useParams();
+  const { vendor } = useVendor(address);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -25,7 +29,7 @@ const VendorView = () => {
             <VendorsCards />
           </Grid>
           <Grid item xs={12} md={4}>
-            <BasicInfoCard />
+            <BasicInfoCard data={vendor} />
           </Grid>
         </Grid>
         <Grid container spacing={3}>
@@ -33,7 +37,7 @@ const VendorView = () => {
             <TransactionTable />
           </Grid>
           <Grid item xs={12} md={6}>
-            <BasicInfoCard />
+            <MapView />
           </Grid>
         </Grid>
       </Stack>
