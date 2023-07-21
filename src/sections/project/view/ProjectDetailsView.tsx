@@ -11,14 +11,13 @@ import CreateTokenModal from './create-token-modal';
 import ProjectActions from './project-actions-card';
 import { ProjectDetailsCard } from './project-details-card';
 import ProjectDetailsChart from './project-details-chart';
+import ProjectGallery from './project-gallery-view';
 import ProjectStatsCard from './project-stats-card';
 
-// const _carouselsExample = [...Array(20)].map((_, index) => ({
-//   id: project.id,
-//   title: project.title,
-//   coverUrl: project.image,
-//   description: '',
-// }));
+const _carouselsExample = [...Array(20)].map((_, index) => ({
+  id: index,
+  coverUrl: '/assets/images/about/vision.jpg',
+}));
 type MenuOptions = {
   title: string;
   onClick: () => void;
@@ -70,7 +69,7 @@ export default function ProjectDetailsView() {
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
-          {/* <CarouselBasic4 data={[]} title={'Project Title'} /> */}
+          <ProjectGallery data={_carouselsExample} title={project.name} />
         </Grid>
         <Grid item xs={12} md={6} lg={4} spacing={2}>
           <ProjectActions leftOptions={leftActionOptions} rightOptions={rightActionOptions} />

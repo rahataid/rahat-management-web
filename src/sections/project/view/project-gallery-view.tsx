@@ -31,12 +31,12 @@ const StyledContentItem = styled('div')(({ theme }) => ({
 type Props = {
   data: {
     id: number;
-    title: string;
     coverUrl: string;
   }[];
+  title: string;
 };
 
-export default function CarouselBasic4({ data }: Props) {
+export default function CarouselBasic4({ data, title }: Props) {
   const carousel = useCarousel({
     autoplay: true,
     fade: true,
@@ -47,7 +47,7 @@ export default function CarouselBasic4({ data }: Props) {
       <CarouselArrows filled shape="rounded" onNext={carousel.onNext} onPrev={carousel.onPrev}>
         <Carousel ref={carousel.carouselRef} {...carousel.carouselSettings}>
           {data.map((item) => (
-            <CarouselItem key={item.id} item={item} />
+            <CarouselItem key={item.id} item={{ ...item, title }} />
           ))}
         </Carousel>
       </CarouselArrows>
@@ -59,7 +59,6 @@ export default function CarouselBasic4({ data }: Props) {
 
 type CarouselItemProps = {
   title: string;
-  description: string;
   coverUrl: string;
 };
 
@@ -72,7 +71,7 @@ function CarouselItem({ item }: { item: CarouselItemProps }) {
 
       <StyledContentItem>
         <Typography variant="h6" sx={{ color: 'common.white' }}>
-          {item.title}
+          {title}
         </Typography>
       </StyledContentItem>
     </Box>
