@@ -1,7 +1,5 @@
 'use client';
 
-import { paths } from 'src/routes/paths';
-
 import Iconify from 'src/components/iconify';
 // types
 //
@@ -15,7 +13,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
 type MenuOptions = {
@@ -25,48 +22,21 @@ type MenuOptions = {
   icon?: string;
 }[];
 
-const HeaderActions = () => {
-  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
-  const router = useRouter();
-  const params = useParams();
+interface IHeaderActions {
+  leftOptions: MenuOptions;
+  rightOptions: MenuOptions;
+}
 
-  const rightOptions: MenuOptions = [
-    {
-      title: 'Edit Campaign',
-      onClick: () => {
-        router.push(paths.dashboard.general.campaigns.edit(params.id as unknown as number));
-      },
-      icon: 'tabler:edit',
-      show: true,
-    },
-    {
-      title: 'Trigger Campaign',
-      onClick: () => {},
-      icon: 'grommet-icons:trigger',
-      show: true,
-    },
-  ];
-  const leftOptions: MenuOptions = [
-    {
-      title: 'Beneficiaries',
-      onClick: () => {
-        router.push(paths.dashboard.general.campaigns.edit(params.id as unknown as number));
-      },
-      show: true,
-    },
-    {
-      title: 'Vendors',
-      onClick: () => {},
-      show: true,
-    },
-  ];
+const HeaderActions = ({ leftOptions, rightOptions }: IHeaderActions) => {
+  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
 
   const handleClose = useCallback(() => {
     setOpen(null);
   }, []);
 
   const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('event', event);
+    console.log('event', event.currentTarget);
+
     setOpen(event.currentTarget);
   }, []);
 

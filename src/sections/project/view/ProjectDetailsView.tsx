@@ -1,8 +1,13 @@
 'use client';
 
 import { useSettingsContext } from '@components/settings';
+import { useBoolean } from '@hooks/use-boolean';
 import { Container, Grid } from '@mui/material';
+import { paths } from '@routes/paths';
+import { useParams, useRouter } from 'next/navigation';
+import { useProject } from 'src/api/project';
 import { useTransactions } from 'src/api/transactions';
+import CreateTokenModal from './create-token-modal';
 import ProjectActions from './project-actions-card';
 import { ProjectDetailsCard } from './project-details-card';
 import ProjectDetailsChart from './project-details-chart';
@@ -14,20 +19,69 @@ import ProjectStatsCard from './project-stats-card';
 //   coverUrl: project.image,
 //   description: '',
 // }));
+type MenuOptions = {
+  title: string;
+  onClick: () => void;
+  show: boolean;
+  icon?: string;
+}[];
 
 export default function ProjectDetailsView() {
   const settings = useSettingsContext();
   const { transactionStats } = useTransactions();
+  const router = useRouter();
+  const params = useParams();
+  const { project } = useProject(params.address);
+  const createTokenModal = useBoolean();
+
+  const rightActionOptions: MenuOptions = [
+    {
+      title: 'Create Token',
+      onClick: () => createTokenModal.onTrue(),
+      icon: 'tabler:edit',
+      show: true,
+    },
+  ];
+  const leftActionOptions: MenuOptions = [
+    {
+      title: 'Beneficiaries',
+      onClick: () => {
+        router.push(paths.dashboard.general.campaigns.edit(params.id as unknown as number));
+      },
+      show: true,
+    },
+    {
+      title: 'Vendors',
+      onClick: () => {},
+      show: true,
+    },
+  ];
+
+  const createToken = (data: { token: string }) => {
+    console.log('TokenCvreate', data);
+  };
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <CreateTokenModal
+        open={createTokenModal.value}
+        onClose={createTokenModal.onFalse}
+        onOk={createToken}
+      />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
           {/* <CarouselBasic4 data={[]} title={'Project Title'} /> */}
         </Grid>
         <Grid item xs={12} md={6} lg={4} spacing={2}>
-          <ProjectActions />
-          <ProjectDetailsCard />
+          <ProjectActions leftOptions={leftActionOptions} rightOptions={rightActionOptions} />
+          <ProjectDetailsCard
+            startDate={project.startDate}
+            endDate={project.endDate}
+            description={project.description}
+            location={project.contractAddress}
+            projectManager={project.projectManager}
+            vendorsCount={project._count?.vendors}
+          />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <ProjectStatsCard data={transactionStats} />
