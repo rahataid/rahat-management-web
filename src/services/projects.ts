@@ -12,4 +12,9 @@ const ProjectsService = {
     axiosInstance.get(endpoints.projects.details(contractAddress)),
 };
 
+export const ProjectBeneficiariesService = {
+  list: (contractAddress: string) =>
+    axiosInstance.get(endpoints.projectBeneficiaries.list(contractAddress)),
+};
+
 export default ProjectsService;

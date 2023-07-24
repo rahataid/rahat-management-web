@@ -85,3 +85,47 @@ export type IProjectCreateItem = {
 };
 
 export type IProjectTypeFilterOptions = string[];
+
+export enum BANK_STATUS {
+  UNKNOWN = 'UNKNOWN',
+  UNBANKED = 'UNBANKED',
+  BANKED = 'BANKED',
+  UNDERBANKED = 'UNDERBANKED',
+}
+
+export enum PHONE_OWNERSHIP {
+  UNKNOWN = 'UNKNOWN',
+  NO_PHONE = 'NO_PHONE',
+  FEATURE = 'FEATURE',
+  SMART = 'SMART',
+}
+
+export enum INTERNET_ACCESS {
+  UNKNOWN = 'UNKNOWN',
+  NO_INTERNET = 'NO_INTERNET',
+  PHONE_INTERNET = 'PHONE_INTERNET',
+  HOME_INTERNET = 'HOME_INTERNET',
+}
+
+export type IProjectBeneficiariesItem = {
+  bankStatus: BANK_STATUS;
+  internetAccess: INTERNET_ACCESS;
+  latitude: number;
+  longitude: number;
+  name: string;
+  phoneOwnership: PHONE_OWNERSHIP;
+  tokensAssigned: number;
+  tokensClaimed: number;
+  uuid: string;
+  walletAddress: string;
+};
+
+export interface IProjectBeneficiariesList {
+  rows: IProjectBeneficiariesItem[];
+}
+
+export interface IProjectBeneficiariesHookReturn {
+  ProjectBeneficiaries: IProjectBeneficiariesItem[];
+  loading: boolean;
+  error: any;
+}
