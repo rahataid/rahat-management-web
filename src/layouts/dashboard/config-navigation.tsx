@@ -16,6 +16,9 @@ const ICONS = {
   beneficiaries: icon('ion:people-outline'),
   vendors: icon('material-symbols:anchor'),
   gallery: icon('material-symbols:gallery-thumbnail-outline-rounded'),
+  settings: icon('fluent:settings-24-regular'),
+  users: icon('la:users'),
+
   // campaigns: icon('carbon:communication-unified'),
 };
 
@@ -71,6 +74,17 @@ export function useNavData() {
           //     },
           //   ],
           // },
+        ],
+      },
+      {
+        subheader: 'administration',
+
+        items: [
+          {
+            title: 'users',
+            path: paths.dashboard.administration.users.list,
+            icon: ICONS.users,
+          },
         ],
       },
 

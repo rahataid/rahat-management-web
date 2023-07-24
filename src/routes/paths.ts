@@ -13,6 +13,7 @@ const ROOTS = {
   PHOTO_GALLERY: '/photo-gallery',
   VENDORS: '/vendors',
   CAMPAIGNS: '/campaigns',
+  ADMINISTATION: '/administration',
 };
 
 // ----------------------------------------------------------------------
@@ -58,6 +59,11 @@ export const paths = {
         add: `${ROOTS.CAMPAIGNS}/add`,
         edit: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/edit`,
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
+      },
+    },
+    administration: {
+      users: {
+        list: `${ROOTS.ADMINISTATION}/users`,
       },
     },
   },
