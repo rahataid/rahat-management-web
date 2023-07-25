@@ -45,7 +45,7 @@ export default function ProjectDetailsView() {
     {
       title: 'Beneficiaries',
       onClick: () => {
-        router.push(paths.dashboard.general.campaigns.edit(params.id as unknown as number));
+        router.push(paths.dashboard.general.projects.beneficiaries(params.address as unknown as string));
       },
       show: true,
     },

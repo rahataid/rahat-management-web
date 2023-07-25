@@ -6,6 +6,12 @@ export enum PROJECT_TYPE {
   SPECIAL_PROJECT = 'SPECIAL_PROJECT',
   UBI = 'UBI',
 }
+export enum GENDER {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+  UNKNOWN = 'UNKNOWN',
+}
 
 export type IProjectItem = {
   id: number;
@@ -118,6 +124,8 @@ export type IProjectBeneficiariesItem = {
   tokensClaimed: number;
   uuid: string;
   walletAddress: string;
+  isApproved:boolean | string;
+  gender:GENDER;
 };
 
 export interface IProjectBeneficiariesList {
@@ -131,7 +139,7 @@ export type IProjectBeneficiariesPagination = {
 };
 
 export interface IProjectBeneficiariesHookReturn {
-  ProjectBeneficiaries: IProjectBeneficiariesItem[];
+  beneficiaries: IProjectBeneficiariesItem[];
   loading: boolean;
   error: any;
   meta:IProjectBeneficiariesPagination;

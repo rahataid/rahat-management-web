@@ -45,7 +45,6 @@ import {
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
-import { useBeneficiaries } from 'src/api/beneficiaries';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
@@ -58,8 +57,8 @@ const TABLE_HEAD = [
   { id: 'internetAccess', label: 'Internet Access', width: 150 },
   { id: 'phoneOwnership', label: 'Phone', width: 150 },
   { id: 'bankStatus', label: 'Bank', width: 150 },
-  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 150 },
-  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 150 },
+  { id: 'isApproved', label: 'Approval', width: 150 },
+  { id: 'gender', label: 'Gender', width: 150 },
   { id: '', width: 20 },
 ];
 
@@ -67,7 +66,7 @@ const TABLE_HEAD = [
 
 export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
-  const { ProjectBeneficiaries ,meta:metadata} = useProjectBeneficiaries(address);
+  const { beneficiaries ,meta} = useProjectBeneficiaries(address);
   const table = useTable();
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
@@ -84,7 +83,6 @@ export default function ProjectBeneficiariesListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
-  const { beneficiaries, meta } = useBeneficiaries(filters);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();

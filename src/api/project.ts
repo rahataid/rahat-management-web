@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import {
   IProjectApiFilters,
   IProjectBeneficiariesHookReturn,
+  IProjectBeneficiariesItem,
   IProjectDetailsHookReturn,
   ProjectsListHookReturn,
 } from 'src/types/project';
@@ -48,11 +49,11 @@ export function useProjectBeneficiaries(address: string): IProjectBeneficiariesH
     return res;
   });
 
-  const ProjectBeneficiaries = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
+  const beneficiaries = useMemo(() => data?.data?.rows.map((b:IProjectBeneficiariesItem)=>({...b,isApproved:b.isApproved? 'Approved' : 'Not Approved'})) || [], [data?.data?.rows]);
   const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
   return {
-    ProjectBeneficiaries,
+    beneficiaries,
     loading: isLoading,
     error,
     meta
