@@ -65,6 +65,7 @@ export const paths = {
     administration: {
       users: {
         list: `${ROOTS.ADMINISTATION}/users`,
+        add: `${ROOTS.ADMINISTATION}/users/add`,
       },
     },
   },
