@@ -67,7 +67,7 @@ const TABLE_HEAD = [
 
 export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
-  const { ProjectBeneficiaries } = useProjectBeneficiaries(address);
+  const { ProjectBeneficiaries ,meta:metadata} = useProjectBeneficiaries(address);
   const table = useTable();
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(

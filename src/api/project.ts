@@ -49,11 +49,12 @@ export function useProjectBeneficiaries(address: string): IProjectBeneficiariesH
   });
 
   const ProjectBeneficiaries = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
-  console.log(ProjectBeneficiaries, 'ProjectBeneficiaries');
+  const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
   return {
     ProjectBeneficiaries,
     loading: isLoading,
     error,
+    meta
   };
 }

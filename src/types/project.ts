@@ -123,9 +123,16 @@ export type IProjectBeneficiariesItem = {
 export interface IProjectBeneficiariesList {
   rows: IProjectBeneficiariesItem[];
 }
+export type IProjectBeneficiariesPagination = {
+  currentPage?: number;
+  total?: number;
+  perPage: number;
+  lastPage?: number;
+};
 
 export interface IProjectBeneficiariesHookReturn {
   ProjectBeneficiaries: IProjectBeneficiariesItem[];
   loading: boolean;
   error: any;
+  meta:IProjectBeneficiariesPagination;
 }
