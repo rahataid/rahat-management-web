@@ -11,8 +11,8 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
-import { IBeneficiariesItem } from 'src/types/beneficiaries';
 import { Checkbox } from '@mui/material';
+import { IBeneficiariesItem } from 'src/types/beneficiaries';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
   return (
     <TableRow hover>
       <TableCell padding="checkbox">
-        <Checkbox />
+        <Checkbox/>
       </TableCell>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
