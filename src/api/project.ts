@@ -1,8 +1,9 @@
-import ProjectsService from '@services/projects';
+import ProjectsService, { ProjectBeneficiariesService } from '@services/projects';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import {
   IProjectApiFilters,
+  IProjectBeneficiariesHookReturn,
   IProjectDetailsHookReturn,
   ProjectsListHookReturn,
 } from 'src/types/project';
@@ -38,5 +39,22 @@ export function useProject(address: string): IProjectDetailsHookReturn {
     project,
     loading: isLoading,
     error,
+  };
+}
+
+export function useProjectBeneficiaries(address: string): IProjectBeneficiariesHookReturn {
+  const { data, isLoading, error } = useQuery(['projectbenificiaries', address], async () => {
+    const res = await ProjectBeneficiariesService.list(address);
+    return res;
+  });
+
+  const ProjectBeneficiaries = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
+  const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
+
+  return {
+    ProjectBeneficiaries,
+    loading: isLoading,
+    error,
+    meta
   };
 }

@@ -24,6 +24,9 @@ export const endpoints = {
     create: '/projects',
     details: (contractAddress: string) => `/projects/${contractAddress}`,
   },
+  projectBeneficiaries: {
+    list: (address: string) => `/projects/${address}/beneficiaries`,
+  },
 
   campaigns: {
     list: '/campaigns',
