@@ -12,17 +12,17 @@ import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
 import { Checkbox } from '@mui/material';
-import { IBeneficiariesItem } from 'src/types/beneficiaries';
+import { IProjectBeneficiariesItem } from 'src/types/project';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IBeneficiariesItem;
+  row: IProjectBeneficiariesItem;
   onViewRow: VoidFunction;
 };
 
 export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
-  const { name, bankStatus, internetAccess, phoneOwnership, tokensAssigned, tokensClaimed } = row;
+  const { name, bankStatus, internetAccess, phoneOwnership,isApproved,gender } = row;
 
   const quickEdit = useBoolean();
 
@@ -47,9 +47,13 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
         <Label variant="soft">{bankStatus}</Label>
       </TableCell>
 
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensAssigned}</TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+      <Label variant="soft">{isApproved}</Label>
+        </TableCell>
 
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensClaimed}</TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+      <ListItemText primary={gender} primaryTypographyProps={{ typography: 'body2' }} />
+        </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
