@@ -1,7 +1,6 @@
 // routes
 import { paths } from 'src/routes/paths';
 // utils
-import { axiosInstance } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -61,15 +60,7 @@ export const tokenExpired = (exp: number) => {
 export const setSession = (accessToken: string | null) => {
   if (accessToken) {
     sessionStorage.setItem('accessToken', accessToken);
-
-    axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-
-    // This function below will handle when token is expired
-    const { exp } = jwtDecode(accessToken); // ~3 days by minimals server
-    tokenExpired(exp);
   } else {
     sessionStorage.removeItem('accessToken');
-
-    delete axiosInstance.defaults.headers.common.Authorization;
   }
 };

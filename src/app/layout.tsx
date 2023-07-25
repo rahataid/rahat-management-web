@@ -22,7 +22,6 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 // ----------------------------------------------------------------------
 
 // redux
-import ReduxProvider from 'src/redux/redux-provider';
 // locales
 // theme
 import ThemeProvider from 'src/theme';
@@ -34,7 +33,7 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // auth
 import Web3Provider from '@web3/components/Provider';
-import { AuthConsumer, AuthProvider } from 'src/auth/context/jwt';
+import AuthProvider from 'src/auth/context/jwt/provider';
 import { LocalizationProvider } from 'src/locales';
 import QueryProvider from './query-provider';
 
@@ -81,34 +80,32 @@ export default function RootLayout({ children }: Props) {
     <html lang="en" className={primaryFont.className}>
       <body>
         <Web3Provider />
-        <QueryProvider>
-          <AuthProvider>
-            <ReduxProvider>
-              <LocalizationProvider>
-                <SettingsProvider
-                  defaultSettings={{
-                    themeMode: 'light', // 'light' | 'dark'
-                    themeDirection: 'ltr', //  'rtl' | 'ltr'
-                    themeContrast: 'bold', // 'default' | 'bold'
-                    themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                    themeColorPresets: 'cyan', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                    themeStretch: false,
-                  }}
-                >
-                  <ThemeProvider>
-                    <MotionLazy>
-                      <SnackbarProvider>
-                        <SettingsDrawer />
-                        <ProgressBar />
-                        <AuthConsumer>{children}</AuthConsumer>
-                      </SnackbarProvider>
-                    </MotionLazy>
-                  </ThemeProvider>
-                </SettingsProvider>
-              </LocalizationProvider>
-            </ReduxProvider>
-          </AuthProvider>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <LocalizationProvider>
+              <SettingsProvider
+                defaultSettings={{
+                  themeMode: 'light', // 'light' | 'dark'
+                  themeDirection: 'ltr', //  'rtl' | 'ltr'
+                  themeContrast: 'bold', // 'default' | 'bold'
+                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                  themeColorPresets: 'cyan', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                  themeStretch: false,
+                }}
+              >
+                <ThemeProvider>
+                  <MotionLazy>
+                    <SnackbarProvider>
+                      <SettingsDrawer />
+                      <ProgressBar />
+                      {children}
+                    </SnackbarProvider>
+                  </MotionLazy>
+                </ThemeProvider>
+              </SettingsProvider>
+            </LocalizationProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

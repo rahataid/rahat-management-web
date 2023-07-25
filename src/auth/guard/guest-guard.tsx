@@ -1,9 +1,9 @@
-import { useCallback, useEffect } from 'react';
 // routes
-import { paths } from 'src/routes/paths';
+import { paths } from '@routes/paths';
+import { useCallback, useEffect } from 'react';
 import { useRouter } from 'src/routes/hook';
+import useAuthStore from '../context/jwt/store';
 //
-import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ type Props = {
 export default function GuestGuard({ children }: Props) {
   const router = useRouter();
 
-  const { authenticated } = useAuthContext();
+  const authenticated = useAuthStore((state) => state.isAuthenticated);
 
   const check = useCallback(() => {
     if (authenticated) {

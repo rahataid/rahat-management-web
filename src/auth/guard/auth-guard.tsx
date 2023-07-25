@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 //
-import { useAuthContext } from '../hooks';
+import useAuthStore from '../context/jwt/store';
 
 // ----------------------------------------------------------------------
 
@@ -19,8 +19,7 @@ type Props = {
 
 export default function AuthGuard({ children }: Props) {
   const router = useRouter();
-
-  const { authenticated, method } = useAuthContext();
+  const authenticated = useAuthStore((state) => state.isAuthenticated);
 
   const [checked, setChecked] = useState(false);
 
@@ -28,7 +27,7 @@ export default function AuthGuard({ children }: Props) {
     if (!authenticated) {
       const searchParams = new URLSearchParams({ returnTo: window.location.pathname }).toString();
 
-      const loginPath = loginPaths[method];
+      const loginPath = loginPaths.jwt;
 
       const href = `${loginPath}?${searchParams}`;
 
@@ -36,7 +35,7 @@ export default function AuthGuard({ children }: Props) {
     } else {
       setChecked(true);
     }
-  }, [authenticated, method, router]);
+  }, [authenticated, router]);
 
   useEffect(() => {
     check();

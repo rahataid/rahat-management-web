@@ -22,3 +22,19 @@ export function localStorageGetItem(key: string, defaultValue = '') {
 
   return value;
 }
+
+export function localStorageSetItem(key: string, value: string) {
+  const storageAvailable = localStorageAvailable();
+
+  if (storageAvailable) {
+    localStorage.setItem(key, value);
+  }
+}
+
+export function localStorageRemoveItem(key: string) {
+  const storageAvailable = localStorageAvailable();
+
+  if (storageAvailable) {
+    localStorage.removeItem(key);
+  }
+}

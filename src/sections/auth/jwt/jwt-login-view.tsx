@@ -12,17 +12,28 @@ import Typography from '@mui/material/Typography';
 // routes
 import { useRouter, useSearchParams } from 'src/routes/hook';
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
 // hooks
 // auth
-import { useAuthContext } from 'src/auth/hooks';
 // components
+import Iconify from '@components/iconify/iconify';
+import { PATH_AFTER_LOGIN } from '@config';
+import { Divider } from '@mui/material';
+import MetaMaskCard, {
+  MetamaskCardWalletProps,
+} from '@web3/components/connectorCards/MetaMaskCard';
+import { hooks as metamaskHooks } from '@web3/connectors/metaMask';
+import useAuthStore from 'src/auth/context/jwt/store';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
 export default function JwtLoginView() {
-  const { login } = useAuthContext();
+  const isMetamaskActive = metamaskHooks.useIsActive();
+  const account = metamaskHooks.useAccount();
+  const { login, loginWallet } = useAuthStore((state) => ({
+    login: state.login,
+    loginWallet: state.loginWallet,
+  }));
 
   const router = useRouter();
 
@@ -53,8 +64,7 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await login?.(data.email, '1234');
-
+      login(data.email);
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
@@ -63,9 +73,58 @@ export default function JwtLoginView() {
     }
   });
 
+  const onWalletButtonClick = async ({ connector, provider }: MetamaskCardWalletProps) => {
+    if (isMetamaskActive) {
+      if (connector?.deactivate) {
+        connector.deactivate();
+      } else {
+        connector.resetState();
+      }
+      return;
+    }
+    await connector.activate({
+      chainId: 1337,
+      rpcUrls: ['http://localhost:8545'],
+      chainName: 'Localhost',
+      nativeCurrency: {
+        name: 'ETH',
+        decimals: 18,
+        symbol: 'ETH',
+      },
+    });
+    console.log('account', account);
+    // loginWallet(account)
+  };
+
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
       <Typography variant="h4">Sign in to Rahat</Typography>
+    </Stack>
+  );
+
+  const renderWalletLogin = (
+    <Stack spacing={2.5}>
+      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+
+      <MetaMaskCard
+        component={LoadingButton}
+        title="Metamask"
+        description="MetaMask is the leading self-custodial wallet. The safe and simple way to access blockchain applications and web3."
+        walletAvatar="logos:metamask-icon"
+        onClick={onWalletButtonClick}
+        props={{
+          fullWidth: true,
+          color: 'inherit',
+          size: 'large',
+          variant: 'outlined',
+          sx: {
+            mt: 2,
+          },
+          startIcon: <Iconify icon="logos:metamask-icon" />,
+        }}
+      >
+        {isMetamaskActive ? 'Disconnect Metamask' : 'Login with Metamask'}
+      </MetaMaskCard>
     </Stack>
   );
 
@@ -88,11 +147,23 @@ export default function JwtLoginView() {
     </Stack>
   );
 
+  const dividerView = (
+    <Stack mt={2}>
+      <Divider>
+        <Typography textTransform="uppercase">or</Typography>
+      </Divider>
+    </Stack>
+  );
+
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       {renderHead}
 
       {renderForm}
+
+      {dividerView}
+
+      {renderWalletLogin}
     </FormProvider>
   );
 }
