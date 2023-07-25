@@ -16,8 +16,11 @@ import { paths } from 'src/routes/paths';
 // assets
 // components
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import ProjectsService from '@services/projects';
+import { useMutation } from '@tanstack/react-query';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
+import { IApiResponseError } from 'src/types/beneficiaries';
 import { IProjectCreateItem } from 'src/types/project';
 
 type Props = {
@@ -25,9 +28,30 @@ type Props = {
 };
 
 export default function ProjectAddForm({ currentProject }: Props) {
+  const { push } = useRouter();
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const { error, isLoading, mutate } = useMutation<
+  IProjectCreateItem,
+  IApiResponseError,
+  IProjectCreateItem
+>({
+  mutationFn: async (createData: IProjectCreateItem) => {
+    const response = await ProjectsService.create(createData);
+    return response.data;
+  },
+  onError: () => {
+    enqueueSnackbar('Error creating beneficiary', { variant: 'error' });
+  },
+  onSuccess: (data) => {
+    enqueueSnackbar('Beneficiary created successfully', { variant: 'success' });
+    reset();
+
+    push(`${paths.dashboard.general.projects.list}`);
+  },
+});
 
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -72,7 +96,7 @@ export default function ProjectAddForm({ currentProject }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await mutate(data);
       reset();
       enqueueSnackbar(currentProject ? 'Update success!' : 'Create success!');
       router.push(paths.dashboard.general.projects.list);
