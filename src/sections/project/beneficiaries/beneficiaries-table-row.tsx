@@ -19,18 +19,21 @@ import { IProjectBeneficiariesItem } from 'src/types/project';
 type Props = {
   row: IProjectBeneficiariesItem;
   onViewRow: VoidFunction;
+  onSelectRow: VoidFunction;
+  selected: boolean;
 };
 
-export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
-  const { name, bankStatus, internetAccess, phoneOwnership,isApproved,gender } = row;
+export default function BeneficiariesTableRow({ row, selected, onSelectRow, onViewRow }: Props) {
+  const { name, bankStatus, internetAccess, phoneOwnership, isApproved, gender } = row;
 
   const quickEdit = useBoolean();
 
   return (
     <TableRow hover>
       <TableCell padding="checkbox">
-        <Checkbox/>
+        <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
+
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
@@ -48,12 +51,12 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
       </TableCell>
 
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
-      <Label variant="soft">{isApproved}</Label>
-        </TableCell>
+        <Label variant="soft">{isApproved}</Label>
+      </TableCell>
 
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
-      <ListItemText primary={gender} primaryTypographyProps={{ typography: 'body2' }} />
-        </TableCell>
+        <ListItemText primary={gender} primaryTypographyProps={{ typography: 'body2' }} />
+      </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>

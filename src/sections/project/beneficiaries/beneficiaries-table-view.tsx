@@ -32,19 +32,16 @@ import {
   useTable,
 } from 'src/components/table';
 // types
-import {
-  IBeneficiariesItem,
-  IBeneficiariesTableFilterValue,
-  IBeneficiaryApiFilters,
-} from 'src/types/beneficiaries';
+import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 //
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import {
   bankStatusOptions,
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
+import { IProjectBeneficiariesItem } from 'src/types/project';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
@@ -52,21 +49,21 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: '', width: 20 },
-  { id: 'name', label: 'Name', width: 200 },
-  { id: 'internetAccess', label: 'Internet Access', width: 150 },
-  { id: 'phoneOwnership', label: 'Phone', width: 150 },
-  { id: 'bankStatus', label: 'Bank', width: 150 },
-  { id: 'isApproved', label: 'Approval', width: 150 },
-  { id: 'gender', label: 'Gender', width: 150 },
-  { id: '', width: 20 },
+  { id: '' },
+  { id: 'name', label: 'Name' },
+  { id: 'internetAccess', label: 'Internet Access' },
+  { id: 'phoneOwnership', label: 'Phone' },
+  { id: 'bankStatus', label: 'Bank' },
+  { id: 'isApproved', label: 'Approval' },
+  { id: 'gender', label: 'Gender' },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
-  const { beneficiaries ,meta} = useProjectBeneficiaries(address);
+  const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
@@ -201,15 +198,22 @@ export default function ProjectBeneficiariesListView() {
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                beneficiaries.map((row: IBeneficiariesItem) => row.name.toString())
+                beneficiaries.map((row) => row.walletAddress)
               )
             }
             action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row">
+                <Tooltip title="Delete">
+                  <IconButton color="primary" onClick={confirm.onTrue}>
+                    <Iconify icon="solar:trash-bin-trash-bold" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Assign Tokens in bulk">
+                  <Button variant="outlined" color="primary" onClick={confirm.onTrue}>
+                    Assign Tokens
+                  </Button>
+                </Tooltip>
+              </Stack>
             }
           />
 
@@ -222,14 +226,22 @@ export default function ProjectBeneficiariesListView() {
                 rowCount={beneficiaries.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    beneficiaries.map((row: IProjectBeneficiariesItem) => row.walletAddress)
+                  )
+                }
               />
 
               <TableBody>
-                {beneficiaries.map((row: IBeneficiariesItem) => (
+                {beneficiaries.map((row: IProjectBeneficiariesItem) => (
                   <BeneficiariesTableRow
                     key={row.walletAddress}
                     row={row}
                     onViewRow={() => handleViewRow(row.uuid)}
+                    selected={table.selected.includes(row.walletAddress)}
+                    onSelectRow={() => table.onSelectRow(row.walletAddress)}
                   />
                 ))}
 
