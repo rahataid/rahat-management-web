@@ -42,6 +42,7 @@ import {
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
 import { IProjectBeneficiariesItem } from 'src/types/project';
+import BeneficiariesAssignTokenModal from './assign-tokens-model';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
@@ -65,6 +66,7 @@ export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
   const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
+  const bulkAssignTokensModal = useBoolean();
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -138,6 +140,10 @@ export default function ProjectBeneficiariesListView() {
     [router]
   );
 
+  const handleBulkAssignTokens = useCallback((selected: string[]) => {
+    console.log('selected', selected);
+  }, []);
+
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -148,6 +154,12 @@ export default function ProjectBeneficiariesListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <BeneficiariesAssignTokenModal
+        open={bulkAssignTokensModal.value}
+        onClose={bulkAssignTokensModal.onFalse}
+        onOk={handleBulkAssignTokens}
+        selected={table.selected}
+      />
       <CustomBreadcrumbs
         heading="Project Beneficiaries: List"
         links={[
@@ -209,7 +221,7 @@ export default function ProjectBeneficiariesListView() {
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Assign Tokens in bulk">
-                  <Button variant="outlined" color="primary" onClick={confirm.onTrue}>
+                  <Button variant="outlined" color="primary" onClick={bulkAssignTokensModal.onTrue}>
                     Assign Tokens
                   </Button>
                 </Tooltip>
