@@ -68,6 +68,7 @@ export const paths = {
       users: {
         list: `${ROOTS.ADMINISTATION}/users`,
         add: `${ROOTS.ADMINISTATION}/users/add`,
+        details: (walletAddress: string) => `${ROOTS.ADMINISTATION}/${walletAddress}`,
       },
     },
   },
