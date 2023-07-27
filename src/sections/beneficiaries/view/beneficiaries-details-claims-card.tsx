@@ -1,6 +1,7 @@
 import TruncatedAddressButton from '@components/wallet-address-button';
 import { useBoolean } from '@hooks/use-boolean';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import { useProjects } from 'src/api/project';
 import { IBeneficiaryClaimsDetails } from 'src/types/beneficiaries';
 import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
 import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
@@ -14,6 +15,7 @@ export default function BeneficiariesDetailsCard({
 IBeneficiaryClaimsDetails) {
   const assignProjectDialog = useBoolean();
   const assignTokenDialog = useBoolean();
+  const { projects } = useProjects();
 
   return (
     <Card>
@@ -23,7 +25,7 @@ IBeneficiaryClaimsDetails) {
         onOk={() => {
           console.log('assigned');
         }}
-        projects={[]}
+        projects={projects}
       />
       <BeneficiariesAssignTokenModal
         onClose={assignTokenDialog.onFalse}

@@ -11,17 +11,17 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
-import { IBeneficiariesItem } from 'src/types/beneficiaries';
+import { IUserItem } from 'src/types/administration';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IBeneficiariesItem;
+  row: IUserItem;
   onViewRow: VoidFunction;
 };
 
-export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
-  const { name, bankStatus, internetAccess, phoneOwnership, tokensAssigned, tokensClaimed } = row;
+export default function UsersTableRow({ row, onViewRow }: Props) {
+  const { name, roles, walletAddress, isApproved } = row;
 
   const quickEdit = useBoolean();
 
@@ -33,19 +33,15 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
 
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
-        <Label variant="soft">{internetAccess}</Label>
+        <Label variant="soft">{walletAddress}</Label>
       </TableCell>
 
       <TableCell>
-        <Label variant="soft">{phoneOwnership}</Label>
+        <Label variant="soft">{roles}</Label>
       </TableCell>
       <TableCell>
-        <Label variant="soft">{bankStatus}</Label>
+        <Label variant="soft">{isApproved}</Label>
       </TableCell>
-
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensAssigned}</TableCell>
-
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensClaimed}</TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>

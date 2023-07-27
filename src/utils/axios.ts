@@ -36,4 +36,9 @@ export const endpoints = {
     list: '/transactions',
     details: (txHash: string) => `/transactions/${txHash}`,
   },
+  administration: {
+    users: {
+      list: '/users',
+    },
+  },
 };

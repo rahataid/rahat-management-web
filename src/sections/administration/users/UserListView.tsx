@@ -31,20 +31,11 @@ import {
   useTable,
 } from 'src/components/table';
 // types
-import {
-  IBeneficiariesItem,
-  IBeneficiariesTableFilterValue,
-  IBeneficiaryApiFilters,
-} from 'src/types/beneficiaries';
 //
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
-import {
-  bankStatusOptions,
-  internetAccessOptions,
-  phoneStatusOptions,
-} from 'src/_mock/_beneficiaries';
-import { useBeneficiaries } from 'src/api/beneficiaries';
+import { useUsers } from 'src/api/administration';
+import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
 import UsersTableFiltersResult from './users-table-filters-result';
 import UsersTableRow from './users-table-row';
 import UsersTableToolbar from './users-table-toolbar';
@@ -61,10 +52,10 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function BeneficiariesListView() {
+export default function UsersListView() {
   const table = useTable();
 
-  const defaultFilters: IBeneficiaryApiFilters = useMemo(
+  const defaultFilters: IUsersApiFilters = useMemo(
     () => ({
       internetAccess: '',
       bankStatus: '',
@@ -78,7 +69,7 @@ export default function BeneficiariesListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
-  const { beneficiaries, meta } = useBeneficiaries(filters);
+  const { users, meta } = useUsers(filters);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -104,10 +95,10 @@ export default function BeneficiariesListView() {
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = (!beneficiaries.length && canReset) || !beneficiaries.length;
+  const notFound = (!users.length && canReset) || !users.length;
 
   const handleFilters = useCallback(
-    (name: string, value: IBeneficiariesTableFilterValue) => {
+    (name: string, value: IUsersTableFilterValue) => {
       table.onResetPage();
       setFilters((prevState) => ({
         ...prevState,
@@ -131,14 +122,14 @@ export default function BeneficiariesListView() {
   }, [push, defaultFilters, pathname]);
 
   const handleViewRow = useCallback(
-    (uuid: string) => {
-      router.push(paths.dashboard.general.beneficiaries.details(uuid));
+    (walletAddress: string) => {
+      router.push(paths.dashboard.administration.users.details(walletAddress));
     },
     [router]
   );
 
   useEffect(() => {
-    const searchFilters: IBeneficiaryApiFilters = {
+    const searchFilters: IUsersApiFilters = {
       ...defaultFilters,
       ...Object.fromEntries(searchParams.entries()),
     };
@@ -170,9 +161,9 @@ export default function BeneficiariesListView() {
         <UsersTableToolbar
           filters={filters}
           onFilters={handleFilters}
-          internetAccessOptions={internetAccessOptions}
-          bankStatusOptions={bankStatusOptions}
-          phoneStatusOptions={phoneStatusOptions}
+          internetAccessOptions={[]}
+          bankStatusOptions={[]}
+          phoneStatusOptions={[]}
         />
 
         {canReset && (
@@ -180,7 +171,7 @@ export default function BeneficiariesListView() {
             filters={filters}
             onFilters={handleFilters}
             onResetFilters={handleResetFilters}
-            results={beneficiaries.length}
+            results={users.length}
             sx={{ p: 2.5, pt: 0 }}
           />
         )}
@@ -189,11 +180,11 @@ export default function BeneficiariesListView() {
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={beneficiaries.length}
+            rowCount={users.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                beneficiaries.map((row: IBeneficiariesItem) => row.name.toString())
+                users.map((row: IUserItem) => row.name.toString())
               )
             }
             action={
@@ -211,17 +202,17 @@ export default function BeneficiariesListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={beneficiaries.length}
+                rowCount={users.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
 
               <TableBody>
-                {beneficiaries.map((row: IBeneficiariesItem) => (
+                {users.map((row: IUserItem) => (
                   <UsersTableRow
                     key={row.walletAddress}
                     row={row}
-                    onViewRow={() => handleViewRow(row.uuid)}
+                    onViewRow={() => handleViewRow(row.walletAddress)}
                   />
                 ))}
 
