@@ -21,7 +21,7 @@ const ProjectCards = () => {
   return (
     <Grid container spacing={1}>
       {projects.map((project) => (
-        <Grid item xs={12} md={4} mt={3}>
+        <Grid key={project.contractAddress} item xs={12} md={4} mt={3}>
           <ProjectCard
             onView={onProjectView}
             onEdit={onProjectEdit}
