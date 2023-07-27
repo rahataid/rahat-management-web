@@ -85,12 +85,47 @@ export type IProjectCreateItem = {
   location: string;
   projectManager: string;
   description: string;
-  startDate: string;
-  endDate: string;
-  projectType: string;
+  startDate: string | null;
+  endDate: string | null;
+  projectType?: string;
+  contractAddress: string;
+  owner: number;
 };
 
 export type IProjectTypeFilterOptions = string[];
+
+export type IProjectDetails = {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  budget: number;
+  disbursed: number;
+  extras: {
+    target: number;
+  };
+  location: string;
+  projectType: string;
+  projectManager: string;
+  description: string;
+  contractAddress: string;
+  isApproved: true;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+  owner: [
+    {
+      id: number;
+      name: string;
+      walletAddress: string;
+    }
+  ];
+  _count: {
+    beneficiaries: number;
+    owner: number;
+    vendors: number;
+  };
+};
 
 export enum BANK_STATUS {
   UNKNOWN = 'UNKNOWN',
@@ -124,8 +159,8 @@ export type IProjectBeneficiariesItem = {
   tokensClaimed: number;
   uuid: string;
   walletAddress: string;
-  isApproved:boolean | string;
-  gender:GENDER;
+  isApproved: boolean | string;
+  gender: GENDER;
 };
 
 export interface IProjectBeneficiariesList {
@@ -142,5 +177,5 @@ export interface IProjectBeneficiariesHookReturn {
   beneficiaries: IProjectBeneficiariesItem[];
   loading: boolean;
   error: any;
-  meta:IProjectBeneficiariesPagination;
+  meta: IProjectBeneficiariesPagination;
 }

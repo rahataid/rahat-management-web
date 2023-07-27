@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 // @mui
@@ -15,61 +15,64 @@ import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
+import Iconify from '@components/iconify/iconify';
+import { Alert, AlertTitle, Button, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
+import { generateWalletAddress } from '@web3/utils';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { IApiResponseError } from 'src/types/beneficiaries';
-import { IProjectCreateItem } from 'src/types/project';
+import { IApiResponseError, IProjectCreateItem, IProjectDetails } from 'src/types/project';
 
 type Props = {
   currentProject?: IProjectCreateItem;
 };
 
-export default function ProjectAddForm({ currentProject }: Props) {
-  const { push } = useRouter();
-  const router = useRouter();
+interface FormValues extends IProjectCreateItem {}
 
+const ProjectForm: React.FC = ({ currentProject }: Props) => {
+  const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
   const { error, isLoading, mutate } = useMutation<
-  IProjectCreateItem,
-  IApiResponseError,
-  IProjectCreateItem
->({
-  mutationFn: async (createData: IProjectCreateItem) => {
-    const response = await ProjectsService.create(createData);
-    return response.data;
-  },
-  onError: () => {
-    enqueueSnackbar('Error creating beneficiary', { variant: 'error' });
-  },
-  onSuccess: (data) => {
-    enqueueSnackbar('Beneficiary created successfully', { variant: 'success' });
-    reset();
+    IProjectDetails,
+    IApiResponseError,
+    IProjectCreateItem
+  >({
+    mutationFn: async (createData: IProjectCreateItem) => {
+      const response = await ProjectsService.create(createData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error creating project', { variant: 'error' });
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar('Project created successfully', { variant: 'success' });
+      reset();
+      push(`${paths.dashboard.general.projects.list}/${data?.contractAddress}`);
+    },
+  });
 
-    push(`${paths.dashboard.general.projects.list}`);
-  },
-});
-
-  const NewBeneficiarySchema = Yup.object().shape({
+  const NewProjectSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     location: Yup.string().required('Location is required'),
     projectManager: Yup.string().required('Project Manager is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.mixed<any>().nullable().required('Start date is required'),
     endDate: Yup.mixed<any>()
+      .nullable()
       .required('End date is required')
       .test(
         'date-min',
         'End date must be later than start date',
-        (value, { parent }) => value.getTime() > parent.startDate.getTime()
+        (value, { parent }) => value.getTime() > parent.startDate?.getTime()
       ),
-    projectType: Yup.string().required('Project type is required'),
+    contractAddress: Yup.string().nullable().required('Contract address is required'),
+    owner: Yup.number(),
   });
 
-  const defaultValues = useMemo(
+  const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentProject?.name || '',
       location: currentProject?.location || '',
@@ -77,37 +80,35 @@ export default function ProjectAddForm({ currentProject }: Props) {
       description: currentProject?.description || '',
       startDate: currentProject?.startDate || null,
       endDate: currentProject?.endDate || null,
-      projectType: currentProject?.projectType || '',
+      contractAddress: currentProject?.contractAddress || '',
+      owner: 1,
     }),
     [currentProject]
   );
 
-  const methods = useForm({
-    resolver: yupResolver(NewBeneficiarySchema),
+  const methods = useForm<FormValues>({
+    resolver: yupResolver(NewProjectSchema),
     defaultValues,
   });
 
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitting },
-    control,
-  } = methods;
+  const { reset, handleSubmit, control, setValue, trigger } = methods;
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await mutate(data);
-      reset();
-      enqueueSnackbar(currentProject ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.general.projects.list);
-      console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  const handleGenerateContractAddress = useCallback(() => {
+    const { address } = generateWalletAddress();
+    setValue('contractAddress', address);
+    trigger('contractAddress');
+  }, [setValue, trigger]);
+
+  const onSubmit = useCallback((data: IProjectCreateItem) => mutate(data), [mutate]);
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error Creating Project</AlertTitle>
+          {error?.message}
+        </Alert>
+      )}
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
@@ -132,7 +133,7 @@ export default function ProjectAddForm({ currentProject }: Props) {
                 <Controller
                   name="startDate"
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
+                  render={({ field, fieldState: { error: err } }) => (
                     <DatePicker
                       {...field}
                       label="Start date"
@@ -140,8 +141,8 @@ export default function ProjectAddForm({ currentProject }: Props) {
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
+                          error: !!err,
+                          helperText: err?.message,
                         },
                       }}
                     />
@@ -151,7 +152,7 @@ export default function ProjectAddForm({ currentProject }: Props) {
                 <Controller
                   name="endDate"
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
+                  render={({ field, fieldState: { error: err } }) => (
                     <DatePicker
                       {...field}
                       label="End date"
@@ -159,14 +160,49 @@ export default function ProjectAddForm({ currentProject }: Props) {
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
+                          error: !!err,
+                          helperText: err?.message,
                         },
                       }}
                     />
                   )}
                 />
               </Stack>
+
+              <RHFTextField
+                name="contractAddress"
+                label="Contract Address"
+                InputProps={{
+                  endAdornment: (
+                    <Tooltip title="Generate Contract Address" sx={{ margin: '0 !important' }}>
+                      <Button
+                        sx={{
+                          padding: 0,
+                          margin: 0,
+                          minWidth: '40px !important',
+                          width: '40px !important',
+                          height: '40px !important',
+                          borderRadius: '50%',
+                          marginRight: '-12px !important',
+                        }}
+                        startIcon={
+                          <Iconify
+                            sx={{
+                              width: 24,
+                              height: 24,
+                              margin: '0px !important',
+                              marginRight: '-12px !important',
+                            }}
+                            icon="ph:wallet-duotone"
+                            onClick={handleGenerateContractAddress}
+                          />
+                        }
+                      />
+                    </Tooltip>
+                  ),
+                }}
+                sx={{ padding: '0 !important' }}
+              />
 
               {/* <RHFSelect name="projectType" label="Project Type">
                 {projectTypeOptions.map((projectType) => (
@@ -178,13 +214,8 @@ export default function ProjectAddForm({ currentProject }: Props) {
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton
-                type="submit"
-                variant="outlined"
-                color="success"
-                loading={isSubmitting}
-              >
-                {!currentProject ? 'Create Project' : 'Save Changes'}
+              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+                Create Project
               </LoadingButton>
             </Stack>
           </Card>
@@ -192,4 +223,6 @@ export default function ProjectAddForm({ currentProject }: Props) {
       </Grid>
     </FormProvider>
   );
-}
+};
+
+export default memo(ProjectForm);
