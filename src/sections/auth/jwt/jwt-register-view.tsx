@@ -25,6 +25,7 @@ import Iconify from '@components/iconify/iconify';
 import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard from '@web3/components/connectorCards/MetaMaskCard';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
@@ -35,6 +36,7 @@ export default function JwtRegisterView() {
   const { register } = useAuthStore((state) => ({
     register: state.register,
   }));
+  const networkSettings = useAppStore((state) => state.blockchain);
 
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -127,16 +129,7 @@ export default function JwtRegisterView() {
               <InputAdornment position="end">
                 <MetaMaskCard
                   onClick={async ({ connector }) => {
-                    await connector.activate({
-                      chainId: 97,
-                      rpcUrls: ['https://api.zan.top/node/v1/bsc/testnet/public'],
-                      chainName: 'BNB',
-                      nativeCurrency: {
-                        name: 'ETH',
-                        decimals: 18,
-                        symbol: 'ETH',
-                      },
-                    });
+                    await connector.activate(networkSettings);
                     setValue('walletAddress', account || '');
                   }}
                   component={IconButton}

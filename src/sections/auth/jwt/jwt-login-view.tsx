@@ -30,6 +30,7 @@ import { setWalletName } from '@utils/storage-available';
 import { useWeb3React } from '@web3-react/core';
 import { getName } from '@web3/utils';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
@@ -38,12 +39,15 @@ export default function JwtLoginView() {
   const { connector } = useWeb3React();
   const isMetamaskActive = metamaskHooks.useIsActive();
   const account = metamaskHooks.useAccount();
+
   const { login, loginWallet, user, error } = useAuthStore((state) => ({
     login: state.login,
     loginWallet: state.loginWallet,
     user: state.user,
     error: state.error,
   }));
+  const networkSettings = useAppStore((state) => state.blockchain);
+
   const [userNotRegistered, setUserNotRegistered] = useState(false);
 
   const router = useRouter();
@@ -94,19 +98,9 @@ export default function JwtLoginView() {
         }
         return;
       }
-      await metamaskConnector.activate({
-        chainId: 97,
-        rpcUrls: ['https://api.zan.top/node/v1/bsc/testnet/public'],
-        chainName: 'BNB',
-        nativeCurrency: {
-          name: 'ETH',
-          decimals: 18,
-          symbol: 'ETH',
-        },
-      });
-      console.log('account', account);
+      await metamaskConnector.activate(networkSettings);
     },
-    [isMetamaskActive, account]
+    [isMetamaskActive, networkSettings]
   );
 
   useEffect(() => {

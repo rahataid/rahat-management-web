@@ -14,6 +14,10 @@ axiosInstance.interceptors.response.use(
 // ----------------------------------------------------------------------
 
 export const endpoints = {
+  appSettings: {
+    blockchain: '/app/blockchain',
+    contracts: '/app/contracts',
+  },
   auth: {
     loginWallet: '/auths/login-wallet',
     login: '/auths/login',

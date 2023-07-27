@@ -4,6 +4,7 @@ import { LoadingScreen } from '@components/loading-screen';
 import { getToken, getWalletName } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
+import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
 type Props = {
@@ -17,6 +18,12 @@ const AuthProvider = ({ children }: Props) => {
     isAuthenticated: state.isAuthenticated,
     isInitialized: state.isInitialized,
     walletName: state.walletName,
+  }));
+  const { setContracts, setBlockchain } = useAppStore((state) => ({
+    blockchain: state.blockchain,
+    contracts: state.contracts,
+    setBlockchain: state.setBlockchain,
+    setContracts: state.setContracts,
   }));
 
   useEffect(() => {
@@ -34,6 +41,11 @@ const AuthProvider = ({ children }: Props) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    setBlockchain();
+    setContracts();
+  }, [setBlockchain, setContracts]);
 
   // attempt to connect metamask eagerly on mount
   useEffect(() => {

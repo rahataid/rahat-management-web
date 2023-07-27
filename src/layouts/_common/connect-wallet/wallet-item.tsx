@@ -11,6 +11,7 @@ import Iconify from 'src/components/iconify/iconify';
 import { truncateEthAddress } from 'src/utils/strings';
 
 import { MetaMask } from '@web3-react/metamask';
+import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
 // const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
@@ -41,6 +42,7 @@ export default function WalletItem({
   activeChainId,
 }: WalletItemProps) {
   const authStore = useAuthStore();
+  const networkSettings = useAppStore((state) => state.blockchain);
 
   const renderAvatar = (
     <ListItemAvatar>
@@ -92,7 +94,7 @@ export default function WalletItem({
           size="small"
           variant="contained"
           onClick={async () => {
-            await connector.activate();
+            await connector.activate(networkSettings);
           }}
         >
           Connect
