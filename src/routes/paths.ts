@@ -25,7 +25,8 @@ export const paths = {
 
   // AUTH
   auth: {
-    login: `${ROOTS.AUTH}/jwt/login`,
+    login: `${ROOTS.AUTH}/login`,
+    register: `${ROOTS.AUTH}/register`,
   },
 
   dashboard: {
@@ -38,7 +39,8 @@ export const paths = {
         add: `${ROOTS.PROJECTS}/add`,
         details: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}`,
         edit: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/edit`,
-        beneficiaries:(contractAddress: string)=>`${ROOTS.PROJECTS}/${contractAddress}/beneficiaries`,
+        beneficiaries: (contractAddress: string) =>
+          `${ROOTS.PROJECTS}/${contractAddress}/beneficiaries`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {

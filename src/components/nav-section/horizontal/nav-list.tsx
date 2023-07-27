@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // @mui
-import Stack from '@mui/material/Stack';
-import Popover from '@mui/material/Popover';
 import { appBarClasses } from '@mui/material/AppBar';
+import Popover from '@mui/material/Popover';
+import Stack from '@mui/material/Stack';
 // routes
 import { usePathname } from 'src/routes/hook';
 import { useActiveLink } from 'src/routes/hook/use-active-link';
 //
-import { NavListProps, NavConfigProps } from '../types';
+import { NavConfigProps, NavListProps } from '../types';
 import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------

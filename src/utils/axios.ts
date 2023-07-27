@@ -15,9 +15,11 @@ axiosInstance.interceptors.response.use(
 
 export const endpoints = {
   auth: {
-    loginWallet: '/auth/login-wallet',
-    login: '/auth/login',
-    register: '/auth/register',
+    loginWallet: '/auths/login-wallet',
+    login: '/auths/login',
+    // todo:change to the real enpoint
+    register: '/users/register',
+    create: '/users',
   },
   beneficiaries: {
     list: '/beneficiaries',

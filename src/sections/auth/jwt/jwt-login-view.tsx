@@ -1,7 +1,7 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 // @mui
@@ -18,22 +18,33 @@ import { useRouter, useSearchParams } from 'src/routes/hook';
 import Iconify from '@components/iconify/iconify';
 import { PATH_AFTER_LOGIN } from '@config';
 import { Divider } from '@mui/material';
+import Link from '@mui/material/Link';
+import { paths } from '@routes/paths';
 import MetaMaskCard, {
   MetamaskCardWalletProps,
 } from '@web3/components/connectorCards/MetaMaskCard';
 import { hooks as metamaskHooks } from '@web3/connectors/metaMask';
-import useAuthStore from 'src/auth/context/jwt/store';
+
+import { RouterLink } from '@routes/components';
+import { setWalletName } from '@utils/storage-available';
+import { useWeb3React } from '@web3-react/core';
+import { getName } from '@web3/utils';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
 export default function JwtLoginView() {
+  const { connector } = useWeb3React();
   const isMetamaskActive = metamaskHooks.useIsActive();
   const account = metamaskHooks.useAccount();
-  const { login, loginWallet } = useAuthStore((state) => ({
+  const { login, loginWallet, user, error } = useAuthStore((state) => ({
     login: state.login,
     loginWallet: state.loginWallet,
+    user: state.user,
+    error: state.error,
   }));
+  const [userNotRegistered, setUserNotRegistered] = useState(false);
 
   const router = useRouter();
 
@@ -66,35 +77,53 @@ export default function JwtLoginView() {
     try {
       login(data.email);
       router.push(returnTo || PATH_AFTER_LOGIN);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      setErrorMsg(typeof err === 'string' ? err : err.message);
     }
   });
 
-  const onWalletButtonClick = async ({ connector, provider }: MetamaskCardWalletProps) => {
-    if (isMetamaskActive) {
-      if (connector?.deactivate) {
-        connector.deactivate();
-      } else {
-        connector.resetState();
+  const onWalletButtonClick = useCallback(
+    async ({ connector: metamaskConnector }: MetamaskCardWalletProps) => {
+      if (isMetamaskActive) {
+        if (metamaskConnector?.deactivate) {
+          metamaskConnector.deactivate();
+        } else {
+          metamaskConnector.resetState();
+        }
+        return;
       }
-      return;
+      await metamaskConnector.activate({
+        chainId: 97,
+        rpcUrls: ['https://api.zan.top/node/v1/bsc/testnet/public'],
+        chainName: 'BNB',
+        nativeCurrency: {
+          name: 'ETH',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      });
+      console.log('account', account);
+    },
+    [isMetamaskActive, account]
+  );
+
+  useEffect(() => {
+    if (account && !user) {
+      loginWallet(account);
     }
-    await connector.activate({
-      chainId: 1337,
-      rpcUrls: ['http://localhost:8545'],
-      chainName: 'Localhost',
-      nativeCurrency: {
-        name: 'ETH',
-        decimals: 18,
-        symbol: 'ETH',
-      },
-    });
-    console.log('account', account);
-    // loginWallet(account)
-  };
+  }, [account, loginWallet, returnTo, router, user]);
+
+  useEffect(() => {
+    if (user && connector) {
+      setWalletName(getName(connector));
+      router.push(returnTo || PATH_AFTER_LOGIN);
+    }
+    if (error?.statusCode === 404) {
+      setUserNotRegistered(true);
+    }
+  }, [user, returnTo, router, error?.statusCode, connector]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
@@ -103,8 +132,8 @@ export default function JwtLoginView() {
   );
 
   const renderWalletLogin = (
-    <Stack spacing={2.5}>
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+    <Stack spacing={0.5}>
+      {!!error && isMetamaskActive && <Alert severity="error">{error.message}</Alert>}
 
       <MetaMaskCard
         component={LoadingButton}
@@ -125,6 +154,16 @@ export default function JwtLoginView() {
       >
         {isMetamaskActive ? 'Disconnect Metamask' : 'Login with Metamask'}
       </MetaMaskCard>
+
+      {userNotRegistered && (
+        <Stack direction="row" spacing={0.5}>
+          <Typography variant="body2">New user?</Typography>
+
+          <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
+            Create an account
+          </Link>
+        </Stack>
+      )}
     </Stack>
   );
 

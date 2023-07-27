@@ -1,8 +1,10 @@
+'use client';
+
 // routes
 import { paths } from '@routes/paths';
 import { useCallback, useEffect } from 'react';
 import { useRouter } from 'src/routes/hook';
-import useAuthStore from '../context/jwt/store';
+import useAuthStore from 'src/store/auths';
 //
 
 // ----------------------------------------------------------------------
@@ -15,6 +17,7 @@ export default function GuestGuard({ children }: Props) {
   const router = useRouter();
 
   const authenticated = useAuthStore((state) => state.isAuthenticated);
+  // const { isActive } = useWeb3React();
 
   const check = useCallback(() => {
     if (authenticated) {

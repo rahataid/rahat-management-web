@@ -38,3 +38,27 @@ export function localStorageRemoveItem(key: string) {
     localStorage.removeItem(key);
   }
 }
+
+export function setToken(value: string): void {
+  localStorageSetItem('accessToken', value);
+}
+
+export function clearToken(): void {
+  localStorageRemoveItem('accessToken');
+}
+
+export function getToken(): string | undefined {
+  return localStorageGetItem('accessToken');
+}
+
+export function setWalletName(value: string): void {
+  localStorageSetItem('walletName', value);
+}
+
+export function getWalletName(): string | undefined {
+  return localStorageGetItem('walletName');
+}
+
+export function removeWalletName(): void {
+  localStorageRemoveItem('walletName');
+}

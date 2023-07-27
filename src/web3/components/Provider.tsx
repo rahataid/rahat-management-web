@@ -13,16 +13,20 @@ const connectors: [MetaMask | Network, Web3ReactHooks][] = [
   [network, networkHooks],
 ];
 
-function Child() {
+type Props = {
+  children: React.ReactNode;
+};
+
+function Child({ children }: Props) {
   const { connector } = useWeb3React();
   console.log(`Priority Connector is: ${getName(connector)}`);
-  return null;
+  return children;
 }
 
-export default function Web3Provider() {
+export default function ProviderExample({ children }: Props) {
   return (
     <Web3ReactProvider connectors={connectors}>
-      <Child />
+      <Child>{children}</Child>
     </Web3ReactProvider>
   );
 }

@@ -1,9 +1,13 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 // routes
 import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 //
-import useAuthStore from '../context/jwt/store';
+import { SplashScreen } from '@components/loading-screen';
+import { useWeb3React } from '@web3-react/core';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +24,8 @@ type Props = {
 export default function AuthGuard({ children }: Props) {
   const router = useRouter();
   const authenticated = useAuthStore((state) => state.isAuthenticated);
+  const initialized = useAuthStore((state) => state.isInitialized);
+  const { isActivating } = useWeb3React();
 
   const [checked, setChecked] = useState(false);
 
@@ -44,6 +50,9 @@ export default function AuthGuard({ children }: Props) {
 
   if (!checked) {
     return null;
+  }
+  if (isActivating && !initialized) {
+    return <SplashScreen />;
   }
 
   return <>{children}</>;

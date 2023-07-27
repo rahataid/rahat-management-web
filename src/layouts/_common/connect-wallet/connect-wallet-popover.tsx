@@ -16,7 +16,10 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 //
 import { Button } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard from '@web3/components/connectorCards/MetaMaskCard';
+import { getName } from '@web3/utils';
+import useAuthStore from 'src/store/auths';
 import WalletItem from './wallet-item';
 
 // ----------------------------------------------------------------------
@@ -25,7 +28,8 @@ import WalletItem from './wallet-item';
 
 export default function WalletConnectPopover() {
   const drawer = useBoolean();
-  // const isActive =
+  const { connector, isActive } = useWeb3React();
+  const authStore = useAuthStore();
 
   const smUp = useResponsive('up', 'sm');
 
@@ -56,12 +60,28 @@ export default function WalletConnectPopover() {
     </Scrollbar>
   );
 
+  const disconnectWalletButton = () => {
+    if (connector?.deactivate) {
+      connector.deactivate();
+    } else {
+      connector.resetState();
+    }
+    authStore.disconnectWallet();
+  };
+
+  const connectButton = isActive ? (
+    <Button variant="outlined" onClick={disconnectWalletButton}>
+      Disconnect {getName(connector)}
+    </Button>
+  ) : (
+    <Button variant="outlined" onClick={drawer.onTrue}>
+      Connect Wallet
+    </Button>
+  );
+
   return (
     <>
-      <Button variant="outlined" onClick={drawer.onTrue}>
-        Connect Wallet
-      </Button>
-
+      {connectButton}
       <Drawer
         open={drawer.value}
         onClose={drawer.onFalse}

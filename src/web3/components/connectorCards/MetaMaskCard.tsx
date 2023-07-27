@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -43,7 +43,7 @@ export default function MetaMaskCard<C extends React.ComponentType<MetamaskCardW
   const chainId = useChainId();
   const accounts = useAccounts();
   const isActivating = useIsActivating();
-
+ 
   const isActive = useIsActive();
 
   const provider = useProvider();
@@ -51,12 +51,7 @@ export default function MetaMaskCard<C extends React.ComponentType<MetamaskCardW
 
   const [error, setError] = useState<Error | undefined>(undefined);
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    metaMask.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to metamask');
-    });
-  }, []);
+
 
   return (
     <Component

@@ -13,7 +13,6 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // routes
 import { RouterLink } from 'src/routes/components';
 import { useRouter, useSearchParams } from 'src/routes/hook';
@@ -22,13 +21,20 @@ import { paths } from 'src/routes/paths';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
 // auth
 // components
+import Iconify from '@components/iconify/iconify';
+import { useWeb3React } from '@web3-react/core';
+import MetaMaskCard from '@web3/components/connectorCards/MetaMaskCard';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import Iconify from 'src/components/iconify';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
 export default function JwtRegisterView() {
   const router = useRouter();
+  const { account } = useWeb3React();
+  const { register } = useAuthStore((state) => ({
+    register: state.register,
+  }));
 
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -36,20 +42,16 @@ export default function JwtRegisterView() {
 
   const returnTo = searchParams.get('returnTo');
 
-  const password = useBoolean();
-
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    name: Yup.string().required('Name required'),
+    email: Yup.string().optional().email('Email must be a valid email address'),
+    walletAddress: Yup.string().required('Wallet Address is required'),
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
-    password: '',
+    walletAddress: account ?? '',
   };
 
   const methods = useForm({
@@ -61,16 +63,17 @@ export default function JwtRegisterView() {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // await register?.(data.email, data.password, data.firstName, data.lastName);
+      await register?.(data.name, data.walletAddress, data.email);
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
-      reset();
+      // reset();
       setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   });
@@ -82,7 +85,7 @@ export default function JwtRegisterView() {
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2"> Already have an account? </Typography>
 
-        <Link href={paths.auth.jwt.login} component={RouterLink} variant="subtitle2">
+        <Link href={paths.auth.login} component={RouterLink} variant="subtitle2">
           Sign in
         </Link>
       </Stack>
@@ -112,22 +115,37 @@ export default function JwtRegisterView() {
         {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="name" label="Name" />
+          <RHFTextField name="email" label="Email address" />
         </Stack>
 
-        <RHFTextField name="email" label="Email address" />
-
         <RHFTextField
-          name="password"
-          label="Password"
-          type={password.value ? 'text' : 'password'}
+          name="walletAddress"
+          label="Wallet Address"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
+                <MetaMaskCard
+                  onClick={async ({ connector }) => {
+                    await connector.activate({
+                      chainId: 97,
+                      rpcUrls: ['https://api.zan.top/node/v1/bsc/testnet/public'],
+                      chainName: 'BNB',
+                      nativeCurrency: {
+                        name: 'ETH',
+                        decimals: 18,
+                        symbol: 'ETH',
+                      },
+                    });
+                    setValue('walletAddress', account || '');
+                  }}
+                  component={IconButton}
+                  props={{
+                    edge: 'end',
+                  }}
+                >
+                  <Iconify icon="solar:wallet-outline" />
+                </MetaMaskCard>
               </InputAdornment>
             ),
           }}

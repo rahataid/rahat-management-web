@@ -7,13 +7,12 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { Status } from '@web3/components/Status';
-import { hooks } from '@web3/connectors/metaMask';
 import Iconify from 'src/components/iconify/iconify';
 import { truncateEthAddress } from 'src/utils/strings';
 
 import { MetaMask } from '@web3-react/metamask';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+// const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
 type WalletItemProps = {
   connector: MetaMask;
