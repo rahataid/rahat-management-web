@@ -11,6 +11,7 @@ import Iconify from 'src/components/iconify/iconify';
 import { truncateEthAddress } from 'src/utils/strings';
 
 import { MetaMask } from '@web3-react/metamask';
+import useAuthStore from 'src/store/auths';
 
 // const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
@@ -39,6 +40,8 @@ export default function WalletItem({
   error,
   activeChainId,
 }: WalletItemProps) {
+  const authStore = useAuthStore();
+
   const renderAvatar = (
     <ListItemAvatar>
       {walletAvatar && (
@@ -69,20 +72,19 @@ export default function WalletItem({
     />
   );
 
+  const disconnectWallet = () => {
+    if (connector?.deactivate) {
+      connector.deactivate();
+    } else {
+      connector.resetState();
+    }
+    authStore.disconnectWallet();
+  };
+
   const walletAction = (
     <Stack spacing={1} direction="row" sx={{ mt: 1.5 }}>
       {isActive ? (
-        <Button
-          size="small"
-          variant="contained"
-          onClick={() => {
-            if (connector?.deactivate) {
-              connector.deactivate();
-            } else {
-              connector.resetState();
-            }
-          }}
-        >
+        <Button size="small" variant="contained" onClick={disconnectWallet}>
           Disconnect
         </Button>
       ) : (
