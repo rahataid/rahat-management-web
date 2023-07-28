@@ -6,8 +6,9 @@ const BeneficiaryService = {
     axiosInstance.get(endpoints.beneficiaries.list, { params }),
   create: (data: IBeneficiariesCreateItem) =>
     axiosInstance.post(endpoints.beneficiaries.create, { ...data }),
-
   details: (uuid: string) => axiosInstance.get(endpoints.beneficiaries.details(uuid)),
+  assignProject: (uuid: string, data: any) =>
+    axiosInstance.post(endpoints.beneficiaries.assignProject(uuid), { ...data }),
 };
 
 export default BeneficiaryService;
