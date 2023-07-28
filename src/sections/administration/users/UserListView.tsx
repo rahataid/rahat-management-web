@@ -34,8 +34,12 @@ import {
 //
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import AdministrationService from '@services/administration';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useUsers } from 'src/api/administration';
 import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
+import UserDetails from './user-details-modal';
 import UsersTableFiltersResult from './users-table-filters-result';
 import UsersTableRow from './users-table-row';
 import UsersTableToolbar from './users-table-toolbar';
@@ -54,6 +58,20 @@ const TABLE_HEAD = [
 
 export default function UsersListView() {
   const table = useTable();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { error, mutateAsync } = useMutation({
+    mutationFn: async (walletAddress: string) => {
+      const res = await AdministrationService.approve(walletAddress);
+      return res.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Approving User', { variant: 'error' });
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar('User Approved', { variant: 'success' });
+    },
+  });
 
   const defaultFilters: IUsersApiFilters = useMemo(
     () => ({
@@ -70,6 +88,8 @@ export default function UsersListView() {
   );
   const [filters, setFilters] = useState(defaultFilters);
   const { users, meta } = useUsers(filters);
+  const userDetailsModal = useBoolean();
+  const [viewUser, setViewUser] = useState<IUserItem>({});
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -86,8 +106,6 @@ export default function UsersListView() {
   }, []);
 
   const settings = useSettingsContext();
-
-  const router = useRouter();
 
   const confirm = useBoolean();
 
@@ -122,11 +140,20 @@ export default function UsersListView() {
   }, [push, defaultFilters, pathname]);
 
   const handleViewRow = useCallback(
-    (walletAddress: string) => {
-      router.push(paths.dashboard.administration.users.details(walletAddress));
+    (user: IUserItem) => {
+      userDetailsModal.onTrue();
+      setViewUser(user);
     },
-    [router]
+    [userDetailsModal]
   );
+
+  const handleUserActivate = async (walletAddress: string) => {
+    await mutateAsync(walletAddress);
+  };
+
+  const handleUserChangeRole = (s, p) => {
+    console.log('s,p', s, p);
+  };
 
   useEffect(() => {
     const searchFilters: IUsersApiFilters = {
@@ -138,6 +165,13 @@ export default function UsersListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <UserDetails
+        open={userDetailsModal.value}
+        onClose={userDetailsModal.onFalse}
+        user={viewUser}
+        onActivate={handleUserActivate}
+        onChangeRole={handleUserChangeRole}
+      />
       <CustomBreadcrumbs
         heading="Users: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
@@ -212,7 +246,7 @@ export default function UsersListView() {
                   <UsersTableRow
                     key={row.walletAddress}
                     row={row}
-                    onViewRow={() => handleViewRow(row.walletAddress)}
+                    onViewRow={() => handleViewRow(row)}
                   />
                 ))}
 

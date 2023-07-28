@@ -19,7 +19,7 @@ export function useUsers(params?: IUsersApiFilters): IUsersListHookReturn {
       data?.rows.map((u: IUserItem) => ({
         ...u,
         roles: u.roles || 'N/A',
-        isApproved: u.isApproved ? 'Approved' : 'Not Approved',
+        status: u.isApproved ? 'Approved' : 'Not Approved',
       })) || [],
     [data?.rows]
   );

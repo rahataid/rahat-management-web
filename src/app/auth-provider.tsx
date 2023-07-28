@@ -2,6 +2,7 @@
 
 import { LoadingScreen } from '@components/loading-screen';
 import { getToken, getWalletName } from '@utils/storage-available';
+import { useWeb3React } from '@web3-react/core';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
@@ -25,6 +26,8 @@ const AuthProvider = ({ children }: Props) => {
     setBlockchain: state.setBlockchain,
     setContracts: state.setContracts,
   }));
+  const { isActive } = useWeb3React();
+  // console.log('isActive', isActive);
 
   useEffect(() => {
     if (token && localWalletName) {
@@ -40,7 +43,7 @@ const AuthProvider = ({ children }: Props) => {
         walletName: undefined,
       });
     }
-  }, []);
+  }, [isActive]);
 
   useEffect(() => {
     setBlockchain();

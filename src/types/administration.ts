@@ -3,7 +3,8 @@ export type IUserItem = {
   email?: string;
   name: string;
   roles: string;
-  isApproved: boolean | string;
+  isApproved: boolean;
+  status: string;
   walletAddress: string;
   createdAt: string;
   updatedAt: string;

@@ -21,7 +21,7 @@ type Props = {
 };
 
 export default function UsersTableRow({ row, onViewRow }: Props) {
-  const { name, roles, walletAddress, isApproved } = row;
+  const { name, roles, walletAddress, isApproved, status } = row;
 
   const quickEdit = useBoolean();
 
@@ -40,7 +40,9 @@ export default function UsersTableRow({ row, onViewRow }: Props) {
         <Label variant="soft">{roles}</Label>
       </TableCell>
       <TableCell>
-        <Label variant="soft">{isApproved}</Label>
+        <Label variant="soft" color={isApproved ? 'primary' : 'warning'}>
+          {status}
+        </Label>
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>

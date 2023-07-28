@@ -53,6 +53,7 @@ export const endpoints = {
   administration: {
     users: {
       list: '/users',
+      approve: (walletAddress: string) => `/users/${walletAddress}/approve`,
     },
   },
 };
