@@ -190,7 +190,6 @@ export default function UsersListView() {
           </Button>
         }
       />
-      x
       <Card>
         <UsersTableToolbar
           filters={filters}
