@@ -30,14 +30,6 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
   const [isActive, setIsActive] = useState(user.isApproved);
   const [role, setRole] = useState(user.roles);
 
-  const onSubmit = handleSubmit(async () => {
-    try {
-      console.log('submit');
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
   const handleActivateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsActive(event.target.checked);
     onActivate(user.walletAddress, event.target.checked);
@@ -75,18 +67,6 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'admin'}
-                    onChange={handleRoleChange}
-                    value="admin"
-                    name="admin"
-                    color="success"
-                  />
-                }
-                label="Admin"
-              />
-              <FormControlLabel
-                control={
-                  <Switch
                     checked={role === 'user'}
                     onChange={handleRoleChange}
                     value="user"
@@ -95,6 +75,30 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
                   />
                 }
                 label="User"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={role === 'manager'}
+                    onChange={handleRoleChange}
+                    value="manager"
+                    name="manager"
+                    color="success"
+                  />
+                }
+                label="Manager"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={role === 'donor'}
+                    onChange={handleRoleChange}
+                    value="donor"
+                    name="donor"
+                    color="success"
+                  />
+                }
+                label="Donor"
               />
             </Stack>
           </FormGroup>
