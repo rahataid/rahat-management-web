@@ -22,7 +22,7 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
   const { uuid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, isLoading, mutate } = useMutation<
+  const { error, isLoading, data, mutate } = useMutation<
     IAssignProjectDetails,
     IApiResponseError,
     IAssignProjectItem
