@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Button,
   Dialog,
   DialogActions,
@@ -8,62 +10,109 @@ import {
   MenuItem,
   Stack,
 } from '@mui/material';
+import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFSelect } from 'src/components/hook-form';
 import { IProjectsList } from 'src/types/project';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+import LoadingButton from '@mui/lab/LoadingButton';
+import BeneficiaryService from '@services/beneficiaries';
+import { useMutation } from '@tanstack/react-query';
+import { enqueueSnackbar } from 'notistack';
+import {
+  IApiResponseError,
+  IAssignProjectDetails,
+  IAssignProjectItem,
+} from 'src/types/beneficiaries';
+import * as Yup from 'yup';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   projects: IProjectsList['rows'];
   onOk: () => void;
+  uuid: string;
 };
 
-const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Props) => {
-  const methods = useForm({
-    // resolver: yupResolver(FormSchema),
-    // defaultValues,
+interface FormValues extends IAssignProjectItem {}
+
+const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, uuid }: Props) => {
+  const AssignProjectSchema = Yup.object().shape({
+    projectId: Yup.number().required('Project must be selected'),
   });
 
-  const { handleSubmit } = methods;
+  const defaultValues = useMemo<FormValues>(
+    () => ({
+      projectId: null,
+    }),
+    []
+  );
 
-  const onSubmit = handleSubmit(async () => {
-    try {
-      console.log('submit');
-    } catch (error) {
-      console.error(error);
-    }
+  const methods = useForm<FormValues>({
+    resolver: yupResolver(AssignProjectSchema),
+    defaultValues,
   });
+
+  const { handleSubmit, reset: formReset } = methods;
+
+  const { error, isLoading, mutate } = useMutation<
+    IAssignProjectDetails,
+    IApiResponseError,
+    IAssignProjectItem
+  >({
+    mutationFn: async (updateData: IAssignProjectItem) => {
+      const response = await BeneficiaryService.assignProject(uuid, updateData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Assigning Project', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Project Assigned Successfully', { variant: 'success' });
+      formReset();
+      onClose();
+    },
+  });
+
+  const onSubmit = useCallback((data: IAssignProjectItem) => mutate(data), [mutate]);
+
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Assign Project</DialogTitle>
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        {error && (
+          <Alert severity="error">
+            <AlertTitle>Error Creating Project</AlertTitle>
+            {error?.message}
+          </Alert>
+        )}
+        <DialogTitle>Assign Project</DialogTitle>
 
-      <DialogContent sx={{ color: 'text.secondary' }}>
-        Select Project To Assign Beneficiary
-      </DialogContent>
+        <DialogContent sx={{ color: 'text.secondary' }}>
+          Select the project to be assigned to the beneficiary
+        </DialogContent>
 
-      <Stack sx={{ p: 2 }} spacing={5}>
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <RHFSelect name="singleSelect" label="Projects" color="success">
+        <Stack sx={{ p: 2 }} spacing={5}>
+          <RHFSelect name="projectId" label="Projects" color="success">
             <MenuItem value="">None</MenuItem>
             <Divider sx={{ borderStyle: 'dashed' }} />
 
             {projects.map((option) => (
-              <MenuItem key={option.id} value={option.name}>
+              <MenuItem key={option.id} value={option.id}>
                 {option.name}
               </MenuItem>
             ))}
           </RHFSelect>
-        </FormProvider>
-      </Stack>
-      <DialogActions>
-        <Button variant="text" color="success" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button disabled variant="text" onClick={onOk} autoFocus>
-          Add
-        </Button>
-      </DialogActions>
+        </Stack>
+        <DialogActions>
+          <Button variant="text" onClick={onClose}>
+            Cancel
+          </Button>
+          <LoadingButton type="submit" variant="text" color="success" loading={isLoading}>
+            Assign
+          </LoadingButton>
+        </DialogActions>
+      </FormProvider>
     </Dialog>
   );
 };

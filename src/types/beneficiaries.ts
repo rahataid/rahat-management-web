@@ -123,6 +123,7 @@ export type IBeneficiaryClaimsDetails = {
   claimedAmount: number;
   receivedAmount: number;
   walletAddress: string;
+  uuid: string;
 };
 
 export type IBeneficiaryDetailsTableItem = {
@@ -155,3 +156,9 @@ export type IApiResponseError = {
   success: boolean;
   timestamp: number;
 };
+
+export type IAssignProjectItem = {
+  projectId: number | null;
+};
+
+export type IAssignProjectDetails = {};

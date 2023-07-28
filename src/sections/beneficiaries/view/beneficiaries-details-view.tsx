@@ -42,7 +42,7 @@ export default function BeneficiariesDetailsView() {
           <BeneficiariesDetailsCard data={beneficiary} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <BeneficiariesDetailsClaimsCard walletAddress={beneficiary?.walletAddress} />
+          <BeneficiariesDetailsClaimsCard walletAddress={beneficiary?.walletAddress} uuid={uuid} />
         </Grid>
       </Grid>
 

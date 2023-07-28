@@ -7,12 +7,13 @@ import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-moda
 import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
 export default function BeneficiariesDetailsCard({
+  // claimedAmount,
+  // receivedAmount,
   // claimedDate,
   // receivedDate,
+  uuid,
   walletAddress,
-}: // claimedAmount,
-// receivedAmount,
-IBeneficiaryClaimsDetails) {
+}: IBeneficiaryClaimsDetails) {
   const assignProjectDialog = useBoolean();
   const assignTokenDialog = useBoolean();
   const { projects } = useProjects();
@@ -20,6 +21,7 @@ IBeneficiaryClaimsDetails) {
   return (
     <Card>
       <BeneficiariesAssignProjectModal
+        uuid={uuid}
         onClose={assignProjectDialog.onFalse}
         open={assignProjectDialog.value}
         onOk={() => {
