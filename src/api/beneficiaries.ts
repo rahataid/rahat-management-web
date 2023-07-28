@@ -33,7 +33,7 @@ export function useBeneficiary(uuid: string) {
     return res;
   });
 
-  const beneficiary = useMemo(() => data?.data || ({} as IBeneficiaryDetails), [data?.data]);
+  const beneficiary = useMemo(() => data?.data || {}, [data?.data]) as IBeneficiaryDetails;
 
   return {
     beneficiary,

@@ -122,8 +122,6 @@ export type IBeneficiaryClaimsDetails = {
   claimedDate: string;
   claimedAmount: number;
   receivedAmount: number;
-  walletAddress: string;
-  uuid: string;
 };
 
 export type IBeneficiaryDetailsTableItem = {

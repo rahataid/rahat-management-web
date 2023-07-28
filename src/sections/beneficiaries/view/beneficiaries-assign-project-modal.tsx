@@ -10,21 +10,14 @@ import {
   MenuItem,
   Stack,
 } from '@mui/material';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFSelect } from 'src/components/hook-form';
 import { IProjectsList } from 'src/types/project';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import BeneficiaryService from '@services/beneficiaries';
-import { useMutation } from '@tanstack/react-query';
-import { enqueueSnackbar } from 'notistack';
-import {
-  IApiResponseError,
-  IAssignProjectDetails,
-  IAssignProjectItem,
-} from 'src/types/beneficiaries';
+import { IAssignProjectItem } from 'src/types/beneficiaries';
 import * as Yup from 'yup';
 
 type Props = {
@@ -32,14 +25,13 @@ type Props = {
   onClose: () => void;
   projects: IProjectsList['rows'];
   onOk: () => void;
-  uuid: string;
 };
 
 interface FormValues extends IAssignProjectItem {}
 
-const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, uuid }: Props) => {
+const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Props) => {
   const AssignProjectSchema = Yup.object().shape({
-    projectId: Yup.number().required('Project must be selected'),
+    projectId: Yup.string().required('Project must be selected'),
   });
 
   const defaultValues = useMemo<FormValues>(
@@ -54,36 +46,19 @@ const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, uuid }
     defaultValues,
   });
 
-  const { handleSubmit, reset: formReset } = methods;
-
-  const { error, isLoading, mutate } = useMutation<
-    IAssignProjectDetails,
-    IApiResponseError,
-    IAssignProjectItem
-  >({
-    mutationFn: async (updateData: IAssignProjectItem) => {
-      const response = await BeneficiaryService.assignProject(uuid, updateData);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Assigning Project', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Project Assigned Successfully', { variant: 'success' });
-      formReset();
-      onClose();
-    },
-  });
-
-  const onSubmit = useCallback((data: IAssignProjectItem) => mutate(data), [mutate]);
+  const {
+    handleSubmit,
+    reset: formReset,
+    formState: { errors, isSubmitting },
+  } = methods;
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        {error && (
+      <FormProvider methods={methods} onSubmit={handleSubmit(onOk)}>
+        {errors && (
           <Alert severity="error">
             <AlertTitle>Error Creating Project</AlertTitle>
-            {error?.message}
+            {errors?.projectId?.message}
           </Alert>
         )}
         <DialogTitle>Assign Project</DialogTitle>
@@ -108,7 +83,7 @@ const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, uuid }
           <Button variant="text" onClick={onClose}>
             Cancel
           </Button>
-          <LoadingButton type="submit" variant="text" color="success" loading={isLoading}>
+          <LoadingButton type="submit" variant="text" color="success" loading={isSubmitting}>
             Assign
           </LoadingButton>
         </DialogActions>

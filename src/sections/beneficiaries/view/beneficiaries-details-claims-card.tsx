@@ -1,32 +1,52 @@
 import TruncatedAddressButton from '@components/wallet-address-button';
 import { useBoolean } from '@hooks/use-boolean';
+import { IApiResponseError } from '@hooks/user-error-handler';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import BeneficiaryService from '@services/beneficiaries';
+import { useMutation } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
+import { useSnackbar } from 'notistack';
 import { useProjects } from 'src/api/project';
-import { IBeneficiaryClaimsDetails } from 'src/types/beneficiaries';
+import {
+  IAssignProjectDetails,
+  IAssignProjectItem,
+  IBeneficiaryClaimsDetails,
+} from 'src/types/beneficiaries';
 import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
 import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
-export default function BeneficiariesDetailsCard({
-  // claimedAmount,
-  // receivedAmount,
-  // claimedDate,
-  // receivedDate,
-  uuid,
-  walletAddress,
-}: IBeneficiaryClaimsDetails) {
+export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiaryClaimsDetails) {
   const assignProjectDialog = useBoolean();
   const assignTokenDialog = useBoolean();
   const { projects } = useProjects();
+  const { uuid } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { error, isLoading, mutate } = useMutation<
+    IAssignProjectDetails,
+    IApiResponseError,
+    IAssignProjectItem
+  >({
+    mutationFn: async (updateData: IAssignProjectItem) => {
+      const response = await BeneficiaryService.assignProject(uuid, updateData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Assigning Project', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Project Assigned Successfully', { variant: 'success' });
+    },
+  });
+
+  const handleProjectAssign = (data) => mutate(data);
 
   return (
     <Card>
       <BeneficiariesAssignProjectModal
-        uuid={uuid}
         onClose={assignProjectDialog.onFalse}
         open={assignProjectDialog.value}
-        onOk={() => {
-          console.log('assigned');
-        }}
+        onOk={handleProjectAssign}
         projects={projects}
       />
       <BeneficiariesAssignTokenModal
