@@ -4,11 +4,26 @@ import { CustomFile } from 'src/components/upload';
 
 export type IUserTableFilterValue = string | string[];
 
+export enum Role {
+  User = 'User',
+  Donor = 'Donor',
+  Manager = 'Manager',
+}
+
 export type IUserTableFilters = {
   name: string;
-  role: string[];
-  status: string;
+  email?: string;
+  role?: Role;
+  walletAddress: string;
 };
+
+export interface IUserDetails {
+  name: string;
+  email?: string;
+  walletAddress: string;
+  profileImage?: string;
+  role?: Role;
+}
 
 // ----------------------------------------------------------------------
 

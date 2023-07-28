@@ -23,6 +23,7 @@ type Props = {
 };
 
 const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) => {
+  console.log('user', user);
   const methods = useForm();
 
   const { handleSubmit } = methods;
