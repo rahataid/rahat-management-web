@@ -16,6 +16,7 @@ export enum GENDER {
 export type IProjectItem = {
   id: number;
   budget: number;
+  location: string;
   contractAddress: string;
   name: string;
   createdAt: string | Date;
@@ -81,6 +82,7 @@ export interface IProjectDetailsHookReturn {
 }
 
 export type IProjectCreateItem = {
+  id?: number;
   name: string;
   location: string;
   projectManager: string;
@@ -109,7 +111,6 @@ export type IProjectUpdateItem = {
   deletedAt?: string;
   isApproved?: boolean;
 };
-
 
 export type IProjectTypeFilterOptions = string[];
 

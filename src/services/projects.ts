@@ -3,10 +3,9 @@ import { IProjectApiFilters, IProjectCreateItem, IProjectUpdateItem } from 'src/
 
 const ProjectsService = {
   list: (params?: IProjectApiFilters) => axiosInstance.get(endpoints.projects.list, { params }),
-  listbyId: (id:number ) => axiosInstance.get(endpoints.projects.listbyId(id)),
   create: (data: IProjectCreateItem) => axiosInstance.post(endpoints.projects.create, { ...data }),
-  update: ({ id, ...rest }: IProjectUpdateItem) =>
-    axiosInstance.patch(endpoints.projects.update(id), { ...rest }),
+  update: (id: number, data: IProjectUpdateItem) =>
+    axiosInstance.patch(endpoints.projects.update(id), { ...data }),
   // delete: (uuid: string) => axiosInstance.delete(endpoints.projects.delete(uuid)),
 
   details: (contractAddress: string) =>

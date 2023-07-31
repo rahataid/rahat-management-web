@@ -1,7 +1,7 @@
 import { ProjectUpdateFormView } from '@sections/project/edit';
 
 export const metadata = {
-  title: 'Dashboard: Create a new project',
+  title: 'Dashboard: Update project',
 };
 
 export default function ProjectCreatePage() {

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 // @mui
@@ -21,34 +21,47 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
 import { generateWalletAddress } from '@web3/utils';
+import { parseISO } from 'date-fns';
+import { useParams } from 'next/navigation';
+import { useProject } from 'src/api/project';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { IApiResponseError, IProjectCreateItem, IProjectDetails } from 'src/types/project';
+import {
+  IApiResponseError,
+  IProjectCreateItem,
+  IProjectDetails,
+  IProjectUpdateItem,
+} from 'src/types/project';
 
 type Props = {
-  currentProject?: IProjectCreateItem;
+  currentProject?: IProjectUpdateItem;
 };
 
 interface FormValues extends IProjectCreateItem {}
 
 const ProjectForm: React.FC = ({ currentProject }: Props) => {
+  const params = useParams();
+
+  const { project } = useProject(params.address);
+
   const { push } = useRouter();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const { error, isLoading, mutate } = useMutation<
     IProjectDetails,
     IApiResponseError,
-    IProjectCreateItem
+    IProjectUpdateItem
   >({
-    mutationFn: async (createData: IProjectCreateItem) => {
-      const response = await ProjectsService.create(createData);
+    mutationFn: async (updateData: IProjectUpdateItem) => {
+      const response = await ProjectsService.update(project?.id, updateData);
       return response.data;
     },
     onError: () => {
-      enqueueSnackbar('Error creating project', { variant: 'error' });
+      enqueueSnackbar('Error updating project', { variant: 'error' });
     },
     onSuccess: (data) => {
-      enqueueSnackbar('Project created successfully', { variant: 'success' });
+      enqueueSnackbar('Project updated successfully', { variant: 'success' });
       reset();
       push(`${paths.dashboard.general.projects.list}/${data?.contractAddress}`);
     },
@@ -93,13 +106,28 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
 
   const { reset, handleSubmit, control, setValue, trigger } = methods;
 
-  const handleGenerateContractAddress = useCallback(() => {
+  useEffect(() => {
+    if (project) {
+      Object.entries(project).forEach(([key, value]) => {
+        const formKey = key as keyof FormValues;
+
+        if (formKey === 'startDate' || formKey === 'endDate') {
+          const dateObject: any = parseISO(value as string);
+          setValue(formKey, dateObject);
+        } else {
+          setValue(formKey, value);
+        }
+      });
+    }
+  }, [project, setValue]);
+
+  const handleGenerateContractAddress: any = useCallback(() => {
     const { address } = generateWalletAddress();
     setValue('contractAddress', address);
     trigger('contractAddress');
   }, [setValue, trigger]);
 
-  const onSubmit = useCallback((data: IProjectCreateItem) => mutate(data), [mutate]);
+  const onSubmit: any = useCallback((data: IProjectUpdateItem) => mutate(data), [mutate]);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -215,7 +243,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
-                Create Project
+                Update Project
               </LoadingButton>
             </Stack>
           </Card>
