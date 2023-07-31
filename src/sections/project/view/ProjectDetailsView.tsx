@@ -31,6 +31,7 @@ export default function ProjectDetailsView() {
   const router = useRouter();
   const params = useParams();
   const { project } = useProject(params.address);
+  console.log({project})
   const createTokenModal = useBoolean();
 
   const rightActionOptions: MenuOptions = [
