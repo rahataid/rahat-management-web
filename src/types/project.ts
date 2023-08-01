@@ -95,21 +95,12 @@ export type IProjectCreateItem = {
 };
 
 export type IProjectUpdateItem = {
-  id: number;
-  name?: string;
-  startDate?: string;
-  endDate?: string;
-  owner?: number;
-  budget?: number;
-  disbursed?: number;
-  extras?: string;
+  name: string;
+  startDate?: string | Date | null;
+  endDate?: string | Date | null;
   location?: string;
-  projectType?: string;
   projectManager?: string;
   description?: string;
-  contractAddress?: string;
-  deletedAt?: string;
-  isApproved?: boolean;
 };
 
 export type IProjectTypeFilterOptions = string[];

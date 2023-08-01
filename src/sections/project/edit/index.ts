@@ -1,1 +1,1 @@
-export { default as ProjectUpdateFormView } from './project-edit-view';
+export { default as ProjectUpdateFormView } from './ProjectEditView';

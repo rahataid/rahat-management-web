@@ -11,35 +11,24 @@ import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
 import { useRouter } from 'src/routes/hook';
-import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
-import Iconify from '@components/iconify/iconify';
-import { Alert, AlertTitle, Button, Tooltip } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { paths } from '@routes/paths';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
-import { generateWalletAddress } from '@web3/utils';
 import { parseISO } from 'date-fns';
 import { useParams } from 'next/navigation';
 import { useProject } from 'src/api/project';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import {
-  IApiResponseError,
-  IProjectCreateItem,
-  IProjectDetails,
-  IProjectUpdateItem,
-} from 'src/types/project';
+import { IApiResponseError, IProjectDetails, IProjectUpdateItem } from 'src/types/project';
 
-type Props = {
-  currentProject?: IProjectUpdateItem;
-};
+interface FormValues extends IProjectUpdateItem {}
 
-interface FormValues extends IProjectCreateItem {}
-
-const ProjectForm: React.FC = ({ currentProject }: Props) => {
+const ProjectForm: React.FC = () => {
   const params = useParams();
 
   const { project } = useProject(params.address);
@@ -54,16 +43,16 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     IProjectUpdateItem
   >({
     mutationFn: async (updateData: IProjectUpdateItem) => {
-      const response = await ProjectsService.update(project?.id, updateData);
+      const response = await ProjectsService.update(params.address, updateData);
       return response.data;
     },
     onError: () => {
       enqueueSnackbar('Error updating project', { variant: 'error' });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       enqueueSnackbar('Project updated successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.projects.list}/${data?.contractAddress}`);
+      push(`${paths.dashboard.general.projects.details(params.address)}`);
     },
   });
 
@@ -72,8 +61,8 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     location: Yup.string().required('Location is required'),
     projectManager: Yup.string().required('Project Manager is required'),
     description: Yup.string().required('Description is required'),
-    startDate: Yup.mixed<any>().nullable().required('Start date is required'),
-    endDate: Yup.mixed<any>()
+    startDate: Yup.date().nullable().required('Start date is required'),
+    endDate: Yup.date()
       .nullable()
       .required('End date is required')
       .test(
@@ -81,22 +70,25 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
         'End date must be later than start date',
         (value, { parent }) => value.getTime() > parent.startDate?.getTime()
       ),
-    contractAddress: Yup.string().nullable().required('Contract address is required'),
-    owner: Yup.number(),
   });
 
   const defaultValues = useMemo<FormValues>(
     () => ({
-      name: currentProject?.name || '',
-      location: currentProject?.location || '',
-      projectManager: currentProject?.projectManager || '',
-      description: currentProject?.description || '',
-      startDate: currentProject?.startDate || null,
-      endDate: currentProject?.endDate || null,
-      contractAddress: currentProject?.contractAddress || '',
-      owner: 1,
+      name: project?.name || '',
+      location: project?.location || '',
+      projectManager: project?.projectManager || '',
+      description: project?.description || '',
+      startDate: String(project?.startDate) || null,
+      endDate: String(project?.endDate) || null,
     }),
-    [currentProject]
+    [
+      project?.description,
+      project?.endDate,
+      project?.location,
+      project?.name,
+      project?.projectManager,
+      project?.startDate,
+    ]
   );
 
   const methods = useForm<FormValues>({
@@ -104,28 +96,33 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control, setValue, trigger } = methods;
+  const { reset, handleSubmit, control, setValue } = methods;
 
   useEffect(() => {
     if (project) {
-      Object.entries(project).forEach(([key, value]) => {
+      const defaultValuesKeys = Object.keys(defaultValues) as (keyof FormValues)[];
+      const projectKeys = Object.keys(project) as (keyof FormValues)[];
+
+      const keysToSet = defaultValuesKeys.filter((key) => projectKeys.includes(key));
+
+      keysToSet.forEach((key) => {
+        const value = project[key];
         const formKey = key as keyof FormValues;
 
         if (formKey === 'startDate' || formKey === 'endDate') {
           const dateObject: any = parseISO(value as string);
           setValue(formKey, dateObject);
         } else {
-          setValue(formKey, value);
+          setValue(formKey, value as string);
         }
       });
     }
-  }, [project, setValue]);
-
-  const handleGenerateContractAddress: any = useCallback(() => {
-    const { address } = generateWalletAddress();
-    setValue('contractAddress', address);
-    trigger('contractAddress');
-  }, [setValue, trigger]);
+  }, [project, setValue, defaultValues]);
+  // const handleGenerateContractAddress: any = useCallback(() => {
+  //   const { address } = generateWalletAddress();
+  //   setValue('contractAddress', address);
+  //   trigger('contractAddress');
+  // }, [setValue, trigger]);
 
   const onSubmit: any = useCallback((data: IProjectUpdateItem) => mutate(data), [mutate]);
 
@@ -196,49 +193,6 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
                   )}
                 />
               </Stack>
-
-              <RHFTextField
-                name="contractAddress"
-                label="Contract Address"
-                InputProps={{
-                  endAdornment: (
-                    <Tooltip title="Generate Contract Address" sx={{ margin: '0 !important' }}>
-                      <Button
-                        sx={{
-                          padding: 0,
-                          margin: 0,
-                          minWidth: '40px !important',
-                          width: '40px !important',
-                          height: '40px !important',
-                          borderRadius: '50%',
-                          marginRight: '-12px !important',
-                        }}
-                        startIcon={
-                          <Iconify
-                            sx={{
-                              width: 24,
-                              height: 24,
-                              margin: '0px !important',
-                              marginRight: '-12px !important',
-                            }}
-                            icon="ph:wallet-duotone"
-                            onClick={handleGenerateContractAddress}
-                          />
-                        }
-                      />
-                    </Tooltip>
-                  ),
-                }}
-                sx={{ padding: '0 !important' }}
-              />
-
-              {/* <RHFSelect name="projectType" label="Project Type">
-                {projectTypeOptions.map((projectType) => (
-                  <MenuItem key={projectType} value={projectType}>
-                    {projectType}
-                  </MenuItem>
-                ))}
-              </RHFSelect> */}
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

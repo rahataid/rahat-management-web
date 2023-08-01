@@ -4,7 +4,7 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { Container } from '@mui/material';
 import { paths } from '@routes/paths';
-import ProjectEditForm from './project-new-edit-form';
+import ProjectEditForm from './project-edit-form';
 
 const ProjectEditView = () => {
   const settings = useSettingsContext();

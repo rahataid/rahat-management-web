@@ -35,11 +35,12 @@ export const endpoints = {
     list: '/projects',
     listbyId: (id: number) => `/projects/${id}`,
     create: '/projects',
-    update: (projectId: number) => `/projects/${projectId}`,
+    update: (address: string) => `/projects/${address}`,
     details: (contractAddress: string) => `/projects/${contractAddress}`,
-  },
-  projectBeneficiaries: {
-    list: (address: string) => `/projects/${address}/beneficiaries`,
+
+    beneficiaries: {
+      list: (address: string) => `/projects/${address}/beneficiaries`,
+    },
   },
 
   campaigns: {
