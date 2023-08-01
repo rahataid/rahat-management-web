@@ -135,13 +135,22 @@ export type IBeneficiaryDetailsTableList = IBeneficiaryDetailsTableItem[];
 
 export type IBeneficiariesCreateItem = {
   name: string;
-  phone: string | null;
   gender: GENDER | null;
   phoneOwnership: PHONE_OWNERSHIP | null;
   bankStatus: BANK_STATUS | null;
   internetAccess: INTERNET_ACCESS | null;
   dob: Date | null;
   walletAddress: string;
+  longitude: number | null;
+  latitude: number | null;
+};
+export type IBeneficiariesEditItem = {
+  name: string;
+  gender: GENDER | null;
+  phoneOwnership: PHONE_OWNERSHIP | null;
+  bankStatus: BANK_STATUS | null;
+  internetAccess: INTERNET_ACCESS | null;
+  dob: Date | null;
   longitude: number | null;
   latitude: number | null;
 };

@@ -18,22 +18,24 @@ const useAppStore = create<AppStoreType>((set) => ({
   contracts: undefined,
   blockchain: undefined,
   setContracts: async () => {
-    const { data } = await AppSettingService.getBlockchainSettings();
+    const { data } = await AppSettingService.getContracts();
 
     set({ contracts: data?.value });
   },
   setBlockchain: async () => {
-    const { data } = await AppSettingService.getContracts();
+    const {
+      data: { value },
+    } = await AppSettingService.getBlockchainSettings();
     const blockchain = {
-      chainId: data?.chainId,
-      chainName: data?.chainName,
-      rpcUrls: [data?.networkUrl],
+      chainId: value?.chainId,
+      chainName: value?.chainName,
+      rpcUrls: [value?.networkUrl],
       nativeCurrency: {
-        name: data?.nativeCurrency?.name,
-        symbol: data?.nativeCurrency?.symbol,
-        decimals: data?.nativeCurrency?.decimals,
+        name: value?.nativeCurrency?.name,
+        symbol: value?.nativeCurrency?.symbol,
+        decimals: value?.nativeCurrency?.decimals,
       },
-      blockExplorerUrls: [data?.blockExplorerUrls],
+      blockExplorerUrls: [value?.blockExplorerUrls],
     };
     set({ blockchain });
   },
