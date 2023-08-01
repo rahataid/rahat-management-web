@@ -41,6 +41,8 @@ export const paths = {
         edit: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/edit`,
         beneficiaries: (contractAddress: string) =>
           `${ROOTS.PROJECTS}/${contractAddress}/beneficiaries`,
+        vendors: (contractAddress: string) =>
+          `${ROOTS.PROJECTS}/${contractAddress}/vendors`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {
