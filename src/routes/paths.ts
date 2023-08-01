@@ -55,6 +55,7 @@ export const paths = {
       beneficiaries: {
         list: `${ROOTS.BENEFICIARIES}`,
         details: (address: string) => `${ROOTS.BENEFICIARIES}/${paramCase(address)}`,
+        edit: (address: string) => `${ROOTS.BENEFICIARIES}/${paramCase(address)}/edit`,
         add: `${ROOTS.BENEFICIARIES}/add`,
       },
       campaigns: {

@@ -139,6 +139,13 @@ export default function BeneficiariesListView() {
     [router]
   );
 
+  const handleEditRow = useCallback(
+    (uuid: string) => {
+      router.push(paths.dashboard.general.beneficiaries.edit(uuid));
+    },
+    [router]
+  );
+
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -224,6 +231,7 @@ export default function BeneficiariesListView() {
                     key={row.walletAddress}
                     row={row}
                     onViewRow={() => handleViewRow(row.uuid)}
+                    onEditRow={() => handleEditRow(row.uuid)}
                   />
                 ))}
 
