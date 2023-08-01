@@ -18,9 +18,10 @@ import { IBeneficiariesItem } from 'src/types/beneficiaries';
 type Props = {
   row: IBeneficiariesItem;
   onViewRow: VoidFunction;
+  onEditRow: VoidFunction;
 };
 
-export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
+export default function BeneficiariesTableRow({ row, onViewRow,onEditRow }: Props) {
   const { name, bankStatus, internetAccess, phoneOwnership, tokensAssigned, tokensClaimed } = row;
 
   const quickEdit = useBoolean();
@@ -51,6 +52,11 @@ export default function BeneficiariesTableRow({ row, onViewRow }: Props) {
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="View Details" placement="top" arrow>
+          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onEditRow()}>
+            <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
         </Tooltip>
       </TableCell>

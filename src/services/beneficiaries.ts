@@ -6,6 +6,8 @@ const BeneficiaryService = {
     axiosInstance.get(endpoints.beneficiaries.list, { params }),
   create: (data: IBeneficiariesCreateItem) =>
     axiosInstance.post(endpoints.beneficiaries.create, { ...data }),
+  update: (uuid: string, data: IBeneficiariesCreateItem) =>
+    axiosInstance.patch(endpoints.beneficiaries.update(uuid), { ...data }),
   details: (uuid: string) => axiosInstance.get(endpoints.beneficiaries.details(uuid)),
   assignProject: (uuid: string, data: any) =>
     axiosInstance.post(endpoints.beneficiaries.assignProject(uuid), { ...data }),
