@@ -52,7 +52,9 @@ export default function ProjectDetailsView() {
     },
     {
       title: 'Vendors',
-      onClick: () => {},
+      onClick: () => {
+        router.push(paths.dashboard.general.projects.vendors(params.address as unknown as string));
+      },
       show: true,
     },
   ];
