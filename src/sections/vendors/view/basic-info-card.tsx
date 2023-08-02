@@ -1,10 +1,12 @@
 import Iconify from '@components/iconify/iconify';
+import { useBoolean } from '@hooks/use-boolean';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
-import { Card, CardContent, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Button, Card, CardContent, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { truncateEthAddress } from '@utils/strings';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
 import { IVendorDetails } from 'src/types/vendors';
+import VendorAssignTokenModal from './vendors-assign-token-modal';
 
 type Props = {
   data: IVendorDetails;
@@ -14,7 +16,9 @@ const copyBtn = {
 };
 
 const BasicInfoCard = ({ data }: Props) => {
+  const [isVendorActivated, setIsVendorActivated] = useState(false);
   const { phone, walletAddress, name } = data;
+  const assignTokenDialog = useBoolean();
   const { enqueueSnackbar } = useSnackbar();
   const { copy } = useCopyToClipboard();
 
@@ -28,11 +32,39 @@ const BasicInfoCard = ({ data }: Props) => {
     [copy, enqueueSnackbar]
   );
 
+  const handleActivateVendor = () => {
+    setIsVendorActivated(true);
+  };
+
   return (
     <Card>
+      <VendorAssignTokenModal
+        onClose={assignTokenDialog.onFalse}
+        open={assignTokenDialog.value}
+        onOk={() => {
+          console.log('assigned');
+        }}
+      />
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">{name || '-'}</Typography>
+          {isVendorActivated ?
+            <Button
+              variant="outlined"
+              size="small"
+              color="success"
+              onClick={assignTokenDialog.onTrue}
+              sx={{ fontSize: 'x-small' }}
+            >
+              Send Token
+            </Button>
+            :
+
+            <Button variant="contained" onClick={handleActivateVendor}>
+              Activate Vendor
+            </Button>
+          }
+
         </Stack>
 
         <Stack
