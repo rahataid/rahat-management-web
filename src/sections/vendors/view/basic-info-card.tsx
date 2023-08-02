@@ -56,7 +56,7 @@ const BasicInfoCard = ({ data }: Props) => {
               onClick={assignTokenDialog.onTrue}
               sx={{ fontSize: 'x-small' }}
             >
-              Assign Token
+              Send Token
             </Button>
             :
 

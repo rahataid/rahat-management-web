@@ -40,7 +40,7 @@ const VendorAssignTokenModal = ({ open, onClose,onOk }: Props) => {
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled variant="text" onClick={onOk} autoFocus>
+        <Button  variant="text" onClick={onOk} autoFocus>
           Assign
         </Button>
       </DialogActions>
