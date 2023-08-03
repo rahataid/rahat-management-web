@@ -60,7 +60,7 @@ export default function UsersListView() {
   const table = useTable();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, mutateAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: async (walletAddress: string) => {
       const res = await AdministrationService.approve(walletAddress);
       return res.data;
@@ -68,8 +68,21 @@ export default function UsersListView() {
     onError: () => {
       enqueueSnackbar('Error Approving User', { variant: 'error' });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       enqueueSnackbar('User Approved', { variant: 'success' });
+    },
+  });
+
+  const updateRoleFunc = useMutation({
+    mutationFn: async (data: { walletAddress: string; role: string }) => {
+      const res = await AdministrationService.updateRole(data.walletAddress, data.role);
+      return res.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Updating User Role', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('User Role Updated', { variant: 'success' });
     },
   });
 
@@ -151,8 +164,9 @@ export default function UsersListView() {
     await mutateAsync(walletAddress);
   };
 
-  const handleUserChangeRole = (s, p) => {
-    console.log('s,p', s, p);
+  const handleUserChangeRole = async (walletAddress: string, role: string) => {
+    console.log('s,p', walletAddress, role);
+    await updateRoleFunc.mutateAsync({ walletAddress, role });
   };
 
   useEffect(() => {

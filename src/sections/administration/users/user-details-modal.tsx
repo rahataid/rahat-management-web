@@ -28,7 +28,8 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
   const { handleSubmit } = methods;
 
   const [isActive, setIsActive] = useState(user.isApproved);
-  const [role, setRole] = useState(user.roles);
+  const [role, setRole] = useState(user?.roles);
+  console.log('role', role);
 
   const handleActivateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsActive(event.target.checked);
@@ -37,7 +38,7 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRole(event.target.value);
-    onChangeRole(user.walletAddress, event.target.value);
+    onChangeRole(user?.walletAddress, event.target.value);
   };
 
   return (
@@ -67,9 +68,9 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'user'}
+                    checked={role === 'User'}
                     onChange={handleRoleChange}
-                    value="user"
+                    value="User"
                     name="user"
                     color="success"
                   />
@@ -79,9 +80,9 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'manager'}
+                    checked={role === 'Manager'}
                     onChange={handleRoleChange}
-                    value="manager"
+                    value="Manager"
                     name="manager"
                     color="success"
                   />
@@ -91,9 +92,9 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'donor'}
+                    checked={role === 'Donor'}
                     onChange={handleRoleChange}
-                    value="donor"
+                    value="Donor"
                     name="donor"
                     color="success"
                   />
