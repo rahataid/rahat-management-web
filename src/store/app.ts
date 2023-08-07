@@ -29,13 +29,12 @@ const useAppStore = create<AppStoreType>((set) => ({
     const blockchain = {
       chainId: value?.chainId,
       chainName: value?.chainName,
-      rpcUrls: [value?.networkUrl],
+      rpcUrls: [value?.rpcUrl],
       nativeCurrency: {
-        name: value?.nativeCurrency?.name,
+        name: value.nativeCurrency.name as string,
         symbol: value?.nativeCurrency?.symbol,
         decimals: value?.nativeCurrency?.decimals,
       },
-      blockExplorerUrls: [value?.blockExplorerUrls],
     };
     set({ blockchain });
   },

@@ -1,6 +1,6 @@
 import axios from 'axios';
 // config
-import { HOST_API } from 'src/config-global';
+import { HOST_API } from '@config';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +34,6 @@ export const endpoints = {
   },
   projects: {
     list: '/projects',
-    listbyId: (id: number) => `/projects/${id}`,
     create: '/projects',
     update: (address: string) => `/projects/${address}`,
     details: (contractAddress: string) => `/projects/${contractAddress}`,

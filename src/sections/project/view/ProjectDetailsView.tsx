@@ -4,17 +4,21 @@ import { useSettingsContext } from '@components/settings';
 import { useBoolean } from '@hooks/use-boolean';
 import { Container, Grid } from '@mui/material';
 import { paths } from '@routes/paths';
+import useProjectContract from '@services/contracts/useProject';
 import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
-import { useTransactions } from 'src/api/transactions';
+import useAppStore from 'src/store/app';
+import useProjectStore from 'src/store/project';
 import CreateTokenModal from './create-token-modal';
 import ProjectActions from './project-actions-card';
+import ProjectAlerts from './project-alerts';
 import { ProjectDetailsCard } from './project-details-card';
 import ProjectDetailsChart from './project-details-chart';
 import ProjectGallery from './project-gallery-view';
 import ProjectStatsCard from './project-stats-card';
 
-const _carouselsExample = [...Array(20)].map((_, index) => ({
+const _carouselsExample = [...Array(1)].map((_, index) => ({
   id: index,
   coverUrl: '/assets/images/about/vision.jpg',
 }));
@@ -27,17 +31,46 @@ type MenuOptions = {
 
 export default function ProjectDetailsView() {
   const settings = useSettingsContext();
-  const { transactionStats } = useTransactions();
   const router = useRouter();
   const params = useParams();
   const { project } = useProject(params.address);
-  console.log({project})
   const createTokenModal = useBoolean();
+  const { chainData, setChainData } = useProjectStore((state) => ({
+    chainData: state.chainData,
+    setChainData: state.setChainData,
+  }));
+  const blockchainNetworkData = useAppStore((state) => state.blockchain);
+
+  const { projectContract, getProjectChainData } = useProjectContract();
+
+  const handleChainData = useCallback(async () => {
+    const data = await getProjectChainData('0xbFcEC604011c4EE66Cc2Af3a3ab5856683DdDf0f');
+    setChainData(data);
+  }, [getProjectChainData, setChainData]);
+
+  console.log('chainData', chainData);
+
+  useEffect(() => {
+    handleChainData();
+  }, [handleChainData]);
 
   const rightActionOptions: MenuOptions = [
     {
       title: 'Create Token',
       onClick: () => createTokenModal.onTrue(),
+      icon: 'ic:baseline-generating-tokens',
+      show: true,
+    },
+    {
+      title: 'Approve Project',
+      onClick: () => createTokenModal.onTrue(),
+      icon: 'mdi:approve',
+      show: true,
+    },
+    {
+      title: 'Edit Project',
+      onClick: () =>
+        router.push(paths.dashboard.general.projects.edit(params.address as unknown as string)),
       icon: 'tabler:edit',
       show: true,
     },
@@ -46,7 +79,9 @@ export default function ProjectDetailsView() {
     {
       title: 'Beneficiaries',
       onClick: () => {
-        router.push(paths.dashboard.general.projects.beneficiaries(params.address as unknown as string));
+        router.push(
+          paths.dashboard.general.projects.beneficiaries(params.address as unknown as string)
+        );
       },
       show: true,
     },
@@ -76,6 +111,11 @@ export default function ProjectDetailsView() {
         </Grid>
         <Grid item xs={12} md={6} lg={4} spacing={2}>
           <ProjectActions leftOptions={leftActionOptions} rightOptions={rightActionOptions} />
+          <ProjectAlerts
+            isApproved={chainData.isApproved}
+            tokenName={blockchainNetworkData?.nativeCurrency.name}
+            tokenAllowance={500}
+          />
           <ProjectDetailsCard
             startDate={project.startDate}
             endDate={project.endDate}
@@ -86,7 +126,12 @@ export default function ProjectDetailsView() {
           />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
-          <ProjectStatsCard data={transactionStats} />
+          <ProjectStatsCard
+            totalBeneficiaries={project._count?.beneficiaries}
+            distributedTokens={0}
+            tokenAllowance={chainData.tokenAllowance}
+            tokenName={blockchainNetworkData?.nativeCurrency.name}
+          />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <ProjectDetailsChart
