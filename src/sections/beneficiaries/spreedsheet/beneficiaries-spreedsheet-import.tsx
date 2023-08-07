@@ -63,6 +63,50 @@ const BeneficiariesSpreedsheetImport = () => {
             },
           ],
         },
+        {
+          label: "Gender",
+          key: "gender",
+          fieldType: {
+            type: "input",
+          },
+          validations: [
+            {
+              rule: "required",
+              errorMessage: "Gender is required",
+              level: "error",
+            },
+          ],
+        },
+        {
+          label: "Date of Birth",
+          key: "dateOfBirth",
+          fieldType: {
+            type: "input",
+          },
+          validations: [
+            {
+              rule: "required",
+              errorMessage: "Date of Birth is required",
+              level: "error",
+            },
+          ],
+        },
+        {
+          label: "Latitude",
+          key: "latitude",
+          fieldType: {
+            type: "input",
+          },
+         
+        },
+        {
+          label: "Longitude",
+          key: "longitud",
+          fieldType: {
+            type: "input",
+          },
+          
+        },
       ] as const;
 
     const onSubmit=(data:any, file:any)=>{
