@@ -37,7 +37,7 @@ import {
   IBeneficiaryApiFilters,
 } from 'src/types/beneficiaries';
 //
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import {
   bankStatusOptions,
@@ -48,6 +48,8 @@ import { useBeneficiaries } from 'src/api/beneficiaries';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
+import { BeneficiariesSpreedsheetImport } from './spreedsheet';
+
 
 // ----------------------------------------------------------------------
 
@@ -146,6 +148,7 @@ export default function BeneficiariesListView() {
     [router]
   );
 
+
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -163,15 +166,18 @@ export default function BeneficiariesListView() {
           mb: { xs: 3, md: 5 },
         }}
         action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.general.beneficiaries.add}
-            variant="outlined"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            color="success"
-          >
-            Add Beneficiary
-          </Button>
+          <Stack spacing={2} direction={'row'}>
+            <BeneficiariesSpreedsheetImport />
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.general.beneficiaries.add}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="success"
+            >
+              Add Beneficiary
+            </Button>
+          </Stack>
         }
       />
 
