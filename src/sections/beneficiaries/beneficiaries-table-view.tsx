@@ -50,7 +50,6 @@ import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 import { BeneficiariesSpreedsheetImport } from './spreedsheet';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -103,6 +102,7 @@ export default function BeneficiariesListView() {
   const router = useRouter();
 
   const confirm = useBoolean();
+  const bulkBeneficiaryImport = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -148,6 +148,9 @@ export default function BeneficiariesListView() {
     [router]
   );
 
+  const handleBeneficiaryBulkAdd = (data: any, file: File) => {
+    console.log(data);
+  };
 
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
@@ -166,8 +169,12 @@ export default function BeneficiariesListView() {
           mb: { xs: 3, md: 5 },
         }}
         action={
-          <Stack spacing={2} direction={'row'}>
-            <BeneficiariesSpreedsheetImport />
+          <Stack spacing={2} direction="row">
+            <BeneficiariesSpreedsheetImport
+              onSubmit={handleBeneficiaryBulkAdd}
+              isOpen={bulkBeneficiaryImport.value}
+              handleOpenClose={bulkBeneficiaryImport.onToggle}
+            />
             <Button
               component={RouterLink}
               href={paths.dashboard.general.beneficiaries.add}
