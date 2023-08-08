@@ -1,17 +1,20 @@
+import Iconify from '@components/iconify/iconify';
 import SummaryCard from '@components/summary-card';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 
 interface Props {
-  tokenAllowance: number;
-  totalBeneficiaries: number;
-  distributedTokens: number;
-  tokenName: string;
+  tokenAllowance: number | undefined;
+  totalBeneficiaries: number | undefined;
+  distributedTokens: number | undefined;
+  tokenName: string | undefined;
+  onCreateToken: () => void;
 }
 const ProjectStatsCard = ({
   tokenAllowance = 0,
   tokenName = '',
   totalBeneficiaries = 0,
   distributedTokens = 0,
+  onCreateToken,
 }: Props) => (
   <Grid container spacing={3}>
     <Grid item xs={12} md={12}>
@@ -30,7 +33,21 @@ const ProjectStatsCard = ({
             color="success"
             icon="material-symbols:paid"
             title="Tokens Issued"
-            total={tokenAllowance}
+            total={
+              tokenAllowance > 0 ? (
+                tokenAllowance
+              ) : (
+                <Button
+                  sx={{ mt: 1, mb: 1 }}
+                  variant="outlined"
+                  startIcon={<Iconify icon="ic:baseline-generating-tokens" />}
+                  onClick={onCreateToken}
+                  size="small"
+                >
+                  Create Token
+                </Button>
+              )
+            }
             subtitle={tokenName}
           />
         </Grid>

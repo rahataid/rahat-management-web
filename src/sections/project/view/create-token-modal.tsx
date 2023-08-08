@@ -1,13 +1,14 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import * as Yup from 'yup';
-
-interface TokenValue {
-  token: string;
-}
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  TextField,
+} from '@mui/material';
+import { useState } from 'react';
 
 type Props = {
   open: boolean;
@@ -16,19 +17,7 @@ type Props = {
 };
 
 const CreateTokenModal = ({ open, onClose, onOk }: Props) => {
-  const FormSchema = Yup.object().shape({
-    token: Yup.string().required('Token is required'),
-  });
-  const methods = useForm<TokenValue>({
-    resolver: yupResolver(FormSchema),
-    // defaultValues,
-  });
-
-  const {
-    handleSubmit,
-    formState: { errors, isLoading, isSubmitSuccessful },
-  } = methods;
-
+  const [token, setToken] = useState('');
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Create Token</DialogTitle>
@@ -38,15 +27,19 @@ const CreateTokenModal = ({ open, onClose, onOk }: Props) => {
       </DialogContent>
 
       <Stack sx={{ p: 2 }} spacing={5}>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onOk)}>
-          <RHFTextField name="token" label="Token" color="success" />
-        </FormProvider>
+        <TextField
+          name="token"
+          label="Token"
+          color="success"
+          value={token}
+          onChange={(e) => setToken(e.target?.value)}
+        />
       </Stack>
       <DialogActions>
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <LoadingButton variant="text" type="submit" autoFocus loading={isLoading}>
+        <LoadingButton onClick={() => onOk(token)} type="submit" autoFocus>
           Create
         </LoadingButton>
       </DialogActions>

@@ -1,16 +1,27 @@
 import Iconify from '@components/iconify/iconify';
-import { Alert, AlertTitle, Button, Card, CardContent, CardHeader, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Stack,
+  Typography,
+} from '@mui/material';
 
 interface IProjectAlert {
   isApproved: boolean | undefined;
   tokenAllowance: number | undefined;
   tokenName: string | undefined;
+  onTokenAccept: VoidFunction;
 }
 
 const ProjectAlerts = ({
   isApproved = false,
   tokenAllowance = 0,
   tokenName = '',
+  onTokenAccept,
 }: IProjectAlert) => {
   if (!isApproved) {
     return (
@@ -27,7 +38,9 @@ const ProjectAlerts = ({
         <CardHeader
           action={
             <Stack>
-              <Button variant="contained">Accept</Button>
+              <Button variant="contained" onClick={onTokenAccept}>
+                Accept
+              </Button>
             </Stack>
           }
           title={

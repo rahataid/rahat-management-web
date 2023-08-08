@@ -5,6 +5,7 @@ import { useBoolean } from '@hooks/use-boolean';
 import { Container, Grid } from '@mui/material';
 import { paths } from '@routes/paths';
 import useProjectContract from '@services/contracts/useProject';
+import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
@@ -41,7 +42,8 @@ export default function ProjectDetailsView() {
   }));
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
 
-  const { projectContract, getProjectChainData } = useProjectContract();
+  const { getProjectChainData, acceptToken } = useProjectContract();
+  const { sendTokenToProject } = useRahatDonor();
 
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
@@ -57,13 +59,13 @@ export default function ProjectDetailsView() {
   const rightActionOptions: MenuOptions = [
     {
       title: 'Create Token',
-      onClick: () => createTokenModal.onTrue(),
+      onClick: createTokenModal.onTrue,
       icon: 'ic:baseline-generating-tokens',
       show: true,
     },
     {
       title: 'Approve Project',
-      onClick: () => createTokenModal.onTrue(),
+      onClick: createTokenModal.onTrue,
       icon: 'mdi:approve',
       show: true,
     },
@@ -94,8 +96,14 @@ export default function ProjectDetailsView() {
     },
   ];
 
-  const createToken = (data: { token: string }) => {
-    console.log('TokenCvreate', data);
+  const handleCreateToken = async (token: string) => {
+    const sent = await sendTokenToProject(token);
+    console.log('sent', sent);
+  };
+
+  const handleTokenAccept = async () => {
+    const accpeted = await acceptToken(chainData?.tokenAllowance?.toString() || '');
+    console.log('accpeted', accpeted);
   };
 
   return (
@@ -103,7 +111,7 @@ export default function ProjectDetailsView() {
       <CreateTokenModal
         open={createTokenModal.value}
         onClose={createTokenModal.onFalse}
-        onOk={createToken}
+        onOk={handleCreateToken}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
@@ -115,6 +123,7 @@ export default function ProjectDetailsView() {
             isApproved={chainData.isApproved}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
             tokenAllowance={500}
+            onTokenAccept={handleTokenAccept}
           />
           <ProjectDetailsCard
             startDate={project.startDate}
@@ -131,6 +140,7 @@ export default function ProjectDetailsView() {
             distributedTokens={0}
             tokenAllowance={chainData.tokenAllowance}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
+            onCreateToken={createTokenModal.onTrue}
           />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>

@@ -8,7 +8,7 @@ type SummaryCardProps = {
   color?: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
   title: string;
   subtitle: string;
-  total: number;
+  total: number | React.JSX.Element;
   icon?: IconifyProps;
   showTooltip?: boolean;
   tooltipText?: string;
@@ -55,7 +55,8 @@ export default function SummaryCard({
       <Tooltip title={showTooltip && tooltipText}>
         <Stack spacing={1} sx={{ p: 3 }}>
           <Typography variant="subtitle2">{title}</Typography>
-          <Typography variant="h3">{total}</Typography>
+          {typeof total === 'number' ? <Typography variant="h3">{total}</Typography> : total}
+
           <Box component="span" sx={{ opacity: 0.72, typography: 'body2' }}>
             {subtitle}
           </Box>

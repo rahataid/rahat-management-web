@@ -1,3 +1,4 @@
+import { TransactionReceipt } from '@ethersproject/providers';
 import { Contract, InterfaceAbi } from 'ethers';
 
 export type IProjectChainData = {
@@ -18,7 +19,7 @@ export interface ProjectContract {
   approveProject: (contractAddress: string) => Promise<void>;
   lockProject: (contractAddress: string) => Promise<void>;
   unLockProject: (contractAddress: string) => Promise<void>;
-  acceptToken: (amount: string) => Promise<void>;
+  acceptToken: (amount: string) => Promise<TransactionReceipt>;
   getTokenAllowance: () => Promise<number | undefined>;
   getVendorBalance: (walletAddress: string) => Promise<number | undefined>;
   getVendorAllowance: (vendorAddress: string) => Promise<number | undefined>;
