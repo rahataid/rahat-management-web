@@ -11,6 +11,8 @@ const useProjectContract = (): ProjectContract => {
   const [donorContract] = useContract(CONTRACTS.DONOR);
   const [communityContract] = useContract(CONTRACTS.COMMUNITY);
 
+  console.log('first', tokenContract);
+
   const getProjectBalance = useCallback(
     async (contractAddress: string): Promise<number> => {
       if (!tokenContract) {

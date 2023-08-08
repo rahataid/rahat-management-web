@@ -28,7 +28,9 @@ const useContract: UseContract = (contractName, options = {}) => {
       return new Contract(
         options?.contractAddress || contracts[contractName].address,
         contracts[contractName].abi,
-        provider as unknown as ContractRunner
+        provider?.getSigner(
+          '0x1c60be76cbbe5f47481e3d75d1ea9e2ba234fb7d'
+        ) as unknown as ContractRunner
       );
     }
     return null;

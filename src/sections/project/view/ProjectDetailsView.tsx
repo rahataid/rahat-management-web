@@ -44,9 +44,9 @@ export default function ProjectDetailsView() {
   const { projectContract, getProjectChainData } = useProjectContract();
 
   const handleChainData = useCallback(async () => {
-    const data = await getProjectChainData('0xbFcEC604011c4EE66Cc2Af3a3ab5856683DdDf0f');
+    const data = await getProjectChainData(params.address);
     setChainData(data);
-  }, [getProjectChainData, setChainData]);
+  }, [getProjectChainData, params.address, setChainData]);
 
   console.log('chainData', chainData);
 
