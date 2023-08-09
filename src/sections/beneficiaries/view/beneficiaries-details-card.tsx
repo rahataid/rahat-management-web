@@ -1,3 +1,4 @@
+import Label from '@components/label/label';
 import { Card, CardContent, Grid, Stack, Typography } from '@mui/material';
 import { calculateAge } from '@utils/format-time';
 import { IBeneficiaryDetails } from 'src/types/beneficiaries';
@@ -13,16 +14,12 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">{name}</Typography>
-          {/* <Label
+          <Label
             variant="outlined"
-            color={
-              (isApproved && 'success') ||
-              (!isApproved && 'error') ||
-              'default'
-            }
+            color={(isApproved && 'success') || (!isApproved && 'error') || 'default'}
           >
-            {isApproved?:"Approved":"Not Approved"}
-          </Label> */}
+            {isApproved ? 'Approved' : 'Not Approved'}
+          </Label>
         </Stack>
 
         <Stack

@@ -1,51 +1,48 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  TextField,
+} from '@mui/material';
+import { useState } from 'react';
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onOk: () => void;
+  onOk: (v: any) => void;
 };
 
-const BeneficiariesAssignTokenModal = ({ open, onClose, onOk }: Props) => {
-  const methods = useForm({
-    // resolver: yupResolver(FormSchema),
-    // defaultValues,
-  });
-
-  const { handleSubmit } = methods;
-
-  const onSubmit = handleSubmit(async () => {
-    try {
-      console.log('submit');
-    } catch (error) {
-      console.error(error);
-    }
-  });
+const AssignTokenModal = ({ open, onClose, onOk }: Props) => {
+  const [token, setToken] = useState('');
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Assign Token</DialogTitle>
+      <DialogTitle>Assing Token</DialogTitle>
 
-      <DialogContent sx={{ color: 'text.secondary' }}>
-        Enter Token To Assign Beneficiary
-      </DialogContent>
+      <DialogContent sx={{ color: 'text.secondary' }}>Enter Token To the beneficiary</DialogContent>
 
       <Stack sx={{ p: 2 }} spacing={5}>
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <RHFTextField name="token" label="Token" color="success" />
-        </FormProvider>
+        <TextField
+          name="token"
+          label="Token"
+          color="success"
+          value={token}
+          onChange={(e) => setToken(e.target?.value)}
+        />
       </Stack>
       <DialogActions>
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled variant="text" onClick={onOk} autoFocus>
+        <LoadingButton onClick={() => onOk(token)} type="submit" autoFocus>
           Assign
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default BeneficiariesAssignTokenModal;
+export default AssignTokenModal;

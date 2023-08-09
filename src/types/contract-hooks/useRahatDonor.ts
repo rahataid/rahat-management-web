@@ -1,5 +1,4 @@
-import { TransactionReceipt } from '@ethersproject/providers';
-import { Contract } from 'ethers';
+import { Contract, TransactionReceipt } from 'ethers';
 
 export interface UseRahatDonorReturn {
   donorContract: Contract | null;

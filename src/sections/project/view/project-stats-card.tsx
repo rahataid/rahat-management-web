@@ -3,14 +3,14 @@ import SummaryCard from '@components/summary-card';
 import { Button, Grid } from '@mui/material';
 
 interface Props {
-  tokenAllowance: number | undefined;
+  balance: number | undefined;
   totalBeneficiaries: number | undefined;
   distributedTokens: number | undefined;
   tokenName: string | undefined;
   onCreateToken: () => void;
 }
 const ProjectStatsCard = ({
-  tokenAllowance = 0,
+  balance = 0,
   tokenName = '',
   totalBeneficiaries = 0,
   distributedTokens = 0,
@@ -32,10 +32,10 @@ const ProjectStatsCard = ({
           <SummaryCard
             color="success"
             icon="material-symbols:paid"
-            title="Tokens Issued"
+            title="Balance"
             total={
-              tokenAllowance > 0 ? (
-                tokenAllowance
+              balance > 0 ? (
+                balance
               ) : (
                 <Button
                   sx={{ mt: 1, mb: 1 }}

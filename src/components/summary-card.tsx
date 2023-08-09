@@ -55,7 +55,11 @@ export default function SummaryCard({
       <Tooltip title={showTooltip && tooltipText}>
         <Stack spacing={1} sx={{ p: 3 }}>
           <Typography variant="subtitle2">{title}</Typography>
-          {typeof total === 'number' ? <Typography variant="h3">{total}</Typography> : total}
+          {typeof total === 'string' || typeof total === 'number' ? (
+            <Typography variant="h3">{total}</Typography>
+          ) : (
+            total
+          )}
 
           <Box component="span" sx={{ opacity: 0.72, typography: 'body2' }}>
             {subtitle}

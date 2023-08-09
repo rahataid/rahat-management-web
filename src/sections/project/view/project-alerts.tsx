@@ -51,8 +51,13 @@ const ProjectAlerts = ({
           }
         />
         <CardContent>
-          <Typography>
-            You have {tokenAllowance} {tokenName} tokens remaining to be claimed
+          <Typography color="InfoText">
+            You have{' '}
+            <strong>
+              {' '}
+              {tokenAllowance} {tokenName}{' '}
+            </strong>{' '}
+            tokens remaining to be claimed
           </Typography>
         </CardContent>
       </Card>

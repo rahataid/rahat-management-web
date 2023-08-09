@@ -17,7 +17,7 @@ const useProjectContract = (): ProjectContract => {
         return 0;
       }
       const balance = await tokenContract.balanceOf(contractAddress);
-      return balance.toNumber();
+      return balance.toString();
     },
     [tokenContract]
   );
@@ -44,7 +44,7 @@ const useProjectContract = (): ProjectContract => {
       return undefined;
     }
     const allowance = await tokenContract.allowance(donorContract.target, projectContract.target);
-    return allowance?.toNumber();
+    return allowance.toString();
   }, [tokenContract, donorContract, projectContract]);
 
   const getProjectChainData = useCallback(
@@ -53,7 +53,7 @@ const useProjectContract = (): ProjectContract => {
         getProjectBalance(contractAddress),
         getTokenAllowance(),
         isProjectLocked(),
-        isProjectApproved(CONTRACTS.CVAPROJECT),
+        isProjectApproved(contractAddress),
       ]);
       return {
         balance,
@@ -62,7 +62,7 @@ const useProjectContract = (): ProjectContract => {
         isApproved,
       };
     },
-    [getProjectBalance, getTokenAllowance, isProjectApproved, isProjectLocked]
+    [getProjectBalance, isProjectApproved, getTokenAllowance, isProjectLocked]
   );
 
   const approveProject = useCallback(
@@ -100,7 +100,7 @@ const useProjectContract = (): ProjectContract => {
       if (!projectContract || !donorContract) {
         return;
       }
-      await projectContract.acceptToken(donorContract.address, amount).catch(handleContractError);
+      await projectContract.acceptToken(donorContract.target, amount).catch(handleContractError);
     },
     [projectContract, donorContract, handleContractError]
   );

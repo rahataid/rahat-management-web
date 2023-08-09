@@ -54,7 +54,7 @@ export default function ProjectDetailsView() {
 
   useEffect(() => {
     handleChainData();
-  }, [handleChainData]);
+  }, [handleChainData, createTokenModal.value]);
 
   const rightActionOptions: MenuOptions = [
     {
@@ -98,7 +98,9 @@ export default function ProjectDetailsView() {
 
   const handleCreateToken = async (token: string) => {
     const sent = await sendTokenToProject(token);
-    console.log('sent', sent);
+    if (sent.from) {
+      createTokenModal.onFalse();
+    }
   };
 
   const handleTokenAccept = async () => {
@@ -122,7 +124,7 @@ export default function ProjectDetailsView() {
           <ProjectAlerts
             isApproved={chainData.isApproved}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
-            tokenAllowance={500}
+            tokenAllowance={chainData.tokenAllowance}
             onTokenAccept={handleTokenAccept}
           />
           <ProjectDetailsCard
@@ -138,7 +140,7 @@ export default function ProjectDetailsView() {
           <ProjectStatsCard
             totalBeneficiaries={project._count?.beneficiaries}
             distributedTokens={0}
-            tokenAllowance={chainData.tokenAllowance}
+            balance={chainData.balance}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
             onCreateToken={createTokenModal.onTrue}
           />

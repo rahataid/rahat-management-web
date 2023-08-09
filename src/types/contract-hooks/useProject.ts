@@ -29,7 +29,7 @@ export interface ProjectContract {
   pendingWheelsToAccept: (vendorAddress: string) => Promise<number | undefined>;
   acceptTokensByVendors: (numberOfTokens: string) => Promise<void>;
   checkActiveBeneficiary: (address: string) => Promise<boolean>;
-  activateBeneficiary: (address: string) => Promise<void>;
+  activateBeneficiary: (address: string) => Promise<Boolean>;
   assignClaimsToBeneficiaries: (walletAddress: string, amount: string) => Promise<void>;
   beneficiaryBalance: (walletAddress: string) => Promise<number | undefined>;
   beneficiaryCounts: () => Promise<number | undefined>;

@@ -1,7 +1,7 @@
 import { CONTRACTS } from '@config';
-import { TransactionReceipt } from '@ethersproject/providers';
 import useContract from '@hooks/contracts/useContract';
 import { useErrorHandler } from '@hooks/user-error-handler';
+import { TransactionReceipt } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useAppStore from 'src/store/app';
 import { UseRahatDonorReturn } from 'src/types/contract-hooks/useRahatDonor';

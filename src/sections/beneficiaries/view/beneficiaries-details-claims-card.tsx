@@ -3,6 +3,7 @@ import { useBoolean } from '@hooks/use-boolean';
 import { IApiResponseError } from '@hooks/user-error-handler';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import BeneficiaryService from '@services/beneficiaries';
+import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
@@ -21,12 +22,9 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
   const { projects } = useProjects();
   const { uuid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const { assignClaimsToBeneficiaries, activateBeneficiary } = useProjectContract();
 
-  const { error, isLoading, data, mutate } = useMutation<
-    IAssignProjectDetails,
-    IApiResponseError,
-    IAssignProjectItem
-  >({
+  const { mutate } = useMutation<IAssignProjectDetails, IApiResponseError, IAssignProjectItem>({
     mutationFn: async (updateData: IAssignProjectItem) => {
       const response = await BeneficiaryService.assignProject(uuid, updateData);
       return response.data;
@@ -41,6 +39,16 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
 
   const handleProjectAssign = (data) => mutate(data);
 
+  const handleBeneficiaryTokenAssign = async (token: string) => {
+    const activated = await activateBeneficiary(walletAddress);
+
+    console.log('activated', activated);
+    if (activated) {
+      const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
+      console.log('assigned', assigned);
+    }
+  };
+
   return (
     <Card>
       <BeneficiariesAssignProjectModal
@@ -52,9 +60,7 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
       <BeneficiariesAssignTokenModal
         onClose={assignTokenDialog.onFalse}
         open={assignTokenDialog.value}
-        onOk={() => {
-          console.log('assigned');
-        }}
+        onOk={handleBeneficiaryTokenAssign}
       />
 
       <CardContent>
