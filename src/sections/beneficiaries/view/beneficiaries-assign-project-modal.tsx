@@ -24,7 +24,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   projects: IProjectsList['rows'];
-  onOk: () => void;
+  onOk: (data: any) => void;
 };
 
 interface FormValues extends IAssignProjectItem {}

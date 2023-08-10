@@ -26,7 +26,7 @@ const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' })
         <Button variant="text" onClick={handleClick}>
           {truncateEthAddress(address)}
         </Button>
-        <Button variant="outlined" onClick={copy}>
+        <Button variant="outlined" onClick={() => copy(address)}>
           Copy
         </Button>
       </Stack>

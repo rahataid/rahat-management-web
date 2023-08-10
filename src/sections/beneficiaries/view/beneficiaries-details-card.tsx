@@ -4,11 +4,12 @@ import { calculateAge } from '@utils/format-time';
 import { IBeneficiaryDetails } from 'src/types/beneficiaries';
 
 type Props = {
-  data: IBeneficiaryDetails;
+  beneficiary: IBeneficiaryDetails;
+  isActive: boolean | null;
 };
 
-export default function BeneficiariesDetailsCard({ data }: Props) {
-  const { name, bankStatus, dob, internetAccess, phoneOwnership, gender, phone, isApproved } = data;
+export default function BeneficiariesDetailsCard({ beneficiary, isActive }: Props) {
+  const { name, bankStatus, dob, internetAccess, phoneOwnership, gender, phone } = beneficiary;
   return (
     <Card>
       <CardContent>
@@ -16,9 +17,9 @@ export default function BeneficiariesDetailsCard({ data }: Props) {
           <Typography variant="subtitle1">{name}</Typography>
           <Label
             variant="outlined"
-            color={(isApproved && 'success') || (!isApproved && 'error') || 'default'}
+            color={(isActive && 'success') || (!isActive && 'error') || 'default'}
           >
-            {isApproved ? 'Approved' : 'Not Approved'}
+            {isActive ? 'Approved' : 'Not Approved'}
           </Label>
         </Stack>
 

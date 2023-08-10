@@ -117,13 +117,6 @@ export type IBeneficiaryDetails = {
   };
 };
 
-export type IBeneficiaryClaimsDetails = {
-  receivedDate: string;
-  claimedDate: string;
-  claimedAmount: number;
-  receivedAmount: number;
-};
-
 export type IBeneficiaryDetailsTableItem = {
   timestamp: string;
   hash: string;

@@ -11,14 +11,36 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { Card, Grid, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
+import useProjectContract from '@services/contracts/useProject';
+import { memo, useCallback, useEffect } from 'react';
+import useBeneficiaryStore from 'src/store/beneficiaries';
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
 import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card';
 import BeneficiaryDetailsTableView from './beneficiaries-details-table-view';
 
-export default function BeneficiariesDetailsView() {
+function BeneficiariesDetailsView() {
   const { uuid } = useParams();
   const { beneficiary } = useBeneficiary(uuid as string);
   const settings = useSettingsContext();
+  const { getBeneficiaryChainData } = useProjectContract();
+  const { chainData, setChainData } = useBeneficiaryStore((state) => ({
+    chainData: state.chainData,
+    setChainData: state.setChainData,
+  }));
+
+  console.log('chainData', chainData);
+
+  const handleChainData = useCallback(async () => {
+    if (!beneficiary.walletAddress) return;
+    if (chainData.isBeneficiary !== null) return;
+
+    const data = await getBeneficiaryChainData(beneficiary.walletAddress);
+    setChainData(data);
+  }, [beneficiary.walletAddress, chainData.isBeneficiary, getBeneficiaryChainData, setChainData]);
+
+  useEffect(() => {
+    handleChainData();
+  }, [handleChainData]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -38,10 +60,14 @@ export default function BeneficiariesDetailsView() {
         }}
       >
         <Grid item xs={12} md={7}>
-          <BeneficiariesDetailsCard data={beneficiary} />
+          <BeneficiariesDetailsCard beneficiary={beneficiary} isActive={chainData.isBeneficiary} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <BeneficiariesDetailsClaimsCard walletAddress={beneficiary?.walletAddress} />
+          <BeneficiariesDetailsClaimsCard
+            walletAddress={beneficiary?.walletAddress}
+            balance={chainData.balance}
+            tokenAllowance={chainData.allowance}
+          />
         </Grid>
       </Grid>
 
@@ -54,3 +80,5 @@ export default function BeneficiariesDetailsView() {
     </Container>
   );
 }
+
+export default memo(BeneficiariesDetailsView);

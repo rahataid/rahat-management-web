@@ -1,6 +1,7 @@
 import { CONTRACTS } from '@config';
 import useContract from '@hooks/contracts/useContract';
 import { useErrorHandler } from '@hooks/user-error-handler';
+import { ContractTransactionResponse } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import { ProjectContract } from 'src/types/contract-hooks/useProject';
 
@@ -96,7 +97,7 @@ const useProjectContract = (): ProjectContract => {
   );
 
   const acceptToken = useCallback(
-    async (amount: string): Promise<void> => {
+    async (amount: string): Promise<ContractTransactionResponse | void> => {
       if (!projectContract || !donorContract) {
         return;
       }
@@ -161,7 +162,7 @@ const useProjectContract = (): ProjectContract => {
     [projectContract, handleContractError]
   );
 
-  const pendingWheelsToAccept = useCallback(
+  const pendingVendorAllowance = useCallback(
     async (vendorAddress: string): Promise<number | undefined> => {
       if (!projectContract) {
         return undefined;
@@ -195,36 +196,43 @@ const useProjectContract = (): ProjectContract => {
   );
 
   const activateBeneficiary = useCallback(
-    async (address: string): Promise<void> => {
-      if (!communityContract) {
-        return;
-      }
-      await communityContract.addBeneficiary(address).catch(handleContractError);
-    },
+    async (address: string): Promise<Boolean> =>
+      communityContract?.addBeneficiary(address).catch(handleContractError),
     [communityContract, handleContractError]
   );
 
   const assignClaimsToBeneficiaries = useCallback(
-    async (walletAddress: string, amount: string): Promise<void> => {
-      if (!projectContract) {
-        return;
-      }
-      await projectContract
-        .assignClaims(walletAddress, amount?.toString())
-        .catch(handleContractError);
-    },
+    async (walletAddress: string, amount: string): Promise<ContractTransactionResponse> =>
+      projectContract?.assignClaims(walletAddress, amount?.toString()).catch(handleContractError),
     [projectContract, handleContractError]
   );
 
   const beneficiaryBalance = useCallback(
     async (walletAddress: string): Promise<number | undefined> => {
       if (!projectContract) {
-        return undefined;
+        return 0;
       }
       const balance = await projectContract.beneficiaryClaims(walletAddress);
-      return balance?.toNumber();
+      return balance?.toString();
     },
     [projectContract]
+  );
+
+  const getBeneficiaryChainData = useCallback(
+    async (walletAddress: string) => {
+      const [isBeneficiary, balance] = await Promise.all([
+        checkActiveBeneficiary(walletAddress),
+        beneficiaryBalance(walletAddress),
+      ]);
+
+      return {
+        isBeneficiary,
+        balance,
+        // todo:add beneficiary pending tokens
+        allowance: '0',
+      };
+    },
+    [beneficiaryBalance, checkActiveBeneficiary]
   );
 
   const beneficiaryCounts = useCallback(async (): Promise<number | undefined> => {
@@ -253,19 +261,20 @@ const useProjectContract = (): ProjectContract => {
       checkActiveVendor,
       activateVendor,
       sendTokensToVendor,
-      pendingWheelsToAccept,
+      pendingVendorAllowance,
       acceptTokensByVendors,
       checkActiveBeneficiary,
       activateBeneficiary,
       assignClaimsToBeneficiaries,
       beneficiaryBalance,
+      getBeneficiaryChainData,
       beneficiaryCounts,
     }),
     [
-      abi,
       projectContract,
-      communityContract,
+      abi,
       getProjectBalance,
+      communityContract,
       isProjectLocked,
       isProjectApproved,
       getProjectChainData,
@@ -279,12 +288,13 @@ const useProjectContract = (): ProjectContract => {
       checkActiveVendor,
       activateVendor,
       sendTokensToVendor,
-      pendingWheelsToAccept,
+      pendingVendorAllowance,
       acceptTokensByVendors,
       checkActiveBeneficiary,
       activateBeneficiary,
       assignClaimsToBeneficiaries,
       beneficiaryBalance,
+      getBeneficiaryChainData,
       beneficiaryCounts,
     ]
   );

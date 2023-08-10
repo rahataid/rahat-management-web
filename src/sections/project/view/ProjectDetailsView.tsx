@@ -10,7 +10,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
 import useAppStore from 'src/store/app';
-import useProjectStore from 'src/store/project';
+import useProjectStore from 'src/store/projects';
 import CreateTokenModal from './create-token-modal';
 import ProjectActions from './project-actions-card';
 import ProjectAlerts from './project-alerts';
@@ -49,8 +49,6 @@ export default function ProjectDetailsView() {
     const data = await getProjectChainData(params.address);
     setChainData(data);
   }, [getProjectChainData, params.address, setChainData]);
-
-  console.log('chainData', chainData);
 
   useEffect(() => {
     handleChainData();

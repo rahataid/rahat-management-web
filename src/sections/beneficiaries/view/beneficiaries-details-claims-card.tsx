@@ -1,6 +1,6 @@
 import TruncatedAddressButton from '@components/wallet-address-button';
 import { useBoolean } from '@hooks/use-boolean';
-import { IApiResponseError } from '@hooks/user-error-handler';
+import { RSErrorData } from '@hooks/user-error-handler';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
@@ -8,15 +8,21 @@ import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useProjects } from 'src/api/project';
-import {
-  IAssignProjectDetails,
-  IAssignProjectItem,
-  IBeneficiaryClaimsDetails,
-} from 'src/types/beneficiaries';
+import { IAssignProjectDetails, IAssignProjectItem } from 'src/types/beneficiaries';
 import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
 import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
-export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiaryClaimsDetails) {
+interface IBeneficiaryClaimsDetails {
+  walletAddress: string;
+  balance: number;
+  tokenAllowance: number;
+}
+
+export default function BeneficiariesDetailsCard({
+  walletAddress,
+  balance,
+  tokenAllowance,
+}: IBeneficiaryClaimsDetails) {
   const assignProjectDialog = useBoolean();
   const assignTokenDialog = useBoolean();
   const { projects } = useProjects();
@@ -24,7 +30,7 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
   const { enqueueSnackbar } = useSnackbar();
   const { assignClaimsToBeneficiaries, activateBeneficiary } = useProjectContract();
 
-  const { mutate } = useMutation<IAssignProjectDetails, IApiResponseError, IAssignProjectItem>({
+  const { mutate } = useMutation<IAssignProjectDetails, RSErrorData, IAssignProjectItem>({
     mutationFn: async (updateData: IAssignProjectItem) => {
       const response = await BeneficiaryService.assignProject(uuid, updateData);
       return response.data;
@@ -37,16 +43,18 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
     },
   });
 
-  const handleProjectAssign = (data) => mutate(data);
+  const handleProjectAssign = (data: IAssignProjectItem) => mutate(data);
 
   const handleBeneficiaryTokenAssign = async (token: string) => {
     const activated = await activateBeneficiary(walletAddress);
-
     console.log('activated', activated);
-    if (activated) {
-      const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
-      console.log('assigned', assigned);
-    }
+
+    // console.log('activated', activated);
+    // if (activated) {
+    const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
+    console.log('assigned', assigned);
+
+    // }
   };
 
   return (
@@ -101,7 +109,7 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
 
           <Typography variant="body2">Jan 16, 2023</Typography>
 
-          <Typography variant="body2">{20}</Typography>
+          <Typography variant="body2">{tokenAllowance.toString()}</Typography>
         </Stack>
         <Stack
           sx={{ p: 2 }}
@@ -114,7 +122,7 @@ export default function BeneficiariesDetailsCard({ walletAddress }: IBeneficiary
 
           <Typography variant="body2">Jan 16, 2023</Typography>
 
-          <Typography variant="body2">{200}</Typography>
+          <Typography variant="body2">{balance.toString()}</Typography>
         </Stack>
         <Stack sx={{ p: 2 }} direction="row" alignItems="center" spacing={5}>
           <Typography variant="body2">Wallet</Typography>

@@ -1,6 +1,6 @@
 import { useSnackbar } from 'notistack';
 
-interface RSErrorData {
+export interface RSErrorData {
   group: string;
   meta?: Record<string, string[]> | null;
   message: string;
