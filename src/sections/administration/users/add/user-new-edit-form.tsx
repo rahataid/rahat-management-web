@@ -23,7 +23,7 @@ import { generateWalletAddress } from '@web3/utils';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { IApiResponseError } from 'src/types/project';
-import { IUserDetails, IUserTableFilters } from 'src/types/user';
+import { IUserDetails, IUserTableFilters, Role } from 'src/types/user';
 
 type Props = {
   currentUser?: IUserTableFilters;
@@ -85,8 +85,6 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
 
   const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
 
-  const roleOptions = useMemo(() => ['User', 'Manager', 'Donor'], []);
-
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {error && (
@@ -112,9 +110,9 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
               <RHFTextField name="email" label="Email" />
 
               <RHFSelect name="role" label="Role" defaultValue="User">
-                {roleOptions.map((role) => (
-                  <MenuItem key={role} value={role}>
-                    {role}
+                {Object.keys(Role).map((k, i) => (
+                  <MenuItem key={k} value={Role[k]}>
+                    {Role[k]}
                   </MenuItem>
                 ))}
               </RHFSelect>
