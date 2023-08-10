@@ -1,11 +1,11 @@
 import Iconify from '@components/iconify/iconify';
 import { Button } from '@mui/material';
-import { ReactSpreadsheetImport, Result } from 'react-spreadsheet-import';
+import { ReactSpreadsheetImport } from 'react-spreadsheet-import';
 import { fields } from './data-points';
 
 interface IBeneficiariesSpreedsheetImport<T extends Record<string, unknown>> {
   isOpen: boolean;
-  onSubmit: (data: Result<T>, file: File) => void;
+  onSubmit: (data: any, file: File) => void;
   handleOpenClose: VoidFunction;
 }
 
@@ -24,7 +24,7 @@ const BeneficiariesSpreedsheetImport = <T extends Record<string, unknown>>({
       Upload File
     </Button>
 
-    <ReactSpreadsheetImport<T>
+    <ReactSpreadsheetImport
       isOpen={isOpen}
       fields={fields}
       onClose={handleOpenClose}
