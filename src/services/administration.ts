@@ -9,6 +9,8 @@ const AdministrationService = {
     axiosInstance.patch(endpoints.administration.users.approve(walletAddress)),
   create: (data: IUserDetails) =>
     axiosInstance.post(endpoints.administration.users.create, { ...data }),
+  updateRole: (walletAddress: string, role: string) =>
+    axiosInstance.patch(endpoints.administration.users.updateRole(walletAddress), { role }),
 };
 
 export default AdministrationService;

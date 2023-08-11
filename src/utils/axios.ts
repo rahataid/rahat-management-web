@@ -58,6 +58,7 @@ export const endpoints = {
     users: {
       list: '/users',
       create: '/users',
+      updateRole: (walletAddress: string) => `/users/${walletAddress}/role`,
       approve: (walletAddress: string) => `/users/${walletAddress}/approve`,
     },
   },
