@@ -11,6 +11,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
+import { Checkbox } from '@mui/material';
 import { IBeneficiariesItem } from 'src/types/beneficiaries';
 
 // ----------------------------------------------------------------------
@@ -19,15 +20,26 @@ type Props = {
   row: IBeneficiariesItem;
   onViewRow: VoidFunction;
   onEditRow: VoidFunction;
+  onSelectRow: VoidFunction;
+  selected: boolean;
 };
 
-export default function BeneficiariesTableRow({ row, onViewRow,onEditRow }: Props) {
-  const { name, bankStatus, internetAccess, phoneOwnership, tokensAssigned, tokensClaimed } = row;
+export default function BeneficiariesTableRow({
+  row,
+  onViewRow,
+  onEditRow,
+  selected,
+  onSelectRow,
+}: Props) {
+  const { name, bankStatus, internetAccess, phoneOwnership } = row;
 
   const quickEdit = useBoolean();
 
   return (
     <TableRow hover>
+      <TableCell padding="checkbox">
+        <Checkbox checked={selected} onClick={onSelectRow} />
+      </TableCell>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
@@ -43,10 +55,6 @@ export default function BeneficiariesTableRow({ row, onViewRow,onEditRow }: Prop
       <TableCell>
         <Label variant="soft">{bankStatus}</Label>
       </TableCell>
-
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensAssigned}</TableCell>
-
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>{tokensClaimed}</TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>

@@ -9,6 +9,7 @@ import {
   Divider,
   MenuItem,
   Stack,
+  Typography,
 } from '@mui/material';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -25,11 +26,12 @@ type Props = {
   onClose: () => void;
   projects: IProjectsList['rows'];
   onOk: (data: any) => void;
+  selected: string[];
 };
 
 interface FormValues extends IAssignProjectItem {}
 
-const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Props) => {
+const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, selected }: Props) => {
   const AssignProjectSchema = Yup.object().shape({
     projectId: Yup.string().required('Project must be selected'),
   });
@@ -49,7 +51,7 @@ const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Prop
   const {
     handleSubmit,
     reset: formReset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, touchedFields },
   } = methods;
   return (
     <Dialog open={open} onClose={onClose}>
@@ -67,7 +69,18 @@ const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk }: Prop
         </DialogContent>
 
         <Stack sx={{ p: 2 }} spacing={5}>
-          <RHFSelect name="projectId" label="Projects" color="success">
+          <RHFSelect
+            name="projectId"
+            label="Projects"
+            color="success"
+            helperText={
+              touchedFields.projectId && (
+                <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                  {selected.length} beneficiaries will be assigned to this project.
+                </Typography>
+              )
+            }
+          >
             <MenuItem value="">None</MenuItem>
             <Divider sx={{ borderStyle: 'dashed' }} />
 

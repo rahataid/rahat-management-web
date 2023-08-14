@@ -47,6 +47,7 @@ export default function ProjectDetailsView() {
 
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
+    console.log('data', data);
     setChainData(data);
   }, [getProjectChainData, params.address, setChainData]);
 
@@ -96,12 +97,13 @@ export default function ProjectDetailsView() {
 
   const handleCreateToken = async (token: string) => {
     const sent = await sendTokenToProject(token);
-    if (sent.from) {
+    if (sent) {
       createTokenModal.onFalse();
     }
   };
 
   const handleTokenAccept = async () => {
+    if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
     const accpeted = await acceptToken(chainData?.tokenAllowance?.toString() || '');
     console.log('accpeted', accpeted);
   };

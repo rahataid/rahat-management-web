@@ -1,14 +1,20 @@
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
-const VendorsCards = () => (
+interface IVendorCardsProps {
+  balance: number;
+  pending: number;
+  disbursed: number;
+}
+
+const VendorsCards = ({ balance, pending, disbursed }: IVendorCardsProps) => (
   <Grid container spacing={2}>
     <Grid item xs={12} md={4}>
       <SummaryCard
         color="success"
         icon="material-symbols:paid"
         title="Balance"
-        total={20}
+        total={balance}
         subtitle="tokens"
       />
     </Grid>
@@ -17,7 +23,7 @@ const VendorsCards = () => (
         color="success"
         icon="material-symbols:paid"
         title="Pending"
-        total={19}
+        total={pending}
         subtitle="tokens"
       />
     </Grid>
@@ -26,7 +32,7 @@ const VendorsCards = () => (
         color="warning"
         icon="material-symbols:token"
         title="Disbursed"
-        total={15}
+        total={disbursed}
         subtitle="tokens"
       />
     </Grid>

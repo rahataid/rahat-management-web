@@ -15,9 +15,8 @@ const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' })
 
   const handleClick = () => {
     const url = type === 'address' ? `/address/${address}` : `/tx/${address}`;
-    router.push(`${url}?txHash=${address}`);
+    window.open(`${url}?txHash=${address}`, '_blank');
   };
-
   // const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   return (

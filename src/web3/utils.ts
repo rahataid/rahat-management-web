@@ -1,6 +1,6 @@
 'use client';
 
-import { ethers } from 'ethers';
+import { Contract, TransactionReceipt, ethers } from 'ethers';
 
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
@@ -17,3 +17,44 @@ export function getName(connector: Connector) {
 export function generateWalletAddress() {
   return ethers.Wallet.createRandom();
 }
+
+interface MultiCallData {
+  encodedData: string[];
+  types: string[];
+}
+
+const generateMultiCallData = async (
+  contract: Contract,
+  functionName: string,
+  callData: (string | number)[]
+): Promise<MultiCallData> => {
+  console.log('contract', contract);
+  const encodedData = callData.map((callD) =>
+    contract.interface.encodeFunctionData(functionName, [callD])
+  );
+  console.log('encodedData', encodedData);
+  const types = new Array(encodedData.length).fill('bytes');
+
+  return { encodedData, types };
+};
+
+export const multicall = async (
+  contract: ethers.Contract,
+  functionName: string,
+  callData: (string | number)[]
+) => {
+  const encodedData = await generateMultiCallData(contract, functionName, callData);
+  //   TODO:research
+  return contract.callStatic;
+};
+
+export const multiSend = async (
+  contract: ethers.Contract,
+  functionName: string,
+  callData: (string | number)[]
+): Promise<TransactionReceipt> => {
+  const { encodedData } = await generateMultiCallData(contract, functionName, callData);
+  const tx = await contract.multicall(encodedData);
+  const result = await tx.wait();
+  return result;
+};

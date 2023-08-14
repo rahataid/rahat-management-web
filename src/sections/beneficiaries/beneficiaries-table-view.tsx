@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -39,12 +38,15 @@ import {
 //
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import useProjectContract from '@services/contracts/useProject';
 import {
   bankStatusOptions,
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
+import BeneficiariesAssignProjectModal from './assign-project-modal';
+import BeneficiariesAssignTokenModal from './assign-token-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
@@ -57,8 +59,6 @@ const TABLE_HEAD = [
   { id: 'internetAccess', label: 'Internet Access', width: 150 },
   { id: 'phoneOwnership', label: 'Phone', width: 150 },
   { id: 'bankStatus', label: 'Bank', width: 150 },
-  { id: 'tokensAssigned', label: 'Tokens Assigned', width: 150 },
-  { id: 'tokensClaimed', label: 'Tokens Claimed', width: 150 },
   { id: '', width: 20 },
 ];
 
@@ -82,6 +82,7 @@ export default function BeneficiariesListView() {
   );
   const [filters, setFilters] = useState(defaultFilters);
   const { beneficiaries, meta } = useBeneficiaries(filters);
+  const { multiActivateBeneficiary, multiAssignClaimsToBeneficiary } = useProjectContract();
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -101,8 +102,9 @@ export default function BeneficiariesListView() {
 
   const router = useRouter();
 
-  const confirm = useBoolean();
   const bulkBeneficiaryImport = useBoolean();
+  const bulkAssignTokensModal = useBoolean();
+  const bulkProjectAssign = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -152,6 +154,22 @@ export default function BeneficiariesListView() {
     console.log(data);
   };
 
+  const handleBulkAssignTokens = useCallback(
+    async (selected: string[]) => {
+      const activate = await multiActivateBeneficiary(selected);
+      console.log('activate', activate);
+      const assign = await multiAssignClaimsToBeneficiary(selected);
+      console.log('first', {
+        assign,
+      });
+    },
+    [multiActivateBeneficiary, multiAssignClaimsToBeneficiary]
+  );
+
+  const handleBulkAssignProjects = useCallback((selected: string[]) => {
+    console.log('selected', selected);
+  }, []);
+
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -162,6 +180,19 @@ export default function BeneficiariesListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <BeneficiariesAssignTokenModal
+        open={bulkAssignTokensModal.value}
+        onClose={bulkAssignTokensModal.onFalse}
+        onOk={handleBulkAssignTokens}
+        selected={table.selected}
+      />
+      <BeneficiariesAssignProjectModal
+        open={bulkProjectAssign.value}
+        onClose={bulkProjectAssign.onFalse}
+        onOk={handleBulkAssignProjects}
+        projects={[]}
+        selected={table.selected}
+      />
       <CustomBreadcrumbs
         heading="Beneficiaries: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
@@ -215,15 +246,22 @@ export default function BeneficiariesListView() {
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                beneficiaries.map((row: IBeneficiariesItem) => row.name.toString())
+                beneficiaries.map((row: IBeneficiariesItem) => row.walletAddress.toString())
               )
             }
             action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row" spacing={2.5}>
+                <Tooltip title="Assign Tokens in bulk">
+                  <Button variant="outlined" color="primary" onClick={bulkProjectAssign.onTrue}>
+                    Assign Project
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Assign Tokens in bulk">
+                  <Button variant="outlined" color="primary" onClick={bulkAssignTokensModal.onTrue}>
+                    Assign Tokens
+                  </Button>
+                </Tooltip>
+              </Stack>
             }
           />
 
@@ -236,6 +274,12 @@ export default function BeneficiariesListView() {
                 rowCount={beneficiaries.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    beneficiaries.map((row: IBeneficiariesItem) => row.walletAddress)
+                  )
+                }
               />
 
               <TableBody>
@@ -245,6 +289,8 @@ export default function BeneficiariesListView() {
                     row={row}
                     onViewRow={() => handleViewRow(row.uuid)}
                     onEditRow={() => handleEditRow(row.uuid)}
+                    selected={table.selected.includes(row.walletAddress)}
+                    onSelectRow={() => table.onSelectRow(row.walletAddress)}
                   />
                 ))}
 

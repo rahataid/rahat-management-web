@@ -1,24 +1,40 @@
 import Iconify from '@components/iconify/iconify';
-import { useBoolean } from '@hooks/use-boolean';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
-import { Button, Card, CardContent, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { truncateEthAddress } from '@utils/strings';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
 import { IVendorDetails } from 'src/types/vendors';
 import VendorAssignTokenModal from './vendors-assign-token-modal';
 
 type Props = {
   data: IVendorDetails;
+  isVendor: boolean | null;
+  assignTokenModal: any;
+  onActivateVendor: (address: string) => void;
+  onSendToken: (address: string) => void;
 };
 const copyBtn = {
   padding: '0 0 0 6px',
 };
 
-const BasicInfoCard = ({ data }: Props) => {
-  const [isVendorActivated, setIsVendorActivated] = useState(false);
+const BasicInfoCard = ({
+  data,
+  isVendor,
+  assignTokenModal,
+  onActivateVendor,
+  onSendToken,
+}: Props) => {
   const { phone, walletAddress, name } = data;
-  const assignTokenDialog = useBoolean();
   const { enqueueSnackbar } = useSnackbar();
   const { copy } = useCopyToClipboard();
 
@@ -32,39 +48,31 @@ const BasicInfoCard = ({ data }: Props) => {
     [copy, enqueueSnackbar]
   );
 
-  const handleActivateVendor = () => {
-    setIsVendorActivated(true);
-  };
-
   return (
     <Card>
-      <VendorAssignTokenModal
-        onClose={assignTokenDialog.onFalse}
-        open={assignTokenDialog.value}
-        onOk={() => {
-          console.log('assigned');
-        }}
-      />
       <CardContent>
+        <VendorAssignTokenModal
+          onClose={assignTokenModal.onFalse}
+          open={assignTokenModal.value}
+          walletAddress={walletAddress}
+          onOk={onSendToken}
+        />
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">{name || '-'}</Typography>
-          {isVendorActivated ?
+          {isVendor ? (
             <Button
               variant="outlined"
               size="small"
               color="success"
-              onClick={assignTokenDialog.onTrue}
-              sx={{ fontSize: 'x-small' }}
+              onClick={assignTokenModal.onTrue}
             >
               Send Token
             </Button>
-            :
-
-            <Button variant="contained" onClick={handleActivateVendor}>
+          ) : (
+            <Button variant="outlined" size="small" onClick={() => onActivateVendor(walletAddress)}>
               Activate Vendor
             </Button>
-          }
-
+          )}
         </Stack>
 
         <Stack
