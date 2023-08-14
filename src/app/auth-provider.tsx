@@ -4,7 +4,7 @@ import { LoadingScreen } from '@components/loading-screen';
 import { getToken, getWalletName } from '@utils/storage-available';
 import { useWeb3React } from '@web3-react/core';
 import { metaMask } from '@web3/connectors/metaMask';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
@@ -27,23 +27,24 @@ const AuthProvider = ({ children }: Props) => {
     setContracts: state.setContracts,
   }));
   const { isActive } = useWeb3React();
-  // console.log('isActive', isActive);
+  const prevIsActive = useRef<boolean | undefined>(undefined);
 
   useEffect(() => {
-    if (token && localWalletName) {
+    if (prevIsActive.current !== isActive) {
       useAuthStore.setState({
         isAuthenticated: true,
         isInitialized: true,
-        walletName: localWalletName,
+        walletName,
       });
     } else {
       useAuthStore.setState({
         isAuthenticated: false,
         isInitialized: true,
-        walletName: undefined,
+        walletName: '',
       });
+      prevIsActive.current = isActive;
     }
-  }, [isActive]);
+  }, [isActive, walletName]);
 
   useEffect(() => {
     setBlockchain();
@@ -52,19 +53,16 @@ const AuthProvider = ({ children }: Props) => {
 
   // attempt to connect metamask eagerly on mount
   useEffect(() => {
-    if (walletName && walletName === 'MetaMask') {
-      metaMask.connectEagerly().catch(() => {
-        console.debug('Failed to connect eagerly to metamask');
-      });
-    }
-  }, [walletName]);
+    metaMask.connectEagerly().catch(() => {
+      console.debug('Failed to connect eagerly to metamask');
+    });
+  }, []);
 
-  if (!isInitialized) {
+  if (!isInitialized && prevIsActive.current !== isActive) {
     // Render a loading screen while the app is initializing
     return <LoadingScreen />;
   }
 
   return children;
 };
-
 export default AuthProvider;
