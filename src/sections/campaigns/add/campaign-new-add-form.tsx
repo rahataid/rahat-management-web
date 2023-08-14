@@ -54,21 +54,15 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   });
 
   const NewProjectSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    location: Yup.string().required('Location is required'),
-    projectManager: Yup.string().required('Project Manager is required'),
-    description: Yup.string().required('Description is required'),
-    startDate: Yup.mixed<any>().nullable().required('Start date is required'),
-    endDate: Yup.mixed<any>()
-      .nullable()
-      .required('End date is required')
-      .test(
-        'date-min',
-        'End date must be later than start date',
-        (value, { parent }) => value.getTime() > parent.startDate?.getTime()
-      ),
-    contractAddress: Yup.string().nullable().required('Contract address is required'),
-    owner: Yup.number(),
+    name: Yup.string()
+    .required('Campaign name is required')
+    .min(4, 'Mininum 4 characters')
+    .max(24, 'Maximum 15 characters'),
+  startTime: Yup.date().nullable().required('Start date is required'),
+  type: Yup.string().required('Campaign Type is required'),
+  details: Yup.string().required('Enter the details for the campaign'),
+  audienceIds: Yup.array().required('Select the audience for the campaign'),
+  transportId: Yup.number().required('Select the transport for the campaign'),
   });
 
   const defaultValues = useMemo<FormValues>(
@@ -78,143 +72,143 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       startTime: currentCampaign?.startTime || "",
       details: currentCampaign?.details || "",
       transport: currentCampaign?.transport || "",
-      type: currentCampaign?.transport ,
-      beneficiaries:currentCampaign?.beneficiaries || [""],
-}),
-  [currentCampaign]
+      type: currentCampaign?.type as CAMPAIGN_TYPES,
+      beneficiaries: currentCampaign?.beneficiaries || [""],
+    }),
+    [currentCampaign]
   );
 
-const methods = useForm<FormValues>({
-  resolver: yupResolver(NewProjectSchema),
-  defaultValues,
-});
+  const methods = useForm<FormValues>({
+    resolver: yupResolver(NewProjectSchema),
+    defaultValues,
+  });
 
-const { reset, handleSubmit, control, setValue, trigger } = methods;
-
-
-const onSubmit = useCallback((data: ICampaignItem) =>console.log(data) , []);
-
-const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
-
-const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
-  const {
-    target: { value },
-  } = event;
-  setBeneficiary(
-    typeof value === 'string' ? value.split(',') : value,
-  );
-};
+  const { reset, handleSubmit, control, setValue, trigger } = methods;
 
 
+  const onSubmit = useCallback((data: ICampaignItem) => console.log(data), []);
 
-return (
-  <FormProvider methods={methods} >
-    {error && (
-      <Alert severity="error">
-        <AlertTitle>Error Creating Campaign</AlertTitle>
-        {error?.message}
-      </Alert>
-    )}
-    <CampaignAssignBenficiariesModal
-      onClose={assignCampaignDialog.onFalse}
-      open={assignCampaignDialog.value}
-      onOk={() => {
-        console.log('Registered');
-      }}
-    />
-    <Grid container spacing={3}>
-      <Grid xs={12} md={12}>
-        <Card sx={{ p: 3 }}>
-          <Box
-            rowGap={3}
-            columnGap={2}
-            display="grid"
-            gridTemplateColumns={{
-              xs: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-            }}
-          >
-            <RHFTextField name="campaignName" label="Campaign Name" />
+  const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
-            <Controller
-              name="startTime"
-              control={control}
-              render={({ field, fieldState: { error: err } }) => (
-                <DateTimePicker
-                  {...field}
-                  label="Start Time"
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: !!err,
-                      helperText: err?.message,
-                    },
-                  }}
-                />
-              )}
-            />
-
-            <RHFTextField name="location" label="Details" />
-
-            <RHFSelect name="campaignTypes" label="Select Campaign Types">
-              {campaignTypeOptions.map((campaign) => (
-                <MenuItem key={campaign} value={campaign}>
-                  {campaign}
-                </MenuItem>
-              ))}
-            </RHFSelect>
+  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
+    const {
+      target: { value },
+    } = event;
+    setBeneficiary(
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
 
 
-            <RHFSelect name="transport" label="Select Transport ">
-              <MenuItem key='solana' value='Solana'>
-                Solana
-              </MenuItem>
-            </RHFSelect>
 
-            <Stack alignItems={'flex-start'}>
-              <Select
-                labelId="demo-multiple-chip-label"
-                id="demo-multiple-chip"
-                multiple
-                value={beneficiary}
-                onChange={handleChange}
-                fullWidth
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value: any) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
+  return (
+    <FormProvider methods={methods} >
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error Creating Campaign</AlertTitle>
+          {error?.message}
+        </Alert>
+      )}
+      <CampaignAssignBenficiariesModal
+        onClose={assignCampaignDialog.onFalse}
+        open={assignCampaignDialog.value}
+        onOk={() => {
+          console.log('Registered');
+        }}
+      />
+      <Grid container spacing={3}>
+        <Grid xs={12} md={12}>
+          <Card sx={{ p: 3 }}>
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+              }}
+            >
+              <RHFTextField name="campaignName" label="Campaign Name" />
+
+              <Controller
+                name="startTime"
+                control={control}
+                render={({ field, fieldState: { error: err } }) => (
+                  <DateTimePicker
+                    {...field}
+                    label="Start Time"
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!err,
+                        helperText: err?.message,
+                      },
+                    }}
+                  />
                 )}
-              >
-                {beneficiaries.map((beneficiary) => (
-                  <MenuItem
-                    key={beneficiary.name}
-                    value={beneficiary.name}
-                  >
-                    {beneficiary.name}
+              />
+
+              <RHFTextField name="location" label="Details" />
+
+              <RHFSelect name="campaignTypes" label="Select Campaign Types">
+                {campaignTypeOptions.map((campaign) => (
+                  <MenuItem key={campaign} value={campaign}>
+                    {campaign}
                   </MenuItem>
                 ))}
-              </Select>
-              <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
-                Register Audiences
-              </Button>
+              </RHFSelect>
+
+
+              <RHFSelect name="transport" label="Select Transport ">
+                <MenuItem key='solana' value='Solana'>
+                  Somleng
+                </MenuItem>
+              </RHFSelect>
+
+              <Stack alignItems={'flex-start'}>
+                <Select
+                  labelId="demo-multiple-chip-label"
+                  id="demo-multiple-chip"
+                  multiple
+                  value={beneficiary}
+                  onChange={handleChange}
+                  fullWidth
+                  input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value: any) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                >
+                  {beneficiaries.map((beneficiary) => (
+                    <MenuItem
+                      key={beneficiary.name}
+                      value={beneficiary.name}
+                    >
+                      {beneficiary.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
+                  Register Audiences
+                </Button>
+              </Stack>
+            </Box>
+
+
+
+            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+                Create Campaign
+              </LoadingButton>
             </Stack>
-          </Box>
-
-
-
-          <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-            <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
-              Create Campaign
-            </LoadingButton>
-          </Stack>
-        </Card>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
-  </FormProvider>
-);
+    </FormProvider>
+  );
 };
 
 export default memo(CampaignForm);

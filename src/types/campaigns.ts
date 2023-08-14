@@ -15,6 +15,7 @@ export enum CAMPAIGN_TYPES {
   PHONE = 'PHONE',
 }
 
+
 export enum CAMPAIGN_STATUS {
   ONGOING = 'ONGOING',
   COMPLETED = 'COMPLETED',
