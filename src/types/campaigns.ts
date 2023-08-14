@@ -7,6 +7,8 @@ export type IApiResponseError = {
   timestamp: number;
 };
 
+export type ICampaignFilterOptions = string[];
+
 export enum CAMPAIGN_TYPES {
   EMAIL = 'EMAIL',
   SMS = 'SMS',
@@ -36,6 +38,15 @@ export type ICampaignItem = {
   type: CAMPAIGN_TYPES;
   status: CAMPAIGN_STATUS;
   totalAudiences: number;
+};
+
+export type ICampaignCreateItem = {
+  name: string;
+  startTime: string;
+  details: string;
+  transport: string;
+  type: CAMPAIGN_TYPES;
+  beneficiaries: string[];
 };
 
 export type ICampaigns = ICampaignItem[];

@@ -19,7 +19,7 @@ const ICONS = {
   settings: icon('fluent:settings-24-regular'),
   users: icon('la:users'),
 
-  // campaigns: icon('carbon:communication-unified'),
+  campaigns: icon('carbon:communication-unified'),
 };
 
 // ----------------------------------------------------------------------
@@ -62,18 +62,18 @@ export function useNavData() {
             path: paths.dashboard.general.vendors.list,
             icon: ICONS.vendors,
           },
-          // {
-          //   title: 'Campaigns',
-          //   path: paths.dashboard.general.campaigns.list,
-          //   icon: ICONS.campaigns,
-          //   children: [
-          //     {
-          //       title: 'List',
-          //       path: paths.dashboard.general.campaigns.list,
-          //       icon: icon('cil:list'),
-          //     },
-          //   ],
-          // },
+          {
+            title: 'Campaigns',
+            path: paths.dashboard.general.campaigns.list,
+            icon: ICONS.campaigns,
+            children: [
+              {
+                title: 'List',
+                path: paths.dashboard.general.campaigns.list,
+                icon: icon('cil:list'),
+              },
+            ],
+          },
         ],
       },
       {
