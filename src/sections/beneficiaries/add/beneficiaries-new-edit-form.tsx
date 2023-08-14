@@ -28,6 +28,7 @@ import {
   IBeneficiariesCreateItem,
   IBeneficiaryDetails,
 } from 'src/types/beneficiaries';
+import { CAMPAIGN_TYPES } from 'src/types/campaigns';
 import * as Yup from 'yup';
 
 interface FormValues extends IBeneficiariesCreateItem {}
@@ -84,6 +85,8 @@ const BeneficiariesForm: React.FC = () => {
     }),
     []
   );
+
+  console.log(typeof CAMPAIGN_TYPES)
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(NewBeneficiarySchema),
