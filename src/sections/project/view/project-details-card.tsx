@@ -1,4 +1,14 @@
-import { Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import Iconify from '@components/iconify/iconify';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  Grid,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { fDate } from '@utils/format-time';
 
 interface IProjectDetails {
@@ -8,7 +18,12 @@ interface IProjectDetails {
   startDate: string | Date;
   endDate: string | Date;
   vendorsCount: number;
+  isLocked: boolean;
 }
+
+const lockedTip = 'The project has been locked, you can now distribute tokens to the beneficiaries';
+const unlockedTip =
+  'The project is unlocked, you can now add vendors, beneficiaries and create tokens';
 
 export const ProjectDetailsCard = ({
   description,
@@ -17,8 +32,28 @@ export const ProjectDetailsCard = ({
   startDate,
   endDate,
   vendorsCount,
+  isLocked,
 }: IProjectDetails) => (
   <Card>
+    <CardHeader
+      action={
+        <Tooltip title={isLocked ? lockedTip : unlockedTip}>
+          <Chip
+            variant="soft"
+            size="medium"
+            icon={
+              isLocked ? (
+                <Iconify icon="solar:lock-outline" />
+              ) : (
+                <Iconify icon="clarity:unlock-line" />
+              )
+            }
+            color={isLocked ? 'warning' : 'success'}
+            label={isLocked ? 'Locked' : 'Unlocked'}
+          />
+        </Tooltip>
+      }
+    />
     <CardContent>
       <Stack
         sx={{ p: 2 }}

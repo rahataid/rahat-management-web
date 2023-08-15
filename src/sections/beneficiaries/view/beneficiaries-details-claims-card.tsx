@@ -28,8 +28,7 @@ export default function BeneficiariesDetailsCard({
   const { projects } = useProjects();
   const { uuid } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const { assignClaimsToBeneficiaries, activateBeneficiary, addBeneficiaryToProject } =
-    useProjectContract();
+  const { assignClaimsToBeneficiaries, addBeneficiaryToProject } = useProjectContract();
 
   const { mutateAsync } = useMutation<IAssignProjectDetails, RSErrorData, IAssignProjectItem>({
     mutationFn: async (updateData: IAssignProjectItem) => {
@@ -54,15 +53,8 @@ export default function BeneficiariesDetailsCard({
   };
 
   const handleBeneficiaryTokenAssign = async (token: string) => {
-    const activated = await activateBeneficiary(walletAddress);
-    console.log('activated', activated);
-
-    // console.log('activated', activated);
-    // if (activated) {
     const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
-    const rec = await assigned.wait();
-    console.log('first', rec);
-    assignTokenDialog.onFalse();
+    if (assigned) assignTokenDialog.onFalse();
     // }
   };
 

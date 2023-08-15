@@ -36,6 +36,7 @@ import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/type
 //
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import useProjectContract from '@services/contracts/useProject';
 import {
   bankStatusOptions,
   internetAccessOptions,
@@ -82,6 +83,7 @@ export default function ProjectBeneficiariesListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
+  const { multiAssignClaimsToBeneficiary } = useProjectContract();
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -140,9 +142,15 @@ export default function ProjectBeneficiariesListView() {
     [router]
   );
 
-  const handleBulkAssignTokens = useCallback((selected: string[]) => {
-    console.log('selected', selected);
-  }, []);
+  const handleBulkAssignTokens = useCallback(
+    async (selected: string[]) => {
+      const assign = await multiAssignClaimsToBeneficiary(selected);
+      console.log('first', {
+        assign,
+      });
+    },
+    [multiAssignClaimsToBeneficiary]
+  );
 
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {

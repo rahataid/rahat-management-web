@@ -19,11 +19,7 @@ const useProjectContract = (): ProjectContract => {
 
   const getProjectBalance = useCallback(
     async (contractAddress: string): Promise<number> => {
-      // if (!tokenContract) {
-      //   return 0;
-      // }
       const balance = await tokenContract?.balanceOf(contractAddress);
-      console.log('balance', balance);
       return balance?.toString();
     },
     [tokenContract]
@@ -65,23 +61,15 @@ const useProjectContract = (): ProjectContract => {
   );
 
   const lockProject = useCallback(
-    async (contractAddress: string): Promise<void> => {
-      if (!donorContract || !projectContract) {
-        return;
-      }
-      await donorContract.lockProject(contractAddress).catch(handleContractError);
-    },
-    [donorContract, projectContract, handleContractError]
+    async (contractAddress: string): Promise<ContractTransactionResponse> =>
+      donorContract?.lockProject(contractAddress).catch(handleContractError),
+    [donorContract, handleContractError]
   );
 
   const unLockProject = useCallback(
-    async (contractAddress: string): Promise<void> => {
-      if (!donorContract || !projectContract) {
-        return;
-      }
-      await donorContract.unlockProject(contractAddress).catch(handleContractError);
-    },
-    [donorContract, projectContract, handleContractError]
+    async (contractAddress: string): Promise<ContractTransactionResponse> =>
+      donorContract?.unlockProject(contractAddress).catch(handleContractError),
+    [donorContract, handleContractError]
   );
 
   const acceptToken = useCallback(
@@ -201,13 +189,25 @@ const useProjectContract = (): ProjectContract => {
     [projectContract, handleContractError]
   );
 
-  const multiActivateBeneficiary = useCallback(
+  // use when assigning ben to project
+  const multiAssignBenToProject = useCallback(
     async (walletAddresses: string[]) => {
       if (!projectContract) throw new Error('No community contract');
       return multiSend(projectContract, 'addBeneficiary', walletAddresses);
     },
     [projectContract]
   );
+
+  // use when bulk adding benefiiary(import)
+  const multiActivateBen = useCallback(
+    async (walletAddresses: string[]) => {
+      if (!communityContract) throw new Error('No community contract');
+      return multiSend(communityContract, 'addBeneficiary', walletAddresses);
+    },
+    [communityContract]
+  );
+
+  // use when bulk assigning claims (from inside project beneficiaries)
   const multiAssignClaimsToBeneficiary = useCallback(
     async (walletAddresses: string[], amount: string) => {
       if (!projectContract) throw new Error('No community contract');
@@ -316,8 +316,9 @@ const useProjectContract = (): ProjectContract => {
       beneficiaryCounts,
       getVendorChainData,
       activateBeneficiary,
-      multiActivateBeneficiary,
+      multiAssignBenToProject,
       multiAssignClaimsToBeneficiary,
+      multiActivateBen,
     }),
     [
       projectContract,
@@ -347,8 +348,9 @@ const useProjectContract = (): ProjectContract => {
       beneficiaryCounts,
       getVendorChainData,
       activateBeneficiary,
-      multiActivateBeneficiary,
+      multiAssignBenToProject,
       multiAssignClaimsToBeneficiary,
+      multiActivateBen,
     ]
   );
 };

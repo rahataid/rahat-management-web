@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
 import Iconify from 'src/components/iconify';
@@ -31,19 +30,25 @@ export default function BeneficiariesTableRow({
   selected,
   onSelectRow,
 }: Props) {
-  const { name, bankStatus, internetAccess, phoneOwnership } = row;
-
-  const quickEdit = useBoolean();
+  const { name, bankStatus, internetAccess, phoneOwnership, projects } = row;
 
   return (
     <TableRow hover>
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+      <TableCell>
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+        {' '}
+        <ListItemText
+          primary={projects || 'N/A'}
+          primaryTypographyProps={{ typography: 'body2' }}
+        />
+        {/* <Label variant="soft">{projects || 'N/A'}</Label> */}
+      </TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
         <Label variant="soft">{internetAccess}</Label>
@@ -58,12 +63,12 @@ export default function BeneficiariesTableRow({
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
-          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
+          <IconButton onClick={onViewRow}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="View Details" placement="top" arrow>
-          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onEditRow()}>
+        <Tooltip title="Edit" placement="top" arrow>
+          <IconButton onClick={onEditRow}>
             <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
         </Tooltip>

@@ -28,8 +28,8 @@ export interface ProjectContract {
   isProjectApproved: (contractAddress: string) => Promise<boolean>;
   getProjectChainData: (contractAddress: string) => Promise<IProjectChainData>;
   approveProject: (contractAddress: string) => Promise<void>;
-  lockProject: (contractAddress: string) => Promise<void>;
-  unLockProject: (contractAddress: string) => Promise<void>;
+  lockProject: (contractAddress: string) => Promise<ContractTransactionResponse>;
+  unLockProject: (contractAddress: string) => Promise<ContractTransactionResponse>;
   acceptToken: (amount: string) => Promise<ContractTransactionResponse | void>;
   getTokenAllowance: () => Promise<number | undefined>;
   getVendorBalance: (walletAddress: string) => Promise<number | undefined>;
@@ -51,5 +51,6 @@ export interface ProjectContract {
   beneficiaryCounts: () => Promise<number | undefined>;
   getVendorChainData: (address: string) => Promise<IVendorChainData>;
   multiAssignClaimsToBeneficiary: (walletAddresses: string[]) => Promise<TransactionReceipt>;
-  multiActivateBeneficiary: (walletAddresses: string[]) => Promise<TransactionReceipt>;
+  multiAssignBenToProject: (walletAddresses: string[]) => Promise<TransactionReceipt>;
+  multiActivateBen: (walletAddresses: string[]) => Promise<TransactionReceipt>;
 }

@@ -9,6 +9,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
+import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
 import { generateWalletAddress } from '@web3/utils';
 import { useSnackbar } from 'notistack';
@@ -36,6 +37,7 @@ interface FormValues extends IBeneficiariesCreateItem {}
 const BeneficiariesForm: React.FC = () => {
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const { activateBeneficiary } = useProjectContract();
 
   const { error, isLoading, mutate } = useMutation<
     IBeneficiaryDetails,
@@ -86,7 +88,7 @@ const BeneficiariesForm: React.FC = () => {
     []
   );
 
-  console.log(typeof CAMPAIGN_TYPES)
+  console.log(typeof CAMPAIGN_TYPES);
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(NewBeneficiarySchema),
@@ -101,7 +103,13 @@ const BeneficiariesForm: React.FC = () => {
     trigger('walletAddress');
   }, [setValue, trigger]);
 
-  const onSubmit = useCallback((data: IBeneficiariesCreateItem) => mutate(data), [mutate]);
+  const onSubmit = useCallback(
+    async (data: IBeneficiariesCreateItem) => {
+      const activateToChain = await activateBeneficiary(data.walletAddress);
+      if (activateToChain) mutate(data);
+    },
+    [activateBeneficiary, mutate]
+  );
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

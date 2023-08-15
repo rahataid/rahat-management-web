@@ -27,23 +27,23 @@ const AuthProvider = ({ children }: Props) => {
     setContracts: state.setContracts,
   }));
   const { isActive } = useWeb3React();
-  const prevIsActive = useRef<boolean | undefined>(undefined);
+  const prevIsActive = useRef<boolean | undefined>(false);
 
   useEffect(() => {
-    if (prevIsActive.current !== isActive) {
-      useAuthStore.setState({
-        isAuthenticated: true,
-        isInitialized: true,
-        walletName,
-      });
-    } else {
-      useAuthStore.setState({
-        isAuthenticated: false,
-        isInitialized: true,
-        walletName: '',
-      });
-      prevIsActive.current = isActive;
-    }
+    // if (prevIsActive.current !== isActive) {
+    useAuthStore.setState({
+      isAuthenticated: true,
+      isInitialized: true,
+      walletName,
+    });
+    // } else {
+    //   useAuthStore.setState({
+    //     isAuthenticated: false,
+    //     isInitialized: true,
+    //     walletName: '',
+    //   });
+    //   prevIsActive.current = isActive;
+    // }
   }, [isActive, walletName]);
 
   useEffect(() => {

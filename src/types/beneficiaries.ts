@@ -64,6 +64,7 @@ export type IBeneficiariesItem = {
   updatedAt: string;
   uuid: string;
   walletAddress: string;
+  projects?: string;
 };
 
 export type IBeneficiariesList = {

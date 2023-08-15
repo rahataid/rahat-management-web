@@ -16,11 +16,6 @@ const useContract: UseContract = (contractName, options = {}) => {
   const [contract, setContract] = useState<Contract | null>(null);
   const { provider } = useWeb3React();
   const contracts = useAppStore((state) => state.contracts);
-  // const blockchainData = useAppStore((state) => state.blockchain);
-  // const rpcProvider = useMemo(
-  //   () => new JsonRpcProvider(blockchainData?.rpcUrls?.[0]),
-  //   [blockchainData]
-  // );
 
   const contractInstance = useMemo(() => {
     if (contracts && contractName) {

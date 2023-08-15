@@ -12,6 +12,7 @@ import { useProject } from 'src/api/project';
 import useAppStore from 'src/store/app';
 import useProjectStore from 'src/store/projects';
 import CreateTokenModal from './create-token-modal';
+import LockUnlockModal from './lock-unlock-modal';
 import ProjectActions from './project-actions-card';
 import ProjectAlerts from './project-alerts';
 import { ProjectDetailsCard } from './project-details-card';
@@ -36,24 +37,26 @@ export default function ProjectDetailsView() {
   const params = useParams();
   const { project } = useProject(params.address);
   const createTokenModal = useBoolean();
+  const lockProjectModal = useBoolean();
+  const unlockProjectModal = useBoolean();
+
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
 
-  const { getProjectChainData, acceptToken } = useProjectContract();
+  const { getProjectChainData, acceptToken, lockProject, unLockProject } = useProjectContract();
   const { sendTokenToProject } = useRahatDonor();
 
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
-    console.log('data', data);
     setChainData(data);
   }, [getProjectChainData, params.address, setChainData]);
 
   useEffect(() => {
     handleChainData();
-  }, [handleChainData, createTokenModal.value]);
+  }, [handleChainData, createTokenModal.value, lockProjectModal.value, unlockProjectModal.value]);
 
   const rightActionOptions: MenuOptions = [
     {
@@ -66,7 +69,19 @@ export default function ProjectDetailsView() {
       title: 'Approve Project',
       onClick: createTokenModal.onTrue,
       icon: 'mdi:approve',
-      show: true,
+      show: !chainData.isApproved,
+    },
+    {
+      title: 'Lock Project',
+      onClick: lockProjectModal.onTrue,
+      icon: 'solar:lock-outline',
+      show: !chainData.isLocked,
+    },
+    {
+      title: 'Unlock Project',
+      onClick: unlockProjectModal.onTrue,
+      icon: 'clarity:unlock-line',
+      show: Boolean(chainData.isLocked),
     },
     {
       title: 'Edit Project',
@@ -102,10 +117,37 @@ export default function ProjectDetailsView() {
     }
   };
 
+  const handleLockProject = async () => {
+    const locked = await lockProject(project.contractAddress);
+    if (locked) lockProjectModal.onFalse();
+  };
+  const handleUnlockProject = async () => {
+    const unlocked = await unLockProject(project.contractAddress);
+    if (unlocked) unlockProjectModal.onFalse();
+  };
+
   const handleTokenAccept = async () => {
     if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
     const accpeted = await acceptToken(chainData?.tokenAllowance?.toString() || '');
     console.log('accpeted', accpeted);
+  };
+
+  const lockProjectProp = {
+    title: 'Lock Project',
+    description: 'Are you sure you want to lock this project?',
+    okText: 'Lock',
+    open: lockProjectModal.value,
+    onClose: lockProjectModal.onFalse,
+    onOk: handleLockProject,
+  };
+
+  const unlockProjectProp = {
+    title: 'Unlock Project',
+    description: 'Are you sure you want to unlock this project?',
+    okText: 'Unlock',
+    open: unlockProjectModal.value,
+    onClose: unlockProjectModal.onFalse,
+    onOk: handleUnlockProject,
   };
 
   return (
@@ -115,6 +157,7 @@ export default function ProjectDetailsView() {
         onClose={createTokenModal.onFalse}
         onOk={handleCreateToken}
       />
+      <LockUnlockModal {...(!chainData.isLocked ? lockProjectProp : unlockProjectProp)} />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
           <ProjectGallery data={_carouselsExample} title={project.name} />
@@ -128,6 +171,7 @@ export default function ProjectDetailsView() {
             onTokenAccept={handleTokenAccept}
           />
           <ProjectDetailsCard
+            isLocked={Boolean(chainData.isLocked)}
             startDate={project.startDate}
             endDate={project.endDate}
             description={project.description}

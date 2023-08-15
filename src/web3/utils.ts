@@ -28,11 +28,9 @@ const generateMultiCallData = async (
   functionName: string,
   callData: (string | number)[]
 ): Promise<MultiCallData> => {
-  console.log('contract', contract);
   const encodedData = callData.map((callD) =>
     contract.interface.encodeFunctionData(functionName, [callD])
   );
-  console.log('encodedData', encodedData);
   const types = new Array(encodedData.length).fill('bytes');
 
   return { encodedData, types };
@@ -54,7 +52,5 @@ export const multiSend = async (
   callData: (string | number)[]
 ): Promise<TransactionReceipt> => {
   const { encodedData } = await generateMultiCallData(contract, functionName, callData);
-  const tx = await contract.multicall(encodedData);
-  const result = await tx.wait();
-  return result;
+  return contract.multicall(encodedData);
 };

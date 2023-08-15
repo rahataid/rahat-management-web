@@ -14,24 +14,28 @@ import {
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFSelect } from 'src/components/hook-form';
-import { IProjectsList } from 'src/types/project';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useProjects } from 'src/api/project';
 import { IAssignProjectItem } from 'src/types/beneficiaries';
 import * as Yup from 'yup';
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  projects: IProjectsList['rows'];
   onOk: (data: any) => void;
   selected: string[];
 };
 
 interface FormValues extends IAssignProjectItem {}
 
-const BeneficiariesAssignProjectModal = ({ open, onClose, projects, onOk, selected }: Props) => {
+const BeneficiariesAssignProjectModal = ({ open, onClose, onOk, selected }: Props) => {
+  const { projects } = useProjects({
+    perPage: 100,
+    page: 1,
+  });
+
   const AssignProjectSchema = Yup.object().shape({
     projectId: Yup.string().required('Project must be selected'),
   });

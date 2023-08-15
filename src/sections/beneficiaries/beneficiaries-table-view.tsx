@@ -46,7 +46,6 @@ import {
 } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import BeneficiariesAssignProjectModal from './assign-project-modal';
-import BeneficiariesAssignTokenModal from './assign-token-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
@@ -56,6 +55,7 @@ import { BeneficiariesSpreedsheetImport } from './spreedsheet';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', width: 200 },
+  { id: 'projects', label: 'Projects Involved', width: 250 },
   { id: 'internetAccess', label: 'Internet Access', width: 150 },
   { id: 'phoneOwnership', label: 'Phone', width: 150 },
   { id: 'bankStatus', label: 'Bank', width: 150 },
@@ -82,7 +82,7 @@ export default function BeneficiariesListView() {
   );
   const [filters, setFilters] = useState(defaultFilters);
   const { beneficiaries, meta } = useBeneficiaries(filters);
-  const { multiActivateBeneficiary, multiAssignClaimsToBeneficiary } = useProjectContract();
+  const { multiAssignBenToProject } = useProjectContract();
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -103,7 +103,6 @@ export default function BeneficiariesListView() {
   const router = useRouter();
 
   const bulkBeneficiaryImport = useBoolean();
-  const bulkAssignTokensModal = useBoolean();
   const bulkProjectAssign = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
@@ -154,18 +153,6 @@ export default function BeneficiariesListView() {
     console.log(data);
   };
 
-  const handleBulkAssignTokens = useCallback(
-    async (selected: string[]) => {
-      const activate = await multiActivateBeneficiary(selected);
-      console.log('activate', activate);
-      const assign = await multiAssignClaimsToBeneficiary(selected);
-      console.log('first', {
-        assign,
-      });
-    },
-    [multiActivateBeneficiary, multiAssignClaimsToBeneficiary]
-  );
-
   const handleBulkAssignProjects = useCallback((selected: string[]) => {
     console.log('selected', selected);
   }, []);
@@ -180,17 +167,10 @@ export default function BeneficiariesListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <BeneficiariesAssignTokenModal
-        open={bulkAssignTokensModal.value}
-        onClose={bulkAssignTokensModal.onFalse}
-        onOk={handleBulkAssignTokens}
-        selected={table.selected}
-      />
       <BeneficiariesAssignProjectModal
         open={bulkProjectAssign.value}
         onClose={bulkProjectAssign.onFalse}
         onOk={handleBulkAssignProjects}
-        projects={[]}
         selected={table.selected}
       />
       <CustomBreadcrumbs
@@ -254,11 +234,6 @@ export default function BeneficiariesListView() {
                 <Tooltip title="Assign Tokens in bulk">
                   <Button variant="outlined" color="primary" onClick={bulkProjectAssign.onTrue}>
                     Assign Project
-                  </Button>
-                </Tooltip>
-                <Tooltip title="Assign Tokens in bulk">
-                  <Button variant="outlined" color="primary" onClick={bulkAssignTokensModal.onTrue}>
-                    Assign Tokens
                   </Button>
                 </Tooltip>
               </Stack>
