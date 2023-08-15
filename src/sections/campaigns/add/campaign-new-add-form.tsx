@@ -45,24 +45,24 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
     },
     onError: () => {
-      enqueueSnackbar('Error creating project', { variant: 'error' });
+      enqueueSnackbar('Error creating Campaign', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Project created successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign created successfully', { variant: 'success' });
       reset();
     },
   });
 
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
-    .required('Campaign name is required')
-    .min(4, 'Mininum 4 characters')
-    .max(24, 'Maximum 15 characters'),
-  startTime: Yup.date().nullable().required('Start date is required'),
-  type: Yup.string().required('Campaign Type is required'),
-  details: Yup.string().required('Enter the details for the campaign'),
-  audienceIds: Yup.array().required('Select the audience for the campaign'),
-  transportId: Yup.number().required('Select the transport for the campaign'),
+      .required('Campaign name is required')
+      .min(4, 'Mininum 4 characters')
+      .max(24, 'Maximum 15 characters'),
+    startTime: Yup.date().nullable().required('Start date is required'),
+    type: Yup.string().required('Campaign Type is required'),
+    details: Yup.string().required('Enter the details for the campaign'),
+    audienceIds: Yup.array().required('Select the audience for the campaign'),
+    transportId: Yup.number().required('Select the transport for the campaign'),
   });
 
   const defaultValues = useMemo<FormValues>(
@@ -71,9 +71,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       name: currentCampaign?.name || "",
       startTime: currentCampaign?.startTime || "",
       details: currentCampaign?.details || "",
-      transport: currentCampaign?.transport || "",
+      transportId: currentCampaign?.transportId || "",
       type: currentCampaign?.type as CAMPAIGN_TYPES,
-      beneficiaries: currentCampaign?.beneficiaries || [""],
+      audienceIds: currentCampaign?.audienceIds || [""],
     }),
     [currentCampaign]
   );
@@ -126,9 +126,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="campaignName" label="Campaign Name" />
+              <RHFTextField name="name" label="Campaign Name" />
 
               <Controller
                 name="startTime"
@@ -148,8 +149,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 )}
               />
 
-              <RHFTextField name="location" label="Details" />
-
               <RHFSelect name="campaignTypes" label="Select Campaign Types">
                 {campaignTypeOptions.map((campaign) => (
                   <MenuItem key={campaign} value={campaign}>
@@ -158,8 +157,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 ))}
               </RHFSelect>
 
+              <RHFTextField name="details" label="Details" fullWidth />
 
-              <RHFSelect name="transport" label="Select Transport ">
+
+              <RHFSelect name="transportId" label="Select Transport ">
                 <MenuItem key='solana' value='Solana'>
                   Somleng
                 </MenuItem>
@@ -167,8 +168,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
               <Stack alignItems={'flex-start'}>
                 <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
+                  name="audienceIds"
                   multiple
                   value={beneficiary}
                   onChange={handleChange}
@@ -182,14 +182,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     </Box>
                   )}
                 >
-                  {beneficiaries.map((beneficiary) => (
-                    <MenuItem
-                      key={beneficiary.name}
-                      value={beneficiary.name}
-                    >
-                      {beneficiary.name}
-                    </MenuItem>
-                  ))}
+                  <MenuItem
+                    key='beneficiary'
+                    value="Beneficiary 0"
+                  >
+                    Beneficiary 0
+                  </MenuItem>
                 </Select>
                 <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
                   Register Audiences
