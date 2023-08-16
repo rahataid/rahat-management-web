@@ -22,7 +22,7 @@ import { useBeneficiaries } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem, ICampaignFilterOptions, ICampaignItem } from 'src/types/campaigns';
-import CampaignAssignBenficiariesModal from './campaign-assign-beneficiaries-modal';
+import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;

@@ -45,9 +45,9 @@ export type ICampaignCreateItem = {
   name: string;
   startTime: string;
   details: string;
-  transport: string;
+  transportId: string;
   type: CAMPAIGN_TYPES;
-  beneficiaries: string[];
+  audienceIds: string[];
 };
 
 export type ICampaigns = ICampaignItem[];
