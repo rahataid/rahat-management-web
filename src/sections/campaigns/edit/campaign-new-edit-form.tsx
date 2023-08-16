@@ -16,6 +16,7 @@ import { useRouter } from 'src/routes/hook';
 // components
 import { Alert, AlertTitle, Chip, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
@@ -38,8 +39,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     IApiResponseError,
     ICampaignCreateItem
   >({
-    mutationFn: async () => {
-
+    mutationFn: async (createData: ICampaignCreateItem) => {
+      const response = await CampaignsService.update('1',createData);
+      return response.data;
     },
     onError: () => {
       enqueueSnackbar('Error creating project', { variant: 'error' });
@@ -102,7 +104,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     <FormProvider methods={methods} >
       {error && (
         <Alert severity="error">
-          <AlertTitle>Error Creating Campaign</AlertTitle>
+          <AlertTitle>Error Updating Campaign</AlertTitle>
           {error?.message}
         </Alert>
       )}
