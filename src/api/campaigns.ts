@@ -1,5 +1,5 @@
 import CampaignsService from '@services/campaigns';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import {
   CampaignsListHookReturn,
@@ -26,6 +26,7 @@ export function useCampaigns(): CampaignsListHookReturn {
     error,
   };
 }
+
 export function useCampaign(id: number): ICampaignDetailsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id'], async () => {
     const res = await CampaignsService.details(id);
@@ -52,5 +53,36 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
     logs,
     isLoading,
     error: error as IApiResponseError,
+  };
+}
+
+export function useCreateCampaign(): {
+  createCampaign: (newCampaignData: Partial<ICampaignItemApiResponse>) => Promise<void>;
+  isLoading: boolean;
+  error: any;
+} {
+  const createCampaignMutation = useMutation(
+    (newCampaignData: Partial<ICampaignItemApiResponse>) =>
+      CampaignsService.create(newCampaignData),
+    {
+      onError: () => {},
+      onSuccess: () => {},
+    }
+  );
+
+  const { isLoading, error } = createCampaignMutation;
+
+  const createCampaign = async (newCampaignData: Partial<ICampaignItemApiResponse>) => {
+    try {
+      await createCampaignMutation.mutateAsync(newCampaignData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return {
+    createCampaign,
+    isLoading,
+    error,
   };
 }

@@ -15,34 +15,49 @@ import { useRouter } from 'src/routes/hook';
 // assets
 // components
 import { useBoolean } from '@hooks/use-boolean';
-import { Alert, AlertTitle, Button, Chip, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Chip,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import { paths } from '@routes/paths';
+import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
-import { useBeneficiaries } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem, ICampaignFilterOptions, ICampaignItem } from 'src/types/campaigns';
+import {
+  CAMPAIGN_TYPES,
+  IApiResponseError,
+  ICampaignCreateItem,
+  ICampaignFilterOptions,
+} from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
 };
 
-interface FormValues extends ICampaignCreateItem { }
+interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [beneficiary, setBeneficiary] = useState<string[]>([]);
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
-  const { beneficiaries } = useBeneficiaries();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
     IApiResponseError,
     ICampaignCreateItem
   >({
-    mutationFn: async () => {
-
+    mutationFn: async (createData: ICampaignCreateItem) => {
+      const response = await CampaignsService.create(createData);
+      return response.data;
     },
     onError: () => {
       enqueueSnackbar('Error creating Campaign', { variant: 'error' });
@@ -50,6 +65,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     onSuccess: () => {
       enqueueSnackbar('Campaign created successfully', { variant: 'success' });
       reset();
+      push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
 
@@ -67,13 +83,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const defaultValues = useMemo<FormValues>(
     () => ({
-
-      name: currentCampaign?.name || "",
-      startTime: currentCampaign?.startTime || "",
-      details: currentCampaign?.details || "",
-      transportId: currentCampaign?.transportId || "",
+      name: currentCampaign?.name || '',
+      startTime: currentCampaign?.startTime || '',
+      details: currentCampaign?.details || '',
+      transportId: currentCampaign?.transportId || '',
       type: currentCampaign?.type as CAMPAIGN_TYPES,
-      audienceIds: currentCampaign?.audienceIds || [""],
+      audienceIds: currentCampaign?.audienceIds || [''],
     }),
     [currentCampaign]
   );
@@ -83,10 +98,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control, setValue, trigger } = methods;
+  const { reset, handleSubmit, control } = methods;
 
-
-  const onSubmit = useCallback((data: ICampaignItem) => console.log(data), []);
+  const onSubmit = useCallback((data: ICampaignCreateItem) => mutate(data), [mutate]);
 
   const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
@@ -94,15 +108,11 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     const {
       target: { value },
     } = event;
-    setBeneficiary(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
   };
 
-
-
   return (
-    <FormProvider methods={methods} >
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {error && (
         <Alert severity="error">
           <AlertTitle>Error Creating Campaign</AlertTitle>
@@ -159,14 +169,13 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
               <RHFTextField name="details" label="Details" fullWidth />
 
-
               <RHFSelect name="transportId" label="Select Transport ">
-                <MenuItem key='solana' value='Solana'>
+                <MenuItem key="solana" value="Solana">
                   Somleng
                 </MenuItem>
               </RHFSelect>
 
-              <Stack alignItems={'flex-start'}>
+              <Stack alignItems="flex-start">
                 <Select
                   name="audienceIds"
                   multiple
@@ -182,10 +191,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     </Box>
                   )}
                 >
-                  <MenuItem
-                    key='beneficiary'
-                    value="Beneficiary 0"
-                  >
+                  <MenuItem key="beneficiary" value="Beneficiary 0">
                     Beneficiary 0
                   </MenuItem>
                 </Select>
@@ -194,8 +200,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </Button>
               </Stack>
             </Box>
-
-
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>

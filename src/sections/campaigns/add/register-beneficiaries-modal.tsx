@@ -1,4 +1,17 @@
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, OutlinedInput, Select, SelectChangeEvent, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBeneficiaries } from 'src/api/beneficiaries';
@@ -28,13 +41,11 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
       console.error(error);
     }
   });
-   const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
+  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
     const {
       target: { value },
     } = event;
-    setBeneficiary(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
   };
 
   return (
@@ -47,31 +58,28 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
 
       <Stack sx={{ p: 2 }} spacing={5}>
         <FormProvider methods={methods} onSubmit={onSubmit}>
-        <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
-                  multiple
-                  value={beneficiary}
-                  onChange={handleChange}
-                  fullWidth
-                  input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value: any) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  )}
-                >
-                  {beneficiaries.map((beneficiary) => (
-                    <MenuItem
-                      key={beneficiary.name}
-                      value={beneficiary.name}
-                    >
-                      {beneficiary.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+          <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            value={beneficiary}
+            onChange={handleChange}
+            fullWidth
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value: any) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+          >
+            {beneficiaries.map((benef) => (
+              <MenuItem key={benef.name} value={benef.name}>
+                {benef.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FormProvider>
       </Stack>
       <DialogActions>

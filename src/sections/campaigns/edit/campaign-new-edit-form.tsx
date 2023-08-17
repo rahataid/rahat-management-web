@@ -14,65 +14,81 @@ import { useRouter } from 'src/routes/hook';
 // types
 // assets
 // components
-import { Alert, AlertTitle, Chip, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
+import { useBoolean } from '@hooks/use-boolean';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Chip,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
-import { useBeneficiaries } from 'src/api/beneficiaries';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem, ICampaignFilterOptions, ICampaignItem } from 'src/types/campaigns';
+import {
+  CAMPAIGN_TYPES,
+  IApiResponseError,
+  ICampaignCreateItem,
+  ICampaignFilterOptions,
+} from 'src/types/campaigns';
+import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
 };
 
-interface FormValues extends ICampaignCreateItem { }
+interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [beneficiary, setBeneficiary] = useState<string[]>([]);
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const { beneficiaries } = useBeneficiaries();
+  const assignCampaignDialog = useBoolean();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
     IApiResponseError,
     ICampaignCreateItem
   >({
     mutationFn: async (createData: ICampaignCreateItem) => {
-      const response = await CampaignsService.update('1',createData);
+      const response = await CampaignsService.create(createData);
       return response.data;
     },
     onError: () => {
-      enqueueSnackbar('Error creating project', { variant: 'error' });
+      enqueueSnackbar('Error Updating Campaign', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Project created successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign Updated successfully', { variant: 'success' });
       reset();
+      push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
 
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
-    .required('Campaign name is required')
-    .min(4, 'Mininum 4 characters')
-    .max(24, 'Maximum 15 characters'),
-  startTime: Yup.date().nullable().required('Start date is required'),
-  type: Yup.string().required('Campaign Type is required'),
-  details: Yup.string().required('Enter the details for the campaign'),
-  audienceIds: Yup.array().required('Select the audience for the campaign'),
-  transportId: Yup.number().required('Select the transport for the campaign'),
+      .required('Campaign name is required')
+      .min(4, 'Mininum 4 characters')
+      .max(24, 'Maximum 15 characters'),
+    startTime: Yup.date().nullable().required('Start date is required'),
+    type: Yup.string().required('Campaign Type is required'),
+    details: Yup.string().required('Enter the details for the campaign'),
+    audienceIds: Yup.array().required('Select the audience for the campaign'),
+    transportId: Yup.number().required('Select the transport for the campaign'),
   });
 
   const defaultValues = useMemo<FormValues>(
     () => ({
-
-      name: currentCampaign?.name || "",
-      startTime: currentCampaign?.startTime || "",
-      details: currentCampaign?.details || "",
-      transportId: currentCampaign?.transportId || "",
+      name: currentCampaign?.name || '',
+      startTime: currentCampaign?.startTime || '',
+      details: currentCampaign?.details || '',
+      transportId: currentCampaign?.transportId || '',
       type: currentCampaign?.type as CAMPAIGN_TYPES,
-      audienceIds: currentCampaign?.audienceIds || [""],
+      audienceIds: currentCampaign?.audienceIds || [''],
     }),
     [currentCampaign]
   );
@@ -82,10 +98,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control, setValue, trigger } = methods;
+  const { reset, handleSubmit, control } = methods;
 
-
-  const onSubmit = useCallback((data: ICampaignItem) => console.log(data), []);
+  const onSubmit = useCallback((data: ICampaignCreateItem) => mutate(data), [mutate]);
 
   const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
@@ -93,21 +108,24 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     const {
       target: { value },
     } = event;
-    setBeneficiary(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
   };
 
-
-
   return (
-    <FormProvider methods={methods} >
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {error && (
         <Alert severity="error">
-          <AlertTitle>Error Updating Campaign</AlertTitle>
+          <AlertTitle>Error Creating Campaign</AlertTitle>
           {error?.message}
         </Alert>
       )}
+      <CampaignAssignBenficiariesModal
+        onClose={assignCampaignDialog.onFalse}
+        open={assignCampaignDialog.value}
+        onOk={() => {
+          console.log('Registered');
+        }}
+      />
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
@@ -118,9 +136,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
               }}
             >
-              <RHFTextField name="campaignName" label="Campaign Name" />
+              <RHFTextField name="name" label="Campaign Name" />
 
               <Controller
                 name="startTime"
@@ -140,8 +159,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 )}
               />
 
-              <RHFTextField name="location" label="Details" />
-
               <RHFSelect name="campaignTypes" label="Select Campaign Types">
                 {campaignTypeOptions.map((campaign) => (
                   <MenuItem key={campaign} value={campaign}>
@@ -150,17 +167,17 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 ))}
               </RHFSelect>
 
+              <RHFTextField name="details" label="Details" fullWidth />
 
-              <RHFSelect name="transport" label="Select Transport ">
-                <MenuItem key='solana' value='Solana'>
+              <RHFSelect name="transportId" label="Select Transport ">
+                <MenuItem key="solana" value="Solana">
                   Somleng
                 </MenuItem>
               </RHFSelect>
 
-              <Stack alignItems={'flex-start'}>
+              <Stack alignItems="flex-start">
                 <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
+                  name="audienceIds"
                   multiple
                   value={beneficiary}
                   onChange={handleChange}
@@ -174,19 +191,15 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     </Box>
                   )}
                 >
-                  {beneficiaries.map((beneficiary) => (
-                    <MenuItem
-                      key={beneficiary.name}
-                      value={beneficiary.name}
-                    >
-                      {beneficiary.name}
-                    </MenuItem>
-                  ))}
+                  <MenuItem key="beneficiary" value="Beneficiary 0">
+                    Beneficiary 0
+                  </MenuItem>
                 </Select>
+                <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
+                  Register Audiences
+                </Button>
               </Stack>
             </Box>
-
-
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
