@@ -59,18 +59,24 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
 export function useCreateCampaign(): {
   createCampaign: (newCampaignData: Partial<ICampaignItemApiResponse>) => Promise<void>;
   isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
   error: any;
 } {
   const createCampaignMutation = useMutation(
     (newCampaignData: Partial<ICampaignItemApiResponse>) =>
       CampaignsService.create(newCampaignData),
     {
-      onError: () => {},
-      onSuccess: () => {},
+      onError: (error) => {
+        console.error('Error creating campaign:', error);
+      },
+      onSuccess: () => {
+        console.log('Campaign created successfully!');
+      },
     }
   );
 
-  const { isLoading, error } = createCampaignMutation;
+  const { isLoading, isError, error, isSuccess } = createCampaignMutation;
 
   const createCampaign = async (newCampaignData: Partial<ICampaignItemApiResponse>) => {
     try {
@@ -83,6 +89,8 @@ export function useCreateCampaign(): {
   return {
     createCampaign,
     isLoading,
+    isSuccess,
+    isError,
     error,
   };
 }
