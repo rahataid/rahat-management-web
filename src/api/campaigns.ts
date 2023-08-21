@@ -8,6 +8,7 @@ import {
   ICampaignItemApiResponse,
   ICampaignLogsApiResponse,
   ICampaignLogsHookReturn,
+  ITransportDetailsHookReturn,
 } from 'src/types/campaigns';
 
 export function useCampaigns(): CampaignsListHookReturn {
@@ -27,7 +28,7 @@ export function useCampaigns(): CampaignsListHookReturn {
   };
 }
 
-export function useCampaign(id: number): ICampaignDetailsHookReturn {
+export function useCampaign(id: string): ICampaignDetailsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id'], async () => {
     const res = await CampaignsService.details(id);
     return res.data as ICampaignItemApiResponse;
@@ -91,6 +92,20 @@ export function useCreateCampaign(): {
     isLoading,
     isSuccess,
     isError,
+    error,
+  };
+}
+
+export function useTransports(): ITransportDetailsHookReturn {
+  const { data, isLoading, error } = useQuery(['transports'], async () => {
+    const res = await CampaignsService.transports();
+    return res;
+  });
+  const transports = useMemo(() => data?.data || [], [data?.data]);
+
+  return {
+    transports,
+    isLoading,
     error,
   };
 }

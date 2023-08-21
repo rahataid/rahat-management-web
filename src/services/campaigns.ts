@@ -15,22 +15,24 @@ export const endpoints = {
   campaigns: {
     list: '/campaigns',
     create: '/campaigns',
-    update: (uuid: string) => `/campaigns/${uuid}`,
-    details: (id: number) => `/campaigns/${id}`,
+    update: (id: string) => `/campaigns/${id}`,
+    details: (id: string) => `/campaigns/${id}`,
     logs: (id: number) => `/campaigns/${id}/logs`,
     bulkAddAudiences: `/audiences/bulk`,
+    transports: '/transports',
   },
 };
 
 const CampaignsService = {
   list: () => axiosInstance.get(endpoints.campaigns.list),
   create: (data: any) => axiosInstance.post(endpoints.campaigns.create, { ...data }),
-  update: (uuid: string, data: ICampaignCreateItem) =>
-    axiosInstance.patch(endpoints.campaigns.update(uuid), { ...data }),
-  details: (id: number) => axiosInstance.get(endpoints.campaigns.details(id)),
+  update: (id: string, data: ICampaignCreateItem) =>
+    axiosInstance.patch(endpoints.campaigns.update(id), { ...data }),
+  details: (id: string) => axiosInstance.get(endpoints.campaigns.details(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
   bulkAddAudiences: (data: any) =>
     axiosInstance.post(endpoints.campaigns.bulkAddAudiences, { ...data }),
+  transports: () => axiosInstance.get(endpoints.campaigns.transports),
 };
 
 export default CampaignsService;

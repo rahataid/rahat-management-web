@@ -29,6 +29,8 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
+import { parseMultiLineInput } from '@utils/strings';
+import { useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import {
@@ -48,6 +50,8 @@ interface FormValues extends ICampaignCreateItem {}
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [beneficiary, setBeneficiary] = useState<string[]>([]);
   const { push } = useRouter();
+  const { transports } = useTransports();
+  console.log('transports', transports);
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
   const { error, isLoading, mutate } = useMutation<
@@ -100,7 +104,14 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const { reset, handleSubmit, control } = methods;
 
-  const onSubmit = useCallback((data: ICampaignCreateItem) => mutate(data), [mutate]);
+  const onSubmit = useCallback((data: ICampaignCreateItem) => {
+    const formatted = {
+      ...data,
+      details: parseMultiLineInput(data?.details),
+    };
+    console.log('FormattedData: ', formatted);
+    // mutate(formatted)
+  }, []);
 
   const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
@@ -129,77 +140,74 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-              }}
-            >
-              <RHFTextField name="name" label="Campaign Name" />
+            <Stack direction="column" spacing={3}>
+              <Stack direction="row" spacing={2}>
+                <RHFTextField name="name" label="Campaign Name" />
 
-              <Controller
-                name="startTime"
-                control={control}
-                render={({ field, fieldState: { error: err } }) => (
-                  <DateTimePicker
-                    {...field}
-                    label="Start Time"
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: !!err,
-                        helperText: err?.message,
-                      },
-                    }}
-                  />
-                )}
-              />
-
-              <RHFSelect name="campaignTypes" label="Select Campaign Types">
-                {campaignTypeOptions.map((campaign) => (
-                  <MenuItem key={campaign} value={campaign}>
-                    {campaign}
-                  </MenuItem>
-                ))}
-              </RHFSelect>
-
-              <RHFTextField name="details" label="Details" fullWidth />
-
-              <RHFSelect name="transportId" label="Select Transport ">
-                <MenuItem key="solana" value="Solana">
-                  Somleng
-                </MenuItem>
-              </RHFSelect>
-
-              <Stack alignItems="flex-start">
-                <Select
-                  name="audienceIds"
-                  multiple
-                  value={beneficiary}
-                  onChange={handleChange}
-                  fullWidth
-                  input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value: any) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
+                <Controller
+                  name="startTime"
+                  control={control}
+                  render={({ field, fieldState: { error: err } }) => (
+                    <DateTimePicker
+                      {...field}
+                      label="Start Time"
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!err,
+                          helperText: err?.message,
+                        },
+                      }}
+                    />
                   )}
-                >
-                  <MenuItem key="beneficiary" value="Beneficiary 0">
-                    Beneficiary 0
-                  </MenuItem>
-                </Select>
-                <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
-                  Register Audiences
-                </Button>
+                />
+
+                <RHFSelect name="campaignTypes" label="Select Campaign Types">
+                  {campaignTypeOptions.map((campaign) => (
+                    <MenuItem key={campaign} value={campaign}>
+                      {campaign}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
               </Stack>
-            </Box>
+
+              <Stack>
+                <RHFTextField name="details" label="Details" fullWidth multiline />
+              </Stack>
+
+              <Stack direction="row">
+                <RHFSelect name="transportId" label="Select Transport ">
+                  {transports.map((transport) => (
+                    <MenuItem key={transport?.name} value={transport?.id}>
+                      {transport?.name}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+                <Stack direction="column">
+                  <Select
+                    name="audienceIds"
+                    multiple
+                    value={beneficiary}
+                    onChange={handleChange}
+                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value: any) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                  >
+                    <MenuItem key="beneficiary" value="Beneficiary 0">
+                      Beneficiary 0
+                    </MenuItem>
+                  </Select>
+                  <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
+                    Register Audiences
+                  </Button>
+                </Stack>
+              </Stack>
+            </Stack>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>

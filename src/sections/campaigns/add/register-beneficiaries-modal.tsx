@@ -1,21 +1,23 @@
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
-  SelectChangeEvent,
   Stack,
 } from '@mui/material';
+import CampaignsService from '@services/campaigns';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useBeneficiaries } from 'src/api/beneficiaries';
-import FormProvider from 'src/components/hook-form';
 
 type Props = {
   open: boolean;
@@ -24,28 +26,50 @@ type Props = {
 };
 
 const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
-  const methods = useForm({
-    // resolver: yupResolver(FormSchema),
-    // defaultValues,
-  });
+  const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<string[]>([]);
+  const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
-  const { handleSubmit } = methods;
+  const handleSelectBeneficiaries = async (e: any) => {
+    const { value } = e.target;
 
-  const [beneficiary, setBeneficiary] = useState<string[]>([]);
+    // Create an array of objects with 'phone' and 'uuid' properties
+    const formattedSelected = beneficiaries
+      .filter((benef) => value.includes(benef.name))
+      .map((benef) => ({ phone: benef.phone, uuid: benef.uuid }));
+
+    setFormattedSelect(formattedSelected);
+    setSelectedBeneficiaries(value);
+  };
+
   const { beneficiaries } = useBeneficiaries();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const onSubmit = handleSubmit(async () => {
-    try {
-      console.log('submit');
-    } catch (error) {
-      console.error(error);
-    }
+  const { error, isLoading, mutate } = useMutation({
+    mutationFn: async (withDetails) => {
+      const response = await CampaignsService.bulkAddAudiences(withDetails);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error creating Campaign', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Campaign created successfully', { variant: 'success' });
+    },
   });
-  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
-    const {
-      target: { value },
-    } = event;
-    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
+
+  const onRegister = async () => {
+    try {
+      const withDetails = formattedSelect.map((d: any) => ({
+        details: {
+          ...d,
+        },
+      }));
+      console.log('withDetails', withDetails);
+      mutate(withDetails);
+      onClose();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -57,36 +81,35 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
       </DialogContent>
 
       <Stack sx={{ p: 2 }} spacing={5}>
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
-            multiple
-            value={beneficiary}
-            onChange={handleChange}
-            fullWidth
-            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value: any) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
-            )}
-          >
-            {beneficiaries.map((benef) => (
-              <MenuItem key={benef.name} value={benef.name}>
-                {benef.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormProvider>
+        <Select
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          multiple
+          value={selectedBeneficiaries}
+          onChange={handleSelectBeneficiaries}
+          fullWidth
+          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value: any) => (
+                <Chip key={value} label={value} />
+              ))}
+            </Box>
+          )}
+        >
+          {beneficiaries.map((benef) => (
+            <MenuItem key={benef.name} value={benef.name}>
+              <Checkbox checked={selectedBeneficiaries.indexOf(benef.name) > -1} />
+              <ListItemText primary={benef.name} />
+            </MenuItem>
+          ))}
+        </Select>
       </Stack>
       <DialogActions>
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="text" onClick={onOk} autoFocus>
+        <Button variant="text" onClick={onRegister} autoFocus>
           Register
         </Button>
       </DialogActions>

@@ -2,9 +2,10 @@
 
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
-import { Container } from '@mui/material';
+import { Button, Container } from '@mui/material';
+import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
-import HeaderActions from '../view/header-actions';
+import Iconify from 'src/components/iconify';
 import CampaignForm from './campaign-new-add-form';
 
 const CampaignAddView = () => {
@@ -21,7 +22,17 @@ const CampaignAddView = () => {
         sx={{
           mb: { xs: 3, md: 5 },
         }}
-        action={<HeaderActions />}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.dashboard.general.campaigns.list}
+            variant="outlined"
+            startIcon={<Iconify icon="ph:list" />}
+            color="success"
+          >
+            All Campaigns
+          </Button>
+        }
       />
       <CampaignForm />
     </Container>
