@@ -50,23 +50,23 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
       return response.data;
     },
     onError: () => {
-      enqueueSnackbar('Error creating Campaign', { variant: 'error' });
+      enqueueSnackbar('Error registering audiences', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Campaign created successfully', { variant: 'success' });
+      enqueueSnackbar('Audiences registered successfully', { variant: 'success' });
     },
   });
 
   const onRegister = async () => {
     try {
-      const withDetails = formattedSelect.map((d: any) => ({
+      const withDetails: any = formattedSelect.map((d: any) => ({
         details: {
           ...d,
         },
       }));
       console.log('withDetails', withDetails);
-      mutate(withDetails);
-      onClose();
+      // mutate(withDetails);
+      // onClose();
     } catch (err) {
       console.log(err);
     }

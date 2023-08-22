@@ -41,6 +41,8 @@ import {
 } from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
+const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
+
 type Props = {
   currentCampaign?: ICampaignCreateItem;
 };
@@ -51,7 +53,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [beneficiary, setBeneficiary] = useState<string[]>([]);
   const { push } = useRouter();
   const { transports } = useTransports();
-  console.log('transports', transports);
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
   const { error, isLoading, mutate } = useMutation<
@@ -113,8 +114,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     // mutate(formatted)
   }, []);
 
-  const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
-
   const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
     const {
       target: { value },
@@ -162,7 +161,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   )}
                 />
 
-                <RHFSelect name="campaignTypes" label="Select Campaign Types">
+                <RHFSelect name="type" label="Select Campaign Types">
                   {campaignTypeOptions.map((campaign) => (
                     <MenuItem key={campaign} value={campaign}>
                       {campaign}
