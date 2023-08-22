@@ -31,15 +31,11 @@ import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { parseISO } from 'date-fns';
+import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useCampaign, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import {
-  CAMPAIGN_TYPES,
-  IApiResponseError,
-  ICampaignCreateItem,
-  ICampaignFilterOptions,
-} from 'src/types/campaigns';
+import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
@@ -126,8 +122,6 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
     },
     [mutate]
   );
-
-  const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
   const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
     const {

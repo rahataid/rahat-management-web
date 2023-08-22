@@ -85,9 +85,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       name: currentCampaign?.name || '',
       startTime: currentCampaign?.startTime || '',
       details: currentCampaign?.details || '',
-      transportId: currentCampaign?.transportId || '',
+      transportId: null,
       type: currentCampaign?.type as CAMPAIGN_TYPES,
-      audienceIds: currentCampaign?.audienceIds || ['1'],
+      audienceIds: null,
     }),
     [currentCampaign]
   );
