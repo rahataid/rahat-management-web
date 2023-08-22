@@ -44,9 +44,9 @@ export type ICampaignCreateItem = {
   name: string;
   startTime: string | Date | null;
   details: string;
-  transportId: string;
-  type: CAMPAIGN_TYPES;
-  audienceIds: string[];
+  transportId: number | null;
+  type: CAMPAIGN_TYPES | null;
+  audienceIds: number[] | null;
 };
 
 export type ICampaigns = ICampaignItem[];

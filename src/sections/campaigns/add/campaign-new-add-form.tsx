@@ -30,18 +30,12 @@ import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
+import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import {
-  CAMPAIGN_TYPES,
-  IApiResponseError,
-  ICampaignCreateItem,
-  ICampaignFilterOptions,
-} from 'src/types/campaigns';
+import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
-
-const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
@@ -93,7 +87,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       details: currentCampaign?.details || '',
       transportId: currentCampaign?.transportId || '',
       type: currentCampaign?.type as CAMPAIGN_TYPES,
-      audienceIds: currentCampaign?.audienceIds || [''],
+      audienceIds: currentCampaign?.audienceIds || ['1'],
     }),
     [currentCampaign]
   );
@@ -105,14 +99,18 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const { reset, handleSubmit, control } = methods;
 
-  const onSubmit = useCallback((data: ICampaignCreateItem) => {
-    const formatted = {
-      ...data,
-      details: parseMultiLineInput(data?.details),
-    };
-    console.log('FormattedData: ', formatted);
-    // mutate(formatted)
-  }, []);
+  const onSubmit = useCallback(
+    (data: ICampaignCreateItem) => {
+      console.log('Form submitted with data:', data);
+      const formatted = {
+        ...data,
+        details: parseMultiLineInput(data?.details),
+      };
+      console.log('FormattedData: ', formatted);
+      mutate(formatted);
+    },
+    [mutate]
+  );
 
   const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
     const {
@@ -197,7 +195,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       </Box>
                     )}
                   >
-                    <MenuItem key="beneficiary" value="Beneficiary 0">
+                    <MenuItem key="beneficiary" value={1}>
                       Beneficiary 0
                     </MenuItem>
                   </Select>

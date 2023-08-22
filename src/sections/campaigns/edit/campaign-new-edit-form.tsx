@@ -48,13 +48,14 @@ type Props = {
 
 interface FormValues extends ICampaignCreateItem {}
 
-const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
+const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const params = useParams();
   const [beneficiary, setBeneficiary] = useState<string[]>([]);
   const { push } = useRouter();
   const { transports } = useTransports();
 
   const { campaign } = useCampaign(params.id);
+  console.log('Campaign: ', campaign);
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
   const { error, isLoading, mutate } = useMutation<
@@ -93,9 +94,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       name: currentCampaign?.name || '',
       startTime: String(currentCampaign?.startTime) || null,
       details: currentCampaign?.details || '',
-      transportId: currentCampaign?.transportId || '',
-      type: currentCampaign?.type as CAMPAIGN_TYPES,
-      audienceIds: currentCampaign?.audienceIds || [''],
+      transportId: null,
+      type: null,
+      audienceIds: null,
     }),
     [currentCampaign]
   );
@@ -107,14 +108,24 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const { reset, handleSubmit, control, setValue } = methods;
 
-  const onSubmit = useCallback((data: ICampaignCreateItem) => {
-    const formatted = {
-      ...data,
-      details: parseMultiLineInput(data?.details),
-    };
-    console.log('FormattedData: ', formatted);
-    // mutate(formatted)
-  }, []);
+  const onSubmit = useCallback(
+    (data: ICampaignCreateItem) => {
+      if (data?.startTime) {
+        const startTime =
+          typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
+        const formatted = {
+          ...data,
+          startTime: startTime.toISOString(),
+          details: parseMultiLineInput(data?.details),
+        };
+        console.log('FormattedData: ', formatted);
+        mutate(formatted);
+      } else {
+        console.error('startTime is null');
+      }
+    },
+    [mutate]
+  );
 
   const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
 
@@ -133,9 +144,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       setValue('type', campaignType);
       const formattedDetails = JSON.stringify(campaign.details || {});
       setValue('details', formattedDetails);
-      const audienceNames = campaign.audiences?.map((audience) => audience?.details?.name) || [];
+      const audienceNames = campaign.audiences?.map((audience) => audience?.id) || [];
       setValue('audienceIds', audienceNames);
-      setValue('transportId', campaign.transport?.name || '');
+      setValue('transportId', campaign.transport?.id || null);
     }
   }, [campaign, setValue]);
 
@@ -179,7 +190,11 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   )}
                 />
 
-                <RHFSelect name="type" label="Select Campaign Types">
+                <RHFSelect
+                  InputLabelProps={{ shrink: true }}
+                  name="type"
+                  label="Select Campaign Types"
+                >
                   {campaignTypeOptions.map((campaigntype) => (
                     <MenuItem key={campaigntype} value={campaigntype}>
                       {campaigntype}
@@ -193,9 +208,13 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
               </Stack>
 
               <Stack direction="row">
-                <RHFSelect name="transportId" label="Select Transport ">
+                <RHFSelect
+                  InputLabelProps={{ shrink: true }}
+                  name="transportId"
+                  label="Select Transport "
+                >
                   {transports.map((transport) => (
-                    <MenuItem key={transport?.name} value="1">
+                    <MenuItem key={transport?.name} value={transport?.id}>
                       {transport?.name}
                     </MenuItem>
                   ))}
@@ -238,4 +257,4 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   );
 };
 
-export default memo(CampaignForm);
+export default memo(CampaignEditForm);
