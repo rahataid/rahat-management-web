@@ -15,7 +15,6 @@ export enum CAMPAIGN_TYPES {
   PHONE = 'PHONE',
 }
 
-
 export enum CAMPAIGN_STATUS {
   ONGOING = 'ONGOING',
   COMPLETED = 'COMPLETED',
@@ -43,11 +42,11 @@ export type ICampaignItem = {
 
 export type ICampaignCreateItem = {
   name: string;
-  startTime: string;
+  startTime: string | Date | null;
   details: string;
-  transport: string;
-  type: CAMPAIGN_TYPES;
-  beneficiaries: string[];
+  transportId: number | null;
+  type: CAMPAIGN_TYPES | null;
+  audienceIds: number[] | null;
 };
 
 export type ICampaigns = ICampaignItem[];
@@ -143,6 +142,25 @@ export interface ICampaignItemApiResponse {
   audiences: Audience[];
 }
 
+export interface ITransportItemApiResponse {
+  map(arg0: (transport: any) => import('react').JSX.Element): import('react').ReactNode;
+  id: number;
+  name: string;
+  details: {
+    auth: {
+      user: string;
+      password: string;
+    };
+    host: string;
+    pool: boolean;
+    port: number;
+    secure: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+}
+
 export type ICampaignLogItem = {
   id: number;
   status: COMMUNICATION_DELIVERY_STATUS;
@@ -161,6 +179,13 @@ export type ICampaignDetailsHookReturn = {
   isLoading: boolean;
   error: IApiResponseError;
 };
+
+export type ITransportDetailsHookReturn = {
+  transports: ITransportItemApiResponse;
+  isLoading: boolean;
+  error: any;
+};
+
 export type ICampaignLogsHookReturn = {
   logs: ICampaignLogsApiResponse;
   isLoading: boolean;

@@ -5,7 +5,7 @@ import { useSettingsContext } from '@components/settings';
 import { Container } from '@mui/material';
 import { paths } from '@routes/paths';
 import HeaderActions from '../view/header-actions';
-import CampaignForm from './campaign-new-edit-form';
+import CampaignEditForm from './campaign-new-edit-form';
 
 const CampaignEditView = () => {
   const settings = useSettingsContext();
@@ -23,7 +23,7 @@ const CampaignEditView = () => {
         }}
         action={<HeaderActions />}
       />
-      <CampaignForm />
+      <CampaignEditForm />
     </Container>
   );
 };
