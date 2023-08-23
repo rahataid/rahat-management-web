@@ -113,6 +113,10 @@ export type IBeneficiaryDetails = {
   updatedAt: string;
   uuid: string;
   walletAddress: string;
+  projects: {
+    name: string;
+    contractAddress: string;
+  };
   _count: {
     projects: number;
   };
