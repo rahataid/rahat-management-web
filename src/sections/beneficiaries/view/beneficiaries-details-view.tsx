@@ -8,7 +8,7 @@ import { paths } from '@routes/paths';
 import { useParams } from 'src/routes/hook';
 // components
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
-import { Card, Grid, Typography } from '@mui/material';
+import { Card, Grid, Stack, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
 import useProjectContract from '@services/contracts/useProject';
@@ -17,6 +17,7 @@ import useBeneficiaryStore from 'src/store/beneficiaries';
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
 import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card';
 import BeneficiaryDetailsTableView from './beneficiaries-details-table-view';
+import ProjectsInvolved from './project-involved';
 
 function BeneficiariesDetailsView() {
   const { uuid } = useParams();
@@ -29,7 +30,7 @@ function BeneficiariesDetailsView() {
   }));
 
   console.log('chainData', chainData);
-
+  console.log(beneficiary);
   const handleChainData = useCallback(async () => {
     if (!beneficiary.walletAddress) return;
     if (chainData.isBeneficiary !== null) return;
@@ -70,6 +71,10 @@ function BeneficiariesDetailsView() {
           />
         </Grid>
       </Grid>
+
+      <Stack mb={5}>
+        <ProjectsInvolved projectsInvolved={beneficiary?.projects} />
+      </Stack>
 
       <Card>
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
