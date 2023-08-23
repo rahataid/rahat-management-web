@@ -1,5 +1,6 @@
 import Iconify from '@components/iconify/iconify';
 import { Button } from '@mui/material';
+import { generateWalletAddress } from '@web3/utils';
 import { ReactSpreadsheetImport } from 'react-spreadsheet-import';
 import { fields } from './data-points';
 
@@ -13,24 +14,35 @@ const BeneficiariesSpreedsheetImport = <T extends Record<string, unknown>>({
   isOpen,
   handleOpenClose,
   onSubmit,
-}: IBeneficiariesSpreedsheetImport<T>) => (
-  <>
-    <Button
-      variant="outlined"
-      startIcon={<Iconify icon="mingcute:add-line" />}
-      color="success"
-      onClick={handleOpenClose}
-    >
-      Upload File
-    </Button>
+}: IBeneficiariesSpreedsheetImport<T>) => {
+  const rowHook = (data: object) => {
+    // Generate a unique wallet address for each row
+    const { address } = generateWalletAddress();
+    // Modify the data to set the generated walletAddress for each row
+    return { ...data, walletAddress: address };
+  };
 
-    <ReactSpreadsheetImport
-      isOpen={isOpen}
-      fields={fields}
-      onClose={handleOpenClose}
-      onSubmit={onSubmit}
-    />
-  </>
-);
+  return (
+    <>
+      <Button
+        variant="outlined"
+        startIcon={<Iconify icon="mingcute:add-line" />}
+        color="success"
+        onClick={handleOpenClose}
+      >
+        Upload File
+      </Button>
+
+      <ReactSpreadsheetImport
+        isOpen={isOpen}
+        fields={fields}
+        onClose={handleOpenClose}
+        onSubmit={onSubmit}
+        rowHook={rowHook}
+        autoMapHeaders
+      />
+    </>
+  );
+};
 
 export default BeneficiariesSpreedsheetImport;
