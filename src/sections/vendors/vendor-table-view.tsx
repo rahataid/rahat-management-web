@@ -75,6 +75,13 @@ export default function VendorListView() {
     [router]
   );
 
+  const handleEditRow = useCallback(
+    (address: string) => {
+      router.push(paths.dashboard.general.vendors.edit(address));
+    },
+    [router]
+  );
+
   useEffect(() => {
     const searchFilters: IVendorsApiFilters = {
       ...defaultFilters,
@@ -116,6 +123,7 @@ export default function VendorListView() {
                     key={row.walletAddress}
                     row={row}
                     onViewRow={() => handleViewRow(row.walletAddress)}
+                    onEditRow={() => handleEditRow(row.walletAddress)}
                   />
                 ))}
 

@@ -41,13 +41,13 @@ export const paths = {
         edit: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/edit`,
         beneficiaries: (contractAddress: string) =>
           `${ROOTS.PROJECTS}/${contractAddress}/beneficiaries`,
-        vendors: (contractAddress: string) =>
-          `${ROOTS.PROJECTS}/${contractAddress}/vendors`,
+        vendors: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/vendors`,
       },
       photoGallery: `${ROOTS.PHOTO_GALLERY}`,
       vendors: {
         list: `${ROOTS.VENDORS}`,
         details: (address: string) => `${ROOTS.VENDORS}/${address}`,
+        edit: (address: string) => `${ROOTS.VENDORS}/${paramCase(address)}/edit`,
       },
 
       transactions: {
