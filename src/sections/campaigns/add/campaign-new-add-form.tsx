@@ -138,7 +138,16 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Stack direction="column" spacing={3}>
-              <Stack direction="row" spacing={2}>
+              <Stack
+                spacing={2}
+                sx={{
+                  flexDirection: {
+                    xs: 'column',
+                    sm: 'column',
+                    md: 'row',
+                  },
+                }}
+              >
                 <RHFTextField name="name" label="Campaign Name" />
 
                 <Controller
@@ -172,37 +181,71 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 <RHFTextField name="details" label="Details" fullWidth multiline />
               </Stack>
 
-              <Stack direction="row">
-                <RHFSelect name="transportId" label="Select Transport ">
-                  {transports.map((transport) => (
-                    <MenuItem key={transport?.name} value={transport?.id}>
-                      {transport?.name}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-                <Stack direction="column">
-                  <Select
-                    name="audienceIds"
-                    multiple
-                    value={beneficiary}
-                    onChange={handleChange}
-                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value: any) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    <MenuItem key="beneficiary" value={1}>
-                      Beneficiary 0
-                    </MenuItem>
-                  </Select>
-                  <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
-                    Register Audiences
-                  </Button>
-                </Stack>
+              <Stack
+                spacing={2}
+                sx={{
+                  flexDirection: {
+                    xs: 'column',
+                    sm: 'column',
+                    md: 'row',
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '100%',
+                      md: '50%',
+                    },
+                  }}
+                >
+                  <RHFSelect name="transportId" label="Select Transport">
+                    {transports.map((transport) => (
+                      <MenuItem key={transport?.name} value={transport?.id}>
+                        {transport?.name}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                </Box>
+                <Box
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '100%',
+                      md: '50%',
+                    },
+                  }}
+                >
+                  <Stack direction="column">
+                    <Select
+                      name="audienceIds"
+                      multiple
+                      value={beneficiary}
+                      onChange={handleChange}
+                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value: any) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      <MenuItem key="beneficiary" value={1}>
+                        Beneficiary 0
+                      </MenuItem>
+                    </Select>
+                    <Button
+                      variant="text"
+                      color="primary"
+                      onClick={assignCampaignDialog.onTrue}
+                      sx={{ alignSelf: 'flex-start' }}
+                    >
+                      Register Audiences
+                    </Button>
+                  </Stack>
+                </Box>
               </Stack>
             </Stack>
 
