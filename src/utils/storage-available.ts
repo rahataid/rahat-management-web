@@ -62,3 +62,17 @@ export function getWalletName(): string | undefined {
 export function removeWalletName(): void {
   localStorageRemoveItem('walletName');
 }
+
+export function setUser(value: any): void {
+  const string = JSON.stringify(value);
+  localStorageSetItem('user', string);
+}
+
+export function getUser(): any | undefined {
+  const value = localStorageGetItem('user');
+  return value ? JSON?.parse(value) : undefined;
+}
+
+export function removeUser(): void {
+  localStorageRemoveItem('user');
+}

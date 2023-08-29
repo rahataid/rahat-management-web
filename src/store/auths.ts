@@ -1,7 +1,8 @@
 import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
-import { clearToken, removeWalletName, setToken } from '@utils/storage-available';
+import { clearToken, removeWalletName, setToken, setUser } from '@utils/storage-available';
 import { AuthUserType } from 'src/auth/types';
+import { IUserRoles } from 'src/types/user';
 import { create } from 'zustand';
 
 export type IApiResponseError = {
@@ -21,6 +22,7 @@ type AuthStateType = {
   isAuthenticated: boolean;
   isInitialized: boolean;
   error?: IApiResponseError | null;
+  role: IUserRoles;
 };
 
 type AuthActionsType = {
@@ -33,15 +35,25 @@ type AuthActionsType = {
 
 export type AuthStoreType = AuthStateType & AuthActionsType;
 
-const useAuthStore = create<AuthStoreType>((set) => ({
+const initialState: AuthStateType = {
   user: null,
   loading: true,
   walletName: undefined,
   isAuthenticated: false,
   isInitialized: false,
+  role: {
+    isDonor: false,
+    isFieldAgent: false,
+    isStakeholder: false,
+  },
+};
+
+const useAuthStore = create<AuthStoreType>((set) => ({
+  ...initialState,
   loginWallet: async (walletAddress: string) => {
     try {
       const user = await AuthService.loginWallet(walletAddress);
+      console.log(user.data);
       if (user.data) {
         set({
           user: user.data,
@@ -50,6 +62,7 @@ const useAuthStore = create<AuthStoreType>((set) => ({
           isInitialized: true,
           error: null,
         });
+        setUser(user.data);
       } else {
         set({
           user: null,

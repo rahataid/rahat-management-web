@@ -12,6 +12,12 @@ export enum Role {
   Stakeholders = 'Stakeholders',
 }
 
+export type IUserRoles = {
+  isDonor: boolean;
+  isStakeholder: boolean;
+  isFieldAgent: boolean;
+};
+
 export type IUserTableFilters = {
   name: string;
   email?: string;

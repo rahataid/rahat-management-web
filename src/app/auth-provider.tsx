@@ -1,9 +1,8 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { getToken, getWalletName } from '@utils/storage-available';
+import { getToken, getUser, getWalletName } from '@utils/storage-available';
 import { useWeb3React } from '@web3-react/core';
-import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect, useRef } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
@@ -14,12 +13,14 @@ type Props = {
 
 const localWalletName = getWalletName();
 const token = getToken();
+const user = getUser();
 const AuthProvider = ({ children }: Props) => {
   const { isInitialized, walletName } = useAuthStore((state) => ({
     isAuthenticated: state.isAuthenticated,
     isInitialized: state.isInitialized,
     walletName: state.walletName,
   }));
+  console.log('user', user);
   const { setContracts, setBlockchain } = useAppStore((state) => ({
     blockchain: state.blockchain,
     contracts: state.contracts,
@@ -30,20 +31,20 @@ const AuthProvider = ({ children }: Props) => {
   const prevIsActive = useRef<boolean | undefined>(undefined);
 
   useEffect(() => {
-    if (prevIsActive.current !== isActive) {
-      useAuthStore.setState({
-        isAuthenticated: true,
-        isInitialized: true,
-        walletName,
-      });
-    } else {
-      useAuthStore.setState({
-        isAuthenticated: false,
-        isInitialized: true,
-        walletName: '',
-      });
-      prevIsActive.current = isActive;
-    }
+    // if (prevIsActive.current !== isActive) {
+    useAuthStore.setState({
+      isAuthenticated: true,
+      isInitialized: true,
+      walletName,
+    });
+    // } else {
+    //   useAuthStore.setState({
+    //     isAuthenticated: false,
+    //     isInitialized: true,
+    //     walletName: '',
+    //   });
+    //   prevIsActive.current = isActive;
+    // }
   }, [isActive, walletName]);
 
   useEffect(() => {
@@ -52,11 +53,11 @@ const AuthProvider = ({ children }: Props) => {
   }, [setBlockchain, setContracts]);
 
   // attempt to connect metamask eagerly on mount
-  useEffect(() => {
-    metaMask.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to metamask');
-    });
-  }, []);
+  // useEffect(() => {
+  //   metaMask.connectEagerly().catch(() => {
+  //     console.debug('Failed to connect eagerly to metamask');
+  //   });
+  // }, []);
 
   if (!isInitialized && prevIsActive.current !== isActive) {
     // Render a loading screen while the app is initializing
