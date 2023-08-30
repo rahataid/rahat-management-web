@@ -41,6 +41,10 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
     onChangeRole(user?.walletAddress, event.target.value);
   };
 
+  const handleDisable = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('User Disabled');
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{user.name}</DialogTitle>
@@ -50,17 +54,23 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
           <Typography variant="subtitle1">Email: {user.email}</Typography>
           <Typography variant="subtitle1">Wallet Address: {user.walletAddress}</Typography>
           <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isActive}
-                  onChange={handleActivateChange}
-                  name="isActive"
-                  color="success"
-                />
-              }
-              label="Active"
-            />
+            <Stack direction="row" spacing={2}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={isActive}
+                    onChange={handleActivateChange}
+                    name="isActive"
+                    color="success"
+                  />
+                }
+                label="Active"
+              />
+              <FormControlLabel
+                control={<Switch onChange={handleDisable} name="isDisable" color="success" />}
+                label="Disable"
+              />
+            </Stack>
           </FormGroup>
           <FormGroup>
             <Typography variant="subtitle1">Role:</Typography>
