@@ -57,7 +57,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().nullable().optional().email('Email is invalid'),
-    role: Yup.string().optional(),
+    roles: Yup.string().optional(),
     walletAddress: Yup.string().nullable().required('Wallet address is required'),
   });
 
@@ -65,7 +65,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     () => ({
       name: currentUser?.name || '',
       email: currentUser?.email || '',
-      role: currentUser?.role || undefined,
+      roles: currentUser?.roles || undefined,
       walletAddress: currentUser?.walletAddress || '',
     }),
     [currentUser]
@@ -83,9 +83,20 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     trigger('walletAddress');
   }, [setValue, trigger]);
 
-  const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
+  // const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
+  const onSubmit = useCallback(
+    (data: IUserTableFilters) => {
+      const modifiedData: any = {
+        ...data,
+        roles: Array.isArray(data.roles) ? data.roles : [data.roles],
+      };
 
-  const roleOptions = useMemo(() => ['User', 'Manager', 'Donor'], []);
+      mutate(modifiedData);
+    },
+    [mutate]
+  );
+
+  const roleOptions = useMemo(() => ['USER', 'DONOR', 'STAKEHOLDER', 'ADMIN'], []);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -111,7 +122,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
 
               <RHFTextField name="email" label="Email" />
 
-              <RHFSelect name="role" label="Role" defaultValue="User">
+              <RHFSelect name="roles" label="Role" defaultValue={['USER']}>
                 {roleOptions.map((role) => (
                   <MenuItem key={role} value={role}>
                     {role}

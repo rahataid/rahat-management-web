@@ -5,15 +5,16 @@ import { CustomFile } from 'src/components/upload';
 export type IUserTableFilterValue = string | string[];
 
 export enum Role {
-  User = 'User',
-  Donor = 'Donor',
-  Manager = 'Manager',
+  USER = 'USER',
+  DONOR = 'DONOR',
+  STAKEHOLDER = 'STAKEHOLDER',
+  ADMIN = 'ADMIN',
 }
 
 export type IUserTableFilters = {
   name: string;
   email?: string;
-  role?: Role;
+  roles?: Role;
   walletAddress: string;
 };
 
