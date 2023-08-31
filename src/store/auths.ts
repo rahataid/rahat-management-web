@@ -1,6 +1,11 @@
 import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
-import { clearToken, removeWalletName, setToken } from '@utils/storage-available';
+import {
+  clearToken,
+  removeWalletName,
+  setToken,
+  setUser as setUserLocal,
+} from '@utils/storage-available';
 import { AuthUserType } from 'src/auth/types';
 import { create } from 'zustand';
 
@@ -24,11 +29,10 @@ type AuthStateType = {
 };
 
 type AuthActionsType = {
-  login: (email: string) => Promise<void>;
-  register: (name: string, walletAddress: string, email?: string) => Promise<void>;
   logout: () => Promise<void>;
   loginWallet: (walletAddress: string) => Promise<void>;
   disconnectWallet: () => void;
+  setUser: (user: AuthUserType) => void;
 };
 
 export type AuthStoreType = AuthStateType & AuthActionsType;
@@ -70,58 +74,22 @@ const useAuthStore = create<AuthStoreType>((set) => ({
       console.log(error);
     }
   },
-  login: async (email: string) => {
-    try {
-      setSession('123');
-
-      set({
-        // user,
-        loading: false,
-        isAuthenticated: true,
-        isInitialized: true,
-      });
-    } catch (error) {
-      set({
-        user: null,
-        loading: false,
-        isAuthenticated: false,
-        isInitialized: true,
-      });
-      throw error;
-    }
+  setUser(user: AuthUserType) {
+    setSession(user?.access_token);
+    set({
+      user,
+      loading: false,
+      isAuthenticated: true,
+      isInitialized: true,
+      error: null,
+    });
+    console.log('user', user);
+    setUserLocal(user);
   },
-  register: async (name: string, walletAddress: string, email: string) => {
-    const data = {
-      email: email || null,
-      name,
-      walletAddress,
-    };
 
-    try {
-      const response = await AuthService.register(data);
-
-      const { user } = response.data;
-
-      sessionStorage.setItem('accessToken', user?.walletAddress);
-
-      set({
-        user,
-        loading: false,
-        isAuthenticated: true,
-        isInitialized: true,
-      });
-    } catch (error) {
-      set({
-        user: null,
-        loading: false,
-        isAuthenticated: false,
-        isInitialized: true,
-      });
-      throw error;
-    }
-  },
   logout: async () => {
     setSession(null);
+    removeUser();
     set({
       user: null,
       loading: false,

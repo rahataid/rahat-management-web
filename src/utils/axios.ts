@@ -8,7 +8,10 @@ export const axiosInstance = axios.create({ baseURL: HOST_API });
 
 axiosInstance.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
+  (error) => {
+    console.log('error', error);
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  }
 );
 
 // ----------------------------------------------------------------------
@@ -19,10 +22,10 @@ export const endpoints = {
     contracts: '/app/contracts',
   },
   auth: {
-    loginWallet: '/auths/login-wallet',
-    login: '/auths/login',
-    // todo:change to the real enpoint
-    register: '/users/register',
+    loginWallet: '/auth/login-wallet',
+    login: '/auth/login',
+    register: '/auth/register',
+    sendOtp: '/auth/send-otp',
     create: '/users',
   },
   beneficiaries: {

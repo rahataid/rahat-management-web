@@ -1,10 +1,11 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { getToken, getWalletName } from '@utils/storage-available';
-import { useWeb3React } from '@web3-react/core';
+import { isValidToken } from '@utils/session';
+import { getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
-import { useEffect, useRef } from 'react';
+import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
 
@@ -12,10 +13,9 @@ type Props = {
   children: React.ReactNode;
 };
 
-const localWalletName = getWalletName();
-const token = getToken();
+const user = getUser();
 const AuthProvider = ({ children }: Props) => {
-  const { isInitialized, walletName } = useAuthStore((state) => ({
+  const { isInitialized } = useAuthStore((state) => ({
     isAuthenticated: state.isAuthenticated,
     isInitialized: state.isInitialized,
     walletName: state.walletName,
@@ -26,25 +26,22 @@ const AuthProvider = ({ children }: Props) => {
     setBlockchain: state.setBlockchain,
     setContracts: state.setContracts,
   }));
-  const { isActive } = useWeb3React();
-  const prevIsActive = useRef<boolean | undefined>(false);
 
   useEffect(() => {
-    // if (prevIsActive.current !== isActive) {
-    useAuthStore.setState({
-      isAuthenticated: true,
-      isInitialized: true,
-      walletName,
-    });
-    // } else {
-    //   useAuthStore.setState({
-    //     isAuthenticated: false,
-    //     isInitialized: true,
-    //     walletName: '',
-    //   });
-    //   prevIsActive.current = isActive;
-    // }
-  }, [isActive, walletName]);
+    if (!isEmpty(user) && isValidToken(user?.refresh_token)) {
+      useAuthStore.setState({
+        isAuthenticated: true,
+        isInitialized: true,
+        // walletName: user?.wallet_name,
+      });
+    } else {
+      useAuthStore.setState({
+        isAuthenticated: false,
+        isInitialized: true,
+        walletName: '',
+      });
+    }
+  }, []);
 
   useEffect(() => {
     setBlockchain();
@@ -58,7 +55,7 @@ const AuthProvider = ({ children }: Props) => {
     });
   }, []);
 
-  if (!isInitialized && prevIsActive.current !== isActive) {
+  if (!isInitialized) {
     // Render a loading screen while the app is initializing
     return <LoadingScreen />;
   }

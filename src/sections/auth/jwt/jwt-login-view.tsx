@@ -1,54 +1,62 @@
 'use client';
 
+import Iconify from '@components/iconify/iconify';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-// @mui
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Button, Divider } from '@mui/material';
 import Alert from '@mui/material/Alert';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-// routes
-import { useRouter, useSearchParams } from 'src/routes/hook';
-// config
-// hooks
-// auth
-// components
-import Iconify from '@components/iconify/iconify';
-import { PATH_AFTER_LOGIN } from '@config';
-import { Divider } from '@mui/material';
-import Link from '@mui/material/Link';
+import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
+import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard, {
   MetamaskCardWalletProps,
 } from '@web3/components/connectorCards/MetaMaskCard';
 import { hooks as metamaskHooks } from '@web3/connectors/metaMask';
-
-import { RouterLink } from '@routes/components';
-import { setWalletName } from '@utils/storage-available';
-import { useWeb3React } from '@web3-react/core';
-import { getName } from '@web3/utils';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLogin, useRequestOtp } from 'src/api/auths';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { useRouter, useSearchParams } from 'src/routes/hook';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
+import * as Yup from 'yup';
 
-// ----------------------------------------------------------------------
+type LoginFormValues = {
+  email: string;
+};
+
+type OtpFormValues = {
+  otp: string;
+};
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+});
+
+const OtpSchema = Yup.object().shape({
+  otp: Yup.string().required('OTP is required'),
+});
 
 export default function JwtLoginView() {
   const { connector } = useWeb3React();
   const isMetamaskActive = metamaskHooks.useIsActive();
   const account = metamaskHooks.useAccount();
+  const login = useLogin();
+  const requestOtp = useRequestOtp();
 
-  const { login, loginWallet, user, error } = useAuthStore((state) => ({
-    login: state.login,
+  const { user, error, setUser } = useAuthStore((state) => ({
     loginWallet: state.loginWallet,
     user: state.user,
     error: state.error,
+    setUser: state.setUser,
   }));
   const networkSettings = useAppStore((state) => state.blockchain);
 
   const [userNotRegistered, setUserNotRegistered] = useState(false);
+  const [loginEmail, setLoginEmail] = useState<string>('');
 
   const router = useRouter();
 
@@ -58,18 +66,29 @@ export default function JwtLoginView() {
 
   const returnTo = searchParams.get('returnTo');
 
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-  });
-
-  const defaultValues = {
-    email: 'donor@mailinator.com',
+  const defaultValues: LoginFormValues = {
+    email: '',
   };
 
-  const methods = useForm({
+  const defaultOtpValues: OtpFormValues = {
+    otp: '',
+  };
+
+  const methods = useForm<LoginFormValues>({
     resolver: yupResolver(LoginSchema),
     defaultValues,
   });
+
+  const otpMethods = useForm<OtpFormValues>({
+    resolver: yupResolver(OtpSchema),
+    defaultValues: defaultOtpValues,
+  });
+
+  const {
+    reset: resetOtp,
+    handleSubmit: handleOtpSubmit,
+    formState: { isSubmitting: isOtpSubmitting },
+  } = otpMethods;
 
   const {
     reset,
@@ -78,15 +97,27 @@ export default function JwtLoginView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      login(data.email);
-      router.push(returnTo || PATH_AFTER_LOGIN);
-    } catch (err) {
-      console.error(err);
-      reset();
-      setErrorMsg(typeof err === 'string' ? err : err.message);
-    }
+    await requestOtp.mutateAsync(data);
+    setLoginEmail(data.email);
   });
+
+  useEffect(() => {
+    if (requestOtp.isSuccess) {
+      reset();
+    }
+  }, [requestOtp.isSuccess, reset]);
+
+  const onOtpSubmit = handleOtpSubmit(async (data) => {
+    login.mutate({ email: loginEmail, otp: data.otp });
+  });
+
+  useEffect(() => {
+    if (login.isSuccess) {
+      resetOtp();
+      setLoginEmail('');
+      setUser(login.data);
+    }
+  }, [login.data, login.isSuccess, resetOtp, setUser]);
 
   const onWalletButtonClick = useCallback(
     async ({ connector: metamaskConnector }: MetamaskCardWalletProps) => {
@@ -102,22 +133,6 @@ export default function JwtLoginView() {
     },
     [isMetamaskActive, networkSettings]
   );
-
-  useEffect(() => {
-    if (account && !user) {
-      loginWallet(account);
-    }
-  }, [account, loginWallet, returnTo, router, user]);
-
-  useEffect(() => {
-    if (user && connector) {
-      setWalletName(getName(connector));
-      router.push(returnTo || PATH_AFTER_LOGIN);
-    }
-    if (error?.statusCode === 404) {
-      setUserNotRegistered(true);
-    }
-  }, [user, returnTo, router, error?.statusCode, connector]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
@@ -161,23 +176,56 @@ export default function JwtLoginView() {
     </Stack>
   );
 
-  const renderForm = (
-    <Stack spacing={2.5}>
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+  const renderEmailForm = (
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Stack spacing={2.5}>
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label="Email address" />
 
-      <LoadingButton
-        fullWidth
-        color="inherit"
-        size="large"
-        type="submit"
-        variant="contained"
-        loading={isSubmitting}
-      >
-        Login
-      </LoadingButton>
-    </Stack>
+        <LoadingButton
+          fullWidth
+          color="inherit"
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={requestOtp.isLoading}
+          disabled={requestOtp.isLoading}
+        >
+          Send OTP
+        </LoadingButton>
+      </Stack>
+    </FormProvider>
+  );
+
+  const renderOtpForm = (
+    <FormProvider methods={otpMethods} onSubmit={onOtpSubmit}>
+      <Stack spacing={2.5}>
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+
+        <RHFTextField name="otp" label="OTP" />
+
+        <LoadingButton
+          fullWidth
+          color="inherit"
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={login.isLoading}
+          disabled={login.isLoading}
+        >
+          Login
+        </LoadingButton>
+        <Button
+          variant="text"
+          onClick={() => {
+            setLoginEmail('');
+          }}
+        >
+          Go Back
+        </Button>
+      </Stack>
+    </FormProvider>
   );
 
   const dividerView = (
@@ -187,16 +235,14 @@ export default function JwtLoginView() {
       </Divider>
     </Stack>
   );
-
+  console.log('login', login, loginEmail);
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <>
       {renderHead}
-
-      {renderForm}
-
+      {!loginEmail && renderEmailForm}
+      {loginEmail && renderOtpForm}
       {dividerView}
-
       {renderWalletLogin}
-    </FormProvider>
+    </>
   );
 }

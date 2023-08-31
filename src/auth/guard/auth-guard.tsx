@@ -27,7 +27,6 @@ export default function AuthGuard({ children }: Props) {
   const initialized = useAuthStore((state) => state.isInitialized);
   const { isActivating } = useWeb3React();
 
-  console.log('isAuthenticated', authenticated);
   const [checked, setChecked] = useState(false);
 
   const check = useCallback(() => {
