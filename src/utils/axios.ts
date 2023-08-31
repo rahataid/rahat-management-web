@@ -58,7 +58,7 @@ export const endpoints = {
   administration: {
     users: {
       list: '/users',
-      create: '/users',
+      create: '/auth/register',
       disable: (id: number) => `/users/${id}`,
       updateRole: (walletAddress: string) => `/users/${walletAddress}/role`,
       approve: (walletAddress: string) => `/users/${walletAddress}/approve`,

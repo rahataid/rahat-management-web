@@ -11,12 +11,12 @@ import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
 import { useRouter } from 'src/routes/hook';
-import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
 import Iconify from '@components/iconify/iconify';
 import { Alert, AlertTitle, Button, MenuItem, Tooltip } from '@mui/material';
+import { paths } from '@routes/paths';
 import AdministrationService from '@services/administration';
 import { useMutation } from '@tanstack/react-query';
 import { generateWalletAddress } from '@web3/utils';
@@ -88,7 +88,8 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     (data: IUserTableFilters) => {
       const modifiedData: any = {
         ...data,
-        roles: Array.isArray(data.roles) ? data.roles : [data.roles],
+        // eslint-disable-next-line no-nested-ternary
+        roles: data.roles ? (Array.isArray(data.roles) ? data.roles : [data.roles]) : ['USER'],
       };
 
       mutate(modifiedData);

@@ -1,1 +1,1 @@
-export { default as CampaignsListView } from './CampaignsTableView';
+export { default as CampaignsListView } from './campaignsTableView';

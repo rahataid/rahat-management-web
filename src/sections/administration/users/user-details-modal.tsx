@@ -15,7 +15,6 @@ import AdministrationService from '@services/administration';
 import { useMutation } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useRouter } from 'src/routes/hook';
 import { IUserItem } from 'src/types/administration';
 
@@ -29,10 +28,6 @@ type Props = {
 
 const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) => {
   const { push } = useRouter();
-  const methods = useForm();
-
-  const { handleSubmit } = methods;
-
   const [isActive, setIsActive] = useState(false);
   const [role, setRole] = useState('');
   const { enqueueSnackbar } = useSnackbar();
@@ -68,8 +63,8 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
     onChangeRole(user?.walletAddress, event.target.value);
   };
 
-  const handleDisable = async () => {
-    await disableUser.mutate(user?.id);
+  const handleDisable = () => {
+    disableUser.mutate(user?.id);
   };
 
   return (
@@ -91,7 +86,7 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
                     color="success"
                   />
                 }
-                label="Active"
+                label="Approve"
               />
               <FormControlLabel
                 control={<Switch onChange={handleDisable} name="isDisable" color="success" />}
