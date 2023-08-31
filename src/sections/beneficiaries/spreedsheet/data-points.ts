@@ -12,6 +12,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Full Name', 'First Name', 'Last Name', 'Customer Name', 'firstname'],
   },
   {
     label: 'Wallet Address',
@@ -26,6 +27,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Wallet ID', 'Wallet', 'Address'],
   },
   {
     label: 'Phone Ownership',
@@ -40,6 +42,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Ownership', 'Phone', 'Phone Owner', 'email'],
   },
   {
     label: 'Bank Status',
@@ -54,6 +57,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Status', 'Bank', 'Account Status', 'lastname'],
   },
   {
     label: 'Gender',
@@ -68,6 +72,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Sex', 'years'],
   },
   {
     label: 'Date of Birth',
@@ -82,6 +87,7 @@ export const fields = [
         level: 'error',
       },
     ],
+    alternateMatches: ['Birth Date', 'DOB', 'manager'],
   },
   {
     label: 'Latitude',
@@ -89,6 +95,7 @@ export const fields = [
     fieldType: {
       type: 'input',
     },
+    alternateMatches: ['Lat'],
   },
   {
     label: 'Longitude',
@@ -96,5 +103,6 @@ export const fields = [
     fieldType: {
       type: 'input',
     },
+    alternateMatches: ['Lon', 'Long', 'team'],
   },
 ];
