@@ -31,7 +31,7 @@ export default function ProjectDetailsView() {
   const router = useRouter();
   const params = useParams();
   const { project } = useProject(params.address);
-  console.log({project})
+  console.log({ project });
   const createTokenModal = useBoolean();
 
   const rightActionOptions: MenuOptions = [
@@ -46,7 +46,9 @@ export default function ProjectDetailsView() {
     {
       title: 'Beneficiaries',
       onClick: () => {
-        router.push(paths.dashboard.general.projects.beneficiaries(params.address as unknown as string));
+        router.push(
+          paths.dashboard.general.projects.beneficiaries(params.address as unknown as string)
+        );
       },
       show: true,
     },
@@ -54,6 +56,15 @@ export default function ProjectDetailsView() {
       title: 'Vendors',
       onClick: () => {
         router.push(paths.dashboard.general.projects.vendors(params.address as unknown as string));
+      },
+      show: true,
+    },
+    {
+      title: 'Campaigns',
+      onClick: () => {
+        router.push(
+          paths.dashboard.general.projects.campaigns(params.address as unknown as string)
+        );
       },
       show: true,
     },
