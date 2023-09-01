@@ -34,7 +34,7 @@ export const useLogin = () => {
     },
     {
       onSuccess: (data) => {
-        notify.enqueueSnackbar('Login successfully', { variant: 'success' });
+        notify.enqueueSnackbar('Login successful', { variant: 'success' });
         return data;
       },
       onError: (error) => {

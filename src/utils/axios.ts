@@ -4,7 +4,13 @@ import { HOST_API } from '@config';
 
 // ----------------------------------------------------------------------
 
-export const axiosInstance = axios.create({ baseURL: HOST_API });
+const token = sessionStorage.getItem('accessToken');
+console.log('token', `Bearer ${token}`);
+
+export const axiosInstance = axios.create({
+  baseURL: HOST_API,
+  headers: { Authorization: `Bearer ${token}` },
+});
 
 axiosInstance.interceptors.response.use(
   (res) => res,

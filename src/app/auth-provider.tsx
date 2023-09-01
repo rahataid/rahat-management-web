@@ -2,9 +2,7 @@
 
 import { LoadingScreen } from '@components/loading-screen';
 import { isValidToken } from '@utils/session';
-import { getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
-import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
@@ -13,7 +11,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-const user = getUser();
+const token = sessionStorage.getItem('accessToken');
+
 const AuthProvider = ({ children }: Props) => {
   const { isInitialized } = useAuthStore((state) => ({
     isAuthenticated: state.isAuthenticated,
@@ -28,7 +27,7 @@ const AuthProvider = ({ children }: Props) => {
   }));
 
   useEffect(() => {
-    if (!isEmpty(user) && isValidToken(user?.refresh_token)) {
+    if (token && isValidToken(token)) {
       useAuthStore.setState({
         isAuthenticated: true,
         isInitialized: true,
