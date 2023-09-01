@@ -5,17 +5,16 @@ import { CustomFile } from 'src/components/upload';
 export type IUserTableFilterValue = string | string[];
 
 export enum Role {
-  //  Donor, Field Agent, MObilizers/Vendors, beneficiary, Stakeholders
-  'Field Agent' = 'Field Agent',
-  Donor = 'Donor',
-  Vendors = 'Vendors',
-  Stakeholders = 'Stakeholders',
+  USER = 'USER',
+  DONOR = 'DONOR',
+  STAKEHOLDER = 'STAKEHOLDER',
+  ADMIN = 'ADMIN',
 }
 
 export type IUserTableFilters = {
   name: string;
   email?: string;
-  role?: Role;
+  roles?: Role;
   walletAddress: string;
 };
 

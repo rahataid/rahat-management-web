@@ -7,6 +7,7 @@ const AdministrationService = {
     axiosInstance.get(endpoints.administration.users.list, { params }),
   approve: (walletAddress: string) =>
     axiosInstance.patch(endpoints.administration.users.approve(walletAddress)),
+  disable: (id: number) => axiosInstance.delete(endpoints.administration.users.disable(id)),
   create: (data: IUserDetails) =>
     axiosInstance.post(endpoints.administration.users.create, { ...data }),
   updateRole: (walletAddress: string, role: string) =>

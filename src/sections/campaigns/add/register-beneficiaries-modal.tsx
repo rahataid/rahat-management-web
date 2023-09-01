@@ -11,6 +11,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  SelectChangeEvent,
   Stack,
 } from '@mui/material';
 import CampaignsService from '@services/campaigns';
@@ -29,7 +30,7 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
-  const handleSelectBeneficiaries = async (e: any) => {
+  const handleSelectBeneficiaries = async (e: SelectChangeEvent<string[]>) => {
     const { value } = e.target;
 
     // Create an array of objects with 'phone' and 'uuid' properties
@@ -38,13 +39,13 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
       .map((benef) => ({ phone: benef.phone, uuid: benef.uuid }));
 
     setFormattedSelect(formattedSelected);
-    setSelectedBeneficiaries(value);
+    setSelectedBeneficiaries(value as string[]);
   };
 
   const { beneficiaries } = useBeneficiaries();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, isLoading, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (withDetails) => {
       const response = await CampaignsService.bulkAddAudiences(withDetails);
       return response.data;
@@ -59,13 +60,13 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
 
   const onRegister = async () => {
     try {
-      const withDetails: any = formattedSelect.map((d: any) => ({
+      const withDetails: any = formattedSelect.map((d) => ({
         details: {
           ...d,
         },
       }));
       console.log('withDetails', withDetails);
-      // mutate(withDetails);
+      mutate(withDetails);
       // onClose();
     } catch (err) {
       console.log(err);

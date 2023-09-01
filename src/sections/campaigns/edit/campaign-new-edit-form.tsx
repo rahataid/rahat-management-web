@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
-// utils
 // routes
 import { useParams, useRouter } from 'src/routes/hook';
 // types
@@ -31,15 +30,11 @@ import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { parseISO } from 'date-fns';
+import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useCampaign, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import {
-  CAMPAIGN_TYPES,
-  IApiResponseError,
-  ICampaignCreateItem,
-  ICampaignFilterOptions,
-} from 'src/types/campaigns';
+import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
@@ -127,8 +122,6 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
     [mutate]
   );
 
-  const campaignTypeOptions: ICampaignFilterOptions = Object.values(CAMPAIGN_TYPES) as string[];
-
   const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
     const {
       target: { value },
@@ -169,7 +162,16 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Stack direction="column" spacing={3}>
-              <Stack direction="row" spacing={2}>
+              <Stack
+                sx={{
+                  flexDirection: {
+                    xs: 'column',
+                    sm: 'column',
+                    md: 'row',
+                  },
+                }}
+                spacing={2}
+              >
                 <RHFTextField name="name" label="Campaign Name" />
 
                 <Controller
@@ -207,41 +209,75 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                 <RHFTextField name="details" label="Details" fullWidth multiline />
               </Stack>
 
-              <Stack direction="row">
-                <RHFSelect
-                  InputLabelProps={{ shrink: true }}
-                  name="transportId"
-                  label="Select Transport "
+              <Stack
+                spacing={2}
+                sx={{
+                  flexDirection: {
+                    xs: 'column',
+                    sm: 'column',
+                    md: 'row',
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '100%',
+                      md: '50%',
+                    },
+                  }}
                 >
-                  {transports.map((transport) => (
-                    <MenuItem key={transport?.name} value={transport?.id}>
-                      {transport?.name}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-                <Stack>
-                  <Select
-                    name="audienceIds"
-                    multiple
-                    value={beneficiary}
-                    onChange={handleChange}
-                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value: any) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
+                  <RHFSelect
+                    InputLabelProps={{ shrink: true }}
+                    name="transportId"
+                    label="Select Transport "
                   >
-                    <MenuItem key="beneficiary" value="Beneficiary 0">
-                      Beneficiary 0
-                    </MenuItem>
-                  </Select>
-                  <Button variant="text" color="primary" onClick={assignCampaignDialog.onTrue}>
-                    Register Audiences
-                  </Button>
-                </Stack>
+                    {transports.map((transport) => (
+                      <MenuItem key={transport?.name} value={transport?.id}>
+                        {transport?.name}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                </Box>
+                <Box
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '100%',
+                      md: '50%',
+                    },
+                  }}
+                >
+                  <Stack direction="column">
+                    <Select
+                      name="audienceIds"
+                      multiple
+                      value={beneficiary}
+                      onChange={handleChange}
+                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value: any) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      <MenuItem key="beneficiary" value="Beneficiary 0">
+                        Beneficiary 0
+                      </MenuItem>
+                    </Select>
+                    <Button
+                      variant="text"
+                      color="primary"
+                      onClick={assignCampaignDialog.onTrue}
+                      sx={{ alignSelf: 'flex-start' }}
+                    >
+                      Register Audiences
+                    </Button>
+                  </Stack>
+                </Box>
               </Stack>
             </Stack>
 

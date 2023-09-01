@@ -165,7 +165,6 @@ export default function UsersListView() {
   };
 
   const handleUserChangeRole = async (walletAddress: string, role: string) => {
-    console.log('s,p', walletAddress, role);
     await updateRoleFunc.mutateAsync({ walletAddress, role });
   };
 

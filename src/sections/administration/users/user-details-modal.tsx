@@ -10,8 +10,12 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { paths } from '@routes/paths';
+import AdministrationService from '@services/administration';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'src/routes/hook';
 import { IUserItem } from 'src/types/administration';
 
 type Props = {
@@ -23,13 +27,31 @@ type Props = {
 };
 
 const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) => {
-  const methods = useForm();
+  const { push } = useRouter();
+  const [isActive, setIsActive] = useState(false);
+  const [role, setRole] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { handleSubmit } = methods;
+  useEffect(() => {
+    if (user) {
+      setRole(user?.roles);
+      setIsActive(user?.isApproved);
+    }
+  }, [user]);
 
-  const [isActive, setIsActive] = useState(user.isApproved);
-  const [role, setRole] = useState(user?.roles);
-  console.log('role', role);
+  const disableUser = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await AdministrationService.disable(id);
+      return res.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Disabling User ', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('User Disabled Successfully', { variant: 'success' });
+      push(paths.dashboard.administration.users.list);
+    },
+  });
 
   const handleActivateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsActive(event.target.checked);
@@ -41,6 +63,10 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
     onChangeRole(user?.walletAddress, event.target.value);
   };
 
+  const handleDisable = () => {
+    disableUser.mutate(user?.id);
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{user.name}</DialogTitle>
@@ -50,17 +76,23 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
           <Typography variant="subtitle1">Email: {user.email}</Typography>
           <Typography variant="subtitle1">Wallet Address: {user.walletAddress}</Typography>
           <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isActive}
-                  onChange={handleActivateChange}
-                  name="isActive"
-                  color="success"
-                />
-              }
-              label="Active"
-            />
+            <Stack direction="row" spacing={2}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={isActive}
+                    onChange={handleActivateChange}
+                    name="isActive"
+                    color="success"
+                  />
+                }
+                label="Approve"
+              />
+              <FormControlLabel
+                control={<Switch onChange={handleDisable} name="isDisable" color="success" />}
+                label="Disable"
+              />
+            </Stack>
           </FormGroup>
           <FormGroup>
             <Typography variant="subtitle1">Role:</Typography>
@@ -68,9 +100,9 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'User'}
+                    checked={role === 'USER'}
                     onChange={handleRoleChange}
-                    value="User"
+                    value="USER"
                     name="user"
                     color="success"
                   />
@@ -80,26 +112,38 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'Manager'}
+                    checked={role === 'ADMIN'}
                     onChange={handleRoleChange}
-                    value="Manager"
+                    value="ADMIN"
                     name="manager"
                     color="success"
                   />
                 }
-                label="Manager"
+                label="Admin"
               />
               <FormControlLabel
                 control={
                   <Switch
-                    checked={role === 'Donor'}
+                    checked={role === 'DONOR'}
                     onChange={handleRoleChange}
-                    value="Donor"
+                    value="DONOR"
                     name="donor"
                     color="success"
                   />
                 }
                 label="Donor"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={role === 'STAKEHOLDER'}
+                    onChange={handleRoleChange}
+                    value="STAKEHOLDER"
+                    name="donor"
+                    color="success"
+                  />
+                }
+                label="StakeHolder"
               />
             </Stack>
           </FormGroup>

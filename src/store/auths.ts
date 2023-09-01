@@ -2,6 +2,7 @@ import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
 import {
   clearToken,
+  removeUser,
   removeWalletName,
   setToken,
   setUser as setUserLocal,

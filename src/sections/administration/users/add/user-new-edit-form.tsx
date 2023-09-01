@@ -11,19 +11,19 @@ import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
 import { useRouter } from 'src/routes/hook';
-import { paths } from 'src/routes/paths';
 // types
 // assets
 // components
 import Iconify from '@components/iconify/iconify';
 import { Alert, AlertTitle, Button, MenuItem, Tooltip } from '@mui/material';
+import { paths } from '@routes/paths';
 import AdministrationService from '@services/administration';
 import { useMutation } from '@tanstack/react-query';
 import { generateWalletAddress } from '@web3/utils';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { IApiResponseError } from 'src/types/project';
-import { IUserDetails, IUserTableFilters, Role } from 'src/types/user';
+import { IUserDetails, IUserTableFilters } from 'src/types/user';
 
 type Props = {
   currentUser?: IUserTableFilters;
@@ -57,7 +57,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().nullable().optional().email('Email is invalid'),
-    role: Yup.string().optional(),
+    roles: Yup.string().optional(),
     walletAddress: Yup.string().nullable().required('Wallet address is required'),
   });
 
@@ -65,7 +65,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     () => ({
       name: currentUser?.name || '',
       email: currentUser?.email || '',
-      role: currentUser?.role || undefined,
+      roles: currentUser?.roles || undefined,
       walletAddress: currentUser?.walletAddress || '',
     }),
     [currentUser]
@@ -83,7 +83,21 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     trigger('walletAddress');
   }, [setValue, trigger]);
 
-  const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
+  // const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
+  const onSubmit = useCallback(
+    (data: IUserTableFilters) => {
+      const modifiedData: any = {
+        ...data,
+        // eslint-disable-next-line no-nested-ternary
+        roles: data.roles ? (Array.isArray(data.roles) ? data.roles : [data.roles]) : ['USER'],
+      };
+
+      mutate(modifiedData);
+    },
+    [mutate]
+  );
+
+  const roleOptions = useMemo(() => ['USER', 'DONOR', 'STAKEHOLDER', 'ADMIN'], []);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -109,10 +123,10 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
 
               <RHFTextField name="email" label="Email" />
 
-              <RHFSelect name="role" label="Role" defaultValue="User">
-                {Object.keys(Role).map((k, i) => (
-                  <MenuItem key={k} value={Role[k]}>
-                    {Role[k]}
+              <RHFSelect name="roles" label="Role" defaultValue={['USER']}>
+                {roleOptions.map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
                   </MenuItem>
                 ))}
               </RHFSelect>
