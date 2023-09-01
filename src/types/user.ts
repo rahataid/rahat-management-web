@@ -11,6 +11,14 @@ export enum Role {
   ADMIN = 'ADMIN',
 }
 
+export type IUserRoles = {
+  isAdmin: boolean;
+  isUser: boolean;
+  // isDonor: boolean;
+  // isStakeholder: boolean;
+  // isFieldAgent: boolean;
+};
+
 export type IUserTableFilters = {
   name: string;
   email?: string;

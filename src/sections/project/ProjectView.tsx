@@ -6,10 +6,12 @@ import { useSettingsContext } from '@components/settings';
 import { Button, Container, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
+import useAuthStore from 'src/store/auths';
 import ProjectCards from './project-cards';
 
 const ProjectView = () => {
   const settings = useSettingsContext();
+  const roles = useAuthStore((state) => state.role);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -20,15 +22,17 @@ const ProjectView = () => {
           mb: { xs: 3, md: 5 },
         }}
         action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.general.projects.add}
-            variant="outlined"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            color="success"
-          >
-            Add Project
-          </Button>
+          roles.isAdmin && (
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.general.projects.add}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="success"
+            >
+              Add Project
+            </Button>
+          )
         }
       />
 
