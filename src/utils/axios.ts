@@ -40,6 +40,7 @@ export const endpoints = {
     update: (uuid: string) => `/beneficiaries/${uuid}`,
     details: (address: string) => `/beneficiaries/${address}`,
     assignProject: (address: string) => `/beneficiaries/${address}/projects`,
+    disable: (id: number) => `/beneficiaries/${id}/disable`,
   },
   projects: {
     list: '/projects',

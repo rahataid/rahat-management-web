@@ -32,6 +32,7 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
   const [role, setRole] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
+  console.log(user, 'user');
   useEffect(() => {
     if (user) {
       setRole(user?.roles);
@@ -69,12 +70,12 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{user.name}</DialogTitle>
+      <DialogTitle>{user?.name}</DialogTitle>
 
       <DialogContent sx={{ color: 'text.secondary' }}>
         <Stack spacing={2}>
-          <Typography variant="subtitle1">Email: {user.email}</Typography>
-          <Typography variant="subtitle1">Wallet Address: {user.walletAddress}</Typography>
+          <Typography variant="subtitle1">Email: {user?.email}</Typography>
+          <Typography variant="subtitle1">Wallet Address: {user?.walletAddress}</Typography>
           <FormGroup>
             <Stack direction="row" spacing={2}>
               <FormControlLabel
@@ -120,30 +121,6 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
                   />
                 }
                 label="Admin"
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={role === 'DONOR'}
-                    onChange={handleRoleChange}
-                    value="DONOR"
-                    name="donor"
-                    color="success"
-                  />
-                }
-                label="Donor"
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={role === 'STAKEHOLDER'}
-                    onChange={handleRoleChange}
-                    value="STAKEHOLDER"
-                    name="donor"
-                    color="success"
-                  />
-                }
-                label="StakeHolder"
               />
             </Stack>
           </FormGroup>
