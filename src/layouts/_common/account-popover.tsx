@@ -14,9 +14,11 @@ import { useRouter } from 'src/routes/hook';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 // auth
 // components
+import { paths } from '@routes/paths';
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,7 @@ export default function AccountPopover() {
   const router = useRouter();
 
   const { user } = useMockedUser();
+  const logout = useAuthStore((state) => state.logout);
 
   // const { logout } = useAuthContext();
 
@@ -44,7 +47,8 @@ export default function AccountPopover() {
     try {
       // await logout();
       popover.onClose();
-      router.replace('/');
+      logout();
+      router.push(paths.auth.login);
     } catch (error) {
       console.error(error);
       enqueueSnackbar('Unable to logout!', { variant: 'error' });

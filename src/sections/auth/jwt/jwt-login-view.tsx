@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
+import { setSession } from '@utils/session';
+import { setToken as setUserLocal } from '@utils/storage-available';
 import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard, {
   MetamaskCardWalletProps,
@@ -116,8 +118,12 @@ export default function JwtLoginView() {
       resetOtp();
       setLoginEmail('');
       setUser(login.data);
+      setUserLocal(login.data);
+
+      setSession(login.data?.refresh_token);
+      router.replace(returnTo || paths.dashboard.root);
     }
-  }, [login.data, login.isSuccess, resetOtp, setUser]);
+  }, [login.data, login.isSuccess, resetOtp, returnTo, router, setUser]);
 
   const onWalletButtonClick = useCallback(
     async ({ connector: metamaskConnector }: MetamaskCardWalletProps) => {

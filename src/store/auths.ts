@@ -1,12 +1,6 @@
 import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
-import {
-  clearToken,
-  removeUser,
-  removeWalletName,
-  setToken,
-  setUser as setUserLocal,
-} from '@utils/storage-available';
+import { clearToken, removeUser, removeWalletName, setToken } from '@utils/storage-available';
 import { AuthUserType } from 'src/auth/types';
 import { create } from 'zustand';
 
@@ -76,7 +70,6 @@ const useAuthStore = create<AuthStoreType>((set) => ({
     }
   },
   setUser(user: AuthUserType) {
-    setSession(user?.access_token);
     set({
       user,
       loading: false,
@@ -84,8 +77,6 @@ const useAuthStore = create<AuthStoreType>((set) => ({
       isInitialized: true,
       error: null,
     });
-    console.log('user', user);
-    setUserLocal(user);
   },
 
   logout: async () => {
