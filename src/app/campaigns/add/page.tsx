@@ -1,4 +1,4 @@
-import { CampaignCreateFormView } from '@sections/campaigns/add';
+import { CampaignCreateFormView } from '@sections/project/campaign/add';
 
 export const metadata = {
   title: 'Dashboard: Create a new campaign',

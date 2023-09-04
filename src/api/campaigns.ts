@@ -109,3 +109,17 @@ export function useTransports(): ITransportDetailsHookReturn {
     error,
   };
 }
+
+export function useAudiences() {
+  const { data, isLoading, error } = useQuery(['audiences'], async () => {
+    const res = await CampaignsService.audiences();
+    return res.data;
+  });
+  const audiences = useMemo(() => data || [], [data]);
+
+  return {
+    audiences,
+    isLoading,
+    error,
+  };
+}

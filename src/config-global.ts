@@ -6,6 +6,8 @@ import { paths } from 'src/routes/paths';
 
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const CAMPAIGN_HOST_API = process.env.NEXT_PUBLIC_HOST_CAMPAIGN;
+export const CAMPAIGN_APP_ID = process.env.NEXT_PUBLIC_CAMPAIGN_APPID;
+
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 
 export const FLICKR_APIKEY = process.env.NEXT_PUBLIC_FLICKR_APIKEY;

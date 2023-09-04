@@ -16,3 +16,10 @@ export function flattenArray<T>(list: T[], key = 'children'): T[] {
 export function shuffleArray<T>(array: T[]): T[] {
   return array.sort(() => Math.random() - 0.5);
 }
+
+export function getLabelsByValues(array: any, values: any) {
+  return values.map((value: any) => {
+    const result = array.find((item: any) => item.id === value);
+    return result ? result?.details?.name : undefined;
+  });
+}

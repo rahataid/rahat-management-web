@@ -11,6 +11,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  SelectChangeEvent,
   Stack,
 } from '@mui/material';
 import CampaignsService from '@services/campaigns';
@@ -29,47 +30,48 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
-  const handleSelectBeneficiaries = async (e: any) => {
+  const handleSelectBeneficiaries = async (e: SelectChangeEvent<string[]>) => {
     const { value } = e.target;
 
     // Create an array of objects with 'phone' and 'uuid' properties
     const formattedSelected = beneficiaries
       .filter((benef) => value.includes(benef.name))
-      .map((benef) => ({ phone: benef.phone, uuid: benef.uuid }));
+      .map((benef) => ({
+        phone: benef.phone,
+        uuid: benef.uuid,
+        walletAddress: benef.walletAddress,
+        name: benef.name,
+      }));
 
     setFormattedSelect(formattedSelected);
-    setSelectedBeneficiaries(value);
+    setSelectedBeneficiaries(value as string[]);
   };
 
   const { beneficiaries } = useBeneficiaries();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, isLoading, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (withDetails) => {
       const response = await CampaignsService.bulkAddAudiences(withDetails);
       return response.data;
     },
     onError: () => {
-      enqueueSnackbar('Error Registering Audience', { variant: 'error' });
+      enqueueSnackbar('Error registering audiences', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Audience registered successfully', { variant: 'success' });
+      enqueueSnackbar('Audiences registered successfully', { variant: 'success' });
     },
   });
 
   const onRegister = async () => {
-    try {
-      const withDetails: any = formattedSelect.map((d: any) => ({
-        details: {
-          ...d,
-        },
-      }));
-      console.log('withDetails', withDetails);
-      // mutate(withDetails);
-      // onClose();
-    } catch (err) {
-      console.log(err);
-    }
+    const withDetails: any = formattedSelect.map((d) => ({
+      details: {
+        ...d,
+      },
+    }));
+    console.log('withDetails', withDetails);
+    mutate(withDetails);
+    // onClose();
   };
 
   return (

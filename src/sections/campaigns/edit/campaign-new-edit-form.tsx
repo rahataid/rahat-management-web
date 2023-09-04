@@ -18,7 +18,9 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Checkbox,
   Chip,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
@@ -28,10 +30,11 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
+import { getLabelsByValues } from '@utils/array';
 import { parseMultiLineInput } from '@utils/strings';
 import { parseISO } from 'date-fns';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useCampaign, useTransports } from 'src/api/campaigns';
+import { useAudiences, useCampaign, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
@@ -45,14 +48,16 @@ interface FormValues extends ICampaignCreateItem {}
 
 const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const params = useParams();
-  const [beneficiary, setBeneficiary] = useState<string[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
+  const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
+
   const { push } = useRouter();
   const { transports } = useTransports();
 
   const { campaign } = useCampaign(params.id);
-  console.log('Campaign: ', campaign);
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
+  const { audiences } = useAudiences();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
     IApiResponseError,
@@ -103,31 +108,36 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
 
   const { reset, handleSubmit, control, setValue } = methods;
 
+  const handleSelectAudiences = async (e: SelectChangeEvent<string[]>) => {
+    const { value } = e.target;
+    const formattedSelected = audiences
+      .filter((aud: any) => value.includes(aud.id))
+      .map((aud: any) => +aud.id);
+    setFormattedSelect(formattedSelected);
+    setSelectedAudiences(value as string[]);
+    setValue('audienceIds', formattedSelected);
+    console.log('audienceIds', formattedSelected);
+  };
+
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
+      console.log('data', data);
+      let startTime;
       if (data?.startTime) {
-        const startTime =
-          typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
-        const formatted = {
-          ...data,
-          startTime: startTime.toISOString(),
-          details: parseMultiLineInput(data?.details),
-        };
-        console.log('FormattedData: ', formatted);
-        mutate(formatted);
-      } else {
-        console.error('startTime is null');
+        startTime = typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
       }
-    },
-    [mutate]
-  );
+      const audienceIds = formattedSelect;
 
-  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
-    const {
-      target: { value },
-    } = event;
-    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
-  };
+      const formatted = {
+        ...data,
+        startTime: startTime?.toISOString(),
+        audienceIds,
+        details: parseMultiLineInput(data?.details),
+      };
+      mutate(formatted);
+    },
+    [mutate, formattedSelect]
+  );
 
   useEffect(() => {
     if (campaign) {
@@ -136,9 +146,11 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       const campaignType = (campaign.type as CAMPAIGN_TYPES) || CAMPAIGN_TYPES.EMAIL;
       setValue('type', campaignType);
       const formattedDetails = JSON.stringify(campaign.details || {});
+      console.log('formattedDetails', formattedDetails, campaign);
       setValue('details', formattedDetails);
-      const audienceNames = campaign.audiences?.map((audience) => audience?.id) || [];
-      setValue('audienceIds', audienceNames);
+      const audienceIds = campaign.audiences?.map((audience) => audience?.id) || [];
+      setValue('audienceIds', audienceIds);
+      setSelectedAudiences(audienceIds);
       setValue('transportId', campaign.transport?.id || null);
     }
   }, [campaign, setValue]);
@@ -253,20 +265,21 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                     <Select
                       name="audienceIds"
                       multiple
-                      value={beneficiary}
-                      onChange={handleChange}
+                      value={selectedAudiences}
+                      onChange={handleSelectAudiences}
                       input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value: any) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
+                      renderValue={(selected) =>
+                        getLabelsByValues(audiences, selected).map((sel: any) => (
+                          <Chip key={sel} label={sel} />
+                        ))
+                      }
                     >
-                      <MenuItem key="beneficiary" value="Beneficiary 0">
-                        Beneficiary 0
-                      </MenuItem>
+                      {audiences.map((aud: any) => (
+                        <MenuItem key={aud.details.name} value={aud.id}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud.id) > -1} />
+                          <ListItemText primary={aud.details.name} />
+                        </MenuItem>
+                      ))}
                     </Select>
                     <Button
                       variant="text"

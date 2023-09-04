@@ -19,7 +19,9 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Checkbox,
   Chip,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
@@ -31,7 +33,7 @@ import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useTransports } from 'src/api/campaigns';
+import { useAudiences, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
@@ -44,11 +46,14 @@ type Props = {
 interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
-  const [beneficiary, setBeneficiary] = useState<string[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
+  const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
+
   const { push } = useRouter();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
+  const { audiences } = useAudiences();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
     IApiResponseError,
@@ -97,27 +102,30 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control } = methods;
+  const { reset, handleSubmit, control, setValue } = methods;
+
+  const handleSelectAudiences = async (e: SelectChangeEvent<string[]>) => {
+    const { value } = e.target;
+    const formattedSelected = audiences
+      .filter((aud: any) => value.includes(aud.details.name))
+      .map((aud: any) => +aud.id);
+    setFormattedSelect(formattedSelected);
+    setSelectedAudiences(value as string[]);
+    setValue('audienceIds', formattedSelected);
+  };
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      console.log('Form submitted with data:', data);
+      const audienceIds = formattedSelect;
       const formatted = {
         ...data,
+        audienceIds,
         details: parseMultiLineInput(data?.details),
       };
-      console.log('FormattedData: ', formatted);
       mutate(formatted);
     },
-    [mutate]
+    [formattedSelect, mutate]
   );
-
-  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
-    const {
-      target: { value },
-    } = event;
-    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
-  };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -221,8 +229,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     <Select
                       name="audienceIds"
                       multiple
-                      value={beneficiary}
-                      onChange={handleChange}
+                      value={selectedAudiences}
+                      onChange={handleSelectAudiences}
                       input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -232,9 +240,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                         </Box>
                       )}
                     >
-                      <MenuItem key="beneficiary" value={1}>
-                        Beneficiary 0
-                      </MenuItem>
+                      {audiences.map((aud: any) => (
+                        <MenuItem key={aud.details.name} value={aud.details.name}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
+                          <ListItemText primary={aud.details.name} />
+                        </MenuItem>
+                      ))}
                     </Select>
                     <Button
                       variant="text"
