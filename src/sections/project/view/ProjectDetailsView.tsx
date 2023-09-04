@@ -108,6 +108,15 @@ export default function ProjectDetailsView() {
       },
       show: true,
     },
+    {
+      title: 'Campaigns',
+      onClick: () => {
+        router.push(
+          paths.dashboard.general.projects.campaigns(params.address as unknown as string)
+        );
+      },
+      show: true,
+    },
   ];
 
   const handleCreateToken = async (token: string) => {

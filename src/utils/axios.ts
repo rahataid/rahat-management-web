@@ -1,11 +1,12 @@
 import axios from 'axios';
 // config
 import { HOST_API } from '@config';
+import { getToken } from './storage-available';
 
 // ----------------------------------------------------------------------
 
-const token = sessionStorage.getItem('accessToken');
-console.log('token', `Bearer ${token}`);
+const token = getToken();
+console.log('token', `Bearer ${token}`, JSON.stringify(token));
 
 export const axiosInstance = axios.create({
   baseURL: HOST_API,

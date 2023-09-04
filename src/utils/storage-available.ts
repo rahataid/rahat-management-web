@@ -40,7 +40,8 @@ export function localStorageRemoveItem(key: string) {
 }
 
 export function setToken(value: string): void {
-  localStorageSetItem('accessToken', value);
+  const v = JSON.stringify(value);
+  localStorageSetItem('accessToken', v);
 }
 
 export function clearToken(): void {

@@ -2,7 +2,7 @@
 
 import { LoadingScreen } from '@components/loading-screen';
 import { isValidToken } from '@utils/session';
-import { getUser } from '@utils/storage-available';
+import { getToken, getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
@@ -13,7 +13,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const token = sessionStorage.getItem('accessToken');
+const token = getToken();
 const user = getUser();
 const AuthProvider = ({ children }: Props) => {
   const isInitialized = useAuthStore((state) => state.isInitialized);
