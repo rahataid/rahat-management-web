@@ -1,7 +1,6 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { isValidToken } from '@utils/session';
 import { getToken, getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
@@ -26,7 +25,7 @@ const AuthProvider = ({ children }: Props) => {
   }));
 
   useEffect(() => {
-    if (token && isValidToken(token)) {
+    if (token) {
       useAuthStore.setState({
         isAuthenticated: true,
         isInitialized: true,
