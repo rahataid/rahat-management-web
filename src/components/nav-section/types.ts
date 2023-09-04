@@ -1,5 +1,5 @@
-import { StackProps } from '@mui/material/Stack';
 import { ListItemButtonProps } from '@mui/material/ListItemButton';
+import { StackProps } from '@mui/material/Stack';
 
 // ----------------------------------------------------------------------
 
@@ -31,11 +31,13 @@ export type NavListProps = {
   disabled?: boolean;
   roles?: string[];
   children?: any;
+  show: boolean;
 };
 
 export type NavSectionProps = StackProps & {
   data: {
     subheader: string;
+    show: Boolean;
     items: NavListProps[];
   }[];
   config?: NavConfigProps;

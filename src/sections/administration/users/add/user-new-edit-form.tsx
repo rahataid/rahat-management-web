@@ -97,7 +97,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     [mutate]
   );
 
-  const roleOptions = useMemo(() => ['USER', 'DONOR', 'STAKEHOLDER', 'ADMIN'], []);
+  const roleOptions = useMemo(() => ['USER', 'ADMIN'], []);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

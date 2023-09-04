@@ -41,6 +41,7 @@ export const endpoints = {
     update: (uuid: string) => `/beneficiaries/${uuid}`,
     details: (address: string) => `/beneficiaries/${address}`,
     assignProject: (address: string) => `/beneficiaries/${address}/projects`,
+    disable: (walletAddress: string) => `/beneficiaries/${walletAddress}/disable`,
   },
   projects: {
     list: '/projects',

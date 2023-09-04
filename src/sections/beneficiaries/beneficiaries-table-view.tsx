@@ -38,18 +38,21 @@ import {
 //
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
 import { useBeneficiaries } from 'src/api/beneficiaries';
+import useAuthStore from 'src/store/auths';
 import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
-import { BeneficiariesSpreedsheetImport } from './spreedsheet';
 
 // ----------------------------------------------------------------------
 
@@ -66,6 +69,7 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesListView() {
   const table = useTable();
+  const roles = useAuthStore((state) => state.role);
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -86,6 +90,7 @@ export default function BeneficiariesListView() {
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { push } = useRouter();
 
@@ -130,6 +135,20 @@ export default function BeneficiariesListView() {
     [table, createQueryString, push, searchParams, filters, pathname]
   );
 
+  const disableBeneficiary = useMutation({
+    mutationFn: async (walletAddress: string) => {
+      const res = await BeneficiaryService.disable(walletAddress);
+      return res.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Disabling Beneficiary ', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Beneficiary Disabled Successfully', { variant: 'success' });
+      push(paths.dashboard.general.beneficiaries.list);
+    },
+  });
+
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
     push(pathname);
@@ -157,6 +176,14 @@ export default function BeneficiariesListView() {
     console.log('selected', selected);
   }, []);
 
+  const handleDisableBeneficiary = () => {
+    const walletAddresses = table.selected;
+
+    walletAddresses.forEach(async (walletAddress) => {
+      disableBeneficiary.mutate(walletAddress);
+    });
+  };
+
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -181,11 +208,11 @@ export default function BeneficiariesListView() {
         }}
         action={
           <Stack spacing={2} direction="row">
-            <BeneficiariesSpreedsheetImport
+            {/* <BeneficiariesSpreedsheetImport
               onSubmit={handleBeneficiaryBulkAdd}
               isOpen={bulkBeneficiaryImport.value}
               handleOpenClose={bulkBeneficiaryImport.onToggle}
-            />
+            /> */}
             <Button
               component={RouterLink}
               href={paths.dashboard.general.beneficiaries.add}
@@ -234,6 +261,11 @@ export default function BeneficiariesListView() {
                 <Tooltip title="Assign Tokens in bulk">
                   <Button variant="outlined" color="primary" onClick={bulkProjectAssign.onTrue}>
                     Assign Project
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Disable Beneficiary">
+                  <Button variant="outlined" color="primary" onClick={handleDisableBeneficiary}>
+                    Disable Beneficiary
                   </Button>
                 </Tooltip>
               </Stack>

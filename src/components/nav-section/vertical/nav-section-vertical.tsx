@@ -15,14 +15,16 @@ import NavList from './nav-list';
 function NavSectionVertical({ data, config, sx, ...other }: NavSectionProps) {
   return (
     <Stack sx={sx} {...other}>
-      {data.map((group, index) => (
-        <Group
-          key={group.subheader || index}
-          subheader={group.subheader}
-          items={group.items}
-          config={navVerticalConfig(config)}
-        />
-      ))}
+      {data
+        .filter((d) => d.show)
+        .map((group, index) => (
+          <Group
+            key={group.subheader || index}
+            subheader={group.subheader}
+            items={group.items}
+            config={navVerticalConfig(config)}
+          />
+        ))}
     </Stack>
   );
 }

@@ -36,7 +36,12 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
     // Create an array of objects with 'phone' and 'uuid' properties
     const formattedSelected = beneficiaries
       .filter((benef) => value.includes(benef.name))
-      .map((benef) => ({ phone: benef.phone, uuid: benef.uuid }));
+      .map((benef) => ({
+        phone: benef.phone,
+        uuid: benef.uuid,
+        walletAddress: benef.walletAddress,
+        name: benef.name,
+      }));
 
     setFormattedSelect(formattedSelected);
     setSelectedBeneficiaries(value as string[]);
@@ -66,7 +71,7 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
         },
       }));
       console.log('withDetails', withDetails);
-      mutate(withDetails);
+      // mutate(withDetails);
       // onClose();
     } catch (err) {
       console.log(err);
