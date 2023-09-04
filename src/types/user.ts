@@ -14,6 +14,7 @@ export enum Role {
 export type IUserRoles = {
   isAdmin: boolean;
   isUser: boolean;
+  // isAdminOrUser: boolean;
   // isDonor: boolean;
   // isStakeholder: boolean;
   // isFieldAgent: boolean;

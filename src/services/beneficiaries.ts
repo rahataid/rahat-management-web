@@ -11,7 +11,8 @@ const BeneficiaryService = {
   details: (uuid: string) => axiosInstance.get(endpoints.beneficiaries.details(uuid)),
   assignProject: (uuid: string, data: any) =>
     axiosInstance.post(endpoints.beneficiaries.assignProject(uuid), { ...data }),
-  disable: (id: number) => axiosInstance.delete(endpoints.beneficiaries.disable(id)),
+  disable: (walletAddress: string) =>
+    axiosInstance.patch(endpoints.beneficiaries.disable(walletAddress)),
 };
 
 export default BeneficiaryService;

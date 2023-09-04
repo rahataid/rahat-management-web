@@ -10,9 +10,15 @@ import NavList from './nav-list';
 function NavSectionMini({ data, config, sx, ...other }: NavSectionProps) {
   return (
     <Stack sx={sx} {...other}>
-      {data.map((group, index) => (
-        <Group key={group.subheader || index} items={group.items} config={navMiniConfig(config)} />
-      ))}
+      {data
+        .filter((d) => d.show)
+        .map((group, index) => (
+          <Group
+            key={group.subheader || index}
+            items={group.items}
+            config={navMiniConfig(config)}
+          />
+        ))}
     </Stack>
   );
 }

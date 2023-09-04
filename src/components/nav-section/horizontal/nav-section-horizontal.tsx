@@ -4,8 +4,8 @@ import Stack from '@mui/material/Stack';
 // theme
 import { hideScroll } from 'src/theme/css';
 //
-import { NavSectionProps, NavListProps, NavConfigProps } from '../types';
 import { navHorizontalConfig } from '../config';
+import { NavConfigProps, NavListProps, NavSectionProps } from '../types';
 import NavList from './nav-list';
 
 // ----------------------------------------------------------------------
@@ -21,13 +21,15 @@ function NavSectionHorizontal({ data, config, sx, ...other }: NavSectionProps) {
       }}
       {...other}
     >
-      {data.map((group, index) => (
-        <Group
-          key={group.subheader || index}
-          items={group.items}
-          config={navHorizontalConfig(config)}
-        />
-      ))}
+      {data
+        .filter((d) => d.show)
+        .map((group, index) => (
+          <Group
+            key={group.subheader || index}
+            items={group.items}
+            config={navHorizontalConfig(config)}
+          />
+        ))}
     </Stack>
   );
 }
@@ -44,15 +46,17 @@ type GroupProps = {
 function Group({ items, config }: GroupProps) {
   return (
     <>
-      {items.map((list) => (
-        <NavList
-          key={list.title + list.path}
-          data={list}
-          depth={1}
-          hasChild={!!list.children}
-          config={config}
-        />
-      ))}
+      {items
+        .filter((d) => d.show)
+        .map((list) => (
+          <NavList
+            key={list.title + list.path}
+            data={list}
+            depth={1}
+            hasChild={!!list.children}
+            config={config}
+          />
+        ))}
     </>
   );
 }

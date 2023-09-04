@@ -53,7 +53,6 @@ import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
-import { BeneficiariesSpreedsheetImport } from './spreedsheet';
 
 // ----------------------------------------------------------------------
 
@@ -70,8 +69,7 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesListView() {
   const table = useTable();
-  const { role } = useAuthStore();
-  const { isUser } = role;
+  const roles = useAuthStore((state) => state.role);
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -138,8 +136,8 @@ export default function BeneficiariesListView() {
   );
 
   const disableBeneficiary = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await BeneficiaryService.disable(id);
+    mutationFn: async (walletAddress: string) => {
+      const res = await BeneficiaryService.disable(walletAddress);
       return res.data;
     },
     onError: () => {
@@ -147,7 +145,7 @@ export default function BeneficiariesListView() {
     },
     onSuccess: () => {
       enqueueSnackbar('Beneficiary Disabled Successfully', { variant: 'success' });
-      push(paths.dashboard.administration.users.list);
+      push(paths.dashboard.general.beneficiaries.list);
     },
   });
 
@@ -179,8 +177,11 @@ export default function BeneficiariesListView() {
   }, []);
 
   const handleDisableBeneficiary = () => {
-    // disableBeneficiary.mutate(id);
-    console.log('disableBeneficiary');
+    const walletAddresses = table.selected;
+
+    walletAddresses.forEach(async (walletAddress) => {
+      disableBeneficiary.mutate(walletAddress);
+    });
   };
 
   useEffect(() => {
@@ -207,18 +208,17 @@ export default function BeneficiariesListView() {
         }}
         action={
           <Stack spacing={2} direction="row">
-            <BeneficiariesSpreedsheetImport
+            {/* <BeneficiariesSpreedsheetImport
               onSubmit={handleBeneficiaryBulkAdd}
               isOpen={bulkBeneficiaryImport.value}
               handleOpenClose={bulkBeneficiaryImport.onToggle}
-            />
+            /> */}
             <Button
               component={RouterLink}
               href={paths.dashboard.general.beneficiaries.add}
               variant="outlined"
               startIcon={<Iconify icon="mingcute:add-line" />}
               color="success"
-              disabled={isUser}
             >
               Add Beneficiary
             </Button>

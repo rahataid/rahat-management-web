@@ -43,6 +43,7 @@ const initialState: AuthStateType = {
   role: {
     isAdmin: false,
     isUser: false,
+    // isAdminOrUser: false,
     // isDonor: false,
     // isFieldAgent: false,
     // isStakeholder: false,
