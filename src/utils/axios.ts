@@ -47,6 +47,7 @@ export const endpoints = {
     list: '/projects',
     create: '/projects',
     update: (address: string) => `/projects/${address}`,
+    updateCampaign: (address: string) => `/projects/${address}/campaigns`,
     details: (contractAddress: string) => `/projects/${contractAddress}`,
 
     beneficiaries: {

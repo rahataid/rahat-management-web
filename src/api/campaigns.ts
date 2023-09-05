@@ -1,3 +1,4 @@
+import { IPaginatedResponse } from '@config';
 import CampaignsService from '@services/campaigns';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -5,6 +6,7 @@ import {
   CampaignsListHookReturn,
   IApiResponseError,
   ICampaignDetailsHookReturn,
+  ICampaignItem,
   ICampaignItemApiResponse,
   ICampaignLogsApiResponse,
   ICampaignLogsHookReturn,
@@ -42,6 +44,28 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
     error: error as IApiResponseError,
   };
 }
+
+export function useGetProjectCampaigns(ids: number[]): CampaignsListHookReturn {
+  const { data, isLoading, error } = useQuery<IPaginatedResponse<ICampaignItem>>(
+    ['campaign/project/id', ids],
+    async () => {
+      console.log('Campaignnnnnids', ids);
+      const res = await CampaignsService.getByIds(ids);
+      return res.data;
+    }
+  );
+
+  const projectCampaigns = useMemo(() => data?.rows || [], [data?.rows]);
+  const projectCampaignsMeta = useMemo(() => data?.meta || {}, [data?.meta]);
+
+  return {
+    campaigns: projectCampaigns,
+    meta: projectCampaignsMeta,
+    isLoading,
+    error: error as IApiResponseError,
+  };
+}
+
 export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id/logs'], async () => {
     const res = await CampaignsService.logs(id);

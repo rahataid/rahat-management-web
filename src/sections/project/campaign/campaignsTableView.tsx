@@ -55,6 +55,7 @@ export default function BeneficiariesListView() {
   const table = useTable();
 
   const { campaigns, meta } = useCampaigns();
+  console.log(campaigns, 'Campaigns');
 
   const params = useParams();
 

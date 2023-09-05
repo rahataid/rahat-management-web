@@ -6,6 +6,8 @@ const ProjectsService = {
   create: (data: IProjectCreateItem) => axiosInstance.post(endpoints.projects.create, { ...data }),
   update: (address: string, data: IProjectUpdateItem) =>
     axiosInstance.patch(endpoints.projects.update(address), { ...data }),
+  updateCampaign: (address: string, id: number) =>
+    axiosInstance.patch(endpoints.projects.updateCampaign(address), { id }),
   // delete: (uuid: string) => axiosInstance.delete(endpoints.projects.delete(uuid)),
 
   details: (contractAddress: string) =>

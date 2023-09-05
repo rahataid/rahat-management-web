@@ -26,3 +26,13 @@ export enum CONTRACTS {
   DONOR = 'RahatDonor',
   CLAIM = 'RahatClaim',
 }
+
+export interface IPaginatedResponse<T> {
+  rows: T[];
+  meta: {
+    currentPage?: number;
+    total?: number;
+    perPage: number;
+    lastPage?: number;
+  };
+}

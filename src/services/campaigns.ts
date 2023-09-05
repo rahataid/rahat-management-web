@@ -26,6 +26,7 @@ export const endpoints = {
     bulkAddAudiences: `/audiences/bulk`,
     audiences: `/audiences`,
     transports: '/transports',
+    getByIds: '/campaigns/getByIds',
   },
 };
 
@@ -39,6 +40,12 @@ const CampaignsService = {
   bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.campaigns.bulkAddAudiences, data),
   audiences: () => axiosInstance.get(endpoints.campaigns.audiences),
   transports: () => axiosInstance.get(endpoints.campaigns.transports),
+  getByIds: (ids: number[]) =>
+    axiosInstance.get(endpoints.campaigns.getByIds, {
+      params: {
+        ids: JSON.stringify(ids),
+      },
+    }),
 };
 
 export default CampaignsService;

@@ -51,10 +51,10 @@ export default function CampaignsTableRow({ row, onViewRow }: Props) {
       </TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
-        <ListItemText
+        {/* <ListItemText
           primary={totalAudiences}
           primaryTypographyProps={{ typography: 'body2' }}
-        />{' '}
+        />{' '} */}
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
