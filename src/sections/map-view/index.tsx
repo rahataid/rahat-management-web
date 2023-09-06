@@ -1,5 +1,6 @@
 'use client';
 
+import { MapData } from '@components/map';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
@@ -22,6 +23,7 @@ const THEMES = {
 const baseSettings = {
   mapboxAccessToken: MAPBOX_TOKEN,
   minZoom: 1,
+  scrollZoom: false,
 };
 
 const StyledMapContainer = styled('div')(({ theme }) => ({
@@ -35,19 +37,18 @@ const StyledMapContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-export default function MapView({ geoData }) {
+type MapViewProps = {
+  geoData: MapData[];
+};
+
+export default function MapView({ geoData }: MapViewProps) {
   return (
     <Container>
       <Stack>
         <Card>
           <CardContent>
             <StyledMapContainer>
-              <MapClusters
-                {...baseSettings}
-                mapStyle={THEMES.light}
-                dragPan={false}
-                geoData={geoData}
-              />
+              <MapClusters {...baseSettings} mapStyle={THEMES.light} geoData={geoData} />
             </StyledMapContainer>
           </CardContent>
         </Card>

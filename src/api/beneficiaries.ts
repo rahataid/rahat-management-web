@@ -1,10 +1,12 @@
+import { MapData } from '@components/map';
 import BeneficiaryService from '@services/beneficiaries';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import {
   BeneficiariesListHookReturn,
-  BeneficiaryStatsData,
+  IApiResponseError,
+  IBeneficiariesGeoLoc,
   IBeneficiariesGeoLocHooksReturn,
   IBeneficiaryApiFilters,
   IBeneficiaryDetails,
@@ -50,52 +52,26 @@ export function useBeneficiaryStats() {
     return res?.data;
   });
 
-  const genderData = useMemo(
-    () =>
-      data?.gender
-        ? Object?.entries(data?.gender).map(([label, value]) => ({
-            label,
-            value: +value,
-          }))
-        : [],
-    [data?.gender]
-  );
+  const formatData = (rawData: Record<string, number> | undefined) =>
+    rawData
+      ? Object.entries(rawData).map(([label, value]) => ({
+          label,
+          value: +value,
+        }))
+      : [];
 
+  const genderData = useMemo(() => formatData(data?.gender), [data?.gender]);
   const internetAccessData = useMemo(
-    () =>
-      data?.internetAccess
-        ? Object?.entries(data?.internetAccess).map(([label, value]) => ({
-            label,
-            value: +value,
-          }))
-        : [],
+    () => formatData(data?.internetAccess),
     [data?.internetAccess]
   );
-
   const phoneOwnershipData = useMemo(
-    () =>
-      data?.phoneOwnership
-        ? Object?.entries(data?.phoneOwnership).map(([label, value]) => ({
-            label,
-            value: +value,
-          }))
-        : [],
+    () => formatData(data?.phoneOwnership),
     [data?.phoneOwnership]
   );
-
-  const bankStatusData: BeneficiaryStatsData[] = useMemo(
-    () =>
-      data?.bankStatus
-        ? Object?.entries(data?.bankStatus).map(([label, value]) => ({
-            label,
-            value: +value,
-          }))
-        : [],
-    [data?.bankStatus]
-  );
+  const bankStatusData = useMemo(() => formatData(data?.bankStatus), [data?.bankStatus]);
 
   return {
-    // fsd: data,
     bankStatusData,
     genderData,
     phoneOwnershipData,
@@ -106,28 +82,33 @@ export function useBeneficiaryStats() {
 }
 
 export function useGeoLocation(): IBeneficiariesGeoLocHooksReturn {
-  const { data } = useQuery(['beneficiaries'], async () => {
-    const res = await BeneficiaryService.geoloc();
-    return res?.data;
-  });
+  const { data, isLoading, error } = useQuery<IBeneficiariesGeoLoc[], IApiResponseError | null>(
+    ['beneficiaries/geolocation'],
+    async () => {
+      const res = await BeneficiaryService.geoloc();
+      return res?.data;
+    }
+  );
 
-  const geoData = useMemo(
+  const geoData: MapData[] | undefined = useMemo(
     () =>
-      data.map((item) => ({
+      data?.map((item) => ({
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [+item?.longitude, +item?.latitude],
+          coordinates: [item?.longitude || 0, item?.latitude || 0],
         },
         properties: {
           // cluster: true,
-          id: item.name,
+          id: `long${item?.longitude}-lat${item?.latitude}`,
         },
-      })),
+      })) || [],
     [data]
   );
 
   return {
     geoData,
+    isLoading,
+    error,
   };
 }

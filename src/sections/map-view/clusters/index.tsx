@@ -8,13 +8,13 @@ import Map, {
   Source,
 } from 'react-map-gl';
 // components
-import { MapBoxProps } from 'src/components/map';
+import { MapBoxProps, MapData } from 'src/components/map';
 //
 import { clusterCountLayer, clusterLayer, unclusteredPointLayer } from './layers';
 
 // ----------------------------------------------------------------------
 
-function MapClusters({ ...other }: MapBoxProps, { geoData }) {
+function MapClusters({ geoData, ...other }: { other: MapBoxProps; geoData: MapData }) {
   const mapRef = useRef<MapRef>(null);
   const data = {
     type: 'FeatureCollection',
@@ -52,8 +52,8 @@ function MapClusters({ ...other }: MapBoxProps, { geoData }) {
   return (
     <Map
       initialViewState={{
-        latitude: 40.67,
-        longitude: -103.59,
+        latitude: 27.700769,
+        longitude: 85.30014,
         zoom: 3,
       }}
       interactiveLayerIds={[clusterLayer.id || '']}

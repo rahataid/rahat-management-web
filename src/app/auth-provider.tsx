@@ -6,6 +6,7 @@ import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
+import { Role } from 'src/types/user';
 
 type Props = {
   children: React.ReactNode;

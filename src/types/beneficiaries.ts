@@ -1,3 +1,5 @@
+import { MapData } from '@components/map';
+
 export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
@@ -54,7 +56,9 @@ export type IBeneficiariesGeoLoc = {
 };
 
 export interface IBeneficiariesGeoLocHooksReturn {
-  geoData: IBeneficiariesGeoLoc[];
+  geoData: MapData[];
+  isLoading: boolean;
+  error: IApiResponseError;
 }
 
 export type IBeneficiariesItem = {
@@ -169,7 +173,7 @@ export type IApiResponseError = {
   name: string;
   success: boolean;
   timestamp: number;
-};
+} | null;
 
 export type IAssignProjectItem = {
   projectId: number | null;

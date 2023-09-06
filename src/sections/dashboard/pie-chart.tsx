@@ -10,7 +10,7 @@ import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-const CHART_HEIGHT = 400;
+const CHART_HEIGHT = 340;
 
 const LEGEND_HEIGHT = 72;
 
@@ -58,6 +58,7 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
     labels: series.map((i) => i.label),
     stroke: { colors: [theme.palette.background.paper] },
     legend: {
+      show: false,
       offsetY: 0,
       floating: true,
       position: 'bottom',
@@ -76,7 +77,9 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
       pie: {
         donut: {
           size: '90%',
+
           labels: {
+            show: false,
             value: {
               formatter: (value: number | string) => fNumber(value),
             },

@@ -33,3 +33,10 @@ export type MapSettingKeys =
   | 'maxZoom'
   | 'minPitch'
   | 'maxPitch';
+
+export type MapData =
+  | GeoJSON.Feature<GeoJSON.Geometry>
+  | GeoJSON.FeatureCollection<GeoJSON.Geometry>
+  | GeoJSON.Geometry
+  | string
+  | undefined;
