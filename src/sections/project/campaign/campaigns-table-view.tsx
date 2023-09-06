@@ -65,7 +65,7 @@ export default function BeneficiariesListView() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { push } = useRouter();
+  const router = useRouter();
 
   const settings = useSettingsContext();
 
@@ -77,9 +77,9 @@ export default function BeneficiariesListView() {
 
   const handleViewRow = useCallback(
     (id: number) => {
-      push(paths.dashboard.general.campaigns.details(id));
+      router.push(paths.dashboard.general.campaigns.details(id));
     },
-    [push]
+    [router]
   );
 
   const removeCampaign = useMutation({
@@ -99,6 +99,13 @@ export default function BeneficiariesListView() {
     const ids = table.selected.map((id) => Number(id));
     removeCampaign.mutate(ids);
   };
+
+  const handleEditRow = useCallback(
+    (id: number) => {
+      router.push(paths.dashboard.general.campaigns.edit(id));
+    },
+    [router]
+  );
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -178,6 +185,7 @@ export default function BeneficiariesListView() {
                     key={row.id}
                     row={row}
                     selected={table.selected.includes(String(row.id))}
+                    onEditRow={() => handleEditRow(row.id)}
                     onSelectRow={() => table.onSelectRow(String(row.id))}
                     onViewRow={() => handleViewRow(row.id)}
                   />

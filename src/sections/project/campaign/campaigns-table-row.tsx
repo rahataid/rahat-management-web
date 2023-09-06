@@ -19,11 +19,19 @@ import { ICampaignItem } from 'src/types/campaigns';
 type Props = {
   row: ICampaignItem;
   onViewRow: VoidFunction;
+  onEditRow: VoidFunction;
+
   onSelectRow: VoidFunction;
   selected: boolean;
 };
 
-export default function CampaignsTableRow({ row, onViewRow, selected, onSelectRow }: Props) {
+export default function CampaignsTableRow({
+  row,
+  onViewRow,
+  onEditRow,
+  selected,
+  onSelectRow,
+}: Props) {
   const { name, status, createdAt, totalAudiences, transport, type } = row;
 
   return (
@@ -67,6 +75,11 @@ export default function CampaignsTableRow({ row, onViewRow, selected, onSelectRo
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton color="inherit" onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit" placement="top" arrow>
+          <IconButton onClick={onEditRow}>
+            <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
         </Tooltip>
       </TableCell>

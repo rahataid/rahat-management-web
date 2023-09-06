@@ -73,6 +73,13 @@ export default function BeneficiariesListView() {
     [push]
   );
 
+  const handleEditRow = useCallback(
+    (id: number) => {
+      push(paths.dashboard.general.campaigns.edit(id));
+    },
+    [push]
+  );
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -124,6 +131,12 @@ export default function BeneficiariesListView() {
                 rowCount={campaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    campaigns.map((row: ICampaignItem) => String(row.id))
+                  )
+                }
               />
 
               <TableBody>
@@ -131,6 +144,9 @@ export default function BeneficiariesListView() {
                   <CampaignsTableRow
                     key={row.id}
                     row={row}
+                    selected={table.selected.includes(String(row.id))}
+                    onEditRow={() => handleEditRow(row.id)}
+                    onSelectRow={() => table.onSelectRow(String(row.id))}
                     onViewRow={() => handleViewRow(row.id)}
                   />
                 ))}

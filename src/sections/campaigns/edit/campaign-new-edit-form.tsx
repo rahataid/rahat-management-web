@@ -48,7 +48,7 @@ interface FormValues extends ICampaignCreateItem {}
 
 const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const params = useParams();
-  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<number[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
   const { push } = useRouter();
@@ -114,7 +114,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       .filter((aud: any) => value.includes(aud.id))
       .map((aud: any) => +aud.id);
     setFormattedSelect(formattedSelected);
-    setSelectedAudiences(value as string[]);
+    setSelectedAudiences(value as number[]);
     setValue('audienceIds', formattedSelected);
     console.log('audienceIds', formattedSelected);
   };
