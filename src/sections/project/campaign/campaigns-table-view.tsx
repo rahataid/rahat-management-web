@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -144,12 +143,7 @@ export default function BeneficiariesListView() {
             }
             action={
               <Stack direction="row" spacing={2.5}>
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Disable Beneficiary">
+                <Tooltip title="Remove Campaign From Project">
                   <Button
                     variant="outlined"
                     color="primary"
