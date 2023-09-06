@@ -42,6 +42,7 @@ export type IUsersListHookReturn = {
   loading: boolean;
   error: IApiResponseError;
   meta: IUsersListApiResponse['meta'];
+  refetchUser: () => {};
 };
 
 export type IApiResponseError = {

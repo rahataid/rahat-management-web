@@ -13,6 +13,8 @@ const BeneficiaryService = {
     axiosInstance.post(endpoints.beneficiaries.assignProject(uuid), { ...data }),
   disable: (walletAddress: string) =>
     axiosInstance.patch(endpoints.beneficiaries.disable(walletAddress)),
+  getStats: () => axiosInstance.get(endpoints.beneficiaries.stats),
+  geoloc: () => axiosInstance.get(endpoints.beneficiaries.geoloc),
 };
 
 export default BeneficiaryService;

@@ -9,7 +9,7 @@ import {
 } from 'src/types/administration';
 
 export function useUsers(params?: IUsersApiFilters): IUsersListHookReturn {
-  const { data, isLoading, error } = useQuery(['users', params], async () => {
+  const { data, isLoading, error, refetch } = useQuery(['users'], async () => {
     const res = await AdministrationService.list(params);
     return res.data;
   });
@@ -30,5 +30,6 @@ export function useUsers(params?: IUsersApiFilters): IUsersListHookReturn {
     loading: isLoading,
     error: error as IApiResponseError,
     meta,
+    refetchUser: refetch,
   };
 }

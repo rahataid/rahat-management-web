@@ -6,7 +6,6 @@ import { getToken } from './storage-available';
 // ----------------------------------------------------------------------
 
 const token = getToken();
-console.log('token', `Bearer ${token}`, JSON.stringify(token));
 
 export const axiosInstance = axios.create({
   baseURL: HOST_API,
@@ -42,6 +41,8 @@ export const endpoints = {
     details: (address: string) => `/beneficiaries/${address}`,
     assignProject: (address: string) => `/beneficiaries/${address}/projects`,
     disable: (walletAddress: string) => `/beneficiaries/${walletAddress}/disable`,
+    stats: '/beneficiaries/stats',
+    geoloc: '/beneficiaries/geo',
   },
   projects: {
     list: '/projects',
@@ -72,6 +73,11 @@ export const endpoints = {
       disable: (id: number) => `/users/${id}`,
       updateRole: (walletAddress: string) => `/users/${walletAddress}/role`,
       approve: (walletAddress: string) => `/users/${walletAddress}/approve`,
+    },
+  },
+  reports: {
+    dashboard: {
+      count: '/reports/dashboard/summary',
     },
   },
 };

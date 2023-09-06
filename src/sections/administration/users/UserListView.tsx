@@ -35,7 +35,7 @@ import {
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import AdministrationService from '@services/administration';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { useUsers } from 'src/api/administration';
 import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
@@ -59,6 +59,7 @@ const TABLE_HEAD = [
 export default function UsersListView() {
   const table = useTable();
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
     mutationFn: async (walletAddress: string) => {
@@ -70,6 +71,7 @@ export default function UsersListView() {
     },
     onSuccess: () => {
       enqueueSnackbar('User Approved', { variant: 'success' });
+      queryClient.invalidateQueries(['users']);
     },
   });
 
@@ -83,6 +85,7 @@ export default function UsersListView() {
     },
     onSuccess: () => {
       enqueueSnackbar('User Role Updated', { variant: 'success' });
+      queryClient.invalidateQueries(['users']);
     },
   });
 
