@@ -18,6 +18,7 @@ export type IProjectItem = {
   budget: number;
   location: string;
   contractAddress: string;
+  campaigns: number[];
   name: string;
   createdAt: string | Date;
   startDate: string | Date;
@@ -67,16 +68,10 @@ export interface ProjectsListHookReturn {
   meta: IProjectsList['meta'];
 }
 
-export interface IProjectItemApiResponse extends IProjectItem {
-  projectManager: string;
-  _count: {
-    beneficiaries: number;
-    vendors: number;
-  };
-}
+
 
 export interface IProjectDetailsHookReturn {
-  project: IProjectItemApiResponse;
+  project: IProjectItem;
   loading: boolean;
   error: any;
 }

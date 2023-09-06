@@ -10,6 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
+import { Checkbox } from '@mui/material';
 import { fDateTime } from '@utils/format-time';
 import { ICampaignItem } from 'src/types/campaigns';
 
@@ -18,13 +19,26 @@ import { ICampaignItem } from 'src/types/campaigns';
 type Props = {
   row: ICampaignItem;
   onViewRow: VoidFunction;
+  onEditRow: VoidFunction;
+
+  onSelectRow: VoidFunction;
+  selected: boolean;
 };
 
-export default function CampaignsTableRow({ row, onViewRow }: Props) {
+export default function CampaignsTableRow({
+  row,
+  onViewRow,
+  onEditRow,
+  selected,
+  onSelectRow,
+}: Props) {
   const { name, status, createdAt, totalAudiences, transport, type } = row;
 
   return (
     <TableRow hover>
+      <TableCell padding="checkbox">
+        <Checkbox checked={selected} onClick={onSelectRow} />
+      </TableCell>
       <TableCell>
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
@@ -51,16 +65,21 @@ export default function CampaignsTableRow({ row, onViewRow }: Props) {
       </TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
-        <ListItemText
+        {/* <ListItemText
           primary={totalAudiences}
           primaryTypographyProps={{ typography: 'body2' }}
-        />{' '}
+        />{' '} */}
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton color="inherit" onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit" placement="top" arrow>
+          <IconButton onClick={onEditRow}>
+            <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
         </Tooltip>
       </TableCell>

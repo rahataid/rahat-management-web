@@ -64,18 +64,14 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   });
 
   const onRegister = async () => {
-    try {
-      const withDetails: any = formattedSelect.map((d) => ({
-        details: {
-          ...d,
-        },
-      }));
-      console.log('withDetails', withDetails);
-      // mutate(withDetails);
-      // onClose();
-    } catch (err) {
-      console.log(err);
-    }
+    const withDetails: any = formattedSelect.map((d) => ({
+      details: {
+        ...d,
+      },
+    }));
+    console.log('withDetails', withDetails);
+    mutate(withDetails);
+    // onClose();
   };
 
   return (

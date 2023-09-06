@@ -33,6 +33,9 @@ import {
 //
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import CampaignsService from '@services/campaigns';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useCampaigns } from 'src/api/campaigns';
 import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
@@ -62,6 +65,8 @@ export default function BeneficiariesListView() {
 
   const confirm = useBoolean();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const denseHeight = table.dense ? 52 : 72;
 
   const notFound = !campaigns.length;
@@ -72,6 +77,35 @@ export default function BeneficiariesListView() {
     },
     [push]
   );
+
+  const handleEditRow = useCallback(
+    (id: number) => {
+      push(paths.dashboard.general.campaigns.edit(id));
+    },
+    [push]
+  );
+
+  const removeCampaign = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await CampaignsService.remove(id);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+    },
+  });
+
+  const handleRemoveCampaign = () => {
+    const id = table.selected;
+    if (id.length > 1) {
+      enqueueSnackbar('Please select only one campaign at a Time', { variant: 'error' });
+      return;
+    }
+    removeCampaign.mutate(id[0]);
+  };
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -108,7 +142,7 @@ export default function BeneficiariesListView() {
             }
             action={
               <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
+                <IconButton color="primary" onClick={handleRemoveCampaign}>
                   <Iconify icon="solar:trash-bin-trash-bold" />
                 </IconButton>
               </Tooltip>
@@ -124,6 +158,12 @@ export default function BeneficiariesListView() {
                 rowCount={campaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    campaigns.map((row: ICampaignItem) => String(row.id))
+                  )
+                }
               />
 
               <TableBody>
@@ -131,6 +171,9 @@ export default function BeneficiariesListView() {
                   <CampaignsTableRow
                     key={row.id}
                     row={row}
+                    selected={table.selected.includes(String(row.id))}
+                    onEditRow={() => handleEditRow(row.id)}
+                    onSelectRow={() => table.onSelectRow(String(row.id))}
                     onViewRow={() => handleViewRow(row.id)}
                   />
                 ))}

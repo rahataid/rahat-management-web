@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -31,9 +30,13 @@ import {
 } from 'src/components/table';
 // types
 //
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import ProjectsService from '@services/projects';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useCampaigns } from 'src/api/campaigns';
+import { useProject } from 'src/api/project';
 import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 
@@ -53,12 +56,15 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesListView() {
   const table = useTable();
-
-  const { campaigns, meta } = useCampaigns();
+  const { address } = useParams();
+  const { project } = useProject(address);
+  const { campaigns, meta } = useCampaigns(project?.campaigns);
 
   const params = useParams();
 
-  const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const router = useRouter();
 
   const settings = useSettingsContext();
 
@@ -70,9 +76,34 @@ export default function BeneficiariesListView() {
 
   const handleViewRow = useCallback(
     (id: number) => {
-      push(paths.dashboard.general.campaigns.details(id));
+      router.push(paths.dashboard.general.campaigns.details(id));
     },
-    [push]
+    [router]
+  );
+
+  const removeCampaign = useMutation({
+    mutationFn: async (createData: number[]) => {
+      const response = await ProjectsService.removeCampaignFromProject(address, createData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+    },
+  });
+
+  const handleRemoveCampaignFromProject = () => {
+    const ids = table.selected.map((id) => Number(id));
+    removeCampaign.mutate(ids);
+  };
+
+  const handleEditRow = useCallback(
+    (id: number) => {
+      router.push(paths.dashboard.general.campaigns.edit(id));
+    },
+    [router]
   );
 
   return (
@@ -111,11 +142,17 @@ export default function BeneficiariesListView() {
               )
             }
             action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row" spacing={2.5}>
+                <Tooltip title="Remove Campaign From Project">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleRemoveCampaignFromProject}
+                  >
+                    Remove Campaign
+                  </Button>
+                </Tooltip>
+              </Stack>
             }
           />
 
@@ -128,13 +165,22 @@ export default function BeneficiariesListView() {
                 rowCount={campaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    campaigns.map((row: ICampaignItem) => String(row.id))
+                  )
+                }
               />
 
               <TableBody>
-                {campaigns.map((row) => (
+                {campaigns.map((row: ICampaignItem) => (
                   <CampaignsTableRow
                     key={row.id}
                     row={row}
+                    selected={table.selected.includes(String(row.id))}
+                    onEditRow={() => handleEditRow(row.id)}
+                    onSelectRow={() => table.onSelectRow(String(row.id))}
                     onViewRow={() => handleViewRow(row.id)}
                   />
                 ))}
@@ -156,7 +202,6 @@ export default function BeneficiariesListView() {
           rowsPerPage={table?.rowsPerPage}
           onPageChange={table.onChangePage}
           onRowsPerPageChange={table.onChangeRowsPerPage}
-          //
           dense={table.dense}
           onChangeDense={table.onChangeDense}
         />

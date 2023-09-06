@@ -36,7 +36,12 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
     // Create an array of objects with 'phone' and 'uuid' properties
     const formattedSelected = beneficiaries
       .filter((benef) => value.includes(benef.name))
-      .map((benef) => ({ phone: benef.phone, uuid: benef.uuid }));
+      .map((benef) => ({
+        phone: benef.phone,
+        uuid: benef.uuid,
+        walletAddress: benef.walletAddress,
+        name: benef.name,
+      }));
 
     setFormattedSelect(formattedSelected);
     setSelectedBeneficiaries(value as string[]);
@@ -59,18 +64,14 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   });
 
   const onRegister = async () => {
-    try {
-      const withDetails: any = formattedSelect.map((d) => ({
-        details: {
-          ...d,
-        },
-      }));
-      console.log('withDetails', withDetails);
-      mutate(withDetails);
-      // onClose();
-    } catch (err) {
-      console.log(err);
-    }
+    const withDetails: any = formattedSelect.map((d) => ({
+      details: {
+        ...d,
+      },
+    }));
+    console.log('withDetails', withDetails);
+    mutate(withDetails);
+    // onClose();
   };
 
   return (

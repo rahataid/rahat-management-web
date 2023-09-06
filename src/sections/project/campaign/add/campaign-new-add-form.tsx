@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 // @mui
@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
-import { useRouter } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 // types
 // assets
 // components
@@ -19,7 +19,9 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Checkbox,
   Chip,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
@@ -28,10 +30,11 @@ import {
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
+import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useTransports } from 'src/api/campaigns';
+import { useAudiences, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
@@ -44,16 +47,23 @@ type Props = {
 interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
-  const [beneficiary, setBeneficiary] = useState<string[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
+  const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
+  const [projectUpdated, setProjectUpdated] = useState(false);
+
   const { push } = useRouter();
+  const { address } = useParams();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
-  const { error, isLoading, mutate } = useMutation<
-    ICampaignCreateItem,
-    IApiResponseError,
-    ICampaignCreateItem
-  >({
+  const { audiences } = useAudiences();
+  const {
+    error,
+    isLoading,
+    mutate,
+    data: campaignData,
+    isSuccess,
+  } = useMutation<ICampaignCreateItem, IApiResponseError, ICampaignCreateItem>({
     mutationFn: async (createData: ICampaignCreateItem) => {
       const response = await CampaignsService.create(createData);
       return response.data;
@@ -63,8 +73,23 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     },
     onSuccess: () => {
       enqueueSnackbar('Campaign created successfully', { variant: 'success' });
+    },
+  });
+
+  console.log(campaignData, 'campaignData');
+
+  const updateProjectCampaign = useMutation({
+    mutationFn: async (createData: number) => {
+      const response = await ProjectsService.updateCampaign(address, createData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Updating Project', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Project Campaign Updated Successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.campaigns.list}`);
+      push(`${paths.dashboard.general.projects.campaigns(address)}`);
     },
   });
 
@@ -97,27 +122,38 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control } = methods;
+  const { reset, handleSubmit, control, setValue } = methods;
+
+  const handleSelectAudiences = async (e: SelectChangeEvent<string[]>) => {
+    const { value } = e.target;
+    const formattedSelected = audiences
+      .filter((aud: any) => value.includes(aud.details.name))
+      .map((aud: any) => +aud.id);
+    setFormattedSelect(formattedSelected);
+    setSelectedAudiences(value as string[]);
+    setValue('audienceIds', formattedSelected);
+  };
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      console.log('Form submitted with data:', data);
+      const audienceIds = formattedSelect;
       const formatted = {
         ...data,
+        audienceIds,
         details: parseMultiLineInput(data?.details),
       };
-      console.log('FormattedData: ', formatted);
       mutate(formatted);
     },
-    [mutate]
+    [formattedSelect, mutate]
   );
 
-  const handleChange = (event: SelectChangeEvent<typeof beneficiary>) => {
-    const {
-      target: { value },
-    } = event;
-    setBeneficiary(typeof value === 'string' ? value.split(',') : value);
-  };
+  useEffect(() => {
+    if (isSuccess && !projectUpdated) {
+      // Check if it's successful and project not updated
+      updateProjectCampaign.mutate(campaignData?.id);
+      setProjectUpdated(true); // Set the flag to indicate project is updated
+    }
+  }, [isSuccess, campaignData?.id, updateProjectCampaign, projectUpdated]);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -221,8 +257,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     <Select
                       name="audienceIds"
                       multiple
-                      value={beneficiary}
-                      onChange={handleChange}
+                      value={selectedAudiences}
+                      onChange={handleSelectAudiences}
                       input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -232,9 +268,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                         </Box>
                       )}
                     >
-                      <MenuItem key="beneficiary" value={1}>
-                        Beneficiary 0
-                      </MenuItem>
+                      {audiences.map((aud: any) => (
+                        <MenuItem key={aud.details.name} value={aud.details.name}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
+                          <ListItemText primary={aud.details.name} />
+                        </MenuItem>
+                      ))}
                     </Select>
                     <Button
                       variant="text"

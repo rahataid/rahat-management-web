@@ -140,6 +140,8 @@ export interface ICampaignItemApiResponse {
   deletedAt: null | string;
   transport: Transport;
   audiences: Audience[];
+  campaigns: number[];
+  totalAudiences: number;
 }
 
 export interface ITransportItemApiResponse {
