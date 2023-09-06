@@ -94,7 +94,7 @@ export default function BeneficiariesListView() {
       enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Project Campaign Removed Successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
     },
   });
 
