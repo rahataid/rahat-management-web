@@ -1,20 +1,17 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { isValidToken } from '@utils/session';
-import { getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
 import useAuthStore from 'src/store/auths';
-import { Role } from 'src/types/user';
 
 type Props = {
   children: React.ReactNode;
 };
 
-const token = sessionStorage.getItem('accessToken');
-const user = getUser();
+// const token = sessionStorage.getItem('accessToken');
+// const user = getUser();
 const AuthProvider = ({ children }: Props) => {
   const isInitialized = useAuthStore((state) => state.isInitialized);
 
@@ -26,24 +23,29 @@ const AuthProvider = ({ children }: Props) => {
   }));
 
   useEffect(() => {
-    if (token && isValidToken(token)) {
-      useAuthStore.setState({
-        isAuthenticated: true,
-        isInitialized: true,
-        user,
-        role: {
-          isAdmin: user?.roles.includes(Role.ADMIN),
-          isUser: user?.roles.includes(Role.USER),
-        },
-        // walletName: user?.wallet_name,
-      });
-    } else {
-      useAuthStore.setState({
-        isAuthenticated: false,
-        isInitialized: true,
-        walletName: '',
-      });
-    }
+    useAuthStore.setState({
+      isAuthenticated: true,
+      isInitialized: true,
+      walletName: '',
+    });
+    // if (token && isValidToken(token)) {
+    //   useAuthStore.setState({
+    //     isAuthenticated: true,
+    //     isInitialized: true,
+    //     user,
+    //     role: {
+    //       isAdmin: user?.roles.includes(Role.ADMIN),
+    //       isUser: user?.roles.includes(Role.USER),
+    //     },
+    //     // walletName: user?.wallet_name,
+    //   });
+    // } else {
+    //   useAuthStore.setState({
+    //     isAuthenticated: false,
+    //     isInitialized: true,
+    //     walletName: '',
+    //   });
+    // }
   }, []);
 
   useEffect(() => {

@@ -35,14 +35,19 @@ const StyledMapContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-export default function MapView() {
+export default function MapView({ geoData }) {
   return (
     <Container>
       <Stack>
         <Card>
           <CardContent>
             <StyledMapContainer>
-              <MapClusters {...baseSettings} mapStyle={THEMES.light} dragPan={false} />
+              <MapClusters
+                {...baseSettings}
+                mapStyle={THEMES.light}
+                dragPan={false}
+                geoData={geoData}
+              />
             </StyledMapContainer>
           </CardContent>
         </Card>

@@ -48,6 +48,15 @@ export type IBeneficiaryPagination = {
   lastPage?: number;
 };
 
+export type IBeneficiariesGeoLoc = {
+  latitude: number;
+  longitude: number;
+};
+
+export interface IBeneficiariesGeoLocHooksReturn {
+  geoData: IBeneficiariesGeoLoc[];
+}
+
 export type IBeneficiariesItem = {
   bankStatus: BANK_STATUS;
   createdAt: string;
@@ -167,3 +176,8 @@ export type IAssignProjectItem = {
 };
 
 export type IAssignProjectDetails = {};
+
+export type BeneficiaryStatsData = {
+  label: string;
+  value: number;
+};

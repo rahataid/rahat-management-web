@@ -1,21 +1,31 @@
-import { useRef, memo } from 'react';
+import { memo, useRef } from 'react';
 import Map, {
-  Layer,
-  Source,
-  MapRef,
-  LngLatLike,
   GeoJSONSource,
+  Layer,
+  LngLatLike,
   MapLayerMouseEvent,
+  MapRef,
+  Source,
 } from 'react-map-gl';
 // components
 import { MapBoxProps } from 'src/components/map';
 //
-import { clusterLayer, clusterCountLayer, unclusteredPointLayer } from './layers';
+import { clusterCountLayer, clusterLayer, unclusteredPointLayer } from './layers';
 
 // ----------------------------------------------------------------------
 
-function MapClusters({ ...other }: MapBoxProps) {
+function MapClusters({ ...other }: MapBoxProps, { geoData }) {
   const mapRef = useRef<MapRef>(null);
+  const data = {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:OGC:1.3:CRS84',
+      },
+    },
+    features: geoData,
+  };
 
   const onClick = (event: MapLayerMouseEvent) => {
     const feature = event.features?.[0];
@@ -54,7 +64,7 @@ function MapClusters({ ...other }: MapBoxProps) {
       <Source
         id="earthquakes"
         type="geojson"
-        data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+        data={data}
         cluster
         clusterMaxZoom={14}
         clusterRadius={50}

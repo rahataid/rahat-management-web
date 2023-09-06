@@ -4,7 +4,9 @@ import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
 import MapView from '@sections/map-view';
+import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
+import { useDashBoardReports } from 'src/api/reports';
 import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
@@ -16,6 +18,10 @@ const DashboardView = () => {
   });
 
   const settings = useSettingsContext();
+  const { data } = useDashBoardReports();
+  const { bankStatusData, genderData, phoneOwnershipData, internetAccessData } =
+    useBeneficiaryStats();
+  const { geoData } = useGeoLocation();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -27,7 +33,7 @@ const DashboardView = () => {
                 color="primary"
                 icon="material-symbols:person-4"
                 title="Beneficiaries"
-                total={102}
+                total={data?.totalBeneficiaries}
                 subtitle="households"
               />
             </Grid>
@@ -35,8 +41,8 @@ const DashboardView = () => {
               <SummaryCard
                 color="info"
                 icon="mdi:wheel-barrow"
-                title="H2O wheels"
-                total={102}
+                title="Total Token"
+                total={data?.totalTokens}
                 subtitle="disbursed"
               />
             </Grid>
@@ -45,7 +51,7 @@ const DashboardView = () => {
                 color="success"
                 icon="pajamas:project"
                 title="Projects"
-                total={102}
+                total={data?.totalProjects}
                 subtitle="involved"
               />
             </Grid>
@@ -67,12 +73,9 @@ const DashboardView = () => {
       <Grid mt={3} container spacing={3}>
         <Grid item xs={12} md={3}>
           <Piechart
-            title="GENDER-wise Distribution"
+            title="Gender-wise Distribution"
             chart={{
-              series: [
-                { label: 'Male', value: 12244 },
-                { label: 'Female', value: 53345 },
-              ],
+              series: genderData,
             }}
           />
         </Grid>
@@ -80,10 +83,7 @@ const DashboardView = () => {
           <Piechart
             title="Banked or unbanked"
             chart={{
-              series: [
-                { label: 'Male', value: 12244 },
-                { label: 'Female', value: 53345 },
-              ],
+              series: bankStatusData,
             }}
           />
         </Grid>
@@ -91,10 +91,7 @@ const DashboardView = () => {
           <Piechart
             title="Access to internet"
             chart={{
-              series: [
-                { label: 'Male', value: 12244 },
-                { label: 'Female', value: 53345 },
-              ],
+              series: internetAccessData,
             }}
           />
         </Grid>
@@ -102,10 +99,7 @@ const DashboardView = () => {
           <Piechart
             title="Access to Phone"
             chart={{
-              series: [
-                { label: 'Male', value: 12244 },
-                { label: 'Female', value: 53345 },
-              ],
+              series: phoneOwnershipData,
             }}
           />
         </Grid>
@@ -162,7 +156,7 @@ const DashboardView = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <MapView />
+          <MapView geoData={geoData} />
         </Grid>
       </Grid>
     </Container>
