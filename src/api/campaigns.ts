@@ -13,9 +13,9 @@ import {
   ITransportDetailsHookReturn,
 } from 'src/types/campaigns';
 
-export function useCampaigns(): CampaignsListHookReturn {
-  const { data, isLoading, error } = useQuery(['campaigns'], async () => {
-    const res = await CampaignsService.list();
+export function useCampaigns(params?: number[]): CampaignsListHookReturn {
+  const { data, isLoading, error } = useQuery(['campaigns', params], async () => {
+    const res = await CampaignsService.list(params);
     return res;
   });
   const campaigns = useMemo(() => data?.data?.rows || [], [data?.data?.rows]);
@@ -45,27 +45,6 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
   };
 }
 
-export function useGetProjectCampaigns(ids: number[]): CampaignsListHookReturn {
-  const { data, isLoading, error } = useQuery<IPaginatedResponse<ICampaignItem>>(
-    ['campaign/project/id', ids],
-    async () => {
-      console.log('Campaignnnnnids', ids);
-      const res = await CampaignsService.getByIds(ids);
-      return res.data;
-    }
-  );
-
-  const projectCampaigns = useMemo(() => data?.rows || [], [data?.rows]);
-  const projectCampaignsMeta = useMemo(() => data?.meta || {}, [data?.meta]);
-
-  return {
-    campaigns: projectCampaigns,
-    meta: projectCampaignsMeta,
-    isLoading,
-    error: error as IApiResponseError,
-  };
-}
-
 export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id/logs'], async () => {
     const res = await CampaignsService.logs(id);
@@ -78,45 +57,6 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
     logs,
     isLoading,
     error: error as IApiResponseError,
-  };
-}
-
-export function useCreateCampaign(): {
-  createCampaign: (newCampaignData: Partial<ICampaignItemApiResponse>) => Promise<void>;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  error: any;
-} {
-  const createCampaignMutation = useMutation(
-    (newCampaignData: Partial<ICampaignItemApiResponse>) =>
-      CampaignsService.create(newCampaignData),
-    {
-      onError: (error) => {
-        console.error('Error creating campaign:', error);
-      },
-      onSuccess: () => {
-        console.log('Campaign created successfully!');
-      },
-    }
-  );
-
-  const { isLoading, isError, error, isSuccess } = createCampaignMutation;
-
-  const createCampaign = async (newCampaignData: Partial<ICampaignItemApiResponse>) => {
-    try {
-      await createCampaignMutation.mutateAsync(newCampaignData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  return {
-    createCampaign,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
   };
 }
 

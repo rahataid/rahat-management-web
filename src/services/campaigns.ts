@@ -31,7 +31,12 @@ export const endpoints = {
 };
 
 const CampaignsService = {
-  list: () => axiosInstance.get(endpoints.campaigns.list),
+  list: (ids?: number[]) =>
+    axiosInstance.get(endpoints.campaigns.list, {
+      params: {
+        ids: JSON.stringify(ids),
+      },
+    }),
   create: (data: any) => axiosInstance.post(endpoints.campaigns.create, { ...data }),
   update: (id: string, data: ICampaignCreateItem) =>
     axiosInstance.patch(endpoints.campaigns.update(id), { ...data }),

@@ -31,9 +31,13 @@ import {
 } from 'src/components/table';
 // types
 //
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import ProjectsService from '@services/projects';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useCampaigns } from 'src/api/campaigns';
+import { useProject } from 'src/api/project';
 import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 
@@ -53,11 +57,13 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesListView() {
   const table = useTable();
-
-  const { campaigns, meta } = useCampaigns();
-  console.log(campaigns, 'Campaigns');
+  const { address } = useParams();
+  const { project } = useProject(address);
+  const { campaigns, meta } = useCampaigns(project?.campaigns);
 
   const params = useParams();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const { push } = useRouter();
 
@@ -75,6 +81,24 @@ export default function BeneficiariesListView() {
     },
     [push]
   );
+
+  const removeCampaign = useMutation({
+    mutationFn: async (createData: number[]) => {
+      const response = await ProjectsService.removeCampaignFromProject(address, createData);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Project Campaign Removed Successfully', { variant: 'success' });
+    },
+  });
+
+  const handleRemoveCampaignFromProject = () => {
+    const ids = table.selected.map((id) => Number(id));
+    removeCampaign.mutate(ids);
+  };
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -112,11 +136,22 @@ export default function BeneficiariesListView() {
               )
             }
             action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row" spacing={2.5}>
+                <Tooltip title="Delete">
+                  <IconButton color="primary" onClick={confirm.onTrue}>
+                    <Iconify icon="solar:trash-bin-trash-bold" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Disable Beneficiary">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleRemoveCampaignFromProject}
+                  >
+                    Remove Campaign
+                  </Button>
+                </Tooltip>
+              </Stack>
             }
           />
 
@@ -129,6 +164,12 @@ export default function BeneficiariesListView() {
                 rowCount={campaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    campaigns.map((row: ICampaignItem) => String(row.id))
+                  )
+                }
               />
 
               <TableBody>
