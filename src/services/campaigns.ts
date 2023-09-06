@@ -27,6 +27,7 @@ export const endpoints = {
     audiences: `/audiences`,
     transports: '/transports',
     getByIds: '/campaigns/getByIds',
+    remove: (id: string) => `/campaigns/${id}`,
   },
 };
 
@@ -51,6 +52,7 @@ const CampaignsService = {
         ids: JSON.stringify(ids),
       },
     }),
+  remove: (id: string) => axiosInstance.delete(endpoints.campaigns.remove(id)),
 };
 
 export default CampaignsService;

@@ -91,7 +91,7 @@ export default function BeneficiariesListView() {
       enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Project Campaign Removed Successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
     },
   });
 
@@ -208,7 +208,6 @@ export default function BeneficiariesListView() {
           rowsPerPage={table?.rowsPerPage}
           onPageChange={table.onChangePage}
           onRowsPerPageChange={table.onChangeRowsPerPage}
-          //
           dense={table.dense}
           onChangeDense={table.onChangeDense}
         />
