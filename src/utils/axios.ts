@@ -41,7 +41,7 @@ export const endpoints = {
     details: (address: string) => `/beneficiaries/${address}`,
     assignProject: (address: string) => `/beneficiaries/${address}/projects`,
     stats: '/beneficiaries/stats',
-    geoloc: '/beneficiaries/geo',
+    geoLoc: '/beneficiaries/geo',
   },
   projects: {
     list: '/projects',
@@ -78,5 +78,6 @@ export const endpoints = {
     dashboard: {
       count: '/reports/dashboard/summary',
     },
+    byContractAddress: (address: string) => `/reports/project/${address}`,
   },
 };

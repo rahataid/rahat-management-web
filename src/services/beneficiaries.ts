@@ -12,7 +12,7 @@ const BeneficiaryService = {
   assignProject: (uuid: string, data: any) =>
     axiosInstance.post(endpoints.beneficiaries.assignProject(uuid), { ...data }),
   getStats: () => axiosInstance.get(endpoints.beneficiaries.stats),
-  geoloc: () => axiosInstance.get(endpoints.beneficiaries.geoloc),
+  geoLoc: () => axiosInstance.get(endpoints.beneficiaries.geoLoc),
 };
 
 export default BeneficiaryService;

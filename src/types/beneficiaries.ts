@@ -54,7 +54,14 @@ export type IBeneficiariesGeoLoc = {
 };
 
 export interface IBeneficiariesGeoLocHooksReturn {
-  geoData: IBeneficiariesGeoLoc[];
+  // geoData: {
+  //   type: string;
+  //   geometry: {
+  //     type: string;
+  //     coordinates: IBeneficiariesGeoLoc[];
+  //   };
+  // };
+  geoData: { type: string; geometry: { type: string; coordinates: number[] } }[];
 }
 
 export type IBeneficiariesItem = {

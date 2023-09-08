@@ -1,6 +1,7 @@
 import BeneficiaryService from '@services/beneficiaries';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import datas from '../_mock/map/lanlon.json';
 
 import {
   BeneficiariesListHookReturn,
@@ -107,24 +108,22 @@ export function useBeneficiaryStats() {
 
 export function useGeoLocation(): IBeneficiariesGeoLocHooksReturn {
   const { data } = useQuery(['beneficiaries'], async () => {
-    const res = await BeneficiaryService.geoloc();
+    const res = await BeneficiaryService.geoLoc();
     return res?.data;
   });
 
   const geoData = useMemo(
     () =>
-      data.map((item) => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [+item?.longitude, +item?.latitude],
-        },
-        properties: {
-          // cluster: true,
-          id: item.name,
-        },
-      })),
-    [data]
+      datas?.rows
+        ? datas?.rows?.map((item) => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [+item?.longitude, +item?.latitude],
+            },
+          }))
+        : [],
+    []
   );
 
   return {
