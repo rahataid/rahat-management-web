@@ -85,7 +85,7 @@ export function useGeoLocation(): IBeneficiariesGeoLocHooksReturn {
   const { data, isLoading, error } = useQuery<IBeneficiariesGeoLoc[], IApiResponseError | null>(
     ['beneficiaries/geolocation'],
     async () => {
-      const res = await BeneficiaryService.geoloc();
+      const res = await BeneficiaryService.geoLoc();
       return res?.data;
     }
   );

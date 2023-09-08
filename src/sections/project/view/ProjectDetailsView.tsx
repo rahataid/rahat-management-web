@@ -9,6 +9,7 @@ import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
+import { useProjectBasedReport } from 'src/api/reports';
 import useAppStore from 'src/store/app';
 import useProjectStore from 'src/store/projects';
 import CreateTokenModal from './create-token-modal';
@@ -18,6 +19,7 @@ import ProjectAlerts from './project-alerts';
 import { ProjectDetailsCard } from './project-details-card';
 import ProjectDetailsChart from './project-details-chart';
 import ProjectGallery from './project-gallery-view';
+import Piechart from './project-pie-chart';
 import ProjectStatsCard from './project-stats-card';
 
 const _carouselsExample = [...Array(1)].map((_, index) => ({
@@ -159,6 +161,9 @@ export default function ProjectDetailsView() {
     onOk: handleUnlockProject,
   };
 
+  const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
+    useProjectBasedReport(params.address);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CreateTokenModal
@@ -225,6 +230,39 @@ export default function ProjectDetailsView() {
                   data: [{ name: 'Amount', data: [760, 420, 290, 410, 270, 1380] }],
                 },
               ],
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={8}>
+          <Piechart
+            title="Gender-wise Distribution"
+            chart={{
+              series: genderData,
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+          <Piechart
+            title="Banked or unbanked"
+            chart={{
+              series: bankStatusData,
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+          <Piechart
+            title="Access to internet"
+            chart={{
+              series: internetAccessData,
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+          <Piechart
+            title="Access to Phone"
+            chart={{
+              series: phoneOwnershipData,
             }}
           />
         </Grid>

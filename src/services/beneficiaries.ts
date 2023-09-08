@@ -14,7 +14,7 @@ const BeneficiaryService = {
   disable: (walletAddress: string) =>
     axiosInstance.patch(endpoints.beneficiaries.disable(walletAddress)),
   getStats: () => axiosInstance.get(endpoints.beneficiaries.stats),
-  geoloc: () => axiosInstance.get(endpoints.beneficiaries.geoloc),
+  geoLoc: () => axiosInstance.get(endpoints.beneficiaries.geoLoc),
 };
 
 export default BeneficiaryService;
