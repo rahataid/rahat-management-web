@@ -22,6 +22,7 @@ export const endpoints = {
     create: '/campaigns',
     update: (id: string) => `/campaigns/${id}`,
     details: (id: string) => `/campaigns/${id}`,
+    trigger: (id: string) => `/campaigns/${id}/trigger`,
     logs: (id: number) => `/campaigns/${id}/logs`,
     bulkAddAudiences: `/audiences/bulk`,
     audiences: `/audiences`,
@@ -42,6 +43,7 @@ const CampaignsService = {
   update: (id: string, data: ICampaignCreateItem) =>
     axiosInstance.patch(endpoints.campaigns.update(id), { ...data }),
   details: (id: string) => axiosInstance.get(endpoints.campaigns.details(id)),
+  trigger: (id: string) => axiosInstance.get(endpoints.campaigns.trigger(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
   bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.campaigns.bulkAddAudiences, data),
   audiences: () => axiosInstance.get(endpoints.campaigns.audiences),

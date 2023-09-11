@@ -1,12 +1,10 @@
-import { IPaginatedResponse } from '@config';
 import CampaignsService from '@services/campaigns';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import {
   CampaignsListHookReturn,
   IApiResponseError,
   ICampaignDetailsHookReturn,
-  ICampaignItem,
   ICampaignItemApiResponse,
   ICampaignLogsApiResponse,
   ICampaignLogsHookReturn,
@@ -37,6 +35,21 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
   });
 
   const campaign = useMemo(() => data || ({} as ICampaignItemApiResponse), [data]);
+
+  return {
+    campaign,
+    isLoading,
+    error: error as IApiResponseError,
+  };
+}
+
+export function useCampaignTrigger(id: string) {
+  const { data, isLoading, error } = useQuery(['campaign/id/trigger'], async () => {
+    const res = await CampaignsService.trigger(id);
+    return res.data;
+  });
+
+  const campaign = useMemo(() => data || [], [data]);
 
   return {
     campaign,
