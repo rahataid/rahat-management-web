@@ -93,6 +93,19 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     },
   });
 
+  const removeAudience = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await CampaignsService.removeAudience(id);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+    },
+  });
+
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
       .required('Campaign name is required')
@@ -154,6 +167,11 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       setProjectUpdated(true); // Set the flag to indicate project is updated
     }
   }, [isSuccess, campaignData?.id, updateProjectCampaign, projectUpdated]);
+
+  const handleRemoveAudience = () => {
+    console.log('Remove Audience');
+    // removeAudience.mutate(id)
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -269,10 +287,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       )}
                     >
                       {audiences.map((aud: any) => (
-                        <MenuItem key={aud.details.name} value={aud.details.name}>
-                          <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
-                          <ListItemText primary={aud.details.name} />
-                        </MenuItem>
+                        <Stack>
+                          <MenuItem key={aud.details.name} value={aud.details.name}>
+                            <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
+                            <ListItemText primary={aud.details.name} />
+                          </MenuItem>
+                        </Stack>
                       ))}
                     </Select>
                     <Button

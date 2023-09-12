@@ -21,14 +21,17 @@ export const endpoints = {
     list: '/campaigns',
     create: '/campaigns',
     update: (id: string) => `/campaigns/${id}`,
-    details: (id: string) => `/campaigns/${id}`,
     trigger: (id: string) => `/campaigns/${id}/trigger`,
+    details: (id: string) => `/campaigns/${id}`,
     logs: (id: number) => `/campaigns/${id}/logs`,
-    bulkAddAudiences: `/audiences/bulk`,
-    audiences: `/audiences`,
     transports: '/transports',
     getByIds: '/campaigns/getByIds',
     remove: (id: string) => `/campaigns/${id}`,
+  },
+  audiences: {
+    bulkAddAudiences: `/audiences/bulk`,
+    audiences: `/audiences`,
+    removeAudience: (id: string) => `/audiences/${id}`,
   },
 };
 
@@ -45,8 +48,6 @@ const CampaignsService = {
   details: (id: string) => axiosInstance.get(endpoints.campaigns.details(id)),
   trigger: (id: string) => axiosInstance.get(endpoints.campaigns.trigger(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
-  bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.campaigns.bulkAddAudiences, data),
-  audiences: () => axiosInstance.get(endpoints.campaigns.audiences),
   transports: () => axiosInstance.get(endpoints.campaigns.transports),
   getByIds: (ids: number[]) =>
     axiosInstance.get(endpoints.campaigns.getByIds, {
@@ -55,6 +56,9 @@ const CampaignsService = {
       },
     }),
   remove: (id: string) => axiosInstance.delete(endpoints.campaigns.remove(id)),
+  audiences: () => axiosInstance.get(endpoints.audiences.audiences),
+  bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.audiences.bulkAddAudiences, data),
+  removeAudience: (id: string) => axiosInstance.delete(endpoints.audiences.removeAudience(id)),
 };
 
 export default CampaignsService;
