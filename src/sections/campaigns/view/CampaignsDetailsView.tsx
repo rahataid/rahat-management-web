@@ -17,11 +17,12 @@ import { useParams } from 'next/navigation';
 import { useCampaign, useCampaignLogs } from 'src/api/campaigns';
 import CampaignInfoCard from './campaign-info-card';
 import HeaderActions from './header-actions';
+import AudienceAccordionView from './audiences-accordion-view';
 
 const CampaignsDetailsView = () => {
   const settings = useSettingsContext();
   const params = useParams();
-  const { campaign } = useCampaign(params.id as unknown as number);
+  const { campaign } = useCampaign(params.id);
   const { logs } = useCampaignLogs(params.id as unknown as number);
   console.log('logs', logs);
 
@@ -40,6 +41,7 @@ const CampaignsDetailsView = () => {
         <CampaignInfoCard campaign={campaign} />
         <JsonToTable json={campaign.details} />
         <JsonToTable json={campaign.transport} />
+        <AudienceAccordionView />
       </Stack>
     </Container>
   );

@@ -9,6 +9,9 @@ import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/ma
 import { RouterLink } from '@routes/components';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
+import CampaignsService from '@services/campaigns';
 
 type MenuOptions = {
   title: string;
@@ -21,6 +24,24 @@ const HeaderActions = () => {
   const [isOpen, setOpen] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const params = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const triggerCampaign = useMutation({
+    mutationFn: async () => {
+      const response = await CampaignsService.trigger(params.id);
+      return response.data;
+    },
+    onError: () => {
+      enqueueSnackbar('Error Triggering Campaign', { variant: 'error' });
+    },
+    onSuccess: () => {
+      enqueueSnackbar('Campaign Triggered Successfully', { variant: 'success' });
+    },
+  });
+
+  const HandleTrigger = () => {
+    triggerCampaign.mutate();
+  };
 
   const options: MenuOptions = [
     {
@@ -33,7 +54,9 @@ const HeaderActions = () => {
     },
     {
       title: 'Trigger Campaign',
-      onClick: () => {},
+      onClick: () => {
+        HandleTrigger();
+      },
       icon: 'grommet-icons:trigger',
       show: true,
     },

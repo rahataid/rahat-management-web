@@ -287,12 +287,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       )}
                     >
                       {audiences.map((aud: any) => (
-                        <Stack>
-                          <MenuItem key={aud.details.name} value={aud.details.name}>
-                            <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
-                            <ListItemText primary={aud.details.name} />
-                          </MenuItem>
-                        </Stack>
+                        <MenuItem key={aud.details.name} value={aud.details.name}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
+                          <ListItemText primary={aud.details.name} />
+                        </MenuItem>
                       ))}
                     </Select>
                     <Button

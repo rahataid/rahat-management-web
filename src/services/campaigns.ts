@@ -27,6 +27,8 @@ export const endpoints = {
     transports: '/transports',
     getByIds: '/campaigns/getByIds',
     remove: (id: string) => `/campaigns/${id}`,
+    removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
+      `/campaigns/remove/${campaignId}/audience/${audienceId}`,
   },
   audiences: {
     bulkAddAudiences: `/audiences/bulk`,
@@ -56,6 +58,8 @@ const CampaignsService = {
       },
     }),
   remove: (id: string) => axiosInstance.delete(endpoints.campaigns.remove(id)),
+  removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
+    axiosInstance.delete(endpoints.campaigns.removeAudienceFromCampaign(campaignId, audienceId)),
   audiences: () => axiosInstance.get(endpoints.audiences.audiences),
   bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.audiences.bulkAddAudiences, data),
   removeAudience: (id: string) => axiosInstance.delete(endpoints.audiences.removeAudience(id)),

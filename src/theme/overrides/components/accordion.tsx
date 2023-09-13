@@ -1,7 +1,7 @@
-import { Theme } from '@mui/material/styles';
-import { typographyClasses } from '@mui/material/Typography';
 import { accordionClasses } from '@mui/material/Accordion';
 import { accordionSummaryClasses } from '@mui/material/AccordionSummary';
+import { typographyClasses } from '@mui/material/Typography';
+import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -12,9 +12,9 @@ export default function Accordion(theme: Theme) {
         root: {
           backgroundColor: 'transparent',
           [`&.${accordionClasses.expanded}`]: {
-            boxShadow: theme.customShadows.z8,
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.customShadows?.z8,
+            borderRadius: theme.shape?.borderRadius,
+            backgroundColor: theme.palette?.background.paper,
           },
           [`&.${accordionClasses.disabled}`]: {
             backgroundColor: 'transparent',
@@ -25,11 +25,11 @@ export default function Accordion(theme: Theme) {
     MuiAccordionSummary: {
       styleOverrides: {
         root: {
-          paddingLeft: theme.spacing(2),
-          paddingRight: theme.spacing(1),
+          paddingLeft: theme?.spacing(2),
+          paddingRight: theme?.spacing(1),
           [`&.${accordionSummaryClasses.disabled}`]: {
             opacity: 1,
-            color: theme.palette.action.disabled,
+            color: theme.palette?.action.disabled,
             [`& .${typographyClasses.root}`]: {
               color: 'inherit',
             },

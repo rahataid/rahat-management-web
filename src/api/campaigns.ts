@@ -43,21 +43,6 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
   };
 }
 
-export function useCampaignTrigger(id: string) {
-  const { data, isLoading, error } = useQuery(['campaign/id/trigger'], async () => {
-    const res = await CampaignsService.trigger(id);
-    return res.data;
-  });
-
-  const campaign = useMemo(() => data || [], [data]);
-
-  return {
-    campaign,
-    isLoading,
-    error: error as IApiResponseError,
-  };
-}
-
 export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id/logs'], async () => {
     const res = await CampaignsService.logs(id);
