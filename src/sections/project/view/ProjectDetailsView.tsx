@@ -233,8 +233,10 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
+      </Grid>
 
-        <Grid item xs={12} md={6} lg={8}>
+      <Grid container mt={3} spacing={3}>
+        <Grid item xs={12} md={3} >
           <Piechart
             title="Gender-wise Distribution"
             chart={{
@@ -242,7 +244,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        <Grid item xs={12} md={3} >
           <Piechart
             title="Banked or unbanked"
             chart={{
@@ -250,7 +252,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        <Grid item xs={12} md={3} >
           <Piechart
             title="Access to internet"
             chart={{
@@ -258,7 +260,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        <Grid item xs={12} md={3} >
           <Piechart
             title="Access to Phone"
             chart={{
