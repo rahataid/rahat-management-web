@@ -12,8 +12,8 @@ interface Props {
 const ProjectStatsCard = ({
   balance = 0,
   tokenName = '',
-  totalBeneficiaries = 0,
-  distributedTokens = 0,
+  totalBeneficiaries ,
+  distributedTokens,
   onCreateToken,
 }: Props) => (
   <Grid container spacing={3}>

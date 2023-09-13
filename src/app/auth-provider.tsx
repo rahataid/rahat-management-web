@@ -31,8 +31,8 @@ const AuthProvider = ({ children }: Props) => {
         isInitialized: true,
         user,
         role: {
-          isAdmin: user?.roles.includes(Role.ADMIN),
-          isUser: user?.roles.includes(Role.USER),
+          isAdmin: user?.roles?.includes(Role.ADMIN),
+          isUser: user?.roles?.includes(Role.USER),
         },
         // walletName: user?.wallet_name,
       });

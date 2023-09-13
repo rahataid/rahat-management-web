@@ -22,10 +22,10 @@ import ProjectGallery from './project-gallery-view';
 import Piechart from './project-pie-chart';
 import ProjectStatsCard from './project-stats-card';
 
-const _carouselsExample = [...Array(1)].map((_, index) => ({
-  id: index,
-  coverUrl: '/assets/images/about/vision.jpg',
-}));
+// const _carouselsExample = [...Array(1)].map((_, index) => ({
+//   id: index,
+//   coverUrl: '/assets/images/about/vision.jpg',
+// }));
 type MenuOptions = {
   title: string;
   onClick: () => void;
@@ -164,6 +164,12 @@ export default function ProjectDetailsView() {
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
     useProjectBasedReport(params.address);
 
+    const carouselsExample = [...Array(1)].map((_, index) => ({
+      id: index,
+      coverUrl: `${project?.coverImage}`,
+    }));
+
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CreateTokenModal
@@ -174,7 +180,7 @@ export default function ProjectDetailsView() {
       <LockUnlockModal {...(!chainData.isLocked ? lockProjectProp : unlockProjectProp)} />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
-          <ProjectGallery data={_carouselsExample} title={project.name} />
+          <ProjectGallery data={carouselsExample} title={project.name} />
         </Grid>
         <Grid item xs={12} md={6} lg={4} spacing={2}>
           <ProjectActions leftOptions={leftActionOptions} rightOptions={rightActionOptions} />
