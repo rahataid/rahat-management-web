@@ -11,7 +11,7 @@ const ProjectsService = {
   removeCampaignFromProject: (address: string, id: number[]) =>
     axiosInstance.patch(endpoints.projects.removeCampaignFromProject(address), id),
   // delete: (uuid: string) => axiosInstance.delete(endpoints.projects.delete(uuid)),
-
+  removeBeneficiariesFromProject:(contractAddress:string, beneficiaries:string[])=> axiosInstance.patch(endpoints.projects.beneficiaries.remove(contractAddress),beneficiaries),
   details: (contractAddress: string) =>
     axiosInstance.get(endpoints.projects.details(contractAddress)),
 };

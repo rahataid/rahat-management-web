@@ -37,6 +37,9 @@ import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/type
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import useProjectContract from '@services/contracts/useProject';
+import ProjectsService from '@services/projects';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
   internetAccessOptions,
@@ -65,6 +68,8 @@ const TABLE_HEAD = [
 
 export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
   const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
   const bulkAssignTokensModal = useBoolean();
@@ -160,8 +165,27 @@ export default function ProjectBeneficiariesListView() {
     setFilters(searchFilters);
   }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
+const removeBeneficiaries = useMutation({
+  mutationFn:async(createData:string[])=>{
+    const response =await ProjectsService.removeBeneficiariesFromProject(address,createData);
+    return response.data;
+  },
+  onError:()=>{
+    enqueueSnackbar('Error Removing Beneficiaries',{variant:'error'})
+  },
+  onSuccess:()=>{
+    enqueueSnackbar('Beneficiaries Removed Succesfully',{variant:'success'})
+  }
+})
+
+const handleRemoveBeneficiariesFromProject = () => {
+  const ids = table.selected.map((id) => id);
+  removeBeneficiaries.mutate(ids);
+};
+
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+
+<Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <BeneficiariesAssignTokenModal
         open={bulkAssignTokensModal.value}
         onClose={bulkAssignTokensModal.onFalse}

@@ -54,6 +54,7 @@ export const endpoints = {
 
     beneficiaries: {
       list: (address: string) => `/projects/${address}/beneficiaries`,
+      remove:(contractAddress:string) =>`/projects/remove/${contractAddress}/beneficiaries`
     },
   },
 
