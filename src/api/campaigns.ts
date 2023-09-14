@@ -1,5 +1,6 @@
 import CampaignsService from '@services/campaigns';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
   CampaignsListHookReturn,
@@ -84,4 +85,46 @@ export function useAudiences() {
     isLoading,
     error,
   };
+}
+
+export function useRemoveAudience() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['campaign/audience/remove'],
+    async ({ campaignId, audienceId }: { campaignId: string; audienceId: string }) => {
+      const res = await CampaignsService.removeAudienceFromCampaign(campaignId, audienceId);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Audiences', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Campaign Audience Removed Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['campaign/id']);
+      },
+    }
+  );
+}
+
+export function useRemoveCampaign() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['campaign/remove'],
+    async (id: string) => {
+      const res = await CampaignsService.remove(id);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Campaign', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['campaigns']);
+      },
+    }
+  );
 }

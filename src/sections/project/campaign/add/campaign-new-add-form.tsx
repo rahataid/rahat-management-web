@@ -76,8 +76,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     },
   });
 
-  console.log(campaignData, 'campaignData');
-
   const updateProjectCampaign = useMutation({
     mutationFn: async (createData: number) => {
       const response = await ProjectsService.updateCampaign(address, createData);

@@ -1,5 +1,6 @@
 import ProjectsService, { ProjectBeneficiariesService } from '@services/projects';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
   IProjectApiFilters,
@@ -49,13 +50,41 @@ export function useProjectBeneficiaries(address: string): IProjectBeneficiariesH
     return res;
   });
 
-  const beneficiaries = useMemo(() => data?.data?.rows.map((b:IProjectBeneficiariesItem)=>({...b,isApproved:b.isApproved? 'Approved' : 'Not Approved'})) || [], [data?.data?.rows]);
+  const beneficiaries = useMemo(
+    () =>
+      data?.data?.rows.map((b: IProjectBeneficiariesItem) => ({
+        ...b,
+        isApproved: b.isApproved ? 'Approved' : 'Not Approved',
+      })) || [],
+    [data?.data?.rows]
+  );
   const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
   return {
     beneficiaries,
     loading: isLoading,
     error,
-    meta
+    meta,
   };
+}
+
+export function useProjectRemoveCampaign() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['project/campaign/remove'],
+    async ({ address, ids }: { address: string; ids: number[] }) => {
+      const response = await ProjectsService.removeCampaignFromProject(address, ids);
+      return response.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['project']);
+      },
+    }
+  );
 }

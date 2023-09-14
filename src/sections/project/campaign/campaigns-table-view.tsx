@@ -33,10 +33,8 @@ import {
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import ProjectsService from '@services/projects';
-import { useMutation } from '@tanstack/react-query';
-import { useSnackbar } from 'notistack';
 import { useCampaigns } from 'src/api/campaigns';
-import { useProject } from 'src/api/project';
+import { useProject, useProjectRemoveCampaign } from 'src/api/project';
 import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 
@@ -62,13 +60,9 @@ export default function BeneficiariesListView() {
 
   const params = useParams();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const router = useRouter();
 
   const settings = useSettingsContext();
-
-  const confirm = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -81,22 +75,11 @@ export default function BeneficiariesListView() {
     [router]
   );
 
-  const removeCampaign = useMutation({
-    mutationFn: async (createData: number[]) => {
-      const response = await ProjectsService.removeCampaignFromProject(address, createData);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
-    },
-  });
+  const removeCampaign = useProjectRemoveCampaign();
 
   const handleRemoveCampaignFromProject = () => {
     const ids = table.selected.map((id) => Number(id));
-    removeCampaign.mutate(ids);
+    removeCampaign.mutate({ address, ids });
   };
 
   const handleEditRow = useCallback(

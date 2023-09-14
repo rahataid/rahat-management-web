@@ -176,8 +176,12 @@ export default function BeneficiariesListView() {
     console.log('selected', selected);
   }, []);
 
+  const walletAddresses1 = table.selected;
+  console.log(walletAddresses1, 'walletAddresses');
+
   const handleDisableBeneficiary = () => {
     const walletAddresses = table.selected;
+    console.log(walletAddresses, 'walletAddresses');
 
     walletAddresses.forEach(async (walletAddress) => {
       disableBeneficiary.mutate(walletAddress);

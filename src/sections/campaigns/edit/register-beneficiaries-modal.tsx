@@ -69,9 +69,8 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
         ...d,
       },
     }));
-    console.log('withDetails', withDetails);
     mutate(withDetails);
-    // onClose();
+    onClose();
   };
 
   return (

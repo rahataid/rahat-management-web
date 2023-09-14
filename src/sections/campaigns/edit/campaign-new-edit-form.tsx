@@ -114,9 +114,8 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       .filter((aud: any) => value.includes(aud.id))
       .map((aud: any) => +aud.id);
     setFormattedSelect(formattedSelected);
-    setSelectedAudiences(value as number[]);
+    setSelectedAudiences(value);
     setValue('audienceIds', formattedSelected);
-    console.log('audienceIds', formattedSelected);
   };
 
   const onSubmit = useCallback(

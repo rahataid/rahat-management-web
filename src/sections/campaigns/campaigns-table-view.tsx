@@ -33,10 +33,8 @@ import {
 //
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
-import CampaignsService from '@services/campaigns';
-import { useMutation } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
-import { useCampaigns } from 'src/api/campaigns';
+import { useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
 import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 
@@ -63,9 +61,9 @@ export default function BeneficiariesListView() {
 
   const settings = useSettingsContext();
 
-  const confirm = useBoolean();
-
   const { enqueueSnackbar } = useSnackbar();
+
+  const deleteCampaign = useRemoveCampaign();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -85,26 +83,14 @@ export default function BeneficiariesListView() {
     [push]
   );
 
-  const removeCampaign = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await CampaignsService.remove(id);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
-    },
-  });
-
   const handleRemoveCampaign = () => {
     const id = table.selected;
+    console.log(id, 'idCampaign');
     if (id.length > 1) {
       enqueueSnackbar('Please select only one campaign at a Time', { variant: 'error' });
       return;
     }
-    removeCampaign.mutate(id[0]);
+    deleteCampaign.mutate(id[0]);
   };
 
   return (
