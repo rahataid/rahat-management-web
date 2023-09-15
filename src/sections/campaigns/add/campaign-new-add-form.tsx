@@ -122,6 +122,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const handleSelectCampaignType = (value: string) => {
     const requiresAudioField = value === 'PHONE';
     setShowSelectAudio(requiresAudioField);
+    setValue('type', value as CAMPAIGN_TYPES);
   };
 
   const onSubmit = useCallback(
@@ -207,17 +208,17 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              {showSelectAudio && (
-                <RHFSelect name="type" label="Select Audio">
-                  {mp3Data.map((mp3: any) => (
-                    <MenuItem key={mp3?.mp3Name} value={mp3?.mp3URL}>
-                      {mp3?.mp3Name}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-              )}
-
               <Stack>
+                {showSelectAudio && (
+                  <RHFSelect name="mp3" label="Select Audio">
+                    {mp3Data.map((mp3: any) => (
+                      <MenuItem key={mp3?.mp3Name} value={mp3?.mp3URL}>
+                        {mp3?.mp3Name}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                )}
+
                 <RHFTextField name="details" label="Details" fullWidth multiline />
               </Stack>
 
