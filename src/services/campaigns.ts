@@ -28,7 +28,7 @@ export const endpoints = {
     getByIds: '/campaigns/getByIds',
     remove: (id: string) => `/campaigns/${id}`,
     removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
-      `/campaigns/remove/${campaignId}/audience/${audienceId}`,
+      `/campaigns/${campaignId}/audience/${audienceId}/remove`,
   },
   audiences: {
     bulkAddAudiences: `/audiences/bulk`,
