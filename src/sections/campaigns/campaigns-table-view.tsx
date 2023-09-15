@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -14,7 +14,6 @@ import { useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
@@ -31,11 +30,11 @@ import {
 } from 'src/components/table';
 // types
 //
-import { Button } from '@mui/material';
+import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useSnackbar } from 'notistack';
-import { useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
-import { ICampaignItem } from 'src/types/campaigns';
+import { useCampaign, useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
+import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 
 // ----------------------------------------------------------------------
@@ -53,11 +52,15 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function BeneficiariesListView() {
-  const table = useTable();
+  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
 
+  const table = useTable();
   const { campaigns, meta } = useCampaigns();
+  const { campaign } = useCampaign(table.selected[0]);
 
   const { push } = useRouter();
+
+  const router = useRouter();
 
   const settings = useSettingsContext();
 
@@ -85,13 +88,35 @@ export default function BeneficiariesListView() {
 
   const handleRemoveCampaign = () => {
     const id = table.selected;
-    console.log(id, 'idCampaign');
     if (id.length > 1) {
-      enqueueSnackbar('Please select only one campaign at a Time', { variant: 'error' });
+      enqueueSnackbar('Please select only one campaign at a time', { variant: 'error' });
+      return;
+    }
+    if (campaign?.communicationLogs?.length > 0) {
+      enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
       return;
     }
     deleteCampaign.mutate(id[0]);
+    table.onSelectAllRows(false, []);
   };
+  const options: MenuOptions = [
+    {
+      title: 'Upload Mp3',
+      onClick: () => {
+        router.push(paths.dashboard.general.campaigns.uploadMp3);
+      },
+      icon: 'mdi:upload',
+      show: true,
+    },
+  ];
+
+  const handleClose = useCallback(() => {
+    setOpen(null);
+  }, []);
+
+  const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(event.currentTarget);
+  }, []);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -102,15 +127,39 @@ export default function BeneficiariesListView() {
           mb: { xs: 3, md: 5 },
         }}
         action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.general.campaigns.add}
-            variant="outlined"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            color="success"
-          >
-            Add Campaign
-          </Button>
+          <Stack direction="row" spacing={3}>
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.general.campaigns.add}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="success"
+            >
+              Add Campaign
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleOpen}
+              endIcon={
+                isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
+              }
+              color="success"
+            >
+              Campaign Settings
+            </Button>
+            <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
+              {options
+                .filter((o: any) => o.show)
+                .map((option: any) => (
+                  <MenuItem key={option.title} onClick={option.onClick}>
+                    <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
+                    <Typography variant="body2" color="text.secondary">
+                      {option.title}
+                    </Typography>
+                  </MenuItem>
+                ))}
+            </Menu>
+          </Stack>
         }
       />
 
