@@ -6,7 +6,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 // routes
-import { useRouter, useSearchParams } from 'src/routes/hook';
+import { useParams, useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
@@ -25,7 +25,7 @@ import {
 // types
 //
 import { isEqual } from 'lodash';
-import { useVendors } from 'src/api/vendors';
+import { useVendors, useVendorState } from 'src/api/vendors';
 import { IVendorItem, IVendorsApiFilters } from 'src/types/vendors';
 import VendorTableRow from './vendor-table-row';
 
@@ -36,6 +36,7 @@ const TABLE_HEAD = [
   { id: 'isApproved', label: 'Is Approved' },
   { id: 'walletAddress', label: 'Wallet Address' },
   {id:'isActive',label:'Is Active'},
+  {id:'Action',label:'Actions'},
   { id: '', label: '', width: '20', align: 'center' },
 ];
 
@@ -58,6 +59,8 @@ export default function VendorListView() {
   const { vendors, meta } = useVendors(filters);
 
   const searchParams = useSearchParams();
+  const {address} = useParams()
+
 
   const settings = useSettingsContext();
 
@@ -90,6 +93,10 @@ export default function VendorListView() {
     };
     setFilters(searchFilters);
   }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
+
+  const changeVendorState = useVendorState(address)
+
+
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

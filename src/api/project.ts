@@ -1,5 +1,6 @@
 import ProjectsService, { ProjectBeneficiariesService } from '@services/projects';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
   IProjectApiFilters,
@@ -10,7 +11,7 @@ import {
 } from 'src/types/project';
 
 export function useProjects(params?: IProjectApiFilters): ProjectsListHookReturn {
-  const { data, isLoading, error } = useQuery(['projects', params], async () => {
+  const { data, isLoading, error } = useQuery(['projects'], async () => {
     const res = await ProjectsService.list(params);
     return res;
   });
@@ -58,4 +59,27 @@ export function useProjectBeneficiaries(address: string): IProjectBeneficiariesH
     error,
     meta
   };
+}
+
+export function useRemoveBeneficiaries(address:string){
+  const queryClient = useQueryClient();
+  const {enqueueSnackbar} = useSnackbar()
+  
+   return useMutation(['projects/removebenificiaries'],
+   async(createData:string[])=>{
+    const response =await ProjectsService.removeBeneficiariesFromProject(address,createData);
+    console.log(response.data)
+    return response.data;
+
+  },
+  {
+    onError:()=>{
+      enqueueSnackbar('Error Removing Beneficiaries',{variant:'error'})
+    },
+    onSuccess:()=>{
+      enqueueSnackbar('Beneficiaries disconnect Succesfully',{variant:'success'})
+     queryClient.invalidateQueries(['projectbenificiaries'])
+    }
+  }
+  )
 }

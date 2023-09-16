@@ -1,5 +1,6 @@
 import VendorsService from '@services/vendors';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 
 import {
@@ -39,4 +40,25 @@ export function useVendor(walletAddress: string): IVendorDetailsHookReturn {
     isLoading,
     error,
   };
+}
+
+export function useVendorState(walletAdddress:string){
+  const queryClient = useQueryClient();
+  const {enqueueSnackbar} = useSnackbar()
+  
+   return useMutation(['vendors/toogleState'],
+   async()=>{
+    const response =await VendorsService.changeVendorState(walletAdddress);
+    return response.data;
+  },
+  {
+    onError:()=>{
+      enqueueSnackbar('Toggle State errror',{variant:'error'})
+    },
+    onSuccess:()=>{
+      enqueueSnackbar('Toggle State Successfully',{variant:'success'})
+     queryClient.invalidateQueries(['vendors'])
+    }
+  }
+  )
 }

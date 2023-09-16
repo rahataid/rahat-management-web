@@ -28,7 +28,7 @@ export function useTransactions(params?: ITransactionApiFilters): ITransactionLi
 }
 
 export function useTransaction(txHash: string): ITransactionDetailsHookReturn {
-  const { data, isLoading, error } = useQuery(['transactions', txHash], async () => {
+  const { data, isLoading, error } = useQuery(['transaction', txHash], async () => {
     const res = await TransactionsService.details(txHash);
     return res;
   });

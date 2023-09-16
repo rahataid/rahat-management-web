@@ -55,7 +55,7 @@ export const endpoints = {
     beneficiaries: {
       list: (address: string) => `/projects/${address}/beneficiaries`,
       remove:(contractAddress:string) =>`/projects/remove/${contractAddress}/beneficiaries`
-    },
+    }
   },
 
   campaigns: {
@@ -64,6 +64,7 @@ export const endpoints = {
   vendors: {
     list: '/vendors',
     details: (walletAddress: string) => `/vendors/${walletAddress}`,
+    changeVendorState:(contractAddress:string)=>`/vendors/${contractAddress}/changeVendoorState'`
   },
   transactions: {
     list: '/transactions',
