@@ -32,9 +32,11 @@ import {
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useCampaigns } from 'src/api/campaigns';
+import { useBoolean } from '@hooks/use-boolean';
 import { useProject, useProjectRemoveCampaign } from 'src/api/project';
 import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
+import ProjectCampaignDeleteModal from './project-campaigns-delete-modal';
 
 // ----------------------------------------------------------------------
 
@@ -62,6 +64,7 @@ export default function BeneficiariesListView() {
   const router = useRouter();
 
   const settings = useSettingsContext();
+  const assignCampaignDialog = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -109,6 +112,13 @@ export default function BeneficiariesListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <ProjectCampaignDeleteModal
+        onClose={assignCampaignDialog.onFalse}
+        open={assignCampaignDialog.value}
+        onOk={() => {
+          handleRemoveCampaignFromProject();
+        }}
+      />
       <CustomBreadcrumbs
         heading="Campaigns: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
@@ -169,11 +179,7 @@ export default function BeneficiariesListView() {
             action={
               <Stack direction="row" spacing={2.5}>
                 <Tooltip title="Remove Campaign From Project">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleRemoveCampaignFromProject}
-                  >
+                  <Button variant="outlined" color="primary" onClick={assignCampaignDialog.onTrue}>
                     Remove Campaign
                   </Button>
                 </Tooltip>

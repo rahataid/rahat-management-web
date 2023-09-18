@@ -115,8 +115,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setFormattedSelect(formattedSelected);
     setSelectedAudiences(value as string[]);
     setValue('audienceIds', formattedSelected);
-
-    setShowSelectAudio(value.includes('PHONE'));
   };
 
   const handleSelectCampaignType = (value: string) => {
@@ -208,7 +206,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              <Stack>
+              <Stack spacing={3}>
                 {showSelectAudio && (
                   <RHFSelect name="mp3" label="Select Audio">
                     {mp3Data.map((mp3: any) => (

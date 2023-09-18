@@ -33,9 +33,11 @@ import {
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useSnackbar } from 'notistack';
+import { useBoolean } from '@hooks/use-boolean';
 import { useCampaign, useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
 import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
+import CampaignDeleteModal from './campaigns-delete-modal';
 
 // ----------------------------------------------------------------------
 
@@ -63,6 +65,7 @@ export default function BeneficiariesListView() {
   const router = useRouter();
 
   const settings = useSettingsContext();
+  const assignCampaignDialog = useBoolean();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -120,6 +123,13 @@ export default function BeneficiariesListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <CampaignDeleteModal
+        onClose={assignCampaignDialog.onFalse}
+        open={assignCampaignDialog.value}
+        onOk={() => {
+          handleRemoveCampaign();
+        }}
+      />
       <CustomBreadcrumbs
         heading="Campaigns: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
@@ -177,7 +187,7 @@ export default function BeneficiariesListView() {
             }
             action={
               <Tooltip title="Delete">
-                <IconButton color="primary" onClick={handleRemoveCampaign}>
+                <IconButton color="primary" onClick={assignCampaignDialog.onTrue}>
                   <Iconify icon="solar:trash-bin-trash-bold" />
                 </IconButton>
               </Tooltip>
