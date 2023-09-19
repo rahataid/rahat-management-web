@@ -30,14 +30,14 @@ import {
 } from 'src/components/table';
 // types
 //
+import { useBoolean } from '@hooks/use-boolean';
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useSnackbar } from 'notistack';
-import { useBoolean } from '@hooks/use-boolean';
 import { useCampaign, useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
 import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
-import CampaignsTableRow from './campaigns-table-row';
 import CampaignDeleteModal from './campaigns-delete-modal';
+import CampaignsTableRow from './campaigns-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -95,7 +95,11 @@ export default function BeneficiariesListView() {
       enqueueSnackbar('Please select only one campaign at a time', { variant: 'error' });
       return;
     }
-    if (campaign?.communicationLogs?.length > 0) {
+    // if (campaign?.communicationLogs?.length > 0) {
+    //   enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
+    //   return;
+    // }
+    if (campaign?.status === 'COMPLETED') {
       enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
       return;
     }

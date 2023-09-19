@@ -33,6 +33,7 @@ import CampaignsService from '@services/campaigns';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
+import axios from 'axios';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useAudiences, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
@@ -50,6 +51,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [projectUpdated, setProjectUpdated] = useState(false);
+  const [showSelectAudio, setShowSelectAudio] = useState(false);
+  const [mp3Data, setMp3Data] = useState([null]);
 
   const { push } = useRouter();
   const { address } = useParams();
@@ -145,6 +148,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setValue('audienceIds', formattedSelected);
   };
 
+  const handleSelectCampaignType = (value: string) => {
+    const requiresAudioField = value === 'PHONE';
+    setShowSelectAudio(requiresAudioField);
+    setValue('type', value as CAMPAIGN_TYPES);
+  };
+
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
       const audienceIds = formattedSelect;
@@ -166,10 +175,13 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     }
   }, [isSuccess, campaignData?.id, updateProjectCampaign, projectUpdated]);
 
-  const handleRemoveAudience = () => {
-    console.log('Remove Audience');
-    // removeAudience.mutate(id)
-  };
+  useEffect(() => {
+    async function audioData() {
+      const res = await axios.get('http://localhost:6000/listmp3');
+      setMp3Data(res?.data);
+    }
+    audioData();
+  }, []);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -220,7 +232,11 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   )}
                 />
 
-                <RHFSelect name="type" label="Select Campaign Types">
+                <RHFSelect
+                  name="type"
+                  label="Select Campaign Types"
+                  onChange={(e) => handleSelectCampaignType(e.target.value)}
+                >
                   {campaignTypeOptions.map((campaign) => (
                     <MenuItem key={campaign} value={campaign}>
                       {campaign}
@@ -229,7 +245,17 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              <Stack>
+              <Stack spacing={3}>
+                {showSelectAudio && (
+                  <RHFSelect name="mp3" label="Select Audio">
+                    {mp3Data.map((mp3: any) => (
+                      <MenuItem key={mp3?.mp3Name} value={mp3?.mp3URL}>
+                        {mp3?.mp3Name}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                )}
+
                 <RHFTextField name="details" label="Details" fullWidth multiline />
               </Stack>
 

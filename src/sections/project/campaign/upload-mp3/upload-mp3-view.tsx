@@ -58,15 +58,16 @@ export default function UploadView() {
         const formData = new FormData();
         formData.append('mp3', file);
         console.log(formData, 'formData');
+        console.log(file, 'file');
 
         // eslint-disable-next-line no-await-in-loop
-        const res = await axios.post('http://localhost:6000/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        // const res = await axios.post('http://localhost:6000/upload', formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        // });
 
-        console.log(res, 'res');
+        // console.log(res, 'res');
       } catch (error) {
         console.error('Error uploading file:', error);
       }
