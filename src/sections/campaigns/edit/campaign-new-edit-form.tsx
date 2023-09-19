@@ -48,7 +48,7 @@ interface FormValues extends ICampaignCreateItem {}
 
 const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const params = useParams();
-  const [selectedAudiences, setSelectedAudiences] = useState<number[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<string | string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
   const { push } = useRouter();
@@ -96,7 +96,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       details: currentCampaign?.details || '',
       transportId: null,
       type: null,
-      audienceIds: null,
+      audienceIds: currentCampaign?.audienceIds || [],
     }),
     [currentCampaign]
   );
@@ -118,6 +118,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
     setValue('audienceIds', formattedSelected);
   };
 
+  console.log(selectedAudiences, 'selectedAudiences');
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
       console.log('data', data);
@@ -149,7 +150,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       setValue('details', formattedDetails);
       const audienceIds = campaign.audiences?.map((audience) => audience?.id) || [];
       setValue('audienceIds', audienceIds);
-      setSelectedAudiences(audienceIds);
+      setSelectedAudiences(audienceIds as unknown as string[]);
       setValue('transportId', campaign.transport?.id || null);
     }
   }, [campaign, setValue]);
@@ -273,10 +274,10 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                         ))
                       }
                     >
-                      {audiences.map((aud: any) => (
-                        <MenuItem key={aud.details.name} value={aud.id}>
-                          <Checkbox checked={selectedAudiences.indexOf(aud.id) > -1} />
-                          <ListItemText primary={aud.details.name} />
+                      {audiences?.map((aud: any) => (
+                        <MenuItem key={aud?.details.name} value={aud?.id}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud?.id) > -1} />
+                          <ListItemText primary={aud?.details.name} />
                         </MenuItem>
                       ))}
                     </Select>

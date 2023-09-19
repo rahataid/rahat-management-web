@@ -20,7 +20,6 @@ import { RouterLink } from '@routes/components';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
-import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
