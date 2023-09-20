@@ -19,7 +19,7 @@ import { ICampaignItemApiResponse } from 'src/types/campaigns';
 
 type AudienceAccordionViewProps = {
   audience: ICampaignItemApiResponse['audiences'];
-  handleRemoveAudience: (audienceId: number) => void;
+  handleRemoveAudience: (audienceId: string) => void;
 };
 
 const AudienceAccordionView = ({ audience, handleRemoveAudience }: AudienceAccordionViewProps) => (
@@ -51,7 +51,7 @@ const AudienceAccordionView = ({ audience, handleRemoveAudience }: AudienceAccor
                     <Button
                       variant="soft"
                       color="secondary"
-                      onClick={() => handleRemoveAudience(item?.id)}
+                      onClick={() => handleRemoveAudience(item?.id as unknown as string)}
                     >
                       Remove
                     </Button>

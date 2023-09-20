@@ -43,7 +43,7 @@ const CampaignsDetailsView = () => {
         sx={{
           mb: { xs: 3, md: 5 },
         }}
-        action={<HeaderActions />}
+        action={<HeaderActions campaign={campaign} />}
       />
 
       <Stack direction="column" spacing={2}>

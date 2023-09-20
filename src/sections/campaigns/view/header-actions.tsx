@@ -7,11 +7,11 @@ import Iconify from 'src/components/iconify';
 //
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
-import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useSnackbar } from 'notistack';
 import CampaignsService from '@services/campaigns';
+import { useMutation } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
+import { useSnackbar } from 'notistack';
+import { useCallback, useState } from 'react';
 
 type MenuOptions = {
   title: string;
@@ -20,7 +20,7 @@ type MenuOptions = {
   icon?: string;
 }[];
 
-const HeaderActions = () => {
+const HeaderActions = ({ campaign }: any) => {
   const [isOpen, setOpen] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const params = useParams();
@@ -40,6 +40,10 @@ const HeaderActions = () => {
   });
 
   const HandleTrigger = () => {
+    if (campaign?.status === 'COMPLETED') {
+      enqueueSnackbar('Campaign Already Triggered', { variant: 'warning' });
+      return;
+    }
     triggerCampaign.mutate();
   };
 

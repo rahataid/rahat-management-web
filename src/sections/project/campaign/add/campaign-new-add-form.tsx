@@ -94,19 +94,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     },
   });
 
-  const removeAudience = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await CampaignsService.removeAudience(id);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
-    },
-  });
-
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
       .required('Campaign name is required')

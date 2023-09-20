@@ -58,7 +58,7 @@ export default function BeneficiariesListView() {
 
   const table = useTable();
   const { campaigns, meta } = useCampaigns();
-  const { campaign } = useCampaign(table.selected[0]);
+  const { campaign } = useCampaign(table?.selected[0]);
 
   const { push } = useRouter();
 
@@ -90,16 +90,12 @@ export default function BeneficiariesListView() {
   );
 
   const handleRemoveCampaign = () => {
-    const id = table.selected;
+    const id = table?.selected;
     if (id.length > 1) {
       enqueueSnackbar('Please select only one campaign at a time', { variant: 'error' });
       return;
     }
-    // if (campaign?.communicationLogs?.length > 0) {
-    //   enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
-    //   return;
-    // }
-    if (campaign?.status === 'COMPLETED') {
+    if (campaign?.communicationLogs?.length > 0 || campaign?.status === 'COMPLETED') {
       enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
       return;
     }
