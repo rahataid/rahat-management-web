@@ -82,6 +82,7 @@ export default function BeneficiariesListView() {
   const handleRemoveCampaignFromProject = () => {
     const ids = table.selected.map((id) => Number(id));
     removeCampaign.mutate({ address, ids });
+    table.onSelectAllRows(false, []);
   };
 
   const handleEditRow = useCallback(

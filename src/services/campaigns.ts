@@ -29,7 +29,7 @@ export const endpoints = {
     remove: (id: string) => `/campaigns/${id}`,
     removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
       `/campaigns/${campaignId}/audience/${audienceId}/remove`,
-    upload: '/campaigns/upload',
+    upload: '/campaigns/upload/file',
   },
   audiences: {
     bulkAddAudiences: `/audiences/bulk`,

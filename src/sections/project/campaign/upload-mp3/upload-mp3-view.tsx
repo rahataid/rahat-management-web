@@ -20,11 +20,13 @@ import { RouterLink } from '@routes/components';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
+import { useCampaignFileUpload } from 'src/api/campaigns';
 
 // ----------------------------------------------------------------------
 
 export default function UploadView() {
   const preview = useBoolean();
+  const uploadMP3 = useCampaignFileUpload();
 
   const [files, setFiles] = useState<(File | string)[]>([]);
 
@@ -51,25 +53,14 @@ export default function UploadView() {
     setFiles([]);
   };
   const handleUpload = async () => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const file of files) {
-      try {
-        const formData = new FormData();
-        formData.append('mp3', file);
-        console.log(formData, 'formData');
-        console.log(file, 'file');
-
-        // eslint-disable-next-line no-await-in-loop
-        // const res = await axios.post('http://localhost:6000/upload', formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data',
-        //   },
-        // });
-
-        // console.log(res, 'res');
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
+    try {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('file', file);
+      });
+      await uploadMP3.mutateAsync(formData);
+    } catch (error) {
+      console.log(error);
     }
   };
 
