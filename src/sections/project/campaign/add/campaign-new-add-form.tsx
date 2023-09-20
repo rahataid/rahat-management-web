@@ -234,7 +234,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
               <Stack spacing={3}>
                 {showSelectAudio && (
-                  <RHFSelect name="mp3" label="Select Audio">
+                  <RHFSelect name="file" label="Select Audio">
                     {mp3Data.map((mp3: any) => (
                       <MenuItem key={mp3?.mp3Name} value={mp3?.mp3URL}>
                         {mp3?.mp3Name}

@@ -128,3 +128,22 @@ export function useRemoveCampaign() {
     }
   );
 }
+
+export function useCampaignFileUpload() {
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['campaign/upload'],
+    async (file: any) => {
+      const res = await CampaignsService.upload(file);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Uploading File', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('File Uploaded Successfully', { variant: 'success' });
+      },
+    }
+  );
+}
