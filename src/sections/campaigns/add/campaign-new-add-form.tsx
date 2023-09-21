@@ -125,14 +125,18 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
       const audienceIds = formattedSelect;
+      const audio = { audio: data?.file };
+      const details = parseMultiLineInput(data?.details);
+      const formattedDetails = { ...audio, ...details };
       const formatted = {
         ...data,
         audienceIds,
-        details: parseMultiLineInput(data?.details),
+        formattedDetails,
       };
-      mutate(formatted);
+      // mutate(formatted);
+      console.log(formatted);
     },
-    [formattedSelect, mutate]
+    [formattedSelect]
   );
 
   return (
