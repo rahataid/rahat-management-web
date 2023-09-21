@@ -17,26 +17,28 @@ import { paths } from 'src/routes/paths';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
-import { useProjectBeneficiaries } from 'src/api/project';
+import { useProjectBeneficiaries, useRemoveBeneficiaries } from 'src/api/project';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-  emptyRows,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
   TablePaginationCustom,
   TableSelectedAction,
+  emptyRows,
   useTable,
 } from 'src/components/table';
 // types
 import { IBeneficiariesTableFilterValue, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 //
+import { ConfirmDialog } from '@components/custom-dialog';
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import useProjectContract from '@services/contracts/useProject';
+import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
   internetAccessOptions,
@@ -65,9 +67,12 @@ const TABLE_HEAD = [
 
 export default function ProjectBeneficiariesListView() {
   const { address } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
   const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
   const bulkAssignTokensModal = useBoolean();
+  const rmvBeneficiaries = useBoolean()
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -151,7 +156,6 @@ export default function ProjectBeneficiariesListView() {
     },
     [multiAssignClaimsToBeneficiary]
   );
-
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {
       ...defaultFilters,
@@ -160,14 +164,40 @@ export default function ProjectBeneficiariesListView() {
     setFilters(searchFilters);
   }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
+  const removeBeneficiaries = useRemoveBeneficiaries(address);
+//   const handleRemoveBeneficiariesFromProject = () => {
+//   const id = table.selected.map((id) => id);
+//   removeBeneficiaries.mutate(id);
+//   table.onSelectAllRows(false, []);
+// };
+
+const handleRemoveBeneficiariesFromProject = useCallback(
+  async()=>{
+    const id = table.selected.map((id) => id);
+   removeBeneficiaries.mutate(id);
+  table.onSelectAllRows(false, []);
+  rmvBeneficiaries.onFalse()
+  },[removeBeneficiaries]
+)
+
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+<Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <BeneficiariesAssignTokenModal
         open={bulkAssignTokensModal.value}
         onClose={bulkAssignTokensModal.onFalse}
         onOk={handleBulkAssignTokens}
         selected={table.selected}
       />
+
+      <ConfirmDialog 
+      open={rmvBeneficiaries.value} 
+      title={'Selected Beneficiaries will be disconnected'} 
+      action={
+        ( <Button  variant="text" onClick={ handleRemoveBeneficiariesFromProject} autoFocus>
+        Disconnect
+      </Button>)
+      } 
+      onClose={rmvBeneficiaries.onFalse}/>
       <CustomBreadcrumbs
         heading="Project Beneficiaries: List"
         links={[
@@ -223,8 +253,8 @@ export default function ProjectBeneficiariesListView() {
             }
             action={
               <Stack direction="row" spacing={2.5}>
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
+                <Tooltip title="Disconnect">
+                  <IconButton color="primary" onClick={rmvBeneficiaries.onTrue}>
                     <Iconify icon="solar:trash-bin-trash-bold" />
                   </IconButton>
                 </Tooltip>

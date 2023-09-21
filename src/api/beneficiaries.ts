@@ -1,6 +1,9 @@
 import { MapData } from '@components/map';
+import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 
 import {
@@ -32,7 +35,7 @@ export function useBeneficiaries(params?: IBeneficiaryApiFilters): Beneficiaries
 }
 
 export function useBeneficiary(uuid: string) {
-  const { data, isLoading, error } = useQuery(['beneficiaries', uuid], async () => {
+  const { data, isLoading, error } = useQuery(['beneficiary', uuid], async () => {
     const res = await BeneficiaryService.details(uuid);
     return res;
   });
@@ -111,4 +114,28 @@ export function useGeoLocation(): IBeneficiariesGeoLocHooksReturn {
     isLoading,
     error,
   };
+}
+
+export function useDisableBeneficiaries() {
+  const { push } = useRouter();
+
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['beneficiaries/disable'],
+    async (walletAddress: string) => {
+      const res = await BeneficiaryService.disable(walletAddress);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Disabling Beneficiary ', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Beneficiary Disabled Successfully', { variant: 'success' });
+        push(paths.dashboard.general.beneficiaries.list);
+        queryClient.invalidateQueries(['beneficiaries']);
+      },
+    }
+  );
 }

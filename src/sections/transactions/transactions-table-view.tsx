@@ -42,6 +42,7 @@ const TABLE_HEAD = [
 
 export default function TransactionListView() {
   const table = useTable();
+  console.log(table)
 
   const settings = useSettingsContext();
 
