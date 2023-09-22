@@ -10,7 +10,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
-import { setToken, setUser as setUserLocal } from '@utils/storage-available';
 import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard, {
   MetamaskCardWalletProps,
@@ -116,12 +115,8 @@ export default function JwtLoginView() {
     if (login.isSuccess) {
       resetOtp();
       setLoginEmail('');
-      setUser(login.data);
-      setUserLocal(login.data);
-      console.log('login.data?.refresh_token', login.data?.refresh_token);
 
-      setToken(login.data?.refresh_token);
-      router.replace(returnTo || paths.dashboard.root);
+      // router.replace(returnTo || paths.dashboard.root);
     }
   }, [login.data, login.isSuccess, resetOtp, returnTo, router, setUser]);
 
@@ -153,7 +148,7 @@ export default function JwtLoginView() {
       <MetaMaskCard
         component={LoadingButton}
         title="Metamask"
-        description="MetaMask is the leading self-custodial wallet. The safe and simple way to access blockchain applications and web3."
+        description="MetaMask is the leading self-custodial wallet. The safe and simple way to access blockchain applications and  web3."
         walletAvatar="logos:metamask-icon"
         onClick={onWalletButtonClick}
         props={{
@@ -246,8 +241,8 @@ export default function JwtLoginView() {
       {renderHead}
       {!loginEmail && renderEmailForm}
       {loginEmail && renderOtpForm}
-      {dividerView}
-      {renderWalletLogin}
+      {/* {dividerView} */}
+      {/* {renderWalletLogin} */}
     </>
   );
 }
