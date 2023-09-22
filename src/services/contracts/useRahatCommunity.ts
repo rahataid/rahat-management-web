@@ -1,6 +1,7 @@
 import { CONTRACTS } from '@config';
 import useContract from '@hooks/contracts/useContract';
 import { useErrorHandler } from '@hooks/user-error-handler';
+import { ContractTransactionResponse, ethers } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import { CommunityHooks } from 'src/types/contract-hooks/useRahatCommunity';
 
@@ -50,6 +51,12 @@ export const useRahatCommunity = (): CommunityHooks => {
     },
     [contract, vendorRoles, handleContractError]
   );
+  const addAdminToCommunity = useCallback(
+    async (adminAddress: string): Promise<ContractTransactionResponse | Error> =>
+      contract?.grantRole(ethers.ZeroHash, adminAddress).catch(handleContractError),
+
+    [contract, handleContractError]
+  );
 
   const memoizedValues = useMemo(
     () => ({
@@ -59,6 +66,7 @@ export const useRahatCommunity = (): CommunityHooks => {
       addBeneficiaryToCommunity,
       communityName,
       addVendorToCommunity,
+      addAdminToCommunity,
     }),
     [
       contract,
@@ -67,6 +75,7 @@ export const useRahatCommunity = (): CommunityHooks => {
       addBeneficiaryToCommunity,
       communityName,
       addVendorToCommunity,
+      addAdminToCommunity,
     ]
   );
 

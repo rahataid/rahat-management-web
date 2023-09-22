@@ -32,7 +32,7 @@ import useAppStore from 'src/store/app';
 export default function JwtRegisterView() {
   const router = useRouter();
   const { account } = useWeb3React();
-  const register = useRegister()
+  const register = useRegister();
   const networkSettings = useAppStore((state) => state.blockchain);
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -66,13 +66,13 @@ export default function JwtRegisterView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-   await register?.mutate({
+    await register?.mutate({
       name: data?.name,
       email: data?.email,
-      walletAddress: data?.walletAddress
-    })
-    reset()
-    router.push(paths?.auth?.login)
+      walletAddress: data?.walletAddress,
+    });
+    reset();
+    router.push(paths?.auth?.login);
   });
 
   const renderHead = (

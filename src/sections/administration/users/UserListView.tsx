@@ -35,6 +35,7 @@ import {
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import AdministrationService from '@services/administration';
+import { useRahatCommunity } from '@services/contracts/useRahatCommunity';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { useUsers } from 'src/api/administration';
@@ -60,6 +61,7 @@ export default function UsersListView() {
   const table = useTable();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const { addAdminToCommunity } = useRahatCommunity();
 
   const { mutateAsync } = useMutation({
     mutationFn: async (walletAddress: string) => {
@@ -168,7 +170,13 @@ export default function UsersListView() {
   };
 
   const handleUserChangeRole = async (walletAddress: string, role: string) => {
-    await updateRoleFunc.mutateAsync({ walletAddress, role });
+    // TODO:use enum or constants
+    if (role === 'ADMIN') {
+      const d = await addAdminToCommunity(walletAddress);
+      if (d) {
+        await updateRoleFunc.mutateAsync({ walletAddress, role });
+      }
+    }
   };
 
   useEffect(() => {
