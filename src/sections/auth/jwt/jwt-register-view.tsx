@@ -18,24 +18,21 @@ import { RouterLink } from 'src/routes/components';
 import { useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
 // auth
 // components
 import Iconify from '@components/iconify/iconify';
 import { useWeb3React } from '@web3-react/core';
 import MetaMaskCard from '@web3/components/connectorCards/MetaMaskCard';
+import { useRegister } from 'src/api/auths';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import useAppStore from 'src/store/app';
-import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
 export default function JwtRegisterView() {
   const router = useRouter();
   const { account } = useWeb3React();
-  const { register } = useAuthStore((state) => ({
-    register: state.register,
-  }));
+  const register = useRegister()
   const networkSettings = useAppStore((state) => state.blockchain);
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -69,15 +66,13 @@ export default function JwtRegisterView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await register?.(data.name, data.walletAddress, data.email);
-
-      router.push(returnTo || PATH_AFTER_LOGIN);
-    } catch (error) {
-      console.error(error);
-      // reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
-    }
+   await register?.mutate({
+      name: data?.name,
+      email: data?.email,
+      walletAddress: data?.walletAddress
+    })
+    reset()
+    router.push(paths?.auth?.login)
   });
 
   const renderHead = (

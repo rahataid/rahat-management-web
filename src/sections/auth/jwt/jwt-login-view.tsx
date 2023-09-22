@@ -169,16 +169,6 @@ export default function JwtLoginView() {
       >
         {isMetamaskActive ? 'Disconnect Metamask' : 'Login with Metamask'}
       </MetaMaskCard>
-
-      {userNotRegistered && (
-        <Stack direction="row" spacing={0.5}>
-          <Typography variant="body2">New user?</Typography>
-
-          <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
-            Create an account
-          </Link>
-        </Stack>
-      )}
     </Stack>
   );
 
@@ -246,6 +236,13 @@ export default function JwtLoginView() {
       {renderHead}
       {!loginEmail && renderEmailForm}
       {loginEmail && renderOtpForm}
+      <Stack direction="row" spacing={0.5}>
+          <Typography variant="body2">New user?</Typography>
+
+          <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
+            Create an account
+          </Link>
+        </Stack>
       {dividerView}
       {renderWalletLogin}
     </>

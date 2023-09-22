@@ -19,7 +19,6 @@ const ICONS = {
   gallery: icon('material-symbols:gallery-thumbnail-outline-rounded'),
   settings: icon('fluent:settings-24-regular'),
   users: icon('la:users'),
-
   campaigns: icon('carbon:communication-unified'),
 };
 

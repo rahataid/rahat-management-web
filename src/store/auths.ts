@@ -30,6 +30,7 @@ type AuthActionsType = {
   loginWallet: (walletAddress: string) => Promise<void>;
   disconnectWallet: () => void;
   setUser: (user: AuthUserType) => void;
+  // register:()=>Promise<void>
 };
 
 export type AuthStoreType = AuthStateType & AuthActionsType;
@@ -119,6 +120,7 @@ const useAuthStore = create<AuthStoreType>((set) => ({
     removeWalletName();
     clearToken();
   },
+
 }));
 
 export default useAuthStore;

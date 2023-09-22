@@ -46,3 +46,30 @@ export const useLogin = () => {
     }
   );
 };
+
+export const useRegister = ()=>{
+  const notify = useSnackbar();
+ 
+    return useMutation(
+      ['register'],
+      async({name,email,walletAddress}:{name:string;email:string;walletAddress:string})=>{
+        const res = await AuthService.register({name,email,walletAddress}) ;
+        console.log(res)
+        return res?.data
+      } ,
+      {
+        onSuccess: (data) => {
+          notify.enqueueSnackbar('Successfully Register', { variant: 'success' });
+          return data;
+        },
+        onError: (error) => {
+          console.log(error)
+          notify.enqueueSnackbar( error?.message ||'Something went wrong', {
+            variant: 'error',
+          });
+          return error;
+        },
+      }
+    )
+
+}
