@@ -118,10 +118,8 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
     setValue('audienceIds', formattedSelected);
   };
 
-  console.log(selectedAudiences, 'selectedAudiences');
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      console.log('data', data);
       let startTime;
       if (data?.startTime) {
         startTime = typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
@@ -146,7 +144,6 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       const campaignType = (campaign.type as CAMPAIGN_TYPES) || CAMPAIGN_TYPES.EMAIL;
       setValue('type', campaignType);
       const formattedDetails = JSON.stringify(campaign.details || {});
-      console.log('formattedDetails', formattedDetails, campaign);
       setValue('details', formattedDetails);
       const audienceIds = campaign.audiences?.map((audience) => audience?.id) || [];
       setValue('audienceIds', audienceIds);

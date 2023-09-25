@@ -52,6 +52,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [projectUpdated, setProjectUpdated] = useState(false);
   const [showSelectAudio, setShowSelectAudio] = useState(false);
+  const [showSelectMessage, setShowSelectMessage] = useState(false);
   const [mp3Data, setMp3Data] = useState([null]);
 
   const { push } = useRouter();
@@ -137,18 +138,45 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const handleSelectCampaignType = (value: string) => {
     const requiresAudioField = value === 'PHONE';
+    const requiresMessageField = value === 'SMS';
+
     setShowSelectAudio(requiresAudioField);
+    setShowSelectMessage(requiresMessageField);
     setValue('type', value as CAMPAIGN_TYPES);
   };
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
       const audienceIds = formattedSelect;
-      const formatted = {
-        ...data,
-        audienceIds,
-        details: parseMultiLineInput(data?.details),
+
+      type AdditionalData = {
+        audio?: any;
+        message?: string;
       };
+
+      const additionalData: AdditionalData = {};
+
+      if (data?.type === 'PHONE' && data?.file) {
+        additionalData.audio = data.file;
+      }
+
+      if (data?.type === 'SMS' && data?.message) {
+        additionalData.message = data?.message;
+      }
+
+      const { file, message, ...dataWithoutAudioAndMessage } = data;
+
+      const mergedDetails = {
+        ...additionalData,
+        ...parseMultiLineInput(data.details),
+      };
+
+      const formatted = {
+        ...dataWithoutAudioAndMessage,
+        audienceIds,
+        details: mergedDetails,
+      };
+
       mutate(formatted);
     },
     [formattedSelect, mutate]
@@ -241,6 +269,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       </MenuItem>
                     ))}
                   </RHFSelect>
+                )}
+
+                {showSelectMessage && (
+                  <RHFTextField name="message" label="SMS Message" fullWidth multiline />
                 )}
 
                 <RHFTextField name="details" label="Details" fullWidth multiline />

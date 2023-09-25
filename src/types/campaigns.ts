@@ -48,6 +48,7 @@ export type ICampaignCreateItem = {
   type: CAMPAIGN_TYPES | null;
   audienceIds: number[] | null;
   file?: File | null;
+  message?: string | null;
 };
 
 export type ICampaigns = ICampaignItem[];

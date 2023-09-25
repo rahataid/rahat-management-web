@@ -17,10 +17,10 @@ import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import { useCampaignFileUpload } from 'src/api/campaigns';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
-import { useCampaignFileUpload } from 'src/api/campaigns';
 
 // ----------------------------------------------------------------------
 
@@ -58,6 +58,7 @@ export default function UploadView() {
       files.forEach((file) => {
         formData.append('file', file);
       });
+      console.log(formData);
       await uploadMP3.mutateAsync(formData);
     } catch (error) {
       console.log(error);
