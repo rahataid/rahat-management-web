@@ -122,7 +122,11 @@ export default function BeneficiariesListView() {
       />
       <CustomBreadcrumbs
         heading="Campaigns: List"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'Projects', href: paths.dashboard.general.projects.details(address) },
+          { name: 'List' },
+        ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
