@@ -1,5 +1,6 @@
 import AdministrationService from '@services/administration';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
   IApiResponseError,
@@ -32,4 +33,70 @@ export function useUsers(params?: IUsersApiFilters): IUsersListHookReturn {
     meta,
     refetchUser: refetch,
   };
+}
+
+export function useApproveUserFunc() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    ['user/approve'],
+    async (walletAddress: string) => {
+      const res = await AdministrationService.approve(walletAddress);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Approving User', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('User Approved', { variant: 'success' });
+        queryClient.invalidateQueries(['users']);
+      },
+    }
+  );
+}
+
+export function useUpdateRoleFunc() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    ['user/role/update'],
+    async (data: { walletAddress: string; role: string }) => {
+      const res = await AdministrationService.updateRole(data.walletAddress, data.role);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Updating User Role', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('User Role Updated', { variant: 'success' });
+        queryClient.invalidateQueries(['users']);
+      },
+    }
+  );
+}
+
+export function useDisableUser() {
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ['user/disable'],
+    async (id: number) => {
+      const res = await AdministrationService.disable(id);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Disabling User ', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('User Disabled Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['users']);
+      },
+    }
+  );
 }
