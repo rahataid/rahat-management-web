@@ -37,7 +37,7 @@ import { RouterLink } from '@routes/components';
 import AdministrationService from '@services/administration';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
-import { useUsers } from 'src/api/administration';
+import { useApproveUserFunc, useUpdateRoleFunc, useUsers } from 'src/api/administration';
 import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
 import UserDetails from './user-details-modal';
 import UsersTableFiltersResult from './users-table-filters-result';
@@ -60,34 +60,8 @@ export default function UsersListView() {
   const table = useTable();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-
-  const { mutateAsync } = useMutation({
-    mutationFn: async (walletAddress: string) => {
-      const res = await AdministrationService.approve(walletAddress);
-      return res.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Approving User', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('User Approved', { variant: 'success' });
-      queryClient.invalidateQueries(['users']);
-    },
-  });
-
-  const updateRoleFunc = useMutation({
-    mutationFn: async (data: { walletAddress: string; role: string }) => {
-      const res = await AdministrationService.updateRole(data.walletAddress, data.role);
-      return res.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Updating User Role', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('User Role Updated', { variant: 'success' });
-      queryClient.invalidateQueries(['users']);
-    },
-  });
+  const updateRoleFunc = useUpdateRoleFunc();
+  const approveUser = useApproveUserFunc();
 
   const defaultFilters: IUsersApiFilters = useMemo(
     () => ({
@@ -164,7 +138,7 @@ export default function UsersListView() {
   );
 
   const handleUserActivate = async (walletAddress: string) => {
-    await mutateAsync(walletAddress);
+    await approveUser.mutateAsync(walletAddress);
   };
 
   const handleUserChangeRole = async (walletAddress: string, role: string) => {
