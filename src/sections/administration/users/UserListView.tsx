@@ -58,8 +58,6 @@ const TABLE_HEAD = [
 
 export default function UsersListView() {
   const table = useTable();
-  const { enqueueSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
   const updateRoleFunc = useUpdateRoleFunc();
   const approveUser = useApproveUserFunc();
 

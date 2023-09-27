@@ -50,7 +50,13 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [showSelectAudio, setShowSelectAudio] = useState(false);
   const [showSelectMessage, setShowSelectMessage] = useState(false);
-  const [mp3Data, setMp3Data] = useState([]);
+  // const [mp3Data, setMp3Data] = useState([]);
+  const mp3Data = [
+    {
+      title: 'IVR-1',
+      url: 'https://rahat-rumsan.s3.us-east-1.amazonaws.com/development/audio.mp3',
+    },
+  ];
 
   const { push } = useRouter();
   const { transports } = useTransports();
@@ -229,8 +235,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 {showSelectAudio && (
                   <RHFSelect name="file" label="Select Audio">
                     {mp3Data.map((mp3: any) => (
-                      <MenuItem key={mp3?.mp3Name} value={mp3?.mp3URL}>
-                        {mp3?.mp3Name}
+                      <MenuItem key={mp3?.url} value={mp3?.url}>
+                        {mp3?.title}
                       </MenuItem>
                     ))}
                   </RHFSelect>
