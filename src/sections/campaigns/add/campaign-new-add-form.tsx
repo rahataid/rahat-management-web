@@ -313,7 +313,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       onClick={assignCampaignDialog.onTrue}
                       sx={{ alignSelf: 'flex-start' }}
                     >
-                      Register Audiences
+                      Register Beneficiaires
                     </Button>
                   </Stack>
                 </Box>
