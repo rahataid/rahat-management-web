@@ -72,6 +72,27 @@ export function useTransports(): ITransportDetailsHookReturn {
     error,
   };
 }
+export function useBulkAddAudiences() {
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ['audiences/bulk/add'],
+    async (withDetails) => {
+      const response = await CampaignsService.bulkAddAudiences(withDetails);
+      return response.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error registering audiences', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Audiences registered successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['audiences']);
+      },
+    }
+  );
+}
 
 export function useAudiences() {
   const { data, isLoading, error } = useQuery(['audiences'], async () => {
