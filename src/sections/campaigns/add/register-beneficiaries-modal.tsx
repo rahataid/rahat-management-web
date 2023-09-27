@@ -49,7 +49,6 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   };
 
   const { beneficiaries } = useBeneficiaries();
-  const { enqueueSnackbar } = useSnackbar();
   const bulkAddAudiences = useBulkAddAudiences();
 
   const onRegister = async () => {

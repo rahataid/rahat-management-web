@@ -19,6 +19,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useBeneficiaries } from 'src/api/beneficiaries';
+import { useBulkAddAudiences } from 'src/api/campaigns';
 
 type Props = {
   open: boolean;
@@ -48,20 +49,7 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
   };
 
   const { beneficiaries } = useBeneficiaries();
-  const { enqueueSnackbar } = useSnackbar();
-
-  const { mutate } = useMutation({
-    mutationFn: async (withDetails) => {
-      const response = await CampaignsService.bulkAddAudiences(withDetails);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error registering audiences', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Audiences registered successfully', { variant: 'success' });
-    },
-  });
+  const bulkAddAudiences = useBulkAddAudiences();
 
   const onRegister = async () => {
     const withDetails: any = formattedSelect.map((d) => ({
@@ -70,7 +58,7 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
       },
     }));
     console.log('withDetails', withDetails);
-    mutate(withDetails);
+    bulkAddAudiences.mutate(withDetails);
     onClose();
   };
 
