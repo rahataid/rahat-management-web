@@ -112,6 +112,7 @@ export default function UploadView() {
                 onRemove={handleRemoveFile}
                 onRemoveAll={handleRemoveAllFiles}
                 onUpload={handleUpload}
+                disabled={uploadMP3.isLoading}
               />
             </CardContent>
           </Card>
