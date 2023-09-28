@@ -58,7 +58,6 @@ export default function UploadView() {
       files.forEach((file) => {
         formData.append('file', file);
       });
-      console.log(formData);
       await uploadMP3.mutateAsync(formData);
     } catch (error) {
       console.log(error);

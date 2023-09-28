@@ -33,7 +33,7 @@ import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useAudiences, useTransports } from 'src/api/campaigns';
+import { useAudiences, useCampaignAudio, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
@@ -50,24 +50,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [showSelectAudio, setShowSelectAudio] = useState(false);
   const [showSelectMessage, setShowSelectMessage] = useState(false);
-  const mp3Data = [
-    {
-      title: 'IVR-1',
-      url: 'https://rahat-rumsan.s3.us-east-1.amazonaws.com/development/audio.mp3',
-    },
-    {
-      title: 'Test Audio',
-      url: 'https://demo.twilio.com/docs/classic.mp3',
-    },
-    {
-      title: 'Ward-6 IVR',
-      url: 'https://twiml.rahat.io/audio/ward-6-ivr.mp3',
-    },
-    {
-      title: 'Ward-2 IVR',
-      url: 'https://twiml.rahat.io/audio/re-ward-2-ivr.mp3',
-    },
-  ];
+  const { campaignAudio } = useCampaignAudio();
 
   const { push } = useRouter();
   const { transports } = useTransports();
@@ -245,9 +228,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
               <Stack spacing={3}>
                 {showSelectAudio && (
                   <RHFSelect name="file" label="Select Audio">
-                    {mp3Data.map((mp3: any) => (
+                    {campaignAudio.map((mp3: any) => (
                       <MenuItem key={mp3?.url} value={mp3?.url}>
-                        {mp3?.title}
+                        {mp3?.filename}
                       </MenuItem>
                     ))}
                   </RHFSelect>

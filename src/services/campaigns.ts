@@ -30,6 +30,7 @@ export const endpoints = {
     removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
       `/campaigns/${campaignId}/audience/${audienceId}/remove`,
     upload: '/campaigns/upload/file',
+    audio: 'campaigns/audio',
   },
   audiences: {
     bulkAddAudiences: `/audiences/bulk`,
@@ -65,6 +66,7 @@ const CampaignsService = {
   bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.audiences.bulkAddAudiences, data),
   removeAudience: (id: string) => axiosInstance.delete(endpoints.audiences.removeAudience(id)),
   upload: (file: any) => axiosInstance.post(endpoints.campaigns.upload, file),
+  audio: () => axiosInstance.get(endpoints.campaigns.audio),
 };
 
 export default CampaignsService;

@@ -168,3 +168,18 @@ export function useCampaignFileUpload() {
     }
   );
 }
+
+export function useCampaignAudio() {
+  const { data, isLoading, error } = useQuery(['campaign/audio'], async () => {
+    const res = await CampaignsService.audio();
+    return res.data;
+  });
+
+  const campaignAudio = useMemo(() => data || [], [data]);
+
+  return {
+    campaignAudio,
+    isLoading,
+    error: error as IApiResponseError,
+  };
+}
