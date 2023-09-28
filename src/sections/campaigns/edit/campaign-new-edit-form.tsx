@@ -48,7 +48,7 @@ interface FormValues extends ICampaignCreateItem {}
 
 const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const params = useParams();
-  const [selectedAudiences, setSelectedAudiences] = useState<number[]>([]);
+  const [selectedAudiences, setSelectedAudiences] = useState<string | string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
 
   const { push } = useRouter();
@@ -96,7 +96,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       details: currentCampaign?.details || '',
       transportId: null,
       type: null,
-      audienceIds: null,
+      audienceIds: currentCampaign?.audienceIds || [],
     }),
     [currentCampaign]
   );
@@ -114,14 +114,12 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       .filter((aud: any) => value.includes(aud.id))
       .map((aud: any) => +aud.id);
     setFormattedSelect(formattedSelected);
-    setSelectedAudiences(value as number[]);
+    setSelectedAudiences(value);
     setValue('audienceIds', formattedSelected);
-    console.log('audienceIds', formattedSelected);
   };
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      console.log('data', data);
       let startTime;
       if (data?.startTime) {
         startTime = typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
@@ -146,11 +144,10 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       const campaignType = (campaign.type as CAMPAIGN_TYPES) || CAMPAIGN_TYPES.EMAIL;
       setValue('type', campaignType);
       const formattedDetails = JSON.stringify(campaign.details || {});
-      console.log('formattedDetails', formattedDetails, campaign);
       setValue('details', formattedDetails);
       const audienceIds = campaign.audiences?.map((audience) => audience?.id) || [];
       setValue('audienceIds', audienceIds);
-      setSelectedAudiences(audienceIds);
+      setSelectedAudiences(audienceIds as unknown as string[]);
       setValue('transportId', campaign.transport?.id || null);
     }
   }, [campaign, setValue]);
@@ -274,10 +271,10 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                         ))
                       }
                     >
-                      {audiences.map((aud: any) => (
-                        <MenuItem key={aud.details.name} value={aud.id}>
-                          <Checkbox checked={selectedAudiences.indexOf(aud.id) > -1} />
-                          <ListItemText primary={aud.details.name} />
+                      {audiences?.map((aud: any) => (
+                        <MenuItem key={aud?.details.name} value={aud?.id}>
+                          <Checkbox checked={selectedAudiences.indexOf(aud?.id) > -1} />
+                          <ListItemText primary={aud?.details.name} />
                         </MenuItem>
                       ))}
                     </Select>
@@ -287,7 +284,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                       onClick={assignCampaignDialog.onTrue}
                       sx={{ alignSelf: 'flex-start' }}
                     >
-                      Register Audiences
+                      Register Beneficiaires
                     </Button>
                   </Stack>
                 </Box>

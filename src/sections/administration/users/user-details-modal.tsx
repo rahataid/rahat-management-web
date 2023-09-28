@@ -10,12 +10,8 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
-import { paths } from '@routes/paths';
-import AdministrationService from '@services/administration';
-import { useMutation } from '@tanstack/react-query';
-import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'src/routes/hook';
+import { useDisableUser } from 'src/api/administration';
 import { IUserItem } from 'src/types/administration';
 
 type Props = {
@@ -27,10 +23,8 @@ type Props = {
 };
 
 const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) => {
-  const { push } = useRouter();
   const [isActive, setIsActive] = useState(false);
   const [role, setRole] = useState('');
-  const { enqueueSnackbar } = useSnackbar();
 
   console.log(user, 'user');
   useEffect(() => {
@@ -40,19 +34,7 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
     }
   }, [user]);
 
-  const disableUser = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await AdministrationService.disable(id);
-      return res.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Disabling User ', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('User Disabled Successfully', { variant: 'success' });
-      push(paths.dashboard.administration.users.list);
-    },
-  });
+  const disableUser = useDisableUser();
 
   const handleActivateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsActive(event.target.checked);

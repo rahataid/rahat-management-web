@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -13,7 +13,6 @@ import { useParams, useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
@@ -30,15 +29,14 @@ import {
 } from 'src/components/table';
 // types
 //
-import { Button, Stack } from '@mui/material';
+import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
-import ProjectsService from '@services/projects';
-import { useMutation } from '@tanstack/react-query';
-import { useSnackbar } from 'notistack';
 import { useCampaigns } from 'src/api/campaigns';
-import { useProject } from 'src/api/project';
-import { ICampaignItem } from 'src/types/campaigns';
+import { useBoolean } from '@hooks/use-boolean';
+import { useProject, useProjectRemoveCampaign } from 'src/api/project';
+import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
+import ProjectCampaignDeleteModal from './project-campaigns-delete-modal';
 
 // ----------------------------------------------------------------------
 
@@ -55,6 +53,7 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function BeneficiariesListView() {
+  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
   const table = useTable();
   const { address } = useParams();
   const { project } = useProject(address);
@@ -62,13 +61,10 @@ export default function BeneficiariesListView() {
 
   const params = useParams();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const router = useRouter();
 
   const settings = useSettingsContext();
-
-  const confirm = useBoolean();
+  const assignCampaignDialog = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -81,22 +77,12 @@ export default function BeneficiariesListView() {
     [router]
   );
 
-  const removeCampaign = useMutation({
-    mutationFn: async (createData: number[]) => {
-      const response = await ProjectsService.removeCampaignFromProject(address, createData);
-      return response.data;
-    },
-    onError: () => {
-      enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
-    },
-    onSuccess: () => {
-      enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
-    },
-  });
+  const removeCampaign = useProjectRemoveCampaign();
 
   const handleRemoveCampaignFromProject = () => {
     const ids = table.selected.map((id) => Number(id));
-    removeCampaign.mutate(ids);
+    removeCampaign.mutate({ address, ids });
+    table.onSelectAllRows(false, []);
   };
 
   const handleEditRow = useCallback(
@@ -106,26 +92,80 @@ export default function BeneficiariesListView() {
     [router]
   );
 
+  const options: MenuOptions = [
+    {
+      title: 'Upload Mp3',
+      onClick: () => {
+        router.push(paths.dashboard.general.campaigns.uploadMp3);
+      },
+      icon: 'mdi:upload',
+      show: true,
+    },
+  ];
+
+  const handleClose = useCallback(() => {
+    setOpen(null);
+  }, []);
+
+  const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(event.currentTarget);
+  }, []);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <ProjectCampaignDeleteModal
+        onClose={assignCampaignDialog.onFalse}
+        open={assignCampaignDialog.value}
+        onOk={() => {
+          handleRemoveCampaignFromProject();
+        }}
+      />
       <CustomBreadcrumbs
         heading="Campaigns: List"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'Projects', href: paths.dashboard.general.projects.details(address) },
+          { name: 'List' },
+        ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
         action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.general.projects.campaignsadd(
-              params.address as unknown as string
-            )}
-            variant="outlined"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            color="success"
-          >
-            Add Campaign
-          </Button>
+          <Stack direction="row" spacing={3}>
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.general.projects.campaignsadd(
+                params.address as unknown as string
+              )}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="success"
+            >
+              Add Campaign
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleOpen}
+              endIcon={
+                isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
+              }
+              color="success"
+            >
+              Campaign Settings
+            </Button>
+            <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
+              {options
+                .filter((o) => o.show)
+                .map((option) => (
+                  <MenuItem key={option.title} onClick={option.onClick}>
+                    <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
+                    <Typography variant="body2" color="text.secondary">
+                      {option.title}
+                    </Typography>
+                  </MenuItem>
+                ))}
+            </Menu>
+          </Stack>
         }
       />
 
@@ -144,11 +184,7 @@ export default function BeneficiariesListView() {
             action={
               <Stack direction="row" spacing={2.5}>
                 <Tooltip title="Remove Campaign From Project">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleRemoveCampaignFromProject}
-                  >
+                  <Button variant="outlined" color="primary" onClick={assignCampaignDialog.onTrue}>
                     Remove Campaign
                   </Button>
                 </Tooltip>

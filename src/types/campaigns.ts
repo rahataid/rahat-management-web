@@ -47,6 +47,8 @@ export type ICampaignCreateItem = {
   transportId: number | null;
   type: CAMPAIGN_TYPES | null;
   audienceIds: number[] | null;
+  file?: File | null;
+  message?: string | null;
 };
 
 export type ICampaigns = ICampaignItem[];
@@ -142,6 +144,7 @@ export interface ICampaignItemApiResponse {
   audiences: Audience[];
   campaigns: number[];
   totalAudiences: number;
+  communicationLogs: any[];
 }
 
 export interface ITransportItemApiResponse {
@@ -193,3 +196,10 @@ export type ICampaignLogsHookReturn = {
   isLoading: boolean;
   error: IApiResponseError;
 };
+
+export type MenuOptions = {
+  title: string;
+  onClick: () => void;
+  show: boolean;
+  icon?: string;
+}[];

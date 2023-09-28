@@ -34,7 +34,7 @@ import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
 import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useAudiences, useTransports } from 'src/api/campaigns';
+import { useAudiences, useCampaignAudio, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
@@ -50,6 +50,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [projectUpdated, setProjectUpdated] = useState(false);
+  const [showSelectAudio, setShowSelectAudio] = useState(false);
+  const [showSelectMessage, setShowSelectMessage] = useState(false);
+  const { campaignAudio } = useCampaignAudio();
 
   const { push } = useRouter();
   const { address } = useParams();
@@ -75,8 +78,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       enqueueSnackbar('Campaign created successfully', { variant: 'success' });
     },
   });
-
-  console.log(campaignData, 'campaignData');
 
   const updateProjectCampaign = useMutation({
     mutationFn: async (createData: number) => {
@@ -134,14 +135,47 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setValue('audienceIds', formattedSelected);
   };
 
+  const handleSelectCampaignType = (value: string) => {
+    const requiresAudioField = value === 'PHONE';
+    const requiresMessageField = value === 'SMS';
+
+    setShowSelectAudio(requiresAudioField);
+    setShowSelectMessage(requiresMessageField);
+    setValue('type', value as CAMPAIGN_TYPES);
+  };
+
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
       const audienceIds = formattedSelect;
-      const formatted = {
-        ...data,
-        audienceIds,
-        details: parseMultiLineInput(data?.details),
+
+      type AdditionalData = {
+        audio?: any;
+        message?: string;
       };
+
+      const additionalData: AdditionalData = {};
+
+      if (data?.type === 'PHONE' && data?.file) {
+        additionalData.audio = data.file;
+      }
+
+      if (data?.type === 'SMS' && data?.message) {
+        additionalData.message = data?.message;
+      }
+
+      const { file, message, ...dataWithoutAudioAndMessage } = data;
+
+      const mergedDetails = {
+        ...additionalData,
+        ...parseMultiLineInput(data.details),
+      };
+
+      const formatted = {
+        ...dataWithoutAudioAndMessage,
+        audienceIds,
+        details: mergedDetails,
+      };
+
       mutate(formatted);
     },
     [formattedSelect, mutate]
@@ -204,7 +238,11 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   )}
                 />
 
-                <RHFSelect name="type" label="Select Campaign Types">
+                <RHFSelect
+                  name="type"
+                  label="Select Campaign Types"
+                  onChange={(e) => handleSelectCampaignType(e.target.value)}
+                >
                   {campaignTypeOptions.map((campaign) => (
                     <MenuItem key={campaign} value={campaign}>
                       {campaign}
@@ -213,7 +251,21 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              <Stack>
+              <Stack spacing={3}>
+                {showSelectAudio && (
+                  <RHFSelect name="file" label="Select Audio">
+                    {campaignAudio.map((mp3: any) => (
+                      <MenuItem key={mp3?.url} value={mp3?.url}>
+                        {mp3?.filename}
+                      </MenuItem>
+                    ))}
+                  </RHFSelect>
+                )}
+
+                {showSelectMessage && (
+                  <RHFTextField name="message" label="SMS Message" fullWidth multiline />
+                )}
+
                 <RHFTextField name="details" label="Details" fullWidth multiline />
               </Stack>
 
@@ -281,7 +333,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                       onClick={assignCampaignDialog.onTrue}
                       sx={{ alignSelf: 'flex-start' }}
                     >
-                      Register Audiences
+                      Register Beneficiaires
                     </Button>
                   </Stack>
                 </Box>

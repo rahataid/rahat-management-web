@@ -50,36 +50,63 @@ export function useProjectBeneficiaries(address: string): IProjectBeneficiariesH
     return res;
   });
 
-  const beneficiaries = useMemo(() => data?.data?.rows.map((b:IProjectBeneficiariesItem)=>({...b,isApproved:b.isApproved? 'Approved' : 'Not Approved'})) || [], [data?.data?.rows]);
+  const beneficiaries = useMemo(
+    () =>
+      data?.data?.rows.map((b: IProjectBeneficiariesItem) => ({
+        ...b,
+        isApproved: b.isApproved ? 'Approved' : 'Not Approved',
+      })) || [],
+    [data?.data?.rows]
+  );
   const meta = useMemo(() => data?.data?.meta || {}, [data?.data?.meta]);
 
   return {
     beneficiaries,
     loading: isLoading,
     error,
-    meta
+    meta,
   };
 }
 
-export function useRemoveBeneficiaries(address:string){
+export function useRemoveBeneficiaries(address: string) {
   const queryClient = useQueryClient();
-  const {enqueueSnackbar} = useSnackbar()
-  
-   return useMutation(['projects/removebenificiaries'],
-   async(createData:string[])=>{
-    const response =await ProjectsService.removeBeneficiariesFromProject(address,createData);
-    console.log(response.data)
-    return response.data;
+  const { enqueueSnackbar } = useSnackbar();
 
-  },
-  {
-    onError:()=>{
-      enqueueSnackbar('Error Removing Beneficiaries',{variant:'error'})
+  return useMutation(
+    ['projects/removebenificiaries'],
+    async (createData: string[]) => {
+      const response = await ProjectsService.removeBeneficiariesFromProject(address, createData);
+      console.log(response.data);
+      return response.data;
     },
-    onSuccess:()=>{
-      enqueueSnackbar('Beneficiaries disconnect Succesfully',{variant:'success'})
-     queryClient.invalidateQueries(['projectbenificiaries'])
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Beneficiaries', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Beneficiaries disconnect Succesfully', { variant: 'success' });
+        queryClient.invalidateQueries(['projectbenificiaries']);
+      },
     }
-  }
-  )
+  );
+}
+export function useProjectRemoveCampaign() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['project/campaign/remove'],
+    async ({ address, ids }: { address: string; ids: number[] }) => {
+      const response = await ProjectsService.removeCampaignFromProject(address, ids);
+      return response.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Campaigns', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Campaign Removed Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['project']);
+      },
+    }
+  );
 }

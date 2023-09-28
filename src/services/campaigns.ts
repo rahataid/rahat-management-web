@@ -21,13 +21,21 @@ export const endpoints = {
     list: '/campaigns',
     create: '/campaigns',
     update: (id: string) => `/campaigns/${id}`,
+    trigger: (id: string) => `/campaigns/${id}/trigger`,
     details: (id: string) => `/campaigns/${id}`,
     logs: (id: number) => `/campaigns/${id}/logs`,
-    bulkAddAudiences: `/audiences/bulk`,
-    audiences: `/audiences`,
     transports: '/transports',
     getByIds: '/campaigns/getByIds',
     remove: (id: string) => `/campaigns/${id}`,
+    removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
+      `/campaigns/${campaignId}/audience/${audienceId}/remove`,
+    upload: '/campaigns/upload/file',
+    audio: 'campaigns/audio',
+  },
+  audiences: {
+    bulkAddAudiences: `/audiences/bulk`,
+    audiences: `/audiences`,
+    removeAudience: (id: string) => `/audiences/${id}`,
   },
 };
 
@@ -42,9 +50,8 @@ const CampaignsService = {
   update: (id: string, data: ICampaignCreateItem) =>
     axiosInstance.patch(endpoints.campaigns.update(id), { ...data }),
   details: (id: string) => axiosInstance.get(endpoints.campaigns.details(id)),
+  trigger: (id: string) => axiosInstance.get(endpoints.campaigns.trigger(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
-  bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.campaigns.bulkAddAudiences, data),
-  audiences: () => axiosInstance.get(endpoints.campaigns.audiences),
   transports: () => axiosInstance.get(endpoints.campaigns.transports),
   getByIds: (ids: number[]) =>
     axiosInstance.get(endpoints.campaigns.getByIds, {
@@ -53,6 +60,13 @@ const CampaignsService = {
       },
     }),
   remove: (id: string) => axiosInstance.delete(endpoints.campaigns.remove(id)),
+  removeAudienceFromCampaign: (campaignId: string, audienceId: string) =>
+    axiosInstance.delete(endpoints.campaigns.removeAudienceFromCampaign(campaignId, audienceId)),
+  audiences: () => axiosInstance.get(endpoints.audiences.audiences),
+  bulkAddAudiences: (data: any) => axiosInstance.post(endpoints.audiences.bulkAddAudiences, data),
+  removeAudience: (id: string) => axiosInstance.delete(endpoints.audiences.removeAudience(id)),
+  upload: (file: any) => axiosInstance.post(endpoints.campaigns.upload, file),
+  audio: () => axiosInstance.get(endpoints.campaigns.audio),
 };
 
 export default CampaignsService;
