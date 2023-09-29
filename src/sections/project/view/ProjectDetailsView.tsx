@@ -67,12 +67,12 @@ export default function ProjectDetailsView() {
       icon: 'ic:baseline-generating-tokens',
       show: true,
     },
-    {
-      title: 'Approve Project',
-      onClick: createTokenModal.onTrue,
-      icon: 'mdi:approve',
-      show: !chainData.isApproved,
-    },
+    // {
+    //   title: 'Approve Project',
+    //   onClick: createTokenModal.onTrue,
+    //   icon: 'mdi:approve',
+    //   show: !chainData.isApproved,
+    // },
     {
       title: 'Lock Project',
       onClick: lockProjectModal.onTrue,
@@ -164,11 +164,10 @@ export default function ProjectDetailsView() {
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
     useProjectBasedReport(params.address);
 
-    const carouselsExample = [...Array(1)].map((_, index) => ({
-      id: index,
-      coverUrl: `${project?.coverImage}`,
-    }));
-
+  const carouselsExample = [...Array(1)].map((_, index) => ({
+    id: index,
+    coverUrl: `${project?.coverImage}`,
+  }));
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -242,7 +241,7 @@ export default function ProjectDetailsView() {
       </Grid>
 
       <Grid container mt={3} spacing={3}>
-        <Grid item xs={12} md={3} >
+        <Grid item xs={12} md={3}>
           <Piechart
             title="Gender-wise Distribution"
             chart={{
@@ -250,7 +249,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={3} >
+        <Grid item xs={12} md={3}>
           <Piechart
             title="Banked or unbanked"
             chart={{
@@ -258,7 +257,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={3} >
+        <Grid item xs={12} md={3}>
           <Piechart
             title="Access to internet"
             chart={{
@@ -266,7 +265,7 @@ export default function ProjectDetailsView() {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={3} >
+        <Grid item xs={12} md={3}>
           <Piechart
             title="Access to Phone"
             chart={{
