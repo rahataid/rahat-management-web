@@ -34,7 +34,7 @@ import { useBoolean } from '@hooks/use-boolean';
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useSnackbar } from 'notistack';
-import { useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
+import { useCampaign, useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
 import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignDeleteModal from './campaigns-delete-modal';
 import CampaignsTableRow from './campaigns-table-row';
@@ -58,6 +58,7 @@ export default function BeneficiariesListView() {
 
   const table = useTable();
   const { campaigns, meta } = useCampaigns();
+  const { campaign } = useCampaign(table?.selected[0]);
 
   const { push } = useRouter();
 
@@ -94,7 +95,10 @@ export default function BeneficiariesListView() {
       enqueueSnackbar('Please select only one campaign at a time', { variant: 'error' });
       return;
     }
-
+    if (campaign?.communicationLogs?.length > 0 || campaign?.status === 'COMPLETED') {
+      enqueueSnackbar('Cannot delete triggered campaign', { variant: 'error' });
+      return;
+    }
     deleteCampaign.mutate(id[0]);
     table.onSelectAllRows(false, []);
   };
