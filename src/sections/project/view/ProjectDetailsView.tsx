@@ -202,7 +202,7 @@ export default function ProjectDetailsView() {
         <Grid item xs={12} md={6} lg={8}>
           <ProjectStatsCard
             totalBeneficiaries={project._count?.beneficiaries}
-            distributedTokens={0}
+            distributedTokens={chainData?.distributedTokens}
             balance={chainData.balance}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
             onCreateToken={createTokenModal.onTrue}

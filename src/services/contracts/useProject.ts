@@ -277,6 +277,7 @@ const useProjectContract = (): ProjectContract => {
         isProjectLocked(),
         isProjectApproved(contractAddress),
       ]);
+
       return {
         balance,
         tokenAllowance,
