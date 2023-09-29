@@ -38,6 +38,7 @@ const BeneficiariesForm: React.FC = () => {
   const params = useParams();
 
   const { beneficiary } = useBeneficiary(params.uuid);
+  console.log(beneficiary, 'beneficiary');
 
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -64,6 +65,7 @@ const BeneficiariesForm: React.FC = () => {
 
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
+    phone: Yup.string().required('Name is required'),
     gender: Yup.mixed<GENDER>().nullable().optional(),
     phoneOwnership: Yup.string().nullable().optional(),
     bankStatus: Yup.string().nullable().optional(),
@@ -85,6 +87,7 @@ const BeneficiariesForm: React.FC = () => {
       walletAddress: '',
       longitude: null,
       latitude: null,
+      phone: null,
     }),
     []
   );
@@ -104,6 +107,7 @@ const BeneficiariesForm: React.FC = () => {
       const keysToSet = defaultValuesKeys.filter((key) => beneficiaryKeys.includes(key));
 
       keysToSet.forEach((key) => {
+        console.log(key, 'key');
         const value = beneficiary[key];
         const formKey = key as keyof FormValues;
 
@@ -146,6 +150,8 @@ const BeneficiariesForm: React.FC = () => {
               }}
             >
               <RHFTextField InputLabelProps={{ shrink: true }} name="name" label="Name" />
+
+              <RHFTextField InputLabelProps={{ shrink: true }} name="phone" label="Phone Number" />
 
               <RHFSelect InputLabelProps={{ shrink: true }} name="gender" label="GENDER">
                 {genderOptions.map((gender) => (
