@@ -35,10 +35,10 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
     return res.data as ICampaignItemApiResponse;
   });
 
-  const campaign = useMemo(() => data || ({} as ICampaignItemApiResponse), [data]);
+  // const campaign = useMemo(() => data || ({} as ICampaignItemApiResponse), [data]);
 
   return {
-    campaign,
+    campaign: data as ICampaignItemApiResponse,
     isLoading,
     error: error as IApiResponseError,
   };
