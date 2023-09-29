@@ -12,7 +12,18 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import { useSettingsContext } from '@components/settings';
 import JsonToTable from '@components/table/json-table';
-import { Stack } from '@mui/material';
+import {
+  Card,
+  CardHeader,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import { useParams } from 'next/navigation';
 import { useCampaign, useCampaignLogs, useRemoveAudience } from 'src/api/campaigns';
 import AudienceAccordionView from './audiences-accordion-view';
@@ -24,6 +35,7 @@ const CampaignsDetailsView = () => {
   const params = useParams();
   const { campaign } = useCampaign(params.id);
   const { logs } = useCampaignLogs(params.id as unknown as number);
+  console.log(logs, 'logs');
   const deleteAudience = useRemoveAudience();
 
   const handleRemoveAudience = (audienceId: string) => {
@@ -53,6 +65,33 @@ const CampaignsDetailsView = () => {
           handleRemoveAudience={handleRemoveAudience}
         />
         <JsonToTable json={logs?.rows} />
+        {/* <Card>
+          <CardHeader title=" Communication Logs" />
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Id</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>SId</TableCell>
+                  <TableCell>From</TableCell>
+                  <TableCell>To</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {logs?.rows?.map((item: any) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item?.id}</TableCell>
+                    <TableCell>{item?.status}</TableCell>
+                    <TableCell>{item.details?.sid}</TableCell>
+                    <TableCell>{item.details?.from}</TableCell>
+                    <TableCell>{item.details?.to}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card> */}
       </Stack>
     </Container>
   );
