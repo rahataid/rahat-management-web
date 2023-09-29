@@ -12,18 +12,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import { useSettingsContext } from '@components/settings';
 import JsonToTable from '@components/table/json-table';
-import {
-  Card,
-  CardHeader,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Stack } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { useCampaign, useCampaignLogs, useRemoveAudience } from 'src/api/campaigns';
 import AudienceAccordionView from './audiences-accordion-view';
@@ -58,8 +47,8 @@ const CampaignsDetailsView = () => {
 
       <Stack direction="column" spacing={2}>
         <CampaignInfoCard campaign={campaign} />
-        <JsonToTable json={campaign.details} />
-        <JsonToTable json={campaign.transport} />
+        <JsonToTable json={campaign?.details} />
+        <JsonToTable json={campaign?.transport} />
         <AudienceAccordionView
           audience={campaign?.audiences}
           handleRemoveAudience={handleRemoveAudience}
