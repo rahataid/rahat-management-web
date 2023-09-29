@@ -214,12 +214,12 @@ export default function BeneficiariesListView() {
               <TableBody>
                 {campaigns.map((row) => (
                   <CampaignsTableRow
-                    key={row.id}
+                    key={row?.id}
                     row={row}
-                    selected={table.selected.includes(String(row.id))}
-                    onEditRow={() => handleEditRow(row.id)}
-                    onSelectRow={() => table.onSelectRow(String(row.id))}
-                    onViewRow={() => handleViewRow(row.id)}
+                    selected={table.selected.includes(String(row?.id))}
+                    onEditRow={() => handleEditRow(row?.id)}
+                    onSelectRow={() => table.onSelectRow(String(row?.id))}
+                    onViewRow={() => handleViewRow(row?.id)}
                   />
                 ))}
 
