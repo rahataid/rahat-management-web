@@ -24,7 +24,6 @@ const CampaignsDetailsView = () => {
   const params = useParams();
   const { campaign } = useCampaign(params.id);
   const { logs } = useCampaignLogs(params.id as unknown as number);
-  console.log(logs, 'logs');
   const deleteAudience = useRemoveAudience();
 
   const handleRemoveAudience = (audienceId: string) => {

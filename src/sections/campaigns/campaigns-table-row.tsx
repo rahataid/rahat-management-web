@@ -32,7 +32,7 @@ export default function CampaignsTableRow({
   selected,
   onSelectRow,
 }: Props) {
-  const { name, status, createdAt, totalAudiences, transport, type } = row;
+  const { name, status, totalAudiences, transport, type, ...rest } = row;
 
   return (
     <TableRow hover>
@@ -46,7 +46,7 @@ export default function CampaignsTableRow({
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {' '}
         <ListItemText
-          primary={fDateTime(createdAt, 'dd MMM, yyyy p')}
+          primary={fDateTime(rest?.createdAt, 'dd MMM, yyyy p')}
           primaryTypographyProps={{ typography: 'body2' }}
         />{' '}
       </TableCell>
