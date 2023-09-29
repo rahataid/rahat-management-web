@@ -47,8 +47,8 @@ const CampaignsDetailsView = () => {
 
       <Stack direction="column" spacing={2}>
         <CampaignInfoCard campaign={campaign} />
-        <JsonToTable json={campaign.details} />
-        <JsonToTable json={campaign.transport} />
+        <JsonToTable json={campaign?.details} />
+        <JsonToTable json={campaign?.transport} />
         <AudienceAccordionView
           audience={campaign?.audiences}
           handleRemoveAudience={handleRemoveAudience}
