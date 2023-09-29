@@ -6,7 +6,7 @@ import { paths } from 'src/routes/paths';
 
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const CAMPAIGN_HOST_API = process.env.NEXT_PUBLIC_HOST_CAMPAIGN;
-export const CAMPAIGN_APP_ID = process.env.NEXT_PUBLIC_CAMPAIGN_APPID;
+export const CAMPAIGN_APP_ID = process.env.NEXT_PUBLIC_CAMPAIGN_APP_ID;
 
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 
