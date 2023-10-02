@@ -132,7 +132,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
         audienceIds,
         details: parseMultiLineInput(data?.details),
       };
-      mutate(formatted);
+      mutate(formatted as ICampaignCreateItem);
     },
     [mutate, formattedSelect]
   );
