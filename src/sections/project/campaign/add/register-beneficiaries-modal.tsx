@@ -14,7 +14,6 @@ import {
   SelectChangeEvent,
   Stack,
 } from '@mui/material';
-import CampaignsService from '@services/campaigns';
 import { useState } from 'react';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useBulkAddAudiences } from 'src/api/campaigns';
