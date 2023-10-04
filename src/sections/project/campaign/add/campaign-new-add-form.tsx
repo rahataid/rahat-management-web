@@ -60,6 +60,17 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
   const { audiences } = useAudiences();
+
+  const uniqueWalletAddresses = new Set();
+
+  const filteredAudiences = audiences.filter((audience: any) => {
+    const walletAddress = audience.details.walletAddress;
+    if (!uniqueWalletAddresses.has(walletAddress)) {
+      uniqueWalletAddresses.add(walletAddress);
+      return true;
+    }
+    return false;
+  });
   const {
     error,
     isLoading,
@@ -320,7 +331,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                         </Box>
                       )}
                     >
-                      {audiences.map((aud: any) => (
+                      {filteredAudiences.map((aud: any) => (
                         <MenuItem key={aud.details.name} value={aud.details.name}>
                           <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
                           <ListItemText primary={aud.details.name} />
