@@ -5,10 +5,12 @@ import { useSettingsContext } from '@components/settings';
 import { Button, Container } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { paths } from '@routes/paths';
+import { useParams } from 'next/navigation';
 import Iconify from 'src/components/iconify';
 import CampaignForm from './campaign-new-add-form';
 
 const CampaignAddView = () => {
+  const { address } = useParams();
   const settings = useSettingsContext();
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -25,7 +27,7 @@ const CampaignAddView = () => {
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.general.campaigns.list}
+            href={paths.dashboard.general.projects.campaigns(address)}
             variant="outlined"
             startIcon={<Iconify icon="ph:list" />}
             color="success"
