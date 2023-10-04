@@ -45,9 +45,10 @@ const VendorView = () => {
     console.log('actiavat', activated);
   };
 
-  const handleTokenSend = (walletAddress: string, tokenAmount: string) => {
+  const handleTokenSend = async (walletAddress: string, tokenAmount: string) => {
     console.log(walletAddress, tokenAmount);
-    sendTokensToVendor(walletAddress, tokenAmount);
+    await sendTokensToVendor(walletAddress, tokenAmount);
+    assignTokenDialog.onFalse();
   };
 
   return (
