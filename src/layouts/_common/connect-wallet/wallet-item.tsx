@@ -43,6 +43,7 @@ export default function WalletItem({
 }: WalletItemProps) {
   const authStore = useAuthStore();
   const networkSettings = useAppStore((state) => state.blockchain);
+  console.log('networkSettings', networkSettings);
 
   const renderAvatar = (
     <ListItemAvatar>
@@ -94,7 +95,15 @@ export default function WalletItem({
           size="small"
           variant="contained"
           onClick={async () => {
-            await connector.activate(networkSettings);
+            await connector.activate({
+              chainId: networkSettings?.chainId,
+              chainName: networkSettings?.chainName,
+              rpcUrls: networkSettings?.rpcUrls,
+              nativeCurrency: {
+                ...networkSettings?.nativeCurrency,
+                decimals: 18,
+              },
+            });
           }}
         >
           Connect
