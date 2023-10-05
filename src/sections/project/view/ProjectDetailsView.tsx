@@ -246,6 +246,7 @@ export default function ProjectDetailsView() {
             title="Gender-wise Distribution"
             chart={{
               series: genderData,
+              colors: ['#3085C3', '#FF6AC2', '#F0DE36', '#FE0000'],
             }}
           />
         </Grid>
@@ -254,6 +255,7 @@ export default function ProjectDetailsView() {
             title="Banked or unbanked"
             chart={{
               series: bankStatusData,
+              colors: ['#FE0000', '#FF6AC2', '#3085C3', '#F0DE36'],
             }}
           />
         </Grid>
@@ -262,6 +264,7 @@ export default function ProjectDetailsView() {
             title="Access to internet"
             chart={{
               series: internetAccessData,
+              colors: ['#FE0000', '#FF6AC2', '#F0DE36', '#3085C3'],
             }}
           />
         </Grid>
@@ -270,6 +273,7 @@ export default function ProjectDetailsView() {
             title="Access to Phone"
             chart={{
               series: phoneOwnershipData,
+              colors: ['#FE0000', '#FF6AC2', '#F0DE36', '#3085C3'],
             }}
           />
         </Grid>
