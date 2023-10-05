@@ -42,23 +42,43 @@ export function useVendor(walletAddress: string): IVendorDetailsHookReturn {
   };
 }
 
-export function useVendorState(walletAdddress:string){
+export function useVendorState(walletAdddress: string) {
   const queryClient = useQueryClient();
-  const {enqueueSnackbar} = useSnackbar()
-  
-   return useMutation(['vendors/toogleState'],
-   async()=>{
-    const response =await VendorsService.changeVendorState(walletAdddress);
-    return response.data;
-  },
-  {
-    onError:()=>{
-      enqueueSnackbar('Toggle State errror',{variant:'error'})
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    ['vendors/toogleState'],
+    async () => {
+      const response = await VendorsService.changeVendorState(walletAdddress);
+      return response.data;
     },
-    onSuccess:()=>{
-      enqueueSnackbar('Toggle State Successfully',{variant:'success'})
-     queryClient.invalidateQueries(['vendors'])
+    {
+      onError: () => {
+        enqueueSnackbar('Toggle State errror', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Toggle State Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['vendors']);
+      },
     }
-  }
-  )
+  );
+}
+
+export function useUpdateVendor(walletAddress: string) {
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['campaign/audience/remove'],
+    async (data: IVendorDetails) => {
+      const res = await VendorsService.update(walletAddress, data);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Updating Vendor', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Vendor Updated Removed Successfully', { variant: 'success' });
+      },
+    }
+  );
 }

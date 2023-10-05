@@ -53,7 +53,6 @@ import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: '' },
   { id: 'name', label: 'Name' },
   { id: 'internetAccess', label: 'Internet Access' },
   { id: 'phoneOwnership', label: 'Phone' },
@@ -72,7 +71,7 @@ export default function ProjectBeneficiariesListView() {
   const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
   const bulkAssignTokensModal = useBoolean();
-  const rmvBeneficiaries = useBoolean()
+  const rmvBeneficiaries = useBoolean();
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -165,23 +164,21 @@ export default function ProjectBeneficiariesListView() {
   }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
   const removeBeneficiaries = useRemoveBeneficiaries(address);
-//   const handleRemoveBeneficiariesFromProject = () => {
-//   const id = table.selected.map((id) => id);
-//   removeBeneficiaries.mutate(id);
-//   table.onSelectAllRows(false, []);
-// };
+  //   const handleRemoveBeneficiariesFromProject = () => {
+  //   const id = table.selected.map((id) => id);
+  //   removeBeneficiaries.mutate(id);
+  //   table.onSelectAllRows(false, []);
+  // };
 
-const handleRemoveBeneficiariesFromProject = useCallback(
-  async()=>{
+  const handleRemoveBeneficiariesFromProject = useCallback(async () => {
     const id = table.selected.map((id) => id);
-   removeBeneficiaries.mutate(id);
-  table.onSelectAllRows(false, []);
-  rmvBeneficiaries.onFalse()
-  },[removeBeneficiaries]
-)
+    removeBeneficiaries.mutate(id);
+    table.onSelectAllRows(false, []);
+    rmvBeneficiaries.onFalse();
+  }, [removeBeneficiaries]);
 
   return (
-<Container maxWidth={settings.themeStretch ? false : 'lg'}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <BeneficiariesAssignTokenModal
         open={bulkAssignTokensModal.value}
         onClose={bulkAssignTokensModal.onFalse}
@@ -189,15 +186,16 @@ const handleRemoveBeneficiariesFromProject = useCallback(
         selected={table.selected}
       />
 
-      <ConfirmDialog 
-      open={rmvBeneficiaries.value} 
-      title={'Selected Beneficiaries will be disconnected'} 
-      action={
-        ( <Button  variant="text" onClick={ handleRemoveBeneficiariesFromProject} autoFocus>
-        Disconnect
-      </Button>)
-      } 
-      onClose={rmvBeneficiaries.onFalse}/>
+      <ConfirmDialog
+        open={rmvBeneficiaries.value}
+        title={'Selected Beneficiaries will be disconnected'}
+        action={
+          <Button variant="text" onClick={handleRemoveBeneficiariesFromProject} autoFocus>
+            Disconnect
+          </Button>
+        }
+        onClose={rmvBeneficiaries.onFalse}
+      />
       <CustomBreadcrumbs
         heading="Project Beneficiaries: List"
         links={[

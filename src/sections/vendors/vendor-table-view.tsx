@@ -35,8 +35,8 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
   { id: 'isApproved', label: 'Is Approved' },
   { id: 'walletAddress', label: 'Wallet Address' },
-  {id:'isActive',label:'Is Active'},
-  {id:'Action',label:'Actions'},
+  { id: 'isActive', label: 'Is Active' },
+  { id: 'Action', label: 'Actions' },
   { id: '', label: '', width: '20', align: 'center' },
 ];
 
@@ -57,10 +57,10 @@ export default function VendorListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const { vendors, meta } = useVendors(filters);
+  console.log(vendors, 'vendors');
 
   const searchParams = useSearchParams();
-  const {address} = useParams()
-
+  const { address } = useParams();
 
   const settings = useSettingsContext();
 
@@ -94,9 +94,7 @@ export default function VendorListView() {
     setFilters(searchFilters);
   }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
-  const changeVendorState = useVendorState(address)
-
-
+  const changeVendorState = useVendorState(address);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

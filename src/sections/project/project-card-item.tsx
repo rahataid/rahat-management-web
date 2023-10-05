@@ -128,7 +128,7 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
         },
         {
           label: `${fCurrency(budget)}`,
-          icon: <Iconify icon="ri:token-swap-line" sx={{ color: 'primary.main' }} />,
+          // icon: <Iconify icon="ri:token-swap-line" sx={{ color: 'primary.main' }} />,
         },
       ].map((item) => (
         <Stack
@@ -138,7 +138,7 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
           alignItems="center"
           sx={{ typography: 'body2', ...item.sx }}
         >
-          {item.icon}
+          {/* {item.icon} */}
           {item.label}
         </Stack>
       ))}
