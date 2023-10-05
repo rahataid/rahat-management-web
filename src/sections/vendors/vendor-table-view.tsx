@@ -35,7 +35,6 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
   { id: 'isApproved', label: 'Is Approved' },
   { id: 'walletAddress', label: 'Wallet Address' },
-  { id: 'isActive', label: 'Is Active' },
   { id: 'Action', label: 'Actions' },
   { id: '', label: '', width: '20', align: 'center' },
 ];

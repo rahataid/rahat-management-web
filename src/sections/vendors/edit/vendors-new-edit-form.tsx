@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
-import { parseMultiLineInput } from '@utils/strings';
 import { useParams } from 'next/navigation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -30,25 +29,17 @@ const BeneficiariesForm: React.FC = () => {
     }
   }, [vendor]);
 
-  const handleActivateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsActive(event.target.checked);
-  };
-
   console.log(isActive, 'isActive');
 
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phone: Yup.string().required('Number is required'),
-    address: Yup.string().required('Address is required'),
-    isActive: Yup.boolean().required('Status is required'),
   });
 
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: '',
-      address: '',
       phone: '',
-      isActive: false,
     }),
     []
   );
@@ -76,17 +67,7 @@ const BeneficiariesForm: React.FC = () => {
     }
   }, [defaultValues, vendor, setValue]);
 
-  const onSubmit = useCallback(
-    (data: IVendorItem) => {
-      const formattedData = {
-        ...data,
-        address: parseMultiLineInput(data?.address),
-      };
-      console.log(formattedData);
-      updateVendor.mutate(formattedData);
-    },
-    [updateVendor]
-  );
+  const onSubmit = useCallback((data: IVendorItem) => updateVendor.mutate(data), [updateVendor]);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -103,9 +84,9 @@ const BeneficiariesForm: React.FC = () => {
               }}
             >
               <RHFTextField InputLabelProps={{ shrink: true }} name="name" label="Name" />
-              <RHFTextField InputLabelProps={{ shrink: true }} name="address" label="Address" />
+              {/* <RHFTextField InputLabelProps={{ shrink: true }} name="address" label="Address" /> */}
               <RHFTextField InputLabelProps={{ shrink: true }} name="phone" label="Phone Number" />
-              <FormGroup>
+              {/* <FormGroup>
                 <FormControlLabel
                   control={
                     <Switch
@@ -117,7 +98,7 @@ const BeneficiariesForm: React.FC = () => {
                   }
                   label="Active"
                 />
-              </FormGroup>
+              </FormGroup> */}
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

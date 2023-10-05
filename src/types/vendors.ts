@@ -20,7 +20,7 @@ export type IVendorItem = {
   name: string;
   isApproved?: boolean;
   phone: string;
-  address: string;
+  address?: string;
   walletAddress?: string;
   isActive?: boolean;
 };

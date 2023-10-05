@@ -1,14 +1,17 @@
 import VendorsService from '@services/vendors';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
+import { useRouter } from 'src/routes/hook';
 import { useMemo } from 'react';
 
 import {
   IVendorDetails,
   IVendorDetailsHookReturn,
+  IVendorItem,
   IVendorsApiFilters,
   IVendorsListHookReturn,
 } from 'src/types/vendors';
+import { paths } from '@routes/paths';
 
 export function useVendors(params?: IVendorsApiFilters): IVendorsListHookReturn {
   const { data, isLoading, error } = useQuery(['vendors', params], async () => {
@@ -65,10 +68,11 @@ export function useVendorState(walletAdddress: string) {
 }
 
 export function useUpdateVendor(walletAddress: string) {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   return useMutation(
     ['campaign/audience/remove'],
-    async (data: IVendorDetails) => {
+    async (data: IVendorItem) => {
       const res = await VendorsService.update(walletAddress, data);
       return res.data;
     },
@@ -77,7 +81,8 @@ export function useUpdateVendor(walletAddress: string) {
         enqueueSnackbar('Error Updating Vendor', { variant: 'error' });
       },
       onSuccess: () => {
-        enqueueSnackbar('Vendor Updated Removed Successfully', { variant: 'success' });
+        enqueueSnackbar('Vendor Updated Successfully', { variant: 'success' });
+        router.push(paths.dashboard.general.vendors.list);
       },
     }
   );
