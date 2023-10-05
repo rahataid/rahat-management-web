@@ -1,7 +1,7 @@
-import merge from 'lodash/merge';
 import { ApexOptions } from 'apexcharts';
+import merge from 'lodash/merge';
 // @mui
-import { useTheme, alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ export default function useChart(options?: ApexOptions) {
   const theme = useTheme();
 
   const LABEL_TOTAL = {
-    show: true,
+    show: false,
     label: 'Total',
     color: theme.palette.text.secondary,
     fontSize: theme.typography.subtitle2.fontSize,
@@ -151,7 +151,7 @@ export default function useChart(options?: ApexOptions) {
       pie: {
         donut: {
           labels: {
-            show: true,
+            show: false,
             value: LABEL_VALUE,
             total: LABEL_TOTAL,
           },
