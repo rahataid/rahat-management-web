@@ -167,7 +167,7 @@ const BeneficiariesForm: React.FC = () => {
                 }}
               />
 
-              <RHFSelect name="phoneOwnership" label="Phone Ownership">
+              <RHFSelect name="phoneOwnership" label="Type of Phone">
                 {phoneStatusOptions.map((phoneOwnership) => (
                   <MenuItem key={phoneOwnership} value={phoneOwnership}>
                     {phoneOwnership}

@@ -23,7 +23,6 @@ const CampaignsDetailsView = () => {
   const settings = useSettingsContext();
   const params = useParams();
   const { campaign } = useCampaign(params.id);
-  console.log(campaign, 'campaign');
   const { logs } = useCampaignLogs(params.id as unknown as number);
   const deleteAudience = useRemoveAudience();
 

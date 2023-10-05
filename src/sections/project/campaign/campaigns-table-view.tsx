@@ -29,10 +29,10 @@ import {
 } from 'src/components/table';
 // types
 //
+import { useBoolean } from '@hooks/use-boolean';
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useCampaigns } from 'src/api/campaigns';
-import { useBoolean } from '@hooks/use-boolean';
 import { useProject, useProjectRemoveCampaign } from 'src/api/project';
 import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
@@ -94,7 +94,7 @@ export default function BeneficiariesListView() {
 
   const options: MenuOptions = [
     {
-      title: 'Upload Mp3',
+      title: 'Upload Audio',
       onClick: () => {
         router.push(paths.dashboard.general.campaigns.uploadMp3);
       },
