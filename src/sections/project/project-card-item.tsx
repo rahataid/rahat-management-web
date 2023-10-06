@@ -147,13 +147,19 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
 
   return (
     <>
-      <Card>
-        {renderImages}
+      <Link
+        component={RouterLink}
+        href={paths.dashboard.general.projects.details(contractAddress)}
+        color="inherit"
+      >
+        <Card>
+          {renderImages}
 
-        {renderTexts}
+          {renderTexts}
 
-        {renderInfo}
-      </Card>
+          {renderInfo}
+        </Card>
+      </Link>
 
       <CustomPopover
         open={popover.open}
