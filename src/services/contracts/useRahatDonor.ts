@@ -8,6 +8,7 @@ import { UseRahatDonorReturn } from 'src/types/contract-hooks/useRahatDonor';
 
 const useRahatDonor = (): UseRahatDonorReturn => {
   const [donorContract] = useContract(CONTRACTS.DONOR);
+  const [donorContractWS] = useContract(CONTRACTS.DONOR, { isWebsocket: true });
   const [rahatTokenContract] = useContract(CONTRACTS.RAHATTOKEN);
   const { handleContractError } = useErrorHandler();
   const contracts = useAppStore((state) => state.contracts);
@@ -53,12 +54,13 @@ const useRahatDonor = (): UseRahatDonorReturn => {
   const memoizedValues = useMemo(
     () => ({
       donorContract,
+      donorContractWS,
       rahatTokenContract,
       sendTokenToProject,
       addAsOwner,
       isOwner,
     }),
-    [addAsOwner, donorContract, isOwner, rahatTokenContract, sendTokenToProject]
+    [addAsOwner, donorContract, donorContractWS, isOwner, rahatTokenContract, sendTokenToProject]
   );
 
   return memoizedValues;

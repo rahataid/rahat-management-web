@@ -6,6 +6,7 @@ import { Container, Grid } from '@mui/material';
 import { paths } from '@routes/paths';
 import useProjectContract from '@services/contracts/useProject';
 import useRahatDonor from '@services/contracts/useRahatDonor';
+import { useRahatToken } from '@services/contracts/useRahatToken';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
@@ -48,13 +49,34 @@ export default function ProjectDetailsView() {
   }));
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
 
-  const { getProjectChainData, acceptToken, lockProject, unLockProject } = useProjectContract();
-  const { sendTokenToProject } = useRahatDonor();
+  const {
+    getProjectChainData,
+    acceptToken,
+    lockProject,
+    unLockProject,
+    projectContractWS: ProjectContractWS,
+  } = useProjectContract();
+  const { sendTokenToProject, donorContractWS: DonorContractWS } = useRahatDonor();
+  const { contractWS: RahatTokenWS } = useRahatToken();
 
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
     setChainData(data);
   }, [getProjectChainData, params.address, setChainData]);
+
+  useEffect(() => {
+    RahatTokenWS?.on('Approval', handleChainData);
+    RahatTokenWS?.on('Transfer', handleChainData);
+    DonorContractWS?.on('TokenMintedAndApproved', handleChainData);
+    DonorContractWS?.on('TokenCreated', handleChainData);
+    ProjectContractWS?.on('ProjectLocked', handleChainData);
+    ProjectContractWS?.on('ProjectUnlocked', handleChainData);
+    return () => {
+      RahatTokenWS?.removeAllListeners();
+      DonorContractWS?.removeAllListeners();
+      ProjectContractWS?.removeAllListeners();
+    };
+  }, [project, handleChainData, RahatTokenWS, DonorContractWS, ProjectContractWS]);
 
   useEffect(() => {
     handleChainData();
@@ -140,7 +162,6 @@ export default function ProjectDetailsView() {
   const handleTokenAccept = async () => {
     if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
     const accpeted = await acceptToken(chainData?.tokenAllowance?.toString() || '');
-    console.log('accpeted', accpeted);
   };
 
   const lockProjectProp = {

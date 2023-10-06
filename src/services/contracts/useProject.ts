@@ -13,6 +13,7 @@ import {
 const useProjectContract = (): ProjectContract => {
   const { handleContractError } = useErrorHandler();
   const [projectContract, abi] = useContract(CONTRACTS.CVAPROJECT);
+  const [projectContractWS] = useContract(CONTRACTS.CVAPROJECT, { isWebsocket: true });
   const [tokenContract] = useContract(CONTRACTS.RAHATTOKEN);
   const [donorContract] = useContract(CONTRACTS.DONOR);
   const [communityContract] = useContract(CONTRACTS.COMMUNITY);
@@ -291,6 +292,7 @@ const useProjectContract = (): ProjectContract => {
   return useMemo(
     () => ({
       projectContract,
+      projectContractWS,
       abi,
       getProjectBalance,
       communityContract,
@@ -323,6 +325,7 @@ const useProjectContract = (): ProjectContract => {
     }),
     [
       projectContract,
+      projectContractWS,
       abi,
       getProjectBalance,
       communityContract,
