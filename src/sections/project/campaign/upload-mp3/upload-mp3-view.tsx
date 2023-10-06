@@ -21,12 +21,14 @@ import { useCampaignFileUpload } from 'src/api/campaigns';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
 import { Upload } from 'src/components/upload';
+import { useParams } from 'src/routes/hook';
 
 // ----------------------------------------------------------------------
 
 export default function UploadView() {
   const preview = useBoolean();
   const uploadMP3 = useCampaignFileUpload();
+  const { address } = useParams();
 
   const [files, setFiles] = useState<(File | string)[]>([]);
 
@@ -80,7 +82,11 @@ export default function UploadView() {
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.general.campaigns.list}
+              href={
+                address
+                  ? paths.dashboard.general.projects.campaigns(address)
+                  : paths.dashboard.general.campaigns.list
+              }
               variant="outlined"
               startIcon={<Iconify icon="ph:list" />}
               color="success"

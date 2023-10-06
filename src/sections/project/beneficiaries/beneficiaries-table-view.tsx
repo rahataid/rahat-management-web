@@ -175,7 +175,7 @@ export default function ProjectBeneficiariesListView() {
     removeBeneficiaries.mutate(id);
     table.onSelectAllRows(false, []);
     rmvBeneficiaries.onFalse();
-  }, [removeBeneficiaries]);
+  }, [removeBeneficiaries, table, rmvBeneficiaries]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -188,7 +188,7 @@ export default function ProjectBeneficiariesListView() {
 
       <ConfirmDialog
         open={rmvBeneficiaries.value}
-        title={'Selected Beneficiaries will be disconnected'}
+        title="Selected Beneficiaries will be disconnected"
         action={
           <Button variant="text" onClick={handleRemoveBeneficiariesFromProject} autoFocus>
             Disconnect

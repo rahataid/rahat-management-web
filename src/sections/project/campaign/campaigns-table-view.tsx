@@ -96,7 +96,7 @@ export default function BeneficiariesListView() {
     {
       title: 'Upload Audio',
       onClick: () => {
-        router.push(paths.dashboard.general.campaigns.uploadMp3);
+        router.push(paths.dashboard.general.projects.uploadMp3(address));
       },
       icon: 'mdi:upload',
       show: true,
