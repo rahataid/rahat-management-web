@@ -12,7 +12,7 @@ interface Props {
 const ProjectStatsCard = ({
   balance = 0,
   tokenName = '',
-  totalBeneficiaries ,
+  totalBeneficiaries,
   distributedTokens,
   onCreateToken,
 }: Props) => (
@@ -24,7 +24,7 @@ const ProjectStatsCard = ({
             color="success"
             icon="material-symbols:paid"
             title="Beneficiaries"
-            total={totalBeneficiaries}
+            total={totalBeneficiaries || '-'}
             subtitle="total"
           />
         </Grid>
@@ -56,7 +56,7 @@ const ProjectStatsCard = ({
             color="warning"
             icon="material-symbols:token"
             title="Distributed"
-            total={distributedTokens}
+            total={distributedTokens || '-'}
             subtitle={tokenName}
           />
         </Grid>
