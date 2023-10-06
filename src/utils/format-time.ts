@@ -28,8 +28,8 @@ export function fToNow(date: InputValue) {
     : '';
 }
 
-export function calculateAge(dob) {
-  const date = parse(dob, 'dd/MM/yyyy', new Date());
+export function calculateAge(dob: any) {
+  const date = new Date(dob);
   const age = differenceInCalendarYears(new Date(), date);
   return age;
 }

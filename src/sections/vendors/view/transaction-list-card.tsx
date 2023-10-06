@@ -7,17 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-function createData(date: string, txHash: string, Beneficiary: number, Amount: number) {
-  return { date, txHash, Beneficiary, Amount };
-}
-
-const rows = [
-  createData('14th August 2023', '0x020asd2020131232929', 6, 240000),
-  createData('14th August 2030', '0x02gtfg0201312320292', 16, 24000000),
-  createData('14th August 2040', '0x02as021231313202029', 17, 24110000),
-  createData('14th August 2050', '0x02043jkadjh523wq234	', 20, 24004400),
-  createData('14th August 2060', '0x02043jkadjh52345234', 23, 24078000),
-];
+const rows = [];
 
 export default function TransactionTable() {
   return (
@@ -27,7 +17,7 @@ export default function TransactionTable() {
           Transaction History
         </Typography>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>

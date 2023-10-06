@@ -68,11 +68,11 @@ export default function UploadView() {
     <>
       <Container>
         <CustomBreadcrumbs
-          heading="Campaign: Upload Mp3"
+          heading="Campaign: Upload Audio"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Campaign', href: paths.dashboard.general.campaigns.list },
-            { name: 'Upload Mp3' },
+            { name: 'Upload Audio' },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },

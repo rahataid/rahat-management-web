@@ -21,6 +21,7 @@ export type IVendorChainData = {
 
 export interface ProjectContract {
   projectContract: Contract | null;
+  projectContractWS: Contract | null;
   abi: InterfaceAbi | null;
   getProjectBalance: (contractAddress: string) => Promise<number>;
   communityContract: Contract | null;

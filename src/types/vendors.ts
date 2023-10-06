@@ -16,13 +16,13 @@ export type IAddress = {
 };
 
 export type IVendorItem = {
-  id: number;
+  id?: number;
   name: string;
-  isApproved: boolean;
+  isApproved?: boolean;
   phone: string;
-  address: string;
-  walletAddress: string;
-  isActive:boolean;
+  address?: string;
+  walletAddress?: string;
+  isActive?: boolean;
 };
 
 export type IVendorDetails = {
@@ -33,7 +33,7 @@ export type IVendorDetails = {
   email: string;
   address: IAddress;
   isApproved: boolean;
-  isActive:boolean;
+  isActive: boolean;
   createdAt: string;
   updatedAt?: string;
   deletedAt?: string;

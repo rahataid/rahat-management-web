@@ -18,7 +18,12 @@ const VendorView = () => {
   const { address } = useParams();
   const { vendor } = useVendor(address);
   const assignTokenDialog = useBoolean();
-  const { getVendorChainData, activateVendor, sendTokensToVendor } = useProjectContract();
+  const {
+    getVendorChainData,
+    activateVendor,
+    sendTokensToVendor,
+    projectContractWS: ProjectContractWS,
+  } = useProjectContract();
 
   const { chainData, setChainData } = useVendorStore((state) => ({
     chainData: state.chainData,
@@ -38,6 +43,15 @@ const VendorView = () => {
   useEffect(() => {
     handleVendorChainData();
   }, [handleVendorChainData]);
+
+  useEffect(() => {
+    ProjectContractWS?.on('VendorAllowanceAccept', handleVendorChainData);
+    ProjectContractWS?.on('VendorAllowance', handleVendorChainData);
+
+    return () => {
+      ProjectContractWS?.removeAllListeners();
+    };
+  }, [ProjectContractWS, handleVendorChainData]);
 
   const handleActivateVendor = async (walletAddress: string) => {
     console.log('activate', walletAddress);

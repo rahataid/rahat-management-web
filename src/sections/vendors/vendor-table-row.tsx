@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default function VendorTableRow({ row, onViewRow, onEditRow }: Props) {
-  const { name, isApproved, walletAddress,isActive } = row;
+  const { name, isApproved, walletAddress, isActive } = row;
 
   const quickEdit = useBoolean();
 
@@ -51,11 +51,11 @@ export default function VendorTableRow({ row, onViewRow, onEditRow }: Props) {
         />
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         <Label variant="soft" color={isActive ? 'success' : 'error'}>
           {isActive ? 'Active' : 'Deactive'}
         </Label>
-      </TableCell>
+      </TableCell> */}
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>

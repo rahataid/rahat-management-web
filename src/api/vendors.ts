@@ -1,14 +1,17 @@
 import VendorsService from '@services/vendors';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
+import { useRouter } from 'src/routes/hook';
 import { useMemo } from 'react';
 
 import {
   IVendorDetails,
   IVendorDetailsHookReturn,
+  IVendorItem,
   IVendorsApiFilters,
   IVendorsListHookReturn,
 } from 'src/types/vendors';
+import { paths } from '@routes/paths';
 
 export function useVendors(params?: IVendorsApiFilters): IVendorsListHookReturn {
   const { data, isLoading, error } = useQuery(['vendors', params], async () => {
@@ -42,23 +45,45 @@ export function useVendor(walletAddress: string): IVendorDetailsHookReturn {
   };
 }
 
-export function useVendorState(walletAdddress:string){
+export function useVendorState(walletAdddress: string) {
   const queryClient = useQueryClient();
-  const {enqueueSnackbar} = useSnackbar()
-  
-   return useMutation(['vendors/toogleState'],
-   async()=>{
-    const response =await VendorsService.changeVendorState(walletAdddress);
-    return response.data;
-  },
-  {
-    onError:()=>{
-      enqueueSnackbar('Toggle State errror',{variant:'error'})
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    ['vendors/toogleState'],
+    async () => {
+      const response = await VendorsService.changeVendorState(walletAdddress);
+      return response.data;
     },
-    onSuccess:()=>{
-      enqueueSnackbar('Toggle State Successfully',{variant:'success'})
-     queryClient.invalidateQueries(['vendors'])
+    {
+      onError: () => {
+        enqueueSnackbar('Toggle State errror', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Toggle State Successfully', { variant: 'success' });
+        queryClient.invalidateQueries(['vendors']);
+      },
     }
-  }
-  )
+  );
+}
+
+export function useUpdateVendor(walletAddress: string) {
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['campaign/audience/remove'],
+    async (data: IVendorItem) => {
+      const res = await VendorsService.update(walletAddress, data);
+      return res.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Updating Vendor', { variant: 'error' });
+      },
+      onSuccess: () => {
+        enqueueSnackbar('Vendor Updated Successfully', { variant: 'success' });
+        router.push(paths.dashboard.general.vendors.list);
+      },
+    }
+  );
 }

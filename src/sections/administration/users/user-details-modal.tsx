@@ -1,16 +1,20 @@
+import Label from '@components/label';
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   FormControlLabel,
   FormGroup,
   Stack,
   Switch,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import useRahatDonor from '@services/contracts/useRahatDonor';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useDisableUser } from 'src/api/administration';
 import { IUserItem } from 'src/types/administration';
 
@@ -20,11 +24,26 @@ type Props = {
   user: IUserItem;
   onActivate: (walletAddress: string, isActive: boolean) => void;
   onChangeRole: (walletAddress: string, role: string) => void;
+  onMakeOwner: (walletAddress: string, e: ChangeEvent<HTMLInputElement>) => void;
 };
 
-const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) => {
+const UserDetails = ({ open, onClose, user, onActivate, onChangeRole, onMakeOwner }: Props) => {
   const [isActive, setIsActive] = useState(false);
   const [role, setRole] = useState('');
+  const { isOwner } = useRahatDonor();
+  const [isOwnerState, setIsOwnerState] = useState<boolean | null>(null);
+
+  console.log('isOwnerState', isOwnerState);
+
+  useEffect(() => {
+    const fetchIsOwner = async () => {
+      if (user) {
+        const owner = await isOwner(user.walletAddress);
+        setIsOwnerState(owner);
+      }
+    };
+    fetchIsOwner();
+  }, [isOwner, user, onMakeOwner]);
 
   console.log(user, 'user');
   useEffect(() => {
@@ -106,6 +125,19 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole }: Props) =
               />
             </Stack>
           </FormGroup>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Label color="success">
+            <Checkbox
+              checked={Boolean(isOwnerState)}
+              onChange={(e) => onMakeOwner(user?.walletAddress, e)}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            Add as Owner
+          </Label>
         </Stack>
       </DialogContent>
 

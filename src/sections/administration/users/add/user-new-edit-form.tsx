@@ -24,6 +24,7 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import { useSnackbar } from 'src/components/snackbar';
 import { IApiResponseError } from 'src/types/project';
 import { IUserDetails, IUserTableFilters } from 'src/types/user';
+import { useRahatCommunity } from '@services/contracts/useRahatCommunity';
 
 type Props = {
   currentUser?: IUserTableFilters;
@@ -34,6 +35,7 @@ interface FormValues extends IUserTableFilters {}
 const UserAddForm: React.FC = ({ currentUser }: Props) => {
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const { addAdminToCommunity } = useRahatCommunity();
 
   const { error, isLoading, mutate } = useMutation<
     IUserDetails,
@@ -83,18 +85,21 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
     trigger('walletAddress');
   }, [setValue, trigger]);
 
-  // const onSubmit = useCallback((data: IUserTableFilters) => mutate(data), [mutate]);
   const onSubmit = useCallback(
-    (data: IUserTableFilters) => {
+    async (data: IUserTableFilters) => {
       const modifiedData: any = {
         ...data,
         // eslint-disable-next-line no-nested-ternary
         roles: data.roles ? (Array.isArray(data.roles) ? data.roles : [data.roles]) : ['USER'],
       };
-
-      mutate(modifiedData);
+      if (data?.roles === 'ADMIN') {
+        const d = await addAdminToCommunity(data?.walletAddress);
+        if (d) {
+          mutate(modifiedData);
+        }
+      }
     },
-    [mutate]
+    [mutate, addAdminToCommunity]
   );
 
   const roleOptions = useMemo(() => ['USER', 'ADMIN'], []);

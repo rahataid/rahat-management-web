@@ -83,7 +83,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       .max(24, 'Maximum 15 characters'),
     startTime: Yup.date().nullable().required('Start date is required'),
     type: Yup.string().required('Campaign Type is required'),
-    details: Yup.string().required('Enter the details for the campaign'),
+    details: Yup.string().optional(),
     audienceIds: Yup.array().required('Select the audience for the campaign'),
     transportId: Yup.number().required('Select the transport for the campaign'),
   });
@@ -149,7 +149,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
       const mergedDetails = {
         ...additionalData,
-        ...parseMultiLineInput(data.details),
+        ...parseMultiLineInput(data?.details),
       };
 
       const formatted = {

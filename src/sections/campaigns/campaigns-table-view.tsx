@@ -104,7 +104,7 @@ export default function BeneficiariesListView() {
   };
   const options: MenuOptions = [
     {
-      title: 'Upload Mp3',
+      title: 'Upload Audio',
       onClick: () => {
         router.push(paths.dashboard.general.campaigns.uploadMp3);
       },
