@@ -16,10 +16,10 @@ export const transaction: ITransactionItem = {
 };
 
 export const transactionStats: ITransactionStats = {
-  bankedCash: 100,
-  unbankedCash: 200,
-  bankedToken: 300,
-  unbankedToken: 400,
+  bankedCash: 0,
+  unbankedCash: 0,
+  bankedToken: 0,
+  unbankedToken: 0,
 };
 
 export const transactionDetails: ITransactionDetails = {
