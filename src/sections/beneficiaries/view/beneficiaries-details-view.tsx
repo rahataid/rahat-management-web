@@ -23,7 +23,7 @@ function BeneficiariesDetailsView() {
   const { uuid } = useParams();
   const { beneficiary } = useBeneficiary(uuid as string);
   const settings = useSettingsContext();
-  const { getBeneficiaryChainData } = useProjectContract();
+  const { getBeneficiaryChainData, projectContractWS: ProjectContractWS } = useProjectContract();
   const { chainData, setChainData } = useBeneficiaryStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,
@@ -40,6 +40,19 @@ function BeneficiariesDetailsView() {
   useEffect(() => {
     handleChainData();
   }, [handleChainData]);
+
+  useEffect(() => {
+    ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
+    ProjectContractWS?.on('BeneficiaryRemoved', handleChainData);
+    ProjectContractWS?.on('ClaimAdjusted', handleChainData);
+    ProjectContractWS?.on('ClaimAssigned', handleChainData);
+    ProjectContractWS?.on('ClaimProcessed', handleChainData);
+    ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
+
+    return () => {
+      ProjectContractWS?.removeAllListeners();
+    };
+  }, [ProjectContractWS, handleChainData]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

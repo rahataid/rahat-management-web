@@ -1,4 +1,4 @@
-import { Public_Sans, Barlow } from 'next/font/google';
+import { Open_Sans, Poppins } from 'next/font/google';
 
 // ----------------------------------------------------------------------
 
@@ -29,14 +29,14 @@ declare module '@mui/material/styles' {
     fontWeightSemiBold: React.CSSProperties['fontWeight'];
   }
 }
-export const primaryFont = Public_Sans({
+export const primaryFont = Open_Sans({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
   display: 'swap',
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 });
 
-export const secondaryFont = Barlow({
+export const secondaryFont = Poppins({
   weight: ['900'],
   subsets: ['latin'],
   display: 'swap',
