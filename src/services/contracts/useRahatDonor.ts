@@ -12,6 +12,27 @@ const useRahatDonor = (): UseRahatDonorReturn => {
   const { handleContractError } = useErrorHandler();
   const contracts = useAppStore((state) => state.contracts);
 
+  const isOwner = useCallback(
+    async (walletAddress: string): Promise<boolean> => {
+      if (!donorContract) {
+        throw new Error('Contracts are not available');
+      }
+      const owner = await donorContract.isOwner(walletAddress);
+      return owner;
+    },
+    [donorContract]
+  );
+
+  const addAsOwner = useCallback(
+    async (walletAddress: string): Promise<void> => {
+      if (!donorContract) {
+        throw new Error('Contracts are not available');
+      }
+      return donorContract.addOwner(walletAddress).catch(handleContractError);
+    },
+    [donorContract, handleContractError]
+  );
+
   const sendTokenToProject = useCallback(
     async (amount: string): Promise<TransactionReceipt> => {
       if (!donorContract || !rahatTokenContract) {
@@ -34,8 +55,10 @@ const useRahatDonor = (): UseRahatDonorReturn => {
       donorContract,
       rahatTokenContract,
       sendTokenToProject,
+      addAsOwner,
+      isOwner,
     }),
-    [donorContract, rahatTokenContract, sendTokenToProject]
+    [addAsOwner, donorContract, isOwner, rahatTokenContract, sendTokenToProject]
   );
 
   return memoizedValues;

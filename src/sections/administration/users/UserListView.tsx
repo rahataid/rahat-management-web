@@ -1,7 +1,7 @@
 'use client';
 
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -35,6 +35,7 @@ import {
 import { Button } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useRahatCommunity } from '@services/contracts/useRahatCommunity';
+import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useApproveUserFunc, useUpdateRoleFunc, useUsers } from 'src/api/administration';
 import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
 import UserDetails from './user-details-modal';
@@ -59,6 +60,7 @@ export default function UsersListView() {
   const updateRoleFunc = useUpdateRoleFunc();
   const approveUser = useApproveUserFunc();
   const { addAdminToCommunity } = useRahatCommunity();
+  const { addAsOwner, isOwner } = useRahatDonor();
 
   const defaultFilters: IUsersApiFilters = useMemo(
     () => ({
@@ -148,6 +150,16 @@ export default function UsersListView() {
     }
   };
 
+  const handleMakeOwner = async (walletAddress: string, e: ChangeEvent<HTMLInputElement>) => {
+    const { checked } = e.target;
+
+    if (checked) {
+      await addAsOwner(walletAddress);
+    } else {
+      await isOwner(walletAddress);
+    }
+  };
+
   useEffect(() => {
     const searchFilters: IUsersApiFilters = {
       ...defaultFilters,
@@ -164,6 +176,7 @@ export default function UsersListView() {
         user={viewUser}
         onActivate={handleUserActivate}
         onChangeRole={handleUserChangeRole}
+        onMakeOwner={handleMakeOwner}
       />
       <CustomBreadcrumbs
         heading="Users: List"
