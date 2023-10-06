@@ -3,11 +3,9 @@
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
-import MapView from '@sections/map-view';
 import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
-import Bargraph from './bar-graph';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
@@ -76,6 +74,7 @@ const DashboardView = () => {
             title="Gender-wise Distribution"
             chart={{
               series: genderData,
+              colors: ['#78C1F3', '#FEBBCC', '#FFD966', '#FF6969'],
             }}
           />
         </Grid>
@@ -84,6 +83,7 @@ const DashboardView = () => {
             title="Banked or unbanked"
             chart={{
               series: bankStatusData,
+              colors: ['#FF6969', '#FEBBCC', '#78C1F3', '#FFD966'],
             }}
           />
         </Grid>
@@ -92,6 +92,7 @@ const DashboardView = () => {
             title="Access to internet"
             chart={{
               series: internetAccessData,
+              colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
           />
         </Grid>
@@ -100,11 +101,12 @@ const DashboardView = () => {
             title="Access to Phone"
             chart={{
               series: phoneOwnershipData,
+              colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
           />
         </Grid>
       </Grid>
-      <Grid container mt={3} spacing={2}>
+      {/* <Grid container mt={3} spacing={2}>
         <Grid item xs={12} md={6}>
           <Bargraph
             title="Beneficiaries by distribution point"
@@ -158,7 +160,7 @@ const DashboardView = () => {
         <Grid item xs={12} md={6}>
           <MapView geoData={geoData} />
         </Grid>
-      </Grid>
+      </Grid> */}
     </Container>
   );
 };
