@@ -87,16 +87,19 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
 
   const onSubmit = useCallback(
     async (data: IUserTableFilters) => {
+      const { roles, walletAddress } = data;
       const modifiedData: any = {
         ...data,
         // eslint-disable-next-line no-nested-ternary
-        roles: data.roles ? (Array.isArray(data.roles) ? data.roles : [data.roles]) : ['USER'],
+        roles: roles ? (Array.isArray(roles) ? roles : [roles]) : ['USER'],
       };
-      if (data?.roles === 'ADMIN') {
-        const d = await addAdminToCommunity(data?.walletAddress);
+      if (roles === 'ADMIN') {
+        const d = await addAdminToCommunity(walletAddress);
         if (d) {
           mutate(modifiedData);
         }
+      } else if (roles === 'USER') {
+        mutate(modifiedData);
       }
     },
     [mutate, addAdminToCommunity]
@@ -128,7 +131,7 @@ const UserAddForm: React.FC = ({ currentUser }: Props) => {
 
               <RHFTextField name="email" label="Email" />
 
-              <RHFSelect name="roles" label="Role" defaultValue={['USER']}>
+              <RHFSelect name="roles" label="Select Role">
                 {roleOptions.map((role) => (
                   <MenuItem key={role} value={role}>
                     {role}

@@ -32,7 +32,6 @@ import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
-import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useAudiences, useCampaignAudio, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
@@ -112,7 +111,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       .max(24, 'Maximum 15 characters'),
     startTime: Yup.date().nullable().required('Start date is required'),
     type: Yup.string().required('Campaign Type is required'),
-    details: Yup.string().required('Enter the details for the campaign'),
+    details: Yup.string().optional(),
     audienceIds: Yup.array().required('Select the audience for the campaign'),
     transportId: Yup.number().required('Select the transport for the campaign'),
   });
@@ -178,7 +177,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
       const mergedDetails = {
         ...additionalData,
-        ...parseMultiLineInput(data.details),
       };
 
       const formatted = {
@@ -187,16 +185,16 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         details: mergedDetails,
       };
 
-      mutate(formatted);
+      mutate(formatted as ICampaignCreateItem);
+      console.log(formatted);
     },
     [formattedSelect, mutate]
   );
 
   useEffect(() => {
     if (isSuccess && !projectUpdated) {
-      // Check if it's successful and project not updated
       updateProjectCampaign.mutate(campaignData?.id);
-      setProjectUpdated(true); // Set the flag to indicate project is updated
+      setProjectUpdated(true);
     }
   }, [isSuccess, campaignData?.id, updateProjectCampaign, projectUpdated]);
 
@@ -262,23 +260,21 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              <Stack spacing={3}>
-                {showSelectAudio && (
-                  <RHFSelect name="file" label="Select Audio">
-                    {campaignAudio.map((mp3: any) => (
-                      <MenuItem key={mp3?.url} value={mp3?.url}>
-                        {mp3?.filename}
-                      </MenuItem>
-                    ))}
-                  </RHFSelect>
-                )}
+              {showSelectAudio && (
+                <RHFSelect name="file" label="Select Audio">
+                  {campaignAudio.map((mp3: any) => (
+                    <MenuItem key={mp3?.url} value={mp3?.url}>
+                      {mp3?.filename}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+              )}
 
-                {showSelectMessage && (
-                  <RHFTextField name="message" label="SMS Message" fullWidth multiline />
-                )}
+              {showSelectMessage && (
+                <RHFTextField name="message" label="SMS Message" fullWidth multiline />
+              )}
 
-                <RHFTextField name="details" label="Details" fullWidth multiline />
-              </Stack>
+              {/* <RHFTextField name="details" label="Details" fullWidth multiline /> */}
 
               <Stack
                 spacing={2}
@@ -319,6 +315,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   <Stack direction="column">
                     <Select
                       name="audienceIds"
+                      label="Select Audience"
                       multiple
                       value={selectedAudiences}
                       onChange={handleSelectAudiences}

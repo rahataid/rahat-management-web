@@ -149,7 +149,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
       const mergedDetails = {
         ...additionalData,
-        ...parseMultiLineInput(data?.details),
       };
 
       const formatted = {
@@ -158,7 +157,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         details: mergedDetails,
       };
 
-      mutate(formatted);
+      mutate(formatted as ICampaignCreateItem);
     },
     [formattedSelect, mutate]
   );
@@ -225,7 +224,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-              <Stack spacing={3}>
                 {showSelectAudio && (
                   <RHFSelect name="file" label="Select Audio">
                     {campaignAudio.map((mp3: any) => (
@@ -240,8 +238,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                   <RHFTextField name="message" label="SMS Message" fullWidth multiline />
                 )}
 
-                <RHFTextField name="details" label="Details" fullWidth multiline />
-              </Stack>
+                {/* <RHFTextField name="details" label="Details" fullWidth multiline /> */}
 
               <Stack
                 spacing={2}

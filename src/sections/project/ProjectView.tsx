@@ -8,6 +8,7 @@ import { paths } from '@routes/paths';
 import { useSnackbar } from 'notistack';
 import useAuthStore from 'src/store/auths';
 import ProjectCards from './project-cards';
+import Link from 'next/link';
 
 const ProjectView = () => {
   const settings = useSettingsContext();
@@ -44,7 +45,8 @@ const ProjectView = () => {
       />
 
       <Stack direction="row" spacing={3} mt={3}>
-        <ProjectCards />
+          <ProjectCards />
+    
       </Stack>
     </Container>
   );

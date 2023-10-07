@@ -43,6 +43,8 @@ export const paths = {
           `${ROOTS.PROJECTS}/${contractAddress}/beneficiaries`,
         vendors: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/vendors`,
         campaigns: (contractAddress: string) => `${ROOTS.PROJECTS}/${contractAddress}/campaigns`,
+        uploadMp3: (contractAddress: string) =>
+          `${ROOTS.PROJECTS}/${contractAddress}/campaigns/uploadMp3`,
         campaignsadd: (contractAddress: string) =>
           `${ROOTS.PROJECTS}/${contractAddress}/campaigns/add`,
       },
