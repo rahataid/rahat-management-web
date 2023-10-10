@@ -14,10 +14,12 @@ import { useRouter } from 'src/routes/hook';
 // auth
 // components
 import { paths } from '@routes/paths';
+import { getUser } from '@utils/storage-available';
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
 import useAuthStore from 'src/store/auths';
+import { IUserDetails } from 'src/types/user';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +35,7 @@ const OPTIONS = [
 export default function AccountPopover() {
   const router = useRouter();
 
-  // const { user } = useMockedUser();
-  const { user } = useAuthStore();
+  const user: IUserDetails = getUser();
   const logout = useAuthStore((state) => state.logout);
 
   // const { logout } = useAuthContext();
@@ -79,7 +80,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
+          src={user?.profileImage}
           alt={user?.name}
           sx={{
             width: 36,

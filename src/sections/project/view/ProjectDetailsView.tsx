@@ -18,7 +18,6 @@ import LockUnlockModal from './lock-unlock-modal';
 import ProjectActions from './project-actions-card';
 import ProjectAlerts from './project-alerts';
 import { ProjectDetailsCard } from './project-details-card';
-import ProjectDetailsChart from './project-details-chart';
 import ProjectGallery from './project-gallery-view';
 import Piechart from './project-pie-chart';
 import ProjectStatsCard from './project-stats-card';
@@ -229,7 +228,7 @@ export default function ProjectDetailsView() {
             onCreateToken={createTokenModal.onTrue}
           />
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        {/* <Grid item xs={12} md={6} lg={8}>
           <ProjectDetailsChart
             title="Beneficiaries Per Distribution Point"
             subheader="this is sub heading"
@@ -258,7 +257,7 @@ export default function ProjectDetailsView() {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Grid container mt={3} spacing={3}>
@@ -267,6 +266,7 @@ export default function ProjectDetailsView() {
             title="Gender-wise Distribution"
             chart={{
               series: genderData,
+              colors: ['#78C1F3', '#FEBBCC', '#FFD966', '#FF6969'],
             }}
           />
         </Grid>
@@ -275,6 +275,7 @@ export default function ProjectDetailsView() {
             title="Banked or unbanked"
             chart={{
               series: bankStatusData,
+              colors: ['#FF6969', '#FEBBCC', '#78C1F3', '#FFD966'],
             }}
           />
         </Grid>
@@ -283,6 +284,7 @@ export default function ProjectDetailsView() {
             title="Access to internet"
             chart={{
               series: internetAccessData,
+              colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
           />
         </Grid>
@@ -291,6 +293,7 @@ export default function ProjectDetailsView() {
             title="Access to Phone"
             chart={{
               series: phoneOwnershipData,
+              colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
           />
         </Grid>
