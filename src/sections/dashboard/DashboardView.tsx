@@ -6,6 +6,7 @@ import { Container, Grid } from '@mui/material';
 import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
+import { useVendors } from 'src/api/vendors';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
@@ -14,6 +15,7 @@ const DashboardView = () => {
     per_page: 3,
     page: 1,
   });
+  const { vendors } = useVendors();
 
   const settings = useSettingsContext();
   const { data } = useDashBoardReports();
@@ -57,9 +59,9 @@ const DashboardView = () => {
               <SummaryCard
                 color="secondary"
                 icon="maki:village"
-                title="Village(s)"
-                total={102}
-                subtitle="impacted"
+                title="Vendor(s)"
+                total={vendors?.length}
+                subtitle="associated"
               />
             </Grid>
           </Grid>

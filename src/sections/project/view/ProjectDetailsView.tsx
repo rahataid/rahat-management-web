@@ -47,7 +47,6 @@ export default function ProjectDetailsView() {
     setChainData: state.setChainData,
   }));
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
-
   const {
     getProjectChainData,
     acceptToken,

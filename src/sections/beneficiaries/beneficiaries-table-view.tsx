@@ -51,6 +51,7 @@ import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
 import BeneficiariesTableToolbar from './beneficiaries-table-toolbar';
+import { BeneficiariesSpreedsheetImport } from './spreedsheet';
 
 // ----------------------------------------------------------------------
 
@@ -133,7 +134,7 @@ export default function BeneficiariesListView() {
     [table, createQueryString, push, searchParams, filters, pathname]
   );
 
-  const disableBeneficiary = useDisableBeneficiaries()
+  const disableBeneficiary = useDisableBeneficiaries();
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
