@@ -29,6 +29,7 @@ const useAppStore = create<AppStoreType>((set) => ({
     const blockchain = {
       chainId: value?.chainId,
       chainName: value?.chainName,
+      chainWebSocket: value?.chainWebSocket,
       rpcUrls: [value?.rpcUrl],
       nativeCurrency: {
         name: value.nativeCurrency.name as string,
