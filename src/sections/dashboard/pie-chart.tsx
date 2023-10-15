@@ -77,7 +77,6 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
       pie: {
         donut: {
           size: '90%',
-
           labels: {
             show: false,
             value: {
@@ -98,9 +97,9 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
 
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
+      <CardHeader title={title} subheader={subheader} sx={{ mb: 2 }} />
 
-      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={280} />
+      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={200} />
     </Card>
   );
 }

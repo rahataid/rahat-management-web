@@ -78,6 +78,7 @@ const DashboardView = () => {
               series: genderData,
               colors: ['#78C1F3', '#FEBBCC', '#FFD966', '#FF6969'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -87,6 +88,7 @@ const DashboardView = () => {
               series: bankStatusData,
               colors: ['#FF6969', '#FEBBCC', '#78C1F3', '#FFD966'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -96,6 +98,7 @@ const DashboardView = () => {
               series: internetAccessData,
               colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -105,6 +108,7 @@ const DashboardView = () => {
               series: phoneOwnershipData,
               colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
       </Grid>

@@ -199,11 +199,11 @@ export default function BeneficiariesListView() {
         }}
         action={
           <Stack spacing={2} direction="row">
-            {/* <BeneficiariesSpreedsheetImport
+            <BeneficiariesSpreedsheetImport
               onSubmit={handleBeneficiaryBulkAdd}
               isOpen={bulkBeneficiaryImport.value}
               handleOpenClose={bulkBeneficiaryImport.onToggle}
-            /> */}
+            />
             <Button
               component={RouterLink}
               href={paths.dashboard.general.beneficiaries.add}
