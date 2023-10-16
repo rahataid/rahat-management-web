@@ -39,7 +39,7 @@ function BeneficiariesDetailsView() {
 
   useEffect(() => {
     handleChainData();
-  }, [handleChainData]);
+  }, [handleChainData, beneficiary.walletAddress]);
 
   // useEffect(() => {
   //   ProjectContractWS?.on('BeneficiaryAdded', handleChainData);

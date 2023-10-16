@@ -224,6 +224,7 @@ const useProjectContract = (): ProjectContract => {
         return 0;
       }
       const balance = await projectContract.beneficiaryClaims(walletAddress);
+
       return balance?.toString();
     },
     [projectContract]
