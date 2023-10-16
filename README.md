@@ -1,4 +1,4 @@
-# Rahat Documentation 
+# Rahat Documentation
 
 Welcome to Rahat, an open-source blockchain-based token cash and voucher assistance platform. Rahat streamlines humanitarian aid distribution by providing end-to-end transparency, making it efficient and cost-effective.
 
@@ -15,7 +15,7 @@ Visit our website at [rahat.io](https://rahat.io) for more information and updat
 
      ```
 
-   - Install dependencies using yarn: 
+   - Install dependencies using yarn:
 
      ```bash
      yarn install

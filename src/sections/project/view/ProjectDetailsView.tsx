@@ -11,6 +11,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
 import { useProjectBasedReport } from 'src/api/reports';
+import { useVendors } from 'src/api/vendors';
 import useAppStore from 'src/store/app';
 import useProjectStore from 'src/store/projects';
 import CreateTokenModal from './create-token-modal';
@@ -46,8 +47,8 @@ export default function ProjectDetailsView() {
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+  const { vendors } = useVendors();
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
-
   const {
     getProjectChainData,
     acceptToken,
@@ -216,7 +217,7 @@ export default function ProjectDetailsView() {
             description={project.description}
             location={project.contractAddress}
             projectManager={project.projectManager}
-            vendorsCount={project._count?.vendors}
+            vendorsCount={vendors?.length || 0}
           />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>

@@ -22,4 +22,6 @@ export type IAppSettingsNetworkApiResponse = {
   chainWebSocket?: string;
   networkId: number;
 };
-export type IAppSettingsNetwork = AddEthereumChainParameter;
+export type IAppSettingsNetwork = AddEthereumChainParameter & {
+  chainWebSocket?: string;
+};

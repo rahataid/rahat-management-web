@@ -5,10 +5,10 @@ import Iconify from '@components/iconify/iconify';
 import { useSettingsContext } from '@components/settings';
 import { Button, Container, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
+import Link from 'next/link';
 import { useSnackbar } from 'notistack';
 import useAuthStore from 'src/store/auths';
 import ProjectCards from './project-cards';
-import Link from 'next/link';
 
 const ProjectView = () => {
   const settings = useSettingsContext();

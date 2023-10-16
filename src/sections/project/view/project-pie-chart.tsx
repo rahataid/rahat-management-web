@@ -97,7 +97,7 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
 
-      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={280} />
+      <StyledChart dir="ltr" type="pie" series={chartSeries} options={chartOptions} height={230} />
     </Card>
   );
 }

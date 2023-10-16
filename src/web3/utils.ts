@@ -19,27 +19,28 @@ export function generateWalletAddress() {
 }
 
 interface MultiCallData {
-  encodedData: string[];
+  encodedData: any;
   types: string[];
 }
-
 const generateMultiCallData = async (
   contract: Contract,
   functionName: string,
-  callData: (string | number)[]
+  callData: (string | number)[] | (string | number)[][]
 ): Promise<MultiCallData> => {
-  const encodedData = callData.map((callD) =>
-    contract.interface.encodeFunctionData(functionName, [callD])
+  const encodedData = callData.map((callD: string | number | (string | number)[]) =>
+    Array.isArray(callD)
+      ? contract.interface.encodeFunctionData(functionName, callD)
+      : contract.interface.encodeFunctionData(functionName, [callD])
   );
+
   const types = new Array(encodedData.length).fill('bytes');
 
   return { encodedData, types };
 };
-
 export const multicall = async (
   contract: ethers.Contract,
   functionName: string,
-  callData: (string | number)[]
+  callData: (string | number)[] | (string | number)[][]
 ) => {
   const encodedData = await generateMultiCallData(contract, functionName, callData);
   //   TODO:research
@@ -49,7 +50,7 @@ export const multicall = async (
 export const multiSend = async (
   contract: ethers.Contract,
   functionName: string,
-  callData: (string | number)[]
+  callData: (string | number)[] | (string | number)[][]
 ): Promise<TransactionReceipt> => {
   const { encodedData } = await generateMultiCallData(contract, functionName, callData);
   return contract.multicall(encodedData);

@@ -30,8 +30,6 @@ const VendorView = () => {
     setChainData: state.setChainData,
   }));
 
-  console.log('chainData', chainData);
-
   const handleVendorChainData = useCallback(() => {
     if (!vendor.address) return;
     if (chainData.isVendor !== null) return;

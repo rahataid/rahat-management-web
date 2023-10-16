@@ -6,6 +6,7 @@ import { Container, Grid } from '@mui/material';
 import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
+import { useVendors } from 'src/api/vendors';
 import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
@@ -14,6 +15,7 @@ const DashboardView = () => {
     per_page: 3,
     page: 1,
   });
+  const { vendors } = useVendors();
 
   const settings = useSettingsContext();
   const { data } = useDashBoardReports();
@@ -57,9 +59,9 @@ const DashboardView = () => {
               <SummaryCard
                 color="secondary"
                 icon="maki:village"
-                title="Village(s)"
-                total={102}
-                subtitle="impacted"
+                title="Vendor(s)"
+                total={vendors?.length}
+                subtitle="associated"
               />
             </Grid>
           </Grid>
@@ -76,6 +78,7 @@ const DashboardView = () => {
               series: genderData,
               colors: ['#78C1F3', '#FEBBCC', '#FFD966', '#FF6969'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -85,6 +88,7 @@ const DashboardView = () => {
               series: bankStatusData,
               colors: ['#FF6969', '#FEBBCC', '#78C1F3', '#FFD966'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -94,6 +98,7 @@ const DashboardView = () => {
               series: internetAccessData,
               colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -103,6 +108,7 @@ const DashboardView = () => {
               series: phoneOwnershipData,
               colors: ['#FF6969', '#FEBBCC', '#FFD966', '#78C1F3'],
             }}
+            sx={{ height: '80%' }}
           />
         </Grid>
       </Grid>

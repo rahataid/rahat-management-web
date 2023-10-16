@@ -1,5 +1,5 @@
 import Iconify from '@components/iconify/iconify';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { generateWalletAddress } from '@web3/utils';
 import { ReactSpreadsheetImport } from 'react-spreadsheet-import';
 import { fields } from './data-points';
@@ -23,7 +23,7 @@ const BeneficiariesSpreedsheetImport = <T extends Record<string, unknown>>({
   };
 
   return (
-    <>
+    <Box>
       <Button
         variant="outlined"
         startIcon={<Iconify icon="mingcute:add-line" />}
@@ -41,7 +41,7 @@ const BeneficiariesSpreedsheetImport = <T extends Record<string, unknown>>({
         rowHook={rowHook}
         autoMapHeaders
       />
-    </>
+    </Box>
   );
 };
 
