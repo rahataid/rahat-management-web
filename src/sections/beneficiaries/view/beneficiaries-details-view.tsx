@@ -28,7 +28,6 @@ function BeneficiariesDetailsView() {
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
-
   const handleChainData = useCallback(async () => {
     if (!beneficiary.walletAddress) return;
     if (chainData.isBeneficiary !== null) return;

@@ -3,7 +3,7 @@
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
-import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
+import { useBeneficiaries, useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
 import { useVendors } from 'src/api/vendors';
@@ -19,9 +19,18 @@ const DashboardView = () => {
 
   const settings = useSettingsContext();
   const { data } = useDashBoardReports();
+  const {beneficiaries}=useBeneficiaries()
   const { bankStatusData, genderData, phoneOwnershipData, internetAccessData } =
     useBeneficiaryStats();
   const { geoData } = useGeoLocation();
+
+  const totalActiveBeneficiaries = beneficiaries.reduce((count, beneficiary) => {
+    if (beneficiary.isApproved === true) {
+      return count + 1;
+    } 
+      return count;
+    
+  }, 0);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -33,7 +42,7 @@ const DashboardView = () => {
                 color="primary"
                 icon="material-symbols:person-4"
                 title="Beneficiaries"
-                total={data?.totalBeneficiaries}
+                total={totalActiveBeneficiaries}
                 subtitle="households"
               />
             </Grid>
