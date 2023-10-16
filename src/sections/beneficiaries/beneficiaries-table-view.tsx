@@ -38,7 +38,9 @@ import {
 //
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
+import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
+import { Contract } from 'ethers';
 import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
@@ -85,11 +87,10 @@ export default function BeneficiariesListView() {
   );
   const [filters, setFilters] = useState(defaultFilters);
   const { beneficiaries, meta } = useBeneficiaries(filters);
-  const { multiAssignBenToProject } = useProjectContract();
-
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { enqueueSnackbar } = useSnackbar();
+  const { multiAssignBenToProject, projectContract } = useProjectContract();
 
   const { push } = useRouter();
 
@@ -159,12 +160,39 @@ export default function BeneficiariesListView() {
     console.log(data);
   };
 
-  const handleBulkAssignProjects = useCallback((selected: string[]) => {
-    console.log('selected', selected);
-  }, []);
+  const handleBulkAssignProjects = useCallback(
+    async (selectedProject: { projectId: string }) => {
+      // addBeneficiary
 
-  const walletAddresses1 = table.selected;
-  console.log(walletAddresses1, 'walletAddresses');
+      const assigned = await multiAssignBenToProject(table.selected, projectContract as Contract);
+
+      if (assigned) {
+        const beneficiariesIds = beneficiaries
+          .filter((beneficiary: IBeneficiariesItem) =>
+            table.selected.includes(beneficiary.walletAddress)
+          )
+          .map((beneficiary: IBeneficiariesItem) => beneficiary.uuid);
+
+        beneficiariesIds.forEach(async (beneficiaryId) => {
+          const response = await BeneficiaryService.assignProject(beneficiaryId, selectedProject);
+          console.log(response);
+        });
+
+        // looop through ids and assign project
+
+        enqueueSnackbar('Project Assigned Successfully', { variant: 'success' });
+        bulkProjectAssign.onFalse();
+      }
+    },
+    [
+      beneficiaries,
+      bulkProjectAssign,
+      enqueueSnackbar,
+      multiAssignBenToProject,
+      projectContract,
+      table.selected,
+    ]
+  );
 
   const handleDisableBeneficiary = () => {
     const walletAddresses = table.selected;

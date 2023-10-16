@@ -38,6 +38,7 @@ import { ConfirmDialog } from '@components/custom-dialog';
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import useProjectContract from '@services/contracts/useProject';
+import { Contract } from 'ethers';
 import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
@@ -87,7 +88,7 @@ export default function ProjectBeneficiariesListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
-  const { multiAssignClaimsToBeneficiary } = useProjectContract();
+  const { multiAssignClaimsToBeneficiary, projectContract } = useProjectContract();
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -106,8 +107,6 @@ export default function ProjectBeneficiariesListView() {
   const settings = useSettingsContext();
 
   const router = useRouter();
-
-  const confirm = useBoolean();
 
   const denseHeight = table.dense ? 52 : 72;
 
@@ -147,13 +146,21 @@ export default function ProjectBeneficiariesListView() {
   );
 
   const handleBulkAssignTokens = useCallback(
-    async (selected: string[]) => {
-      const assign = await multiAssignClaimsToBeneficiary(selected);
-      console.log('first', {
-        assign,
-      });
+    async (selected: string[], tokenCount: string) => {
+      const assign = await multiAssignClaimsToBeneficiary(
+        selected,
+        tokenCount,
+        projectContract as Contract
+      );
+
+      if (assign) {
+        bulkAssignTokensModal.onFalse();
+        enqueueSnackbar(`${tokenCount} Tokens Assigned to ${selected.length} beneficiaries`, {
+          variant: 'success',
+        });
+      }
     },
-    [multiAssignClaimsToBeneficiary]
+    [bulkAssignTokensModal, enqueueSnackbar, multiAssignClaimsToBeneficiary, projectContract]
   );
   useEffect(() => {
     const searchFilters: IBeneficiaryApiFilters = {

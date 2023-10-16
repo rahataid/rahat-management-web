@@ -13,7 +13,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 type Props = {
   open: boolean;
   onClose: () => void;
-  onOk: (walletAddresses: string[]) => void;
+  onOk: (walletAddresses: string[], token: string) => void;
   selected: string[];
 };
 
@@ -63,7 +63,7 @@ const BeneficiariesAssignTokenModal = ({ open, onClose, onOk, selected }: Props)
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={!token} variant="text" onClick={() => onOk(selected)} autoFocus>
+        <Button disabled={!token} variant="text" onClick={() => onOk(selected, token)} autoFocus>
           Assign
         </Button>
       </DialogActions>

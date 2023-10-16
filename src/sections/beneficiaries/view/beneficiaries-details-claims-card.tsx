@@ -1,24 +1,24 @@
 import TruncatedAddressButton from '@components/wallet-address-button';
 import { useBoolean } from '@hooks/use-boolean';
 import { RSErrorData } from '@hooks/user-error-handler';
-import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import { Icon } from '@iconify/react';
+import { Card, CardContent, MenuItem, Stack, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
 import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 import { useDisableBeneficiaries } from 'src/api/beneficiaries';
 import { useProjects } from 'src/api/project';
 import { useRouter } from 'src/routes/hook';
 import { IAssignProjectDetails, IAssignProjectItem } from 'src/types/beneficiaries';
-import Popover from '@mui/material/Popover';
-import IconButton from '@mui/material/IconButton';
-import { Icon } from '@iconify/react';
-import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
-import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
 import BeneficiaryDeleteModal from '../beneficiaries-delete-modal';
+import BeneficiariesAssignProjectModal from './beneficiaries-assign-project-modal';
+import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 
 interface IBeneficiaryClaimsDetails {
   walletAddress: string;
@@ -123,41 +123,14 @@ export default function BeneficiariesDetailsCard({
               horizontal: 'right',
             }}
           >
-            <Stack
-              direction="column"
-              justifyContent="space-between"
-              alignItems="center"
-              spacing={2}
-            >
-              <Button
-                variant="outlined"
-                size="small"
-                color="success"
-                onClick={assignProjectDialog.onTrue}
-                sx={{ fontSize: 'x-small' }}
-              >
-                Assign Project
-              </Button>
+            <Stack direction="column" justifyContent="space-between" alignItems="center">
+              <MenuItem onClick={assignProjectDialog.onTrue}>Assign Project</MenuItem>
 
-              <Button
-                variant="outlined"
-                size="small"
-                color="success"
-                onClick={assignTokenDialog.onTrue}
-                sx={{ fontSize: 'x-small' }}
-              >
-                Assign Token
-              </Button>
+              <MenuItem onClick={assignTokenDialog.onTrue}>Assign Token</MenuItem>
 
-              <Button
-                variant="outlined"
-                size="small"
-                color="error"
-                sx={{ fontSize: 'x-small' }}
-                onClick={removeBeneficiaryDialog.onTrue}
-              >
+              <MenuItem onClick={removeBeneficiaryDialog.onTrue} color="error">
                 Delete
-              </Button>
+              </MenuItem>
             </Stack>
           </Popover>
         </Stack>

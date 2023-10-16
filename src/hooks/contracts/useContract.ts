@@ -23,12 +23,16 @@ const useContract: UseContract = (contractName, options = {}) => {
 
   const contractInstance = useMemo(() => {
     if (contracts && contractName) {
-      if (options?.isWebsocket)
+      if (options?.isWebsocket) {
+        const websocketProvider = new WebSocketProvider(
+          networks?.chainWebSocket as string
+        ) as unknown as ContractRunner;
         return new Contract(
           (options?.contractAddress || contracts[contractName].address) as string,
           contracts[contractName].abi,
-          new WebSocketProvider(networks?.chainWebSocket as string) as unknown as ContractRunner
+          websocketProvider
         );
+      }
       return new Contract(
         options?.contractAddress || contracts[contractName].address,
         contracts[contractName].abi,

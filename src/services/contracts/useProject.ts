@@ -2,7 +2,7 @@ import { CONTRACTS } from '@config';
 import useContract from '@hooks/contracts/useContract';
 import { useErrorHandler } from '@hooks/user-error-handler';
 import { multiSend } from '@web3/utils';
-import { ContractTransactionResponse } from 'ethers';
+import { Contract, ContractTransactionResponse } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import {
   IBeneficiaryChainData,
@@ -192,9 +192,9 @@ const useProjectContract = (): ProjectContract => {
 
   // use when assigning ben to project
   const multiAssignBenToProject = useCallback(
-    async (walletAddresses: string[]) => {
+    async (walletAddresses: string[], contract?: Contract) => {
       if (!projectContract) throw new Error('No community contract');
-      return multiSend(projectContract, 'addBeneficiary', walletAddresses);
+      return multiSend(contract || projectContract, 'addBeneficiary', walletAddresses);
     },
     [projectContract]
   );
@@ -210,9 +210,10 @@ const useProjectContract = (): ProjectContract => {
 
   // use when bulk assigning claims (from inside project beneficiaries)
   const multiAssignClaimsToBeneficiary = useCallback(
-    async (walletAddresses: string[], amount: string) => {
+    async (walletAddresses: string[], amount: string, contract?: Contract) => {
       if (!projectContract) throw new Error('No community contract');
-      return multiSend(projectContract, 'assignClaims', [...walletAddresses, amount]);
+      const multiaddressData = walletAddresses.map((address) => [address, amount]);
+      return multiSend(contract || projectContract, 'assignClaims', multiaddressData);
     },
     [projectContract]
   );

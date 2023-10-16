@@ -41,18 +41,18 @@ function BeneficiariesDetailsView() {
     handleChainData();
   }, [handleChainData]);
 
-  useEffect(() => {
-    ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
-    ProjectContractWS?.on('BeneficiaryRemoved', handleChainData);
-    ProjectContractWS?.on('ClaimAdjusted', handleChainData);
-    ProjectContractWS?.on('ClaimAssigned', handleChainData);
-    ProjectContractWS?.on('ClaimProcessed', handleChainData);
-    ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
+  // useEffect(() => {
+  //   ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
+  //   ProjectContractWS?.on('BeneficiaryRemoved', handleChainData);
+  //   ProjectContractWS?.on('ClaimAdjusted', handleChainData);
+  //   ProjectContractWS?.on('ClaimAssigned', handleChainData);
+  //   ProjectContractWS?.on('ClaimProcessed', handleChainData);
+  //   ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
 
-    return () => {
-      ProjectContractWS?.removeAllListeners();
-    };
-  }, [ProjectContractWS, handleChainData]);
+  //   return () => {
+  //     ProjectContractWS?.removeAllListeners();
+  //   };
+  // }, [ProjectContractWS, handleChainData]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

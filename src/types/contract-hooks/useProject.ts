@@ -51,7 +51,14 @@ export interface ProjectContract {
   getBeneficiaryChainData: (walletAddress: string) => Promise<IBeneficiaryChainData>;
   beneficiaryCounts: () => Promise<number | undefined>;
   getVendorChainData: (address: string) => Promise<IVendorChainData>;
-  multiAssignClaimsToBeneficiary: (walletAddresses: string[]) => Promise<TransactionReceipt>;
-  multiAssignBenToProject: (walletAddresses: string[]) => Promise<TransactionReceipt>;
+  multiAssignClaimsToBeneficiary: (
+    walletAddresses: string[],
+    amount: string,
+    contract?: Contract
+  ) => Promise<TransactionReceipt>;
+  multiAssignBenToProject: (
+    walletAddresses: string[],
+    contract?: Contract
+  ) => Promise<TransactionReceipt>;
   multiActivateBen: (walletAddresses: string[]) => Promise<TransactionReceipt>;
 }
