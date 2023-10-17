@@ -67,6 +67,7 @@ export type IBeneficiariesItem = {
   deletedAt: string | null;
   internetAccess: INTERNET_ACCESS;
   isApproved: boolean;
+  isActive: boolean;
   latitude: number;
   longitude: number;
   name: string;

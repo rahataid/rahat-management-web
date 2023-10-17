@@ -25,7 +25,7 @@ const DashboardView = () => {
   const { geoData } = useGeoLocation();
 
   const totalActiveBeneficiaries = beneficiaries.reduce((count, beneficiary) => {
-    if (beneficiary.isApproved === true) {
+    if (beneficiary.isActive === true) {
       return count + 1;
     } 
       return count;
