@@ -1,7 +1,7 @@
 import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { IBeneficiaryDetailsTableItem } from 'src/types/beneficiary';
+import { IBeneficiaryDetailsTableItem } from 'src/types/beneficiaries';
 
 type Props = {
   selected: boolean;

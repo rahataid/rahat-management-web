@@ -1,5 +1,5 @@
 export interface DashBoardSummaryReportHooksReturn {
-  data: number;
+  data: any;
   loading: boolean;
   error: any;
 }

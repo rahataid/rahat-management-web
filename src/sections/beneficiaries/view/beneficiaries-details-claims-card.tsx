@@ -143,8 +143,6 @@ export default function BeneficiariesDetailsCard({
         >
           <Typography variant="body2">Claimed</Typography>
 
-          <Typography variant="body2">Jan 16, 2023</Typography>
-
           <Typography variant="body2">{tokenAllowance.toString()}</Typography>
         </Stack>
         <Stack
@@ -155,8 +153,6 @@ export default function BeneficiariesDetailsCard({
           spacing={5}
         >
           <Typography variant="body2">Received</Typography>
-
-          <Typography variant="body2">Jan 16, 2023</Typography>
 
           <Typography variant="body2">{balance.toString()}</Typography>
         </Stack>
