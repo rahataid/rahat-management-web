@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 import { AxiosInstance } from 'axios';
 import { IAppSettingsNetworkApiResponse } from 'src/types/app-settings';
 

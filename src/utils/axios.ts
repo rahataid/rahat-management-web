@@ -1,25 +1,43 @@
 import axios from 'axios';
 // config
 import { HOST_API } from '@config';
+import { isValidToken } from './session';
 import { getToken } from './storage-available';
 
 // ----------------------------------------------------------------------
 
-const token = getToken();
-
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: HOST_API,
-  headers: { Authorization: `Bearer ${token}` },
 });
 
-axiosInstance.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    console.log('error', error);
-    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
-  }
+// axiosInstance.interceptors.response.use(
+//   (res) => res,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const token = await AuthService.refreshToken();
+//       if (token) {
+//         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+//         return axiosInstance(originalRequest);
+//       }
+//     }
+//     return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+//   }
+// );
+
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const token = getToken();
+    if (token && isValidToken(token)) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
+export default axiosInstance;
 // ----------------------------------------------------------------------
 
 export const endpoints = {
@@ -33,6 +51,7 @@ export const endpoints = {
     register: '/auth/register',
     sendOtp: '/auth/send-otp',
     create: '/users',
+    refreshToken: '/auth/refresh',
   },
   beneficiaries: {
     list: '/beneficiaries',

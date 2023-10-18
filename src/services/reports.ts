@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 
 const ReportsService = {
   list: () => axiosInstance.get(endpoints.reports.dashboard.count),
