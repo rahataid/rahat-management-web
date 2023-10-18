@@ -64,3 +64,5 @@ export const setSession = (accessToken: string | null) => {
     sessionStorage.removeItem('accessToken');
   }
 };
+
+export const getSession = () => sessionStorage.getItem('accessToken');

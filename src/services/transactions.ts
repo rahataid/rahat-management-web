@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 import { ITransactionApiFilters } from 'src/types/transactions';
 
 const TransactionsService = {

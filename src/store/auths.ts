@@ -120,7 +120,6 @@ const useAuthStore = create<AuthStoreType>((set) => ({
     removeWalletName();
     clearToken();
   },
-
 }));
 
 export default useAuthStore;
