@@ -11,7 +11,6 @@ import { paths } from 'src/routes/paths';
 // utils
 // types
 // components
-import { Chip } from '@mui/material';
 import { fCurrency } from '@utils/format-number';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
@@ -36,8 +35,8 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
     <Stack
       direction="row"
       alignItems="center"
-      component={Chip}
-      label={isApproved ? 'Approved' : 'Not Approved'}
+      // component={Chip}
+      // label={isApproved ? 'Approved' : 'Not Approved'}
       sx={{
         top: 8,
         right: 8,
@@ -52,26 +51,32 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
   );
 
   const renderImages = (
-    <Stack
-      spacing={0.5}
-      direction="row"
-      sx={{
-        p: (theme) => theme.spacing(1, 1, 0, 1),
-      }}
+    <Link
+      component={RouterLink}
+      href={paths.dashboard.general.projects.details(contractAddress)}
+      color="inherit"
     >
-      <Stack flexGrow={1} sx={{ position: 'relative' }}>
-        {renderApproval}
-        <Image
-          alt={coverImage || '/logo/rahat-logo.png'}
-          src={coverImage || '/logo/rahat-logo.png'}
-          sx={{ borderRadius: 1, height: 164, width: 1 }}
-        />
-      </Stack>
-      {/* <Stack spacing={0.5}>
+      <Stack
+        spacing={0.5}
+        direction="row"
+        sx={{
+          p: (theme) => theme.spacing(1, 1, 0, 1),
+        }}
+      >
+        <Stack flexGrow={1} sx={{ position: 'relative' }}>
+          {renderApproval}
+          <Image
+            alt={coverImage || '/logo/rahat-logo.png'}
+            src={coverImage || '/logo/rahat-logo.png'}
+            sx={{ borderRadius: 1, height: 164, width: 1 }}
+          />
+        </Stack>
+        {/* <Stack spacing={0.5}>
         <Image alt={images[1]} src={images[1]} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
         <Image alt={images[2]} src={images[2]} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
       </Stack> */}
-    </Stack>
+      </Stack>
+    </Link>
   );
 
   const renderTexts = (
@@ -147,19 +152,13 @@ export default function ProjectCardItem({ project, onView, onEdit, onDelete }: P
 
   return (
     <>
-      <Link
-        component={RouterLink}
-        href={paths.dashboard.general.projects.details(contractAddress)}
-        color="inherit"
-      >
-        <Card>
-          {renderImages}
+      <Card>
+        {renderImages}
 
-          {renderTexts}
+        {renderTexts}
 
-          {renderInfo}
-        </Card>
-      </Link>
+        {renderInfo}
+      </Card>
 
       <CustomPopover
         open={popover.open}
