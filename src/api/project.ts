@@ -46,7 +46,7 @@ export function useProject(address: string): IProjectDetailsHookReturn {
 }
 
 export function useProjectBeneficiaries(address: string,params?: IBeneficiaryApiFilters): IProjectBeneficiariesHookReturn {
-  const { data, isLoading, error } = useQuery(['projectbenificiaries', address], async () => {
+  const { data, isLoading, error } = useQuery(['projectbenificiaries', address,params], async () => {
     const res = await ProjectBeneficiariesService.list(address,params);
     return res;
   });
