@@ -3,6 +3,7 @@
 import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
+import MapView from '@sections/map-view';
 import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
@@ -112,8 +113,8 @@ const DashboardView = () => {
           />
         </Grid>
       </Grid>
-      {/* <Grid container mt={3} spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Grid container mt={3} spacing={3}>
+        {/* <Grid item xs={12} md={6}>
           <Bargraph
             title="Beneficiaries by distribution point"
             subheader="(+43%) than last year"
@@ -162,11 +163,11 @@ const DashboardView = () => {
               ],
             }}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid> */}
+        <Grid item xs={12} md={12} spacing={2}>
           <MapView geoData={geoData} />
         </Grid>
-      </Grid> */}
+      </Grid>
     </Container>
   );
 };
