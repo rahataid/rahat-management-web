@@ -58,7 +58,6 @@ export default function Piechart({ title, subheader, chart, ...other }: Props) {
     labels: series.map((i) => i.label),
     stroke: { colors: [theme.palette.background.paper] },
     legend: {
-      show: false,
       offsetY: 0,
       floating: true,
       position: 'bottom',

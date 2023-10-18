@@ -47,6 +47,7 @@ export default function ProjectDetailsView() {
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+
   const { vendors } = useVendors();
   const blockchainNetworkData = useAppStore((state) => state.blockchain);
   const {

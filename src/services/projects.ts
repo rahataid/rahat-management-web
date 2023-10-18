@@ -1,4 +1,5 @@
 import { axiosInstance, endpoints } from '@utils/axios';
+import { IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 import { IProjectApiFilters, IProjectCreateItem, IProjectUpdateItem } from 'src/types/project';
 
 const ProjectsService = {
@@ -17,8 +18,8 @@ const ProjectsService = {
 };
 
 export const ProjectBeneficiariesService = {
-  list: (contractAddress: string) =>
-    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress)),
+  list: (contractAddress: string,params?: IBeneficiaryApiFilters) =>
+    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress),{ params }),
 };
 
 export default ProjectsService;
