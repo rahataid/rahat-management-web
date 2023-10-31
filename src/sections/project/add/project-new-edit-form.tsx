@@ -50,7 +50,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     onSuccess: (data) => {
       enqueueSnackbar('Project created successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.projects.list}/${data?.contractAddress}`);
+      push(`${paths.dashboard.general.projects.list}`);
     },
   });
 
@@ -164,6 +164,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
                           helperText: err?.message,
                         },
                       }}
+                      minDate={methods.getValues("startDate")}
                     />
                   )}
                 />
