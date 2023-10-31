@@ -56,6 +56,13 @@ export default function BeneficiariesDetailsCard({
   });
 
   const handleProjectAssign = async (data: IAssignProjectItem) => {
+    const filteredProjects = projects?.filter((p) => p.id === Number(data.projectId));
+    const project = filteredProjects[0];
+    if(project?.extras==='isNotBlockchain') {
+      await mutateAsync(data);
+      assignProjectDialog.onFalse();
+      return;
+    }
     const added = await addBeneficiaryToProject(walletAddress);
 
     if (added) {

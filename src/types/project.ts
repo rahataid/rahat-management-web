@@ -26,6 +26,7 @@ export type IProjectItem = {
   isApproved: boolean;
   coverImage?: string;
   description: string;
+  extras?: string;
 };
 
 export type IProjectsPagination = {
@@ -87,6 +88,7 @@ export type IProjectCreateItem = {
   projectType?: string;
   contractAddress: string;
   owner: number;
+  extras?:string;
 };
 
 export type IProjectUpdateItem = {
