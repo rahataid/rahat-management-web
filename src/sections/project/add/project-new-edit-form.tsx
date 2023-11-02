@@ -50,7 +50,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     onSuccess: (data) => {
       enqueueSnackbar('Project created successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.projects.list}/${data?.contractAddress}`);
+      push(`${paths.dashboard.general.projects.list}`);
     },
   });
 
@@ -70,6 +70,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
       ),
     contractAddress: Yup.string().nullable().required('Contract address is required'),
     owner: Yup.number(),
+    extras: Yup.string().optional(),
   });
 
   const defaultValues = useMemo<FormValues>(
@@ -82,6 +83,7 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
       endDate: currentProject?.endDate || null,
       contractAddress: currentProject?.contractAddress || '',
       owner: 1,
+      extras:'',
     }),
     [currentProject]
   );
@@ -99,7 +101,11 @@ const ProjectForm: React.FC = ({ currentProject }: Props) => {
     trigger('contractAddress');
   }, [setValue, trigger]);
 
-  const onSubmit = useCallback((data: IProjectCreateItem) => mutate(data), [mutate]);
+  const onSubmit = useCallback((data: IProjectCreateItem) => {
+    data.extras = 'isNotBlockchain'
+    mutate(data);
+  },[mutate]);
+  
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
