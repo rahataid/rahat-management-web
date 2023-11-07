@@ -28,13 +28,22 @@ function BeneficiariesDetailsView() {
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+
+  console.log('chainData', chainData);
   const handleChainData = useCallback(async () => {
+    if (!uuid) return;
     if (!beneficiary.walletAddress) return;
     if (chainData.isBeneficiary !== null) return;
 
     const data = await getBeneficiaryChainData(beneficiary.walletAddress);
     setChainData(data);
-  }, [beneficiary.walletAddress, chainData.isBeneficiary, getBeneficiaryChainData, setChainData]);
+  }, [
+    beneficiary.walletAddress,
+    chainData.isBeneficiary,
+    getBeneficiaryChainData,
+    setChainData,
+    uuid,
+  ]);
 
   useEffect(() => {
     handleChainData();
@@ -77,7 +86,7 @@ function BeneficiariesDetailsView() {
           <BeneficiariesDetailsClaimsCard
             walletAddress={beneficiary?.walletAddress}
             balance={chainData.balance}
-            tokenAllowance={chainData.allowance}
+            claimed={chainData.claimed}
           />
         </Grid>
       </Grid>

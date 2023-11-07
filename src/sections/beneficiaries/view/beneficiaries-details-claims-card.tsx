@@ -23,13 +23,13 @@ import BeneficiariesAssignTokenModal from './beneficiaries-assign-token-modal';
 interface IBeneficiaryClaimsDetails {
   walletAddress: string;
   balance: number;
-  tokenAllowance: number;
+  claimed: number;
 }
 
 export default function BeneficiariesDetailsCard({
   walletAddress,
   balance,
-  tokenAllowance,
+  claimed,
 }: IBeneficiaryClaimsDetails) {
   const [anchorEl, setAnchorEl] = useState(null);
   const assignProjectDialog = useBoolean();
@@ -143,7 +143,7 @@ export default function BeneficiariesDetailsCard({
         >
           <Typography variant="body2">Claimed</Typography>
 
-          <Typography variant="body2">{tokenAllowance.toString()}</Typography>
+          <Typography variant="body2">{claimed.toString()}</Typography>
         </Stack>
         <Stack
           sx={{ p: 2 }}
