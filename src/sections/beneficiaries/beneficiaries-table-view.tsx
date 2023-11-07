@@ -38,7 +38,6 @@ import {
 //
 import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
-import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { Contract } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -47,7 +46,8 @@ import {
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
-import { useBeneficiaries, useDisableBeneficiaries } from 'src/api/beneficiaries';
+import { useAssignProjectToBeneficiary, useBeneficiaries, useDisableBeneficiaries } from 'src/api/beneficiaries';
+import { useProjects } from 'src/api/project';
 import useAuthStore from 'src/store/auths';
 import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
@@ -106,6 +106,8 @@ export default function BeneficiariesListView() {
   const settings = useSettingsContext();
 
   const router = useRouter();
+  const { projects } = useProjects();
+
 
   const bulkBeneficiaryImport = useBoolean();
   const bulkProjectAssign = useBoolean();
@@ -115,6 +117,8 @@ export default function BeneficiariesListView() {
   const canReset = !isEqual(defaultFilters, filters);
 
   const notFound = (!beneficiaries.length && canReset) || !beneficiaries.length;
+
+  const assignProject=useAssignProjectToBeneficiary()
 
   const handleFilters = useCallback(
     (name: string, value: IBeneficiariesTableFilterValue) => {
@@ -162,37 +166,49 @@ export default function BeneficiariesListView() {
 
   const handleBulkAssignProjects = useCallback(
     async (selectedProject: { projectId: string }) => {
-      // addBeneficiary
-
-      const assigned = await multiAssignBenToProject(table.selected, projectContract as Contract);
-
-      if (assigned) {
-        const beneficiariesIds = beneficiaries
-          .filter((beneficiary: IBeneficiariesItem) =>
-            table.selected.includes(beneficiary.walletAddress)
-          )
-          .map((beneficiary: IBeneficiariesItem) => beneficiary.uuid);
-
+      const filteredProjects = projects?.filter((p) => p.id === Number(selectedProject?.projectId));
+      const project = filteredProjects[0];
+  
+      const beneficiariesIds = beneficiaries
+        .filter((beneficiary: IBeneficiariesItem) =>
+          table.selected.includes(beneficiary.walletAddress)
+        )
+        .map((beneficiary: IBeneficiariesItem) => beneficiary.uuid);
+  
+      // Defining a common function for assigning a project to a beneficiary
+      const assignProjectToBeneficiary = async (beneficiaryId:string) => {
+        const response = await assignProject.mutate({beneficiaryId, selectedProject});
+        console.log(response);
+      };
+  
+      // Checking the project extras and conditionally performing actions
+      if (project?.extras === 'isNotBlockchain') {
         beneficiariesIds.forEach(async (beneficiaryId) => {
-          const response = await BeneficiaryService.assignProject(beneficiaryId, selectedProject);
-          console.log(response);
+          await assignProjectToBeneficiary(beneficiaryId);
         });
-
-        // looop through ids and assign project
-
-        enqueueSnackbar('Project Assigned Successfully', { variant: 'success' });
+        bulkProjectAssign.onFalse();
+      }
+  
+      const assigned = await multiAssignBenToProject(table.selected, projectContract as Contract);
+  
+      if (assigned) {
+        beneficiariesIds.forEach(async (beneficiaryId) => {
+          await assignProjectToBeneficiary(beneficiaryId);
+        });
         bulkProjectAssign.onFalse();
       }
     },
     [
       beneficiaries,
       bulkProjectAssign,
-      enqueueSnackbar,
       multiAssignBenToProject,
       projectContract,
       table.selected,
+      projects,
+      assignProject
     ]
   );
+  
 
   const handleDisableBeneficiary = () => {
     const walletAddresses = table.selected;
