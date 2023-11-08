@@ -248,7 +248,7 @@ const useProjectContract = (): ProjectContract => {
         isBeneficiary,
         balance: balance || 0,
         // todo:add beneficiary pending tokens
-        allowance: 0,
+        claimed: 0,
       };
     },
     [beneficiaryBalance, checkActiveBeneficiary]

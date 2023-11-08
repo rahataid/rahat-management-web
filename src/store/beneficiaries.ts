@@ -14,7 +14,7 @@ export type BeneficiaryStoreType = BeneficiaryStateType & BeneficiaryActionsType
 const useBeneficiaryStore = create<BeneficiaryStoreType>((set) => ({
   chainData: {
     isBeneficiary: null,
-    allowance: 0,
+    claimed: 0,
     balance: 0,
   },
   setChainData: (chainData: IBeneficiaryChainData) => {
