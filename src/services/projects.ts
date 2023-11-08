@@ -1,4 +1,5 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
+import { IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 import { IProjectApiFilters, IProjectCreateItem, IProjectUpdateItem } from 'src/types/project';
 
 const ProjectsService = {
@@ -11,14 +12,15 @@ const ProjectsService = {
   removeCampaignFromProject: (address: string, id: number[]) =>
     axiosInstance.patch(endpoints.projects.removeCampaignFromProject(address), id),
   // delete: (uuid: string) => axiosInstance.delete(endpoints.projects.delete(uuid)),
-  removeBeneficiariesFromProject:(contractAddress:string, beneficiaries:string[])=> axiosInstance.patch(endpoints.projects.beneficiaries.remove(contractAddress),beneficiaries),
+  removeBeneficiariesFromProject: (contractAddress: string, beneficiaries: string[]) =>
+    axiosInstance.patch(endpoints.projects.beneficiaries.remove(contractAddress), beneficiaries),
   details: (contractAddress: string) =>
     axiosInstance.get(endpoints.projects.details(contractAddress)),
 };
 
 export const ProjectBeneficiariesService = {
-  list: (contractAddress: string) =>
-    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress)),
+  list: (contractAddress: string,params?: IBeneficiaryApiFilters) =>
+    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress),{ params }),
 };
 
 export default ProjectsService;

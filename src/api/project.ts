@@ -2,6 +2,7 @@ import ProjectsService, { ProjectBeneficiariesService } from '@services/projects
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
+import { IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 import {
   IProjectApiFilters,
   IProjectBeneficiariesHookReturn,
@@ -44,9 +45,9 @@ export function useProject(address: string): IProjectDetailsHookReturn {
   };
 }
 
-export function useProjectBeneficiaries(address: string): IProjectBeneficiariesHookReturn {
-  const { data, isLoading, error } = useQuery(['projectbenificiaries', address], async () => {
-    const res = await ProjectBeneficiariesService.list(address);
+export function useProjectBeneficiaries(address: string,params?: IBeneficiaryApiFilters): IProjectBeneficiariesHookReturn {
+  const { data, isLoading, error } = useQuery(['projectbenificiaries', address,params], async () => {
+    const res = await ProjectBeneficiariesService.list(address,params);
     return res;
   });
 

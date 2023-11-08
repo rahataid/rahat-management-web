@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 import { IBeneficiariesCreateItem, IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 
 const BeneficiaryService = {

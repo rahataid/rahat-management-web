@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 import { IUsersApiFilters } from 'src/types/administration';
 import { IUserDetails } from 'src/types/user';
 

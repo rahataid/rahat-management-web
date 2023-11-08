@@ -1,4 +1,4 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
 
 const AuthService = {
   loginWallet: (walletAddress: string) =>
@@ -9,6 +9,7 @@ const AuthService = {
     axiosInstance.post(endpoints.auth.sendOtp, {
       email,
     }),
+  refreshToken: () => axiosInstance.post(endpoints.auth.refreshToken),
 };
 
 export default AuthService;

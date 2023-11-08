@@ -1,4 +1,5 @@
-import { axiosInstance, endpoints } from '@utils/axios';
+import axiosInstance, { endpoints } from '@utils/axios';
+
 import { IBeneficiaryApiFilters } from 'src/types/beneficiaries';
 import { IVendorItem } from 'src/types/vendors';
 

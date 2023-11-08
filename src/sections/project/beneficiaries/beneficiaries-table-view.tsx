@@ -66,14 +66,7 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function ProjectBeneficiariesListView() {
-  const { address } = useParams();
-  const { enqueueSnackbar } = useSnackbar();
-
-  const { beneficiaries, meta } = useProjectBeneficiaries(address);
   const table = useTable();
-  const bulkAssignTokensModal = useBoolean();
-  const rmvBeneficiaries = useBoolean();
-
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
       internetAccess: '',
@@ -88,6 +81,14 @@ export default function ProjectBeneficiariesListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
+  const { address } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { beneficiaries, meta } = useProjectBeneficiaries(address,filters);
+  const bulkAssignTokensModal = useBoolean();
+  const rmvBeneficiaries = useBoolean();
+
+ 
   const { multiAssignClaimsToBeneficiary, projectContract } = useProjectContract();
 
   const searchParams = useSearchParams();
