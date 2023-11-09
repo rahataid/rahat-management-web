@@ -186,7 +186,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       };
 
       mutate(formatted as ICampaignCreateItem);
-      console.log(formatted);
     },
     [formattedSelect, mutate]
   );

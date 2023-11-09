@@ -40,7 +40,6 @@ import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import useProjectContract from '@services/contracts/useProject';
 import { Contract } from 'ethers';
-import { useSnackbar } from 'notistack';
 import {
   bankStatusOptions,
   internetAccessOptions,
@@ -175,8 +174,7 @@ export default function BeneficiariesListView() {
   
       // Defining a common function for assigning a project to a beneficiary
       const assignProjectToBeneficiary = async (beneficiaryId:string) => {
-        const response = await assignProject.mutate({beneficiaryId, selectedProject});
-        console.log(response);
+        await assignProject.mutate({beneficiaryId, selectedProject});
       };
   
       // Checking the project extras and conditionally performing actions
@@ -210,8 +208,6 @@ export default function BeneficiariesListView() {
 
   const handleDisableBeneficiary = () => {
     const walletAddresses = table.selected;
-    console.log(walletAddresses, 'walletAddresses');
-
     walletAddresses.forEach(async (walletAddress) => {
       disableBeneficiary.mutate(walletAddress);
     });

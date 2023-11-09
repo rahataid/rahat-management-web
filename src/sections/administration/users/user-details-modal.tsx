@@ -33,7 +33,6 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole, onMakeOwne
   const { isOwner } = useRahatDonor();
   const [isOwnerState, setIsOwnerState] = useState<boolean | null>(null);
 
-  console.log('isOwnerState', isOwnerState);
 
   useEffect(() => {
     const fetchIsOwner = async () => {
@@ -45,7 +44,6 @@ const UserDetails = ({ open, onClose, user, onActivate, onChangeRole, onMakeOwne
     fetchIsOwner();
   }, [isOwner, user, onMakeOwner]);
 
-  console.log(user, 'user');
   useEffect(() => {
     if (user) {
       setRole(user?.roles);
