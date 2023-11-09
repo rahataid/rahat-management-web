@@ -48,7 +48,6 @@ import {
 } from 'src/_mock/_beneficiaries';
 import { useAssignProjectToBeneficiary, useBeneficiaries, useDisableBeneficiaries } from 'src/api/beneficiaries';
 import { useProjects } from 'src/api/project';
-import useAuthStore from 'src/store/auths';
 import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
 import BeneficiariesTableRow from './beneficiaries-table-row';
@@ -70,7 +69,7 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesListView() {
   const table = useTable();
-  const roles = useAuthStore((state) => state.role);
+  // const roles = useAuthStore((state) => state.role);
 
   const defaultFilters: IBeneficiaryApiFilters = useMemo(
     () => ({
@@ -89,7 +88,6 @@ export default function BeneficiariesListView() {
   const { beneficiaries, meta } = useBeneficiaries(filters);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { enqueueSnackbar } = useSnackbar();
   const { multiAssignBenToProject, projectContract } = useProjectContract();
 
   const { push } = useRouter();
