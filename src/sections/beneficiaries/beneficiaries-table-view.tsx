@@ -45,7 +45,11 @@ import {
   internetAccessOptions,
   phoneStatusOptions,
 } from 'src/_mock/_beneficiaries';
-import { useAssignProjectToBeneficiary, useBeneficiaries, useDisableBeneficiaries } from 'src/api/beneficiaries';
+import {
+  useAssignProjectToBeneficiary,
+  useBeneficiaries,
+  useDisableBeneficiaries,
+} from 'src/api/beneficiaries';
 import { useProjects } from 'src/api/project';
 import BeneficiariesAssignProjectModal from './assign-project-modal';
 import BeneficiariesTableFiltersResult from './beneficiaries-table-filters-result';
@@ -105,7 +109,6 @@ export default function BeneficiariesListView() {
   const router = useRouter();
   const { projects } = useProjects();
 
-
   const bulkBeneficiaryImport = useBoolean();
   const bulkProjectAssign = useBoolean();
 
@@ -115,7 +118,7 @@ export default function BeneficiariesListView() {
 
   const notFound = (!beneficiaries.length && canReset) || !beneficiaries.length;
 
-  const assignProject=useAssignProjectToBeneficiary()
+  const assignProject = useAssignProjectToBeneficiary();
 
   const handleFilters = useCallback(
     (name: string, value: IBeneficiariesTableFilterValue) => {
@@ -163,35 +166,37 @@ export default function BeneficiariesListView() {
 
   const handleBulkAssignProjects = useCallback(
     async (selectedProject: { projectId: string }) => {
-      const filteredProjects = projects?.filter((p) => p.id === Number(selectedProject?.projectId));
-      const project = filteredProjects[0];
-  
+      const project = projects?.find((p) => p.id === Number(selectedProject?.projectId));
+
       const beneficiariesIds = beneficiaries
         .filter((beneficiary: IBeneficiariesItem) =>
           table.selected.includes(beneficiary.walletAddress)
         )
         .map((beneficiary: IBeneficiariesItem) => beneficiary.uuid);
-  
+
       // Defining a common function for assigning a project to a beneficiary
-      const assignProjectToBeneficiary = async (beneficiaryId:string) => {
-        await assignProject.mutate({beneficiaryId, selectedProject});
+      const assignProjectToBeneficiary = async (beneficiaryId: string) => {
+        await assignProject.mutate({ beneficiaryId, selectedProject });
       };
-  
+
       // Checking the project extras and conditionally performing actions
       if (project?.extras === 'isNotBlockchain') {
         beneficiariesIds.forEach(async (beneficiaryId) => {
           await assignProjectToBeneficiary(beneficiaryId);
         });
         bulkProjectAssign.onFalse();
+        table.onSelectAllRows(false, []);
+        return;
       }
-  
+
       const assigned = await multiAssignBenToProject(table.selected, projectContract as Contract);
-  
+
       if (assigned) {
         beneficiariesIds.forEach(async (beneficiaryId) => {
           await assignProjectToBeneficiary(beneficiaryId);
         });
         bulkProjectAssign.onFalse();
+        table.onSelectAllRows(false, []);
       }
     },
     [
@@ -199,12 +204,11 @@ export default function BeneficiariesListView() {
       bulkProjectAssign,
       multiAssignBenToProject,
       projectContract,
-      table.selected,
       projects,
-      assignProject
+      assignProject,
+      table,
     ]
   );
-  
 
   const handleDisableBeneficiary = () => {
     const walletAddresses = table.selected;
