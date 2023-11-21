@@ -52,13 +52,11 @@ const VendorView = () => {
   }, [ProjectContractWS, handleVendorChainData]);
 
   const handleActivateVendor = async (walletAddress: string) => {
-    console.log('activate', walletAddress);
     const activated = await activateVendor(walletAddress);
     console.log('actiavat', activated);
   };
 
   const handleTokenSend = async (walletAddress: string, tokenAmount: string) => {
-    console.log(walletAddress, tokenAmount);
     await sendTokensToVendor(walletAddress, tokenAmount);
     assignTokenDialog.onFalse();
   };

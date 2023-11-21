@@ -139,3 +139,28 @@ export function useDisableBeneficiaries() {
     }
   );
 }
+
+
+export function useAssignProjectToBeneficiary() {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  const { push } = useRouter();
+
+  return useMutation(
+    ['beneficiaries/assignProject'],
+    async ({beneficiaryId, selectedProject}:any) => {
+      const response = await BeneficiaryService.assignProject(beneficiaryId, selectedProject);
+      return response.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Assigning Project to Beneficiaries', { variant: 'error' });
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar('Project Assigned to Beneficiaries Successfully', { variant: 'success' });
+        push(paths.dashboard.general.beneficiaries.list);
+        queryClient.invalidateQueries(['beneficiaries']);
+      },
+    }
+  );
+}

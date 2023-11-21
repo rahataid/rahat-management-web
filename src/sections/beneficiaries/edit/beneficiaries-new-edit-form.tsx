@@ -107,7 +107,6 @@ const BeneficiariesForm: React.FC = () => {
       const keysToSet = defaultValuesKeys.filter((key) => beneficiaryKeys.includes(key));
 
       keysToSet.forEach((key) => {
-        console.log(key, 'key');
         const value = beneficiary[key];
         const formKey = key as keyof FormValues;
 
