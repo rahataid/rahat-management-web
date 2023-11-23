@@ -1,15 +1,14 @@
-import React from 'react';
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
 } from '@mui/material';
 
-const CampaignReportTable = ({ data }: any) => (
+const CampaignReportTable = ({ data = [] }: any) => (
   <TableContainer component={Paper}>
     <Table>
       <TableHead>
@@ -34,21 +33,21 @@ const CampaignReportTable = ({ data }: any) => (
       <TableBody>
         {data?.map((row: any, index: any) => (
           <TableRow key={index}>
-            <TableCell>{row.SN}</TableCell>
-            <TableCell>{row.phoneNumber}</TableCell>
-            <TableCell>{row.name}</TableCell>
-            <TableCell>{row.dob}</TableCell>
-            <TableCell>{row.gender}</TableCell>
-            <TableCell>{row.street}</TableCell>
-            <TableCell>{row.ward}</TableCell>
-            <TableCell>{row.city}</TableCell>
-            <TableCell>{row.distric}</TableCell>
-            <TableCell>{row.province}</TableCell>
-            <TableCell>{row.callDate}</TableCell>
-            <TableCell>{row.duration}</TableCell>
-            <TableCell>{row.billSec}</TableCell>
-            <TableCell>{row.disposition}</TableCell>
-            <TableCell>{row.hangupCase}</TableCell>
+            <TableCell>{row?.SN}</TableCell>
+            <TableCell>{row?.phoneNumber}</TableCell>
+            <TableCell>{row?.name}</TableCell>
+            <TableCell>{row?.dob}</TableCell>
+            <TableCell>{row?.gender}</TableCell>
+            <TableCell>{row?.street}</TableCell>
+            <TableCell>{row?.ward}</TableCell>
+            <TableCell>{row?.city}</TableCell>
+            <TableCell>{row?.distric}</TableCell>
+            <TableCell>{row?.province}</TableCell>
+            <TableCell>{row?.callDate}</TableCell>
+            <TableCell>{row?.duration}</TableCell>
+            <TableCell>{row?.billSec}</TableCell>
+            <TableCell>{row?.disposition}</TableCell>
+            <TableCell>{row?.hangupCase}</TableCell>
           </TableRow>
         ))}
       </TableBody>

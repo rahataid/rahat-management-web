@@ -18,12 +18,13 @@ import { useCampaign, useCampaignLogs, useRemoveAudience } from 'src/api/campaig
 import AudienceAccordionView from './audiences-accordion-view';
 import CampaignInfoCard from './campaign-info-card';
 import HeaderActions from './header-actions';
+import CampaignReportTable from './campaign-report-table';
 
 const CampaignsDetailsView = () => {
   const settings = useSettingsContext();
   const params = useParams();
-  const { campaign } = useCampaign(params.id);
-  const { logs } = useCampaignLogs(params.id as unknown as number);
+  const { campaign } = useCampaign(params.id) || {};
+  const { logs } = useCampaignLogs(params.id as unknown as number) || {};
   const deleteAudience = useRemoveAudience();
 
   const handleRemoveAudience = (audienceId: string) => {
@@ -53,33 +54,9 @@ const CampaignsDetailsView = () => {
           handleRemoveAudience={handleRemoveAudience}
         />
         <JsonToTable json={logs?.rows} />
-        {/* <Card>
-          <CardHeader title=" Communication Logs" />
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Id</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>SId</TableCell>
-                  <TableCell>From</TableCell>
-                  <TableCell>To</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {logs?.rows?.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item?.id}</TableCell>
-                    <TableCell>{item?.status}</TableCell>
-                    <TableCell>{item.details?.sid}</TableCell>
-                    <TableCell>{item.details?.from}</TableCell>
-                    <TableCell>{item.details?.to}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card> */}
+        {campaign?.transportId === 7 && logs?.rows && (
+          <CampaignReportTable data={logs?.rows[0]?.details} />
+        )}
       </Stack>
     </Container>
   );
