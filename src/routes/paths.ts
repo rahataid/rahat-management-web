@@ -69,6 +69,7 @@ export const paths = {
         list: `${ROOTS.CAMPAIGNS}`,
         add: `${ROOTS.CAMPAIGNS}/add`,
         edit: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/edit`,
+        logs: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/logs`,
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
         uploadMp3: `${ROOTS.CAMPAIGNS}/uploadMp3`,
       },

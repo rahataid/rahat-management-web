@@ -49,7 +49,7 @@ const AudienceAccordionView = ({ audience, handleRemoveAudience }: AudienceAccor
             handleRemoveAudience(selectedAudienceId);
           }}
         />
-        <Accordion>
+        <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<Icon icon="mdi:arrow-down-drop" />}
             aria-controls="panel-content"

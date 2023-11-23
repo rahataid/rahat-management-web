@@ -34,11 +34,12 @@ import { getLabelsByValues } from '@utils/array';
 import { parseMultiLineInput } from '@utils/strings';
 import { parseISO } from 'date-fns';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useAudiences, useCampaign, useTransports } from 'src/api/campaigns';
+import { useAudiences, useCampaign, useRemoveAudience, useTransports } from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
 import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
+import AudienceAccordionView from '../view/audiences-accordion-view';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
@@ -53,7 +54,7 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
 
   const { push } = useRouter();
   const { transports } = useTransports();
-
+  const deleteAudience = useRemoveAudience();
   const { campaign } = useCampaign(params.id);
   const { enqueueSnackbar } = useSnackbar();
   const assignCampaignDialog = useBoolean();
@@ -76,6 +77,13 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
       push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
+
+  const handleRemoveAudience = (audienceId: string) => {
+    deleteAudience.mutate({
+      audienceId,
+      campaignId: params.id,
+    });
+  };
 
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
@@ -289,6 +297,10 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                   </Stack>
                 </Box>
               </Stack>
+              <AudienceAccordionView
+                audience={campaign?.audiences}
+                handleRemoveAudience={handleRemoveAudience}
+              />
             </Stack>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

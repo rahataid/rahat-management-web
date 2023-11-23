@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -7,27 +8,20 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import Iconify from 'src/components/iconify';
 
-const CampaignReportTable = ({ data = [] }: any) => (
+const CampaignReportPhoneTable = ({ data = [] }: any) => (
   <TableContainer component={Paper}>
     <Table>
       <TableHead>
         <TableRow>
           <TableCell>SN</TableCell>
           <TableCell>Phone Number</TableCell>
-          <TableCell>Name</TableCell>
-          <TableCell>Date of Birth</TableCell>
-          <TableCell>Gender</TableCell>
-          <TableCell>Street</TableCell>
-          <TableCell>Ward</TableCell>
-          <TableCell>City</TableCell>
-          <TableCell>District</TableCell>
-          <TableCell>Province</TableCell>
           <TableCell>Call Date</TableCell>
           <TableCell>Duration</TableCell>
-          <TableCell>Billsec</TableCell>
-          <TableCell>Disposition</TableCell>
-          <TableCell>Hangup Cause</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Attempts</TableCell>
+          <TableCell>Actions</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -35,19 +29,22 @@ const CampaignReportTable = ({ data = [] }: any) => (
           <TableRow key={index}>
             <TableCell>{row?.SN}</TableCell>
             <TableCell>{row?.phoneNumber}</TableCell>
-            <TableCell>{row?.name}</TableCell>
-            <TableCell>{row?.dob}</TableCell>
-            <TableCell>{row?.gender}</TableCell>
-            <TableCell>{row?.street}</TableCell>
-            <TableCell>{row?.ward}</TableCell>
-            <TableCell>{row?.city}</TableCell>
-            <TableCell>{row?.distric}</TableCell>
-            <TableCell>{row?.province}</TableCell>
             <TableCell>{row?.callDate}</TableCell>
-            <TableCell>{row?.duration}</TableCell>
-            <TableCell>{row?.billSec}</TableCell>
-            <TableCell>{row?.disposition}</TableCell>
-            <TableCell>{row?.hangupCase}</TableCell>
+            <TableCell>{row?.duration} second</TableCell>
+            <TableCell>
+              {' '}
+              {row?.disposition === 'ANSWERED' ? (
+                <Button style={{ color: 'white', backgroundColor: 'green' }}>Success</Button>
+              ) : (
+                <Button style={{ color: 'white', backgroundColor: 'red' }}>Failed</Button>
+              )}
+            </TableCell>
+            <TableCell>2</TableCell>
+            <TableCell>
+              <Button>
+                <Iconify icon="solar:eye-bold" />
+              </Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -55,4 +52,4 @@ const CampaignReportTable = ({ data = [] }: any) => (
   </TableContainer>
 );
 
-export default CampaignReportTable;
+export default CampaignReportPhoneTable;
