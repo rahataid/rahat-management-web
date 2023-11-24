@@ -1,9 +1,6 @@
-import { Button, Card, CardContent, CardHeader, Grid, Stack, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Grid, Stack, Typography } from '@mui/material';
 import { fDateTime } from '@utils/format-time';
 import { ICampaignItemApiResponse } from 'src/types/campaigns';
-import Iconify from 'src/components/iconify';
-import { RouterLink } from 'src/routes/components';
-import { paths } from 'src/routes/paths';
 
 interface CampaignInfoProps {
   campaign: ICampaignItemApiResponse;
@@ -11,7 +8,22 @@ interface CampaignInfoProps {
 
 const CampaignInfoCard = ({ campaign }: CampaignInfoProps) => (
   <Card>
-    <CardHeader title={campaign?.name} />
+    <CardHeader
+      title={campaign?.name}
+      // action={
+      //   <Grid container direction="column" justifyContent="center" alignItems="flex-start">
+      //     <Typography variant="caption">
+      //       <Button
+      //         component={RouterLink}
+      //         href={paths.dashboard.general.campaigns.logs(campaign?.id)}
+      //         startIcon={<Iconify icon="solar:eye-bold" />}
+      //       >
+      //         View Logs
+      //       </Button>
+      //     </Typography>
+      //   </Grid>
+      // }
+    />
     <CardContent>
       <Stack
         sx={{ p: 2 }}
@@ -35,17 +47,6 @@ const CampaignInfoCard = ({ campaign }: CampaignInfoProps) => (
         <Grid container direction="column" justifyContent="center" alignItems="flex-start">
           <Typography variant="body1">{campaign?.audiences?.length || 0}</Typography>
           <Typography variant="caption">Total Audiences</Typography>
-        </Grid>
-        <Grid container direction="column" justifyContent="center" alignItems="flex-start">
-          <Typography variant="caption">
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.general.campaigns.logs(campaign?.id)}
-              startIcon={<Iconify icon="solar:eye-bold" />}
-            >
-              View Logs
-            </Button>
-          </Typography>
         </Grid>
       </Stack>
     </CardContent>

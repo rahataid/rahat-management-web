@@ -15,7 +15,6 @@ const CampaignReportPhoneTable = ({ data = [] }: any) => (
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>SN</TableCell>
           <TableCell>Phone Number</TableCell>
           <TableCell>Call Date</TableCell>
           <TableCell>Duration</TableCell>
@@ -27,19 +26,22 @@ const CampaignReportPhoneTable = ({ data = [] }: any) => (
       <TableBody>
         {data?.map((row: any, index: any) => (
           <TableRow key={index}>
-            <TableCell>{row?.SN}</TableCell>
             <TableCell>{row?.phoneNumber}</TableCell>
             <TableCell>{row?.callDate}</TableCell>
             <TableCell>{row?.duration} second</TableCell>
             <TableCell>
               {' '}
               {row?.disposition === 'ANSWERED' ? (
-                <Button style={{ color: 'white', backgroundColor: 'green' }}>Success</Button>
+                <Button style={{ color: 'white', backgroundColor: 'green' }}>
+                  {row?.disposition}
+                </Button>
               ) : (
-                <Button style={{ color: 'white', backgroundColor: 'red' }}>Failed</Button>
+                <Button style={{ color: 'white', backgroundColor: 'red' }}>
+                  {row?.disposition}
+                </Button>
               )}
             </TableCell>
-            <TableCell>2</TableCell>
+            <TableCell>{row?.attempts}</TableCell>
             <TableCell>
               <Button>
                 <Iconify icon="solar:eye-bold" />

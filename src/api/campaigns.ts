@@ -47,10 +47,35 @@ export function useCampaign(id: string): ICampaignDetailsHookReturn {
 export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
   const { data, isLoading, error } = useQuery(['campaign/id/logs'], async () => {
     const res = await CampaignsService.logs(id);
+    console.log('res', res);
     return res.data as ICampaignLogsApiResponse;
   });
 
-  const logs = useMemo(() => data || ({} as ICampaignLogsApiResponse), [data]);
+  const logs = useMemo(
+    () =>
+      ({
+        ...data,
+        rows: data?.rows?.map((row) => {
+          const detailsWithAttempts = row?.details?.reduce((acc, detail) => {
+            const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
+
+            if (existingDetail) {
+              existingDetail.attempts += 1;
+            } else {
+              acc.push({ ...detail, attempts: 1 });
+            }
+
+            return acc;
+          }, []);
+
+          return {
+            ...row,
+            details: detailsWithAttempts,
+          };
+        }),
+      } || ({} as ICampaignLogsApiResponse)),
+    [data]
+  );
 
   return {
     logs,
