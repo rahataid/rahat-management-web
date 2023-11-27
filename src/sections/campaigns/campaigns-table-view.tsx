@@ -42,7 +42,7 @@ import CampaignsTableRow from './campaigns-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', width: 200 },
+  { id: 'name', label: 'Campaigns ', width: 200 },
   { id: 'startTime', label: 'Start Time', width: 150 },
   { id: 'type', label: 'Type', width: 150 },
   { id: 'status', label: 'Status', width: 150 },
@@ -131,7 +131,7 @@ export default function BeneficiariesListView() {
         }}
       />
       <CustomBreadcrumbs
-        heading="Campaigns: List"
+        heading="Communications: List"
         links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
         sx={{
           mb: { xs: 3, md: 5 },

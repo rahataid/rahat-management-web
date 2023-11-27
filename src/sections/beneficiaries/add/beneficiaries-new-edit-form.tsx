@@ -88,8 +88,6 @@ const BeneficiariesForm: React.FC = () => {
     []
   );
 
-  console.log(typeof CAMPAIGN_TYPES);
-
   const methods = useForm<FormValues>({
     resolver: yupResolver(NewBeneficiarySchema),
     defaultValues,

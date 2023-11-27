@@ -14,9 +14,6 @@ import {
   SelectChangeEvent,
   Stack,
 } from '@mui/material';
-import CampaignsService from '@services/campaigns';
-import { useMutation } from '@tanstack/react-query';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useBulkAddAudiences } from 'src/api/campaigns';
@@ -60,6 +57,8 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
     bulkAddAudiences.mutate(withDetails);
     onClose();
   };
+
+  return <h1>Audiences</h1>;
 
   return (
     <Dialog open={open} onClose={onClose}>

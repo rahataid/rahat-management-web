@@ -56,7 +56,6 @@ export default function VendorListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const { vendors, meta } = useVendors(filters);
-  console.log(vendors, 'vendors');
 
   const searchParams = useSearchParams();
   const { address } = useParams();

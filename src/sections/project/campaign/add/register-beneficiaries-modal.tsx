@@ -54,7 +54,6 @@ const CampaignAssignBenficiariesModal = ({ open, onClose, onOk }: Props) => {
         ...d,
       },
     }));
-    console.log('withDetails', withDetails);
     bulkAddAudiences.mutate(withDetails);
     onClose();
   };

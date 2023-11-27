@@ -56,19 +56,18 @@ export default function BeneficiariesDetailsCard({
   });
 
   const handleProjectAssign = async (data: IAssignProjectItem) => {
-    const filteredProjects = projects?.filter((p) => p.id === Number(data.projectId));
-    const project = filteredProjects[0];
-    if(project?.extras==='isNotBlockchain') {
-      await mutateAsync(data);
-      assignProjectDialog.onFalse();
-      return;
-    }
-    const added = await addBeneficiaryToProject(walletAddress);
+    const project = projects?.find((p) => p.id === Number(data.projectId));
 
-    if (added) {
+    if (project?.extras === 'isNotBlockchain') {
       await mutateAsync(data);
-      assignProjectDialog.onFalse();
+    } else {
+      const added = await addBeneficiaryToProject(walletAddress);
+
+      if (added) {
+        await mutateAsync(data);
+      }
     }
+    assignProjectDialog.onFalse();
   };
 
   const handleBeneficiaryTokenAssign = async (token: string) => {

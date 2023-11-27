@@ -1,8 +1,7 @@
 import axios from 'axios';
 // config
 import { HOST_API } from '@config';
-import { isValidToken } from './session';
-import { getToken } from './storage-available';
+import { getSession, isValidToken } from './session';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +27,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = getToken();
+    const token = getSession();
     if (token && isValidToken(token)) {
       config.headers.Authorization = `Bearer ${token}`;
     }

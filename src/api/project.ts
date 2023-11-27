@@ -77,7 +77,6 @@ export function useRemoveBeneficiaries(address: string) {
     ['projects/removebenificiaries'],
     async (createData: string[]) => {
       const response = await ProjectsService.removeBeneficiariesFromProject(address, createData);
-      console.log(response.data);
       return response.data;
     },
     {

@@ -8,7 +8,22 @@ interface CampaignInfoProps {
 
 const CampaignInfoCard = ({ campaign }: CampaignInfoProps) => (
   <Card>
-    <CardHeader title={campaign?.name} />
+    <CardHeader
+      title={campaign?.name}
+      // action={
+      //   <Grid container direction="column" justifyContent="center" alignItems="flex-start">
+      //     <Typography variant="caption">
+      //       <Button
+      //         component={RouterLink}
+      //         href={paths.dashboard.general.campaigns.logs(campaign?.id)}
+      //         startIcon={<Iconify icon="solar:eye-bold" />}
+      //       >
+      //         View Logs
+      //       </Button>
+      //     </Typography>
+      //   </Grid>
+      // }
+    />
     <CardContent>
       <Stack
         sx={{ p: 2 }}
