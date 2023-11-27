@@ -1,5 +1,6 @@
 import CampaignsService from '@services/campaigns';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { isEmpty } from 'lodash';
 import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
@@ -56,21 +57,39 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
       ({
         ...data,
         rows: data?.rows?.map((row) => {
-          const detailsWithAttempts = row?.details?.reduce((acc, detail) => {
-            const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
+          console.log('row?.details', row?.details);
+          const detailsWithAttempts = row?.details[0]?.phoneNumber
+            ? row?.details?.reduce((acc, detail) => {
+                const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
 
-            if (existingDetail) {
-              existingDetail.attempts += 1;
-            } else {
-              acc.push({ ...detail, attempts: 1 });
-            }
+                if (existingDetail) {
+                  existingDetail.attempts += 1;
+                } else {
+                  acc.push({ ...detail, attempts: 1 });
+                }
 
-            return acc;
-          }, []);
+                return acc;
+              }, [])
+            : {};
+          console.log('detailsWithAttempts', detailsWithAttempts);
+          const totalSuccessfulAnswer =
+            !isEmpty(detailsWithAttempts) &&
+            detailsWithAttempts.reduce(
+              (acc, detail) => (detail.disposition === 'ANSWERED' ? acc + 1 : acc),
+              0
+            );
+          const totalFailure =
+            !isEmpty(detailsWithAttempts) &&
+            detailsWithAttempts.reduce(
+              (acc, detail) => (detail.disposition === 'NO ANSWER' ? acc + 1 : acc),
+              0
+            );
 
           return {
             ...row,
             details: detailsWithAttempts,
+            totalSuccessfulAnswer,
+            totalFailure,
           };
         }),
       } || ({} as ICampaignLogsApiResponse)),

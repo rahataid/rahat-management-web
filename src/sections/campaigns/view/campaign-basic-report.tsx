@@ -5,8 +5,12 @@ const CampaignBasicReport = ({ logs }) => {
   console.log('logs', logs);
   return (
     <Stack direction={'row'} spacing={2}>
-      <SummaryCard subtitle="Total Calls" total={logs[0]?.details?.length} />
-      <SummaryCard subtitle="Campaign Basic Report" total={0} />
+      {logs?.[0]?.totalSuccessfulAnswer && (
+        <SummaryCard subtitle="Total Success" total={0 || logs?.[0].totalSuccessfulAnswer} />
+      )}
+      {logs?.[0]?.totalFailure && (
+        <SummaryCard subtitle="Total Failure" total={0 || logs?.[0].totalFailure} />
+      )}
     </Stack>
   );
 };

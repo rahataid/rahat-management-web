@@ -14,30 +14,30 @@ import { useRouter } from 'src/routes/hook';
 // types
 // assets
 // components
-import { useBoolean } from '@hooks/use-boolean';
 import {
   Alert,
   AlertTitle,
   Button,
+  CardHeader,
   Checkbox,
-  Chip,
   ListItemText,
   MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
-import { parseMultiLineInput } from '@utils/strings';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useAudiences, useCampaignAudio, useTransports } from 'src/api/campaigns';
+import { useBeneficiaries } from 'src/api/beneficiaries';
+import {
+  useAudiences,
+  useBulkAddAudiences,
+  useCampaignAudio,
+  useTransports,
+} from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
-import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
@@ -46,16 +46,23 @@ type Props = {
 interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
-  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
   const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
   const [showSelectAudio, setShowSelectAudio] = useState(false);
   const [showSelectMessage, setShowSelectMessage] = useState(false);
   const { campaignAudio } = useCampaignAudio();
+  const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<any[]>([]);
+
+  const [showAudiences, setShowAudiences] = useState(false);
+  const { beneficiaries } = useBeneficiaries();
+  const bulkAddAudiences = useBulkAddAudiences();
+
+  const handleSelectAudiencesButton = () => {
+    setShowAudiences((prev) => !prev);
+  };
 
   const { push } = useRouter();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
-  const assignCampaignDialog = useBoolean();
   const { audiences } = useAudiences();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
@@ -105,17 +112,71 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control, setValue } = methods;
+  const {
+    reset,
+    handleSubmit,
+    control,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = methods;
 
-  const handleSelectAudiences = async (e: SelectChangeEvent<string[]>) => {
-    const { value } = e.target;
-    const formattedSelected = audiences
-      .filter((aud: any) => value.includes(aud.details.name))
-      .map((aud: any) => +aud.id);
-    setFormattedSelect(formattedSelected);
-    setSelectedAudiences(value as string[]);
-    setValue('audienceIds', formattedSelected);
+  console.log(getValues());
+
+  // Handle beneficiary click
+  const handleBeneficiaryClick = async (beneficiary: any) => {
+    setSelectedBeneficiaries((prev) => {
+      let updatedBeneficiaries;
+      if (prev.some((item) => item.phone === beneficiary.phone)) {
+        // If already selected, remove from selected beneficiaries
+        updatedBeneficiaries = prev.filter((item) => item.phone !== beneficiary.phone);
+      } else {
+        // If not selected, add to selected beneficiaries
+        updatedBeneficiaries = [...prev, beneficiary];
+      }
+
+      // Update audienceIds in the form state
+      setValue(
+        'audienceIds',
+        audiences
+          .filter((audience: any) =>
+            updatedBeneficiaries.some((ben) => ben.phone === audience.details.phone)
+          )
+          .map((audience: any) => audience.id)
+      );
+
+      return updatedBeneficiaries;
+    });
+
+    // here we check if the beneficiary is already in the audiences
+    // if not, we add it to the audiences
+
+    const isAlreadyInAudiences = audiences.some(
+      (audience: any) => audience.details.phone === beneficiary.phone
+    );
+
+    if (!isAlreadyInAudiences) {
+      await bulkAddAudiences.mutateAsync([
+        {
+          details: {
+            phone: beneficiary.phone,
+            uuid: beneficiary.uuid,
+          },
+        },
+      ]);
+    }
   };
+
+  // useEffect(() => {
+  //   const selectedAudiences = audiences.filter((audience: any) =>
+  //     selectedBeneficiaries.some((beneficiary) => beneficiary.phone === audience.details.phone)
+  //   );
+  //   setValue(
+  //     'audienceIds',
+  //     selectedAudiences.map((audience: any) => audience.id)
+  //   );
+  //   // setSelectedBeneficiaries(selectedAudiences);
+  // }, [audiences, selectedBeneficiaries, setValue]);
 
   const handleSelectCampaignType = (value: string) => {
     const requiresAudioField = value === 'PHONE';
@@ -128,7 +189,12 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      const audienceIds = formattedSelect;
+      const audienceIds = audiences
+        .filter((audience: any) =>
+          selectedBeneficiaries.some((beneficiary) => beneficiary.phone === audience.details.phone)
+        )
+        .map((audience: any) => audience.id);
+      setValue('audienceIds', audienceIds);
 
       type AdditionalData = {
         audio?: any;
@@ -156,10 +222,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         audienceIds,
         details: mergedDetails,
       };
-
       mutate(formatted as ICampaignCreateItem);
     },
-    [formattedSelect, mutate]
+    [audiences, mutate, selectedBeneficiaries, setValue]
   );
 
   return (
@@ -170,13 +235,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
           {error?.message}
         </Alert>
       )}
-      <CampaignAssignBenficiariesModal
-        onClose={assignCampaignDialog.onFalse}
-        open={assignCampaignDialog.value}
-        onOk={() => {
-          console.log('Registered');
-        }}
-      />
+
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
@@ -224,21 +283,21 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                 </RHFSelect>
               </Stack>
 
-                {showSelectAudio && (
-                  <RHFSelect name="file" label="Select Audio">
-                    {campaignAudio.map((mp3: any) => (
-                      <MenuItem key={mp3?.url} value={mp3?.url}>
-                        {mp3?.filename}
-                      </MenuItem>
-                    ))}
-                  </RHFSelect>
-                )}
+              {showSelectAudio && (
+                <RHFSelect name="file" label="Select Audio">
+                  {campaignAudio.map((mp3: any) => (
+                    <MenuItem key={mp3?.url} value={mp3?.url}>
+                      {mp3?.filename}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+              )}
 
-                {showSelectMessage && (
-                  <RHFTextField name="message" label="SMS Message" fullWidth multiline />
-                )}
+              {showSelectMessage && (
+                <RHFTextField name="message" label="SMS Message" fullWidth multiline />
+              )}
 
-                {/* <RHFTextField name="details" label="Details" fullWidth multiline /> */}
+              {/* <RHFTextField name="details" label="Details" fullWidth multiline /> */}
 
               <Stack
                 spacing={2}
@@ -267,56 +326,90 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
                     ))}
                   </RHFSelect>
                 </Box>
-                <Box
-                  sx={{
-                    width: {
-                      xs: '100%',
-                      sm: '100%',
-                      md: '50%',
-                    },
-                  }}
-                >
-                  <Stack direction="column">
-                    <Select
-                      name="audienceIds"
-                      multiple
-                      value={selectedAudiences}
-                      onChange={handleSelectAudiences}
-                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value: any) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
-                    >
-                      {audiences.map((aud: any) => (
-                        <MenuItem key={aud.details.name} value={aud.details.name}>
-                          <Checkbox checked={selectedAudiences.indexOf(aud.details.name) > -1} />
-                          <ListItemText primary={aud.details.name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <Button
-                      variant="text"
-                      color="primary"
-                      onClick={assignCampaignDialog.onTrue}
-                      sx={{ alignSelf: 'flex-start' }}
-                    >
-                      Register Beneficiaires
-                    </Button>
-                  </Stack>
-                </Box>
               </Stack>
             </Stack>
 
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+            <Stack direction="row" alignItems="flex-end" spacing={2} sx={{ mt: 3 }}>
+              <Button variant="outlined" color="primary" onClick={handleSelectAudiencesButton}>
+                {!showAudiences ? 'Select' : 'Hide'} Audiences
+              </Button>
+              <LoadingButton type="submit" variant="contained" color="success" loading={isLoading}>
                 Create Campaign
               </LoadingButton>
             </Stack>
           </Card>
+
+          {errors.audienceIds && (
+            <Alert severity="error">
+              <AlertTitle>Error Creating Campaign</AlertTitle>
+              {errors.audienceIds?.message}
+            </Alert>
+          )}
+
+          {showAudiences && (
+            <Card sx={{ p: 3, mt: 3 }} title="Select Audiences">
+              <CardHeader
+                title="Select Audiences"
+                action={
+                  <Button variant="text" color="primary" onClick={handleSelectAudiencesButton}>
+                    Close
+                  </Button>
+                }
+              />
+              <Stack direction="column" spacing={2}>
+                <MenuItem>
+                  <Checkbox
+                    checked={
+                      selectedBeneficiaries.length === beneficiaries.length &&
+                      beneficiaries.length > 0
+                    }
+                    onChange={async (e) => {
+                      if (e.target.checked) {
+                        setSelectedBeneficiaries(beneficiaries);
+                        setValue(
+                          'audienceIds',
+                          audiences.map((audience: any) => audience.id)
+                        );
+                        const notRegistered = beneficiaries.filter(
+                          (beneficiary) =>
+                            !audiences.some(
+                              (audience: any) => audience.details.phone === beneficiary.phone
+                            )
+                        );
+                        if (!notRegistered.length) return;
+
+                        bulkAddAudiences.mutate(
+                          notRegistered.map((beneficiary) => ({
+                            details: {
+                              phone: beneficiary.phone,
+                              uuid: beneficiary.uuid,
+                            },
+                          }))
+                        );
+                      } else {
+                        setSelectedBeneficiaries([]);
+                      }
+                    }}
+                  />
+                  <ListItemText primary="Select All" />
+                </MenuItem>
+                {beneficiaries.map((beneficiary) => (
+                  <MenuItem
+                    key={beneficiary.phone}
+                    value={beneficiary.phone}
+                    onClick={() => handleBeneficiaryClick(beneficiary)}
+                  >
+                    <Checkbox
+                      checked={selectedBeneficiaries.some(
+                        (item) => item.phone === beneficiary.phone
+                      )}
+                    />
+                    <ListItemText primary={beneficiary.name} />
+                  </MenuItem>
+                ))}
+              </Stack>
+            </Card>
+          )}
         </Grid>
       </Grid>
     </FormProvider>

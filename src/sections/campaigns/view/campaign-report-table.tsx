@@ -24,31 +24,32 @@ const CampaignReportPhoneTable = ({ data = [] }: any) => (
         </TableRow>
       </TableHead>
       <TableBody>
-        {data?.map((row: any, index: any) => (
-          <TableRow key={index}>
-            <TableCell>{row?.phoneNumber}</TableCell>
-            <TableCell>{row?.callDate}</TableCell>
-            <TableCell>{row?.duration} second</TableCell>
-            <TableCell>
-              {' '}
-              {row?.disposition === 'ANSWERED' ? (
-                <Button style={{ color: 'white', backgroundColor: 'green' }}>
-                  {row?.disposition}
+        {data.length &&
+          data?.map((row: any, index: any) => (
+            <TableRow key={index}>
+              <TableCell>{row?.phoneNumber}</TableCell>
+              <TableCell>{row?.callDate}</TableCell>
+              <TableCell>{row?.duration} second</TableCell>
+              <TableCell>
+                {' '}
+                {row?.disposition === 'ANSWERED' ? (
+                  <Button style={{ color: 'white', backgroundColor: 'green' }}>
+                    {row?.disposition}
+                  </Button>
+                ) : (
+                  <Button style={{ color: 'white', backgroundColor: 'red' }}>
+                    {row?.disposition}
+                  </Button>
+                )}
+              </TableCell>
+              <TableCell>{row?.attempts}</TableCell>
+              <TableCell>
+                <Button>
+                  <Iconify icon="solar:eye-bold" />
                 </Button>
-              ) : (
-                <Button style={{ color: 'white', backgroundColor: 'red' }}>
-                  {row?.disposition}
-                </Button>
-              )}
-            </TableCell>
-            <TableCell>{row?.attempts}</TableCell>
-            <TableCell>
-              <Button>
-                <Iconify icon="solar:eye-bold" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   </TableContainer>
