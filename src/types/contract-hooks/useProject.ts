@@ -10,7 +10,7 @@ export type IProjectChainData = {
 export type IBeneficiaryChainData = {
   isBeneficiary: boolean | null;
   balance: number;
-  allowance: number;
+  claimed: number;
 };
 export type IVendorChainData = {
   isVendor: boolean | null;

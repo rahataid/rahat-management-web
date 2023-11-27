@@ -224,6 +224,7 @@ const useProjectContract = (): ProjectContract => {
         return 0;
       }
       const balance = await projectContract.beneficiaryClaims(walletAddress);
+
       return balance?.toString();
     },
     [projectContract]
@@ -247,7 +248,7 @@ const useProjectContract = (): ProjectContract => {
         isBeneficiary,
         balance: balance || 0,
         // todo:add beneficiary pending tokens
-        allowance: 0,
+        claimed: 0,
       };
     },
     [beneficiaryBalance, checkActiveBeneficiary]

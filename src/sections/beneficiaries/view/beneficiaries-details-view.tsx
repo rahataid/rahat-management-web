@@ -30,16 +30,23 @@ function BeneficiariesDetailsView() {
   }));
 
   const handleChainData = useCallback(async () => {
+    if (!uuid) return;
     if (!beneficiary.walletAddress) return;
     if (chainData.isBeneficiary !== null) return;
 
     const data = await getBeneficiaryChainData(beneficiary.walletAddress);
     setChainData(data);
-  }, [beneficiary.walletAddress, chainData.isBeneficiary, getBeneficiaryChainData, setChainData]);
+  }, [
+    beneficiary.walletAddress,
+    chainData.isBeneficiary,
+    getBeneficiaryChainData,
+    setChainData,
+    uuid,
+  ]);
 
   useEffect(() => {
     handleChainData();
-  }, [handleChainData]);
+  }, [handleChainData, beneficiary.walletAddress]);
 
   // useEffect(() => {
   //   ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
@@ -78,7 +85,7 @@ function BeneficiariesDetailsView() {
           <BeneficiariesDetailsClaimsCard
             walletAddress={beneficiary?.walletAddress}
             balance={chainData.balance}
-            tokenAllowance={chainData.allowance}
+            claimed={chainData.claimed}
           />
         </Grid>
       </Grid>
