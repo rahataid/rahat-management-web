@@ -53,7 +53,9 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<any[]>([]);
 
   const [showAudiences, setShowAudiences] = useState(false);
-  const { beneficiaries } = useBeneficiaries();
+  const { beneficiaries } = useBeneficiaries({
+    perPage: 1000,
+  });
   const bulkAddAudiences = useBulkAddAudiences();
 
   const handleSelectAudiencesButton = () => {
