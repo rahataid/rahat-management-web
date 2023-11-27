@@ -1,7 +1,8 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { getToken, getUser } from '@utils/storage-available';
+import { getSession } from '@utils/session';
+import { getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import useAppStore from 'src/store/app';
@@ -12,7 +13,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const token = getToken();
+const token = getSession();
 const user = getUser();
 const AuthProvider = ({ children }: Props) => {
   const isInitialized = useAuthStore((state) => state.isInitialized);
