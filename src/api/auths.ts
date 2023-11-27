@@ -1,7 +1,7 @@
 import AuthService from '@services/auths';
 import { useMutation } from '@tanstack/react-query';
 import { setSession } from '@utils/session';
-import { setUser } from '@utils/storage-available';
+import { setToken, setUser } from '@utils/storage-available';
 import { useSnackbar } from 'notistack';
 import useAuthStore from 'src/store/auths';
 
@@ -43,6 +43,7 @@ export const useLogin = () => {
         setUser(user);
         setUserinStore(user);
         setSession(access_token);
+        setToken(access_token);
         return data;
       },
       onError: (error) => {
@@ -55,29 +56,36 @@ export const useLogin = () => {
   );
 };
 
-export const useRegister = ()=>{
+export const useRegister = () => {
   const notify = useSnackbar();
- 
-    return useMutation(
-      ['register'],
-      async({name,email,walletAddress}:{name:string;email:string;walletAddress:string})=>{
-        const res = await AuthService.register({name,email,walletAddress}) ;
-        console.log(res)
-        return res?.data
-      } ,
-      {
-        onSuccess: (data) => {
-          notify.enqueueSnackbar('Successfully Register', { variant: 'success' });
-          return data;
-        },
-        onError: (error) => {
-          console.log(error)
-          notify.enqueueSnackbar( error?.message ||'Something went wrong', {
-            variant: 'error',
-          });
-          return error;
-        },
-      }
-    )
 
-}
+  return useMutation(
+    ['register'],
+    async ({
+      name,
+      email,
+      walletAddress,
+    }: {
+      name: string;
+      email: string;
+      walletAddress: string;
+    }) => {
+      const res = await AuthService.register({ name, email, walletAddress });
+      console.log(res);
+      return res?.data;
+    },
+    {
+      onSuccess: (data) => {
+        notify.enqueueSnackbar('Successfully Register', { variant: 'success' });
+        return data;
+      },
+      onError: (error) => {
+        console.log(error);
+        notify.enqueueSnackbar(error?.message || 'Something went wrong', {
+          variant: 'error',
+        });
+        return error;
+      },
+    }
+  );
+};
