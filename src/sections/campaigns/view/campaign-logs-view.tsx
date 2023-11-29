@@ -23,7 +23,6 @@ const CampaignsLogsDetailsView = () => {
   const { logs } = useCampaignLogs(params.id as unknown as number) || {};
 
   const renderLogs = (transportType: string) => {
-    console.log('transportType', transportType);
     switch (transportType) {
       case 'Voxcrow':
         return !isEmpty(logs?.rows?.[0]?.details) ? (
