@@ -4,11 +4,16 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { Container } from '@mui/material';
 import { paths } from '@routes/paths';
+import { useParams } from 'next/navigation';
+import { useCampaign } from 'src/api/campaigns';
 import HeaderActions from '../view/header-actions';
 import CampaignEditForm from './campaign-new-edit-form';
 
 const CampaignEditView = () => {
   const settings = useSettingsContext();
+  const query = useParams();
+  const { campaign } = useCampaign(query?.id as unknown as string);
+  console.log('campaign', campaign);
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <CustomBreadcrumbs
@@ -23,7 +28,7 @@ const CampaignEditView = () => {
         }}
         action={<HeaderActions />}
       />
-      <CampaignEditForm />
+      <CampaignEditForm currentCampaign={campaign} />
     </Container>
   );
 };

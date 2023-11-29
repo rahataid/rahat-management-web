@@ -8,38 +8,36 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
+// utils
 // routes
-import { useParams, useRouter } from 'src/routes/hook';
+import { useRouter } from 'src/routes/hook';
 // types
 // assets
 // components
-import { useBoolean } from '@hooks/use-boolean';
 import {
   Alert,
   AlertTitle,
   Button,
+  CardHeader,
   Checkbox,
-  Chip,
   ListItemText,
   MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
-import { getLabelsByValues } from '@utils/array';
-import { parseMultiLineInput } from '@utils/strings';
-import { parseISO } from 'date-fns';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
-import { useAudiences, useCampaign, useRemoveAudience, useTransports } from 'src/api/campaigns';
+import { useBeneficiaries } from 'src/api/beneficiaries';
+import {
+  useAudiences,
+  useBulkAddAudiences,
+  useCampaignAudio,
+  useTransports,
+} from 'src/api/campaigns';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { CAMPAIGN_TYPES, IApiResponseError, ICampaignCreateItem } from 'src/types/campaigns';
-import CampaignAssignBenficiariesModal from './register-beneficiaries-modal';
-import AudienceAccordionView from '../view/audiences-accordion-view';
 
 type Props = {
   currentCampaign?: ICampaignCreateItem;
@@ -47,52 +45,55 @@ type Props = {
 
 interface FormValues extends ICampaignCreateItem {}
 
-const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
-  const params = useParams();
-  const [selectedAudiences, setSelectedAudiences] = useState<string | string[]>([]);
-  const [formattedSelect, setFormattedSelect] = useState<any[]>([]);
+const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
+  const [showSelectAudio, setShowSelectAudio] = useState(false);
+  const [showSelectMessage, setShowSelectMessage] = useState(false);
+  const { campaignAudio } = useCampaignAudio();
+  const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<any[]>([]);
+
+  console.log('selectedBeneficiaries', selectedBeneficiaries);
+
+  const [showAudiences, setShowAudiences] = useState(false);
+  const { beneficiaries } = useBeneficiaries({
+    perPage: 1000,
+  });
+  const bulkAddAudiences = useBulkAddAudiences();
+
+  const handleSelectAudiencesButton = () => {
+    setShowAudiences((prev) => !prev);
+  };
 
   const { push } = useRouter();
   const { transports } = useTransports();
-  const deleteAudience = useRemoveAudience();
-  const { campaign } = useCampaign(params.id);
   const { enqueueSnackbar } = useSnackbar();
-  const assignCampaignDialog = useBoolean();
   const { audiences } = useAudiences();
   const { error, isLoading, mutate } = useMutation<
     ICampaignCreateItem,
     IApiResponseError,
     ICampaignCreateItem
   >({
-    mutationFn: async (updateData: ICampaignCreateItem) => {
-      const response = await CampaignsService.update(params.id, updateData);
+    mutationFn: async ({ id, editData }: { id: string; editData: ICampaignCreateItem }) => {
+      const response = await CampaignsService.update(currentCampaign?.id as string, editData);
       return response.data;
     },
     onError: () => {
-      enqueueSnackbar('Error updating Campaign', { variant: 'error' });
+      enqueueSnackbar('Error creating Campaign', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Campaign updated successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign created successfully', { variant: 'success' });
       reset();
       push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
-
-  const handleRemoveAudience = (audienceId: string) => {
-    deleteAudience.mutate({
-      audienceId,
-      campaignId: params.id,
-    });
-  };
 
   const NewProjectSchema = Yup.object().shape({
     name: Yup.string()
       .required('Campaign name is required')
       .min(4, 'Mininum 4 characters')
       .max(24, 'Maximum 15 characters'),
-    startTime: Yup.string().required('Start date is required'),
+    startTime: Yup.date().nullable().required('Start date is required'),
     type: Yup.string().required('Campaign Type is required'),
-    details: Yup.string().required('Enter the details for the campaign'),
+    details: Yup.string().optional(),
     audienceIds: Yup.array().required('Select the audience for the campaign'),
     transportId: Yup.number().required('Select the transport for the campaign'),
   });
@@ -100,11 +101,11 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentCampaign?.name || '',
-      startTime: String(currentCampaign?.startTime) || null,
+      startTime: currentCampaign?.startTime || '',
       details: currentCampaign?.details || '',
       transportId: null,
-      type: null,
-      audienceIds: currentCampaign?.audienceIds || [],
+      type: currentCampaign?.type as CAMPAIGN_TYPES,
+      audienceIds: null,
     }),
     [currentCampaign]
   );
@@ -114,72 +115,153 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
     defaultValues,
   });
 
-  const { reset, handleSubmit, control, setValue } = methods;
+  const {
+    reset,
+    handleSubmit,
+    control,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = methods;
 
-  const handleSelectAudiences = async (e: SelectChangeEvent<string[]>) => {
-    const { value } = e.target;
-    const formattedSelected = audiences
-      .filter((aud: any) => value.includes(aud.id))
-      .map((aud: any) => +aud.id);
-    setFormattedSelect(formattedSelected);
-    setSelectedAudiences(value);
-    setValue('audienceIds', formattedSelected);
+  console.log('getValues()', getValues());
+
+  useEffect(() => {
+    if (currentCampaign) {
+      setValue('name', currentCampaign.name || '');
+      // setValue('startTime', parseISO(currentCampaign.startTime as string));
+      setValue('type', currentCampaign.type as CAMPAIGN_TYPES);
+      const formattedDetails = JSON.stringify(currentCampaign.details || {});
+      setValue('details', formattedDetails);
+      const audienceIds = currentCampaign.audiences?.map((audience) => audience?.id) || [];
+      setValue('audienceIds', audienceIds);
+      // setSelectedAudiences(audienceIds as unknown as string[]);
+      setValue('transportId', currentCampaign?.transport?.id || null);
+    }
+  }, [currentCampaign, setValue]);
+
+  // Handle beneficiary click
+  const handleBeneficiaryClick = async (beneficiary: any) => {
+    setSelectedBeneficiaries((prev) => {
+      let updatedBeneficiaries;
+      if (prev.some((item) => item.phone === beneficiary.phone)) {
+        // If already selected, remove from selected beneficiaries
+        updatedBeneficiaries = prev.filter((item) => item.phone !== beneficiary.phone);
+      } else {
+        // If not selected, add to selected beneficiaries
+        updatedBeneficiaries = [...prev, beneficiary];
+      }
+
+      // Update audienceIds in the form state
+      setValue(
+        'audienceIds',
+        audiences
+          .filter((audience: any) =>
+            updatedBeneficiaries.some((ben) => ben.phone === audience.details.phone)
+          )
+          .map((audience: any) => audience.id)
+      );
+
+      return updatedBeneficiaries;
+    });
+
+    // here we check if the beneficiary is already in the audiences
+    // if not, we add it to the audiences
+
+    const isAlreadyInAudiences = audiences.some(
+      (audience: any) => audience.details.phone === beneficiary.phone
+    );
+
+    if (!isAlreadyInAudiences) {
+      await bulkAddAudiences.mutateAsync([
+        {
+          details: {
+            phone: beneficiary.phone,
+            uuid: beneficiary.uuid,
+          },
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    if (!beneficiaries) return;
+    if (currentCampaign?.audiences) {
+      const formatted = beneficiaries.filter((beneficiary) =>
+        currentCampaign?.audiences?.some((audience) => audience.details.phone === beneficiary.phone)
+      );
+
+      setSelectedBeneficiaries(formatted);
+    }
+  }, [beneficiaries, currentCampaign?.audiences]);
+
+  const handleSelectCampaignType = (value: string) => {
+    const requiresAudioField = value === 'PHONE';
+    const requiresMessageField = value === 'SMS';
+
+    setShowSelectAudio(requiresAudioField);
+    setShowSelectMessage(requiresMessageField);
+    setValue('type', value as CAMPAIGN_TYPES);
   };
 
   const onSubmit = useCallback(
     (data: ICampaignCreateItem) => {
-      let startTime;
-      if (data?.startTime) {
-        startTime = typeof data.startTime === 'string' ? new Date(data.startTime) : data.startTime;
+      const audienceIds = audiences
+        .filter((audience: any) =>
+          selectedBeneficiaries.some((beneficiary) => beneficiary.phone === audience.details.phone)
+        )
+        .map((audience: any) => audience.id);
+      setValue('audienceIds', audienceIds);
+
+      type AdditionalData = {
+        audio?: any;
+        message?: string;
+      };
+
+      const additionalData: AdditionalData = {};
+
+      if (data?.type === 'PHONE' && data?.file) {
+        additionalData.audio = data.file;
       }
-      const audienceIds = formattedSelect;
+
+      if (data?.type === 'SMS' && data?.message) {
+        additionalData.message = data?.message;
+      }
+
+      const { file, message, ...dataWithoutAudioAndMessage } = data;
+
+      const mergedDetails = {
+        ...additionalData,
+      };
 
       const formatted = {
-        ...data,
-        startTime: startTime?.toISOString(),
+        ...dataWithoutAudioAndMessage,
         audienceIds,
-        details: parseMultiLineInput(data?.details),
+        details: mergedDetails,
       };
-      mutate(formatted as ICampaignCreateItem);
+      mutate({
+        id: currentCampaign.id as unknown as string,
+        editData: formatted as ICampaignCreateItem,
+      });
     },
-    [mutate, formattedSelect]
+    [audiences, currentCampaign?.id, mutate, selectedBeneficiaries, setValue]
   );
-
-  useEffect(() => {
-    if (campaign) {
-      setValue('name', campaign.name || '');
-      setValue('startTime', parseISO(campaign.startTime as string));
-      const campaignType = (campaign.type as CAMPAIGN_TYPES) || CAMPAIGN_TYPES.EMAIL;
-      setValue('type', campaignType);
-      const formattedDetails = JSON.stringify(campaign.details || {});
-      setValue('details', formattedDetails);
-      const audienceIds = campaign.audiences?.map((audience) => audience?.id) || [];
-      setValue('audienceIds', audienceIds);
-      setSelectedAudiences(audienceIds as unknown as string[]);
-      setValue('transportId', campaign.transport?.id || null);
-    }
-  }, [campaign, setValue]);
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {error && (
         <Alert severity="error">
-          <AlertTitle>Error Updating Campaign</AlertTitle>
+          <AlertTitle>Error Creating Campaign</AlertTitle>
           {error?.message}
         </Alert>
       )}
-      <CampaignAssignBenficiariesModal
-        onClose={assignCampaignDialog.onFalse}
-        open={assignCampaignDialog.value}
-        onOk={() => {
-          console.log('Registered');
-        }}
-      />
+
       <Grid container spacing={3}>
         <Grid xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Stack direction="column" spacing={3}>
               <Stack
+                spacing={2}
                 sx={{
                   flexDirection: {
                     xs: 'column',
@@ -187,7 +269,6 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                     md: 'row',
                   },
                 }}
-                spacing={2}
               >
                 <RHFTextField name="name" label="Campaign Name" />
 
@@ -210,21 +291,34 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                 />
 
                 <RHFSelect
-                  InputLabelProps={{ shrink: true }}
                   name="type"
                   label="Select Campaign Types"
+                  onChange={(e) => handleSelectCampaignType(e.target.value)}
+                  value={getValues('type')}
                 >
-                  {campaignTypeOptions.map((campaigntype) => (
-                    <MenuItem key={campaigntype} value={campaigntype}>
-                      {campaigntype}
+                  {campaignTypeOptions.map((campaign) => (
+                    <MenuItem key={campaign} value={campaign}>
+                      {campaign}
                     </MenuItem>
                   ))}
                 </RHFSelect>
               </Stack>
 
-              <Stack>
-                <RHFTextField name="details" label="Details" fullWidth multiline />
-              </Stack>
+              {showSelectAudio && (
+                <RHFSelect name="file" label="Select Audio">
+                  {campaignAudio.map((mp3: any) => (
+                    <MenuItem key={mp3?.url} value={mp3?.url}>
+                      {mp3?.filename}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+              )}
+
+              {showSelectMessage && (
+                <RHFTextField name="message" label="SMS Message" fullWidth multiline />
+              )}
+
+              {/* <RHFTextField name="details" label="Details" fullWidth multiline /> */}
 
               <Stack
                 spacing={2}
@@ -246,9 +340,11 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                   }}
                 >
                   <RHFSelect
-                    InputLabelProps={{ shrink: true }}
                     name="transportId"
-                    label="Select Transport "
+                    label="Select Transport"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   >
                     {transports.map((transport) => (
                       <MenuItem key={transport?.name} value={transport?.id}>
@@ -257,62 +353,94 @@ const CampaignEditForm: React.FC = ({ currentCampaign }: Props) => {
                     ))}
                   </RHFSelect>
                 </Box>
-                <Box
-                  sx={{
-                    width: {
-                      xs: '100%',
-                      sm: '100%',
-                      md: '50%',
-                    },
-                  }}
-                >
-                  <Stack direction="column">
-                    <Select
-                      name="audienceIds"
-                      multiple
-                      value={selectedAudiences}
-                      onChange={handleSelectAudiences}
-                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                      renderValue={(selected) =>
-                        getLabelsByValues(audiences, selected).map((sel: any) => (
-                          <Chip key={sel} label={sel} />
-                        ))
-                      }
-                    >
-                      {audiences?.map((aud: any) => (
-                        <MenuItem key={aud?.details.name} value={aud?.id}>
-                          <Checkbox checked={selectedAudiences.indexOf(aud?.id) > -1} />
-                          <ListItemText primary={aud?.details.name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <Button
-                      variant="text"
-                      color="primary"
-                      onClick={assignCampaignDialog.onTrue}
-                      sx={{ alignSelf: 'flex-start' }}
-                    >
-                      Register Beneficiaires
-                    </Button>
-                  </Stack>
-                </Box>
               </Stack>
-              <AudienceAccordionView
-                audience={campaign?.audiences}
-                handleRemoveAudience={handleRemoveAudience}
-              />
             </Stack>
 
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
-                Edit Campaign
+            <Stack direction="row" alignItems="flex-end" spacing={2} sx={{ mt: 3 }}>
+              <Button variant="outlined" color="primary" onClick={handleSelectAudiencesButton}>
+                {!showAudiences ? 'Select' : 'Hide'} Audiences
+              </Button>
+              <LoadingButton type="submit" variant="contained" color="success" loading={isLoading}>
+                Update Campaign
               </LoadingButton>
             </Stack>
           </Card>
+
+          {errors.audienceIds && (
+            <Alert severity="error">
+              <AlertTitle>Error Creating Campaign</AlertTitle>
+              {errors.audienceIds?.message}
+            </Alert>
+          )}
+
+          {showAudiences && (
+            <Card sx={{ p: 3, mt: 3 }} title="Select Audiences">
+              <CardHeader
+                title="Select Audiences"
+                action={
+                  <Button variant="text" color="primary" onClick={handleSelectAudiencesButton}>
+                    Close
+                  </Button>
+                }
+              />
+              <Stack direction="column" spacing={2}>
+                <MenuItem>
+                  <Checkbox
+                    checked={
+                      selectedBeneficiaries.length === beneficiaries.length &&
+                      beneficiaries.length > 0
+                    }
+                    onChange={async (e) => {
+                      if (e.target.checked) {
+                        setSelectedBeneficiaries(beneficiaries);
+                        setValue(
+                          'audienceIds',
+                          audiences.map((audience: any) => audience.id)
+                        );
+                        const notRegistered = beneficiaries.filter(
+                          (beneficiary) =>
+                            !audiences.some(
+                              (audience: any) => audience.details.phone === beneficiary.phone
+                            )
+                        );
+                        if (!notRegistered.length) return;
+
+                        bulkAddAudiences.mutate(
+                          notRegistered.map((beneficiary) => ({
+                            details: {
+                              phone: beneficiary.phone,
+                              uuid: beneficiary.uuid,
+                            },
+                          }))
+                        );
+                      } else {
+                        setSelectedBeneficiaries([]);
+                      }
+                    }}
+                  />
+                  <ListItemText primary="Select All" />
+                </MenuItem>
+                {beneficiaries.map((beneficiary) => (
+                  <MenuItem
+                    key={beneficiary.phone}
+                    value={beneficiary.phone}
+                    onClick={() => handleBeneficiaryClick(beneficiary)}
+                  >
+                    <Checkbox
+                      checked={selectedBeneficiaries.some(
+                        (item) => item.phone === beneficiary.phone
+                      )}
+                    />
+                    <ListItemText primary={beneficiary.name} />
+                  </MenuItem>
+                ))}
+              </Stack>
+            </Card>
+          )}
         </Grid>
       </Grid>
     </FormProvider>
   );
 };
 
-export default memo(CampaignEditForm);
+export default memo(CampaignForm);

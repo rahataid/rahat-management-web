@@ -123,8 +123,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     formState: { errors },
   } = methods;
 
-  console.log(getValues());
-
   // Handle beneficiary click
   const handleBeneficiaryClick = async (beneficiary: any) => {
     setSelectedBeneficiaries((prev) => {
@@ -168,17 +166,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       ]);
     }
   };
-
-  // useEffect(() => {
-  //   const selectedAudiences = audiences.filter((audience: any) =>
-  //     selectedBeneficiaries.some((beneficiary) => beneficiary.phone === audience.details.phone)
-  //   );
-  //   setValue(
-  //     'audienceIds',
-  //     selectedAudiences.map((audience: any) => audience.id)
-  //   );
-  //   // setSelectedBeneficiaries(selectedAudiences);
-  // }, [audiences, selectedBeneficiaries, setValue]);
 
   const handleSelectCampaignType = (value: string) => {
     const requiresAudioField = value === 'PHONE';
