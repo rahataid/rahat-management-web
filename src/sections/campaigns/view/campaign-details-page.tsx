@@ -14,7 +14,6 @@ import { useSettingsContext } from '@components/settings';
 import { Stack } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { useCampaign, useCampaignLogs } from 'src/api/campaigns';
-import CampaignBasicReport from './campaign-basic-report';
 import CampaignInfoCard from './campaign-info-card';
 import CampaignsLogsDetailsView from './campaign-logs-view';
 import HeaderActions from './header-actions';
@@ -38,7 +37,7 @@ const CampaignsDetailsView = () => {
       <Stack direction="column" spacing={2}>
         <Stack direction="row" spacing={2}>
           <CampaignInfoCard campaign={campaign} />
-          <CampaignBasicReport logs={logs?.rows} />
+          {/* <CampaignBasicReport logs={logs?.rows} /> */}
         </Stack>
         <CampaignsLogsDetailsView />
         {/* <JsonToTable json={campaign?.transport} /> */}
