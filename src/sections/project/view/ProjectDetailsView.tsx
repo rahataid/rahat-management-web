@@ -55,6 +55,7 @@ export default function ProjectDetailsView() {
     acceptToken,
     lockProject,
     unLockProject,
+    getVendorBalance,
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
   const { sendTokenToProject, donorContractWS: DonorContractWS } = useRahatDonor();
@@ -64,6 +65,25 @@ export default function ProjectDetailsView() {
     const data = await getProjectChainData(params.address);
     setChainData(data);
   }, [getProjectChainData, params.address, setChainData]);
+
+  // TODO: this is NOT the optimal solution, should use a different approach
+  const getVendorDisbursedBalance = useCallback(async () => {
+    const vendorAddresses = vendors.map((vendor) => vendor.walletAddress);
+    const balances = await Promise.all(
+      vendorAddresses.map((address) => getVendorBalance(address as string))
+    );
+    const totalBalance = balances.map(Number).reduce((acc, balance) => acc + balance, 0);
+
+    setChainData({
+      ...chainData,
+      distributed: totalBalance,
+    });
+  }, [chainData, getVendorBalance, setChainData, vendors]);
+
+  useEffect(() => {
+    if (chainData?.distributed !== undefined) return;
+    getVendorDisbursedBalance();
+  }, [chainData?.distributed, getVendorDisbursedBalance]);
 
   useEffect(() => {
     RahatTokenWS?.on('Approval', handleChainData);
@@ -224,7 +244,7 @@ export default function ProjectDetailsView() {
         <Grid item xs={12} md={6} lg={8}>
           <ProjectStatsCard
             totalBeneficiaries={project._count?.beneficiaries}
-            distributedTokens={chainData?.distributedTokens}
+            distributedTokens={chainData?.distributed}
             balance={chainData.balance}
             tokenName={blockchainNetworkData?.nativeCurrency.name}
             onCreateToken={createTokenModal.onTrue}

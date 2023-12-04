@@ -274,21 +274,21 @@ const useProjectContract = (): ProjectContract => {
 
   const getProjectChainData = useCallback(
     async (contractAddress: string) => {
-      const [balance, tokenAllowance, isLocked, isApproved] = await Promise.all([
+      const [balance, isLocked, isApproved] = await Promise.all([
         getProjectBalance(contractAddress),
-        getTokenAllowance(),
+        // getTokenAllowance(),
         isProjectLocked(),
         isProjectApproved(contractAddress),
       ]);
 
       return {
         balance,
-        tokenAllowance,
+        distributed: undefined,
         isLocked,
         isApproved,
       };
     },
-    [getProjectBalance, isProjectApproved, getTokenAllowance, isProjectLocked]
+    [getProjectBalance, isProjectApproved, isProjectLocked]
   );
 
   return useMemo(

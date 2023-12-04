@@ -14,7 +14,7 @@ export type ProjectStoreType = ProjectStateType & ProjectActionsType;
 const useProjectStore = create<ProjectStoreType>((set) => ({
   chainData: {
     balance: 0,
-    tokenAllowance: 0,
+    distributed: undefined,
     isLocked: false,
     isApproved: false,
   },
