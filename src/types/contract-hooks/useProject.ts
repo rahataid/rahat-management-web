@@ -2,7 +2,7 @@ import { Contract, ContractTransactionResponse, InterfaceAbi, TransactionReceipt
 
 export type IProjectChainData = {
   balance: number | undefined;
-  tokenAllowance: number | undefined;
+  distributed: number | undefined;
   isLocked: boolean | undefined;
   isApproved: boolean | undefined;
 };
