@@ -4,6 +4,8 @@ import { useSettingsContext } from '@components/settings';
 import SummaryCard from '@components/summary-card';
 import { Container, Grid } from '@mui/material';
 import MapView from '@sections/map-view';
+import useProjectContract from '@services/contracts/useProject';
+import { useCallback, useEffect, useState } from 'react';
 import { useBeneficiaryStats, useGeoLocation } from 'src/api/beneficiaries';
 import { useFlickr } from 'src/api/flickr';
 import { useDashBoardReports } from 'src/api/reports';
@@ -12,6 +14,8 @@ import PhotoGallery from './photo-gallery';
 import Piechart from './pie-chart';
 
 const DashboardView = () => {
+  const [totalDisbursed, setTotalDisbursed] = useState<number | null>(null);
+
   const { flickr } = useFlickr({
     per_page: 3,
     page: 1,
@@ -23,6 +27,23 @@ const DashboardView = () => {
   const { bankStatusData, genderData, phoneOwnershipData, internetAccessData } =
     useBeneficiaryStats();
   const { geoData } = useGeoLocation();
+  const { getVendorBalance } = useProjectContract();
+
+  // TODO: this is NOT the optimal solution, should use a different approach
+  const getVendorDisbursedBalance = useCallback(async () => {
+    const vendorAddresses = vendors.map((vendor) => vendor.walletAddress);
+    const balances = await Promise.all(
+      vendorAddresses.map((address) => getVendorBalance(address as string))
+    );
+    const totalBalance = balances.map(Number).reduce((acc, balance) => acc + balance, 0);
+
+    setTotalDisbursed(totalBalance);
+  }, [getVendorBalance, vendors]);
+
+  useEffect(() => {
+    if (!vendors.length) return;
+    getVendorDisbursedBalance();
+  }, [getVendorDisbursedBalance, totalDisbursed, vendors]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -43,7 +64,7 @@ const DashboardView = () => {
                 color="info"
                 icon="mdi:wheel-barrow"
                 title="Total Token"
-                total={data?.totalTokens}
+                total={totalDisbursed}
                 subtitle="disbursed"
               />
             </Grid>
