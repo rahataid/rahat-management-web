@@ -22,9 +22,12 @@ import {
   useTable,
 } from 'src/components/table';
 //
+import { CONTRACTS } from '@config';
+import useArbiscanAPI from '@hooks/useGoerliTransaction';
 import { Stack } from '@mui/material';
 import { isEqual } from 'lodash';
 import { useTransactions } from 'src/api/transactions';
+import useAppStore from 'src/store/app';
 import { ITransactionApiFilters, ITransactionTableFilterValue } from 'src/types/transactions';
 import TransactionsCards from './transaction-cards';
 import TransactionTableRow from './transaction-table-row';
@@ -45,6 +48,19 @@ export default function TransactionListView() {
 
   const settings = useSettingsContext();
 
+  const app = useAppStore();
+  console.log('app.contracts', app.contracts);
+
+  const trans = useArbiscanAPI({
+    address: app.contracts?.[CONTRACTS.CVAPROJECT]?.address as string,
+    action: 'getLogs',
+    fromBlock: '0',
+    toBlock: 'latest',
+    module: 'logs',
+    topic0: '0x577e17a39a43caa4acb3286f2673f89149046ea0d90bd834ed63306abb69f4b2',
+  });
+
+  console.log('trans', trans.data, trans.error);
   const router = useRouter();
 
   const denseHeight = table.dense ? 52 : 72;
