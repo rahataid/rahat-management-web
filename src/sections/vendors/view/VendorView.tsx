@@ -1,6 +1,8 @@
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
+import { CONTRACTS } from '@config';
 import { useBoolean } from '@hooks/use-boolean';
+import useArbiscanAPI from '@hooks/useGoerliTransaction';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
@@ -8,6 +10,7 @@ import useProjectContract from '@services/contracts/useProject';
 import { useCallback, useEffect } from 'react';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
+import useAppStore from 'src/store/app';
 import useVendorStore from 'src/store/vendors';
 import BasicInfoCard from './basic-info-card';
 import VendorsCards from './transaction-info-card';
@@ -24,7 +27,30 @@ const VendorView = () => {
     sendTokensToVendor,
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
+  const appContracts = useAppStore((state) => state.contracts);
 
+  const { data: transactions } = useArbiscanAPI({
+    action: 'getLogs',
+    fromBlock: '0',
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: ['ClaimAssigned', 'ClaimProcessed', 'VendorAllowanceAccept', 'VendorAllowance'],
+      },
+    ],
+    transform: (data) =>
+      data.filter((item) => item?.vendor?.toLowerCase() === vendor?.walletAddress?.toLowerCase()),
+    // .map((item) => ({
+    //   ...item,
+    //   vendor: vendors.find((v) => v.walletAddress?.toLowerCase() === vendor?.toLowerCase()),
+    // })),
+  });
+
+  // console.log('transactions', transactions);
   const { chainData, setChainData } = useVendorStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,
@@ -90,10 +116,10 @@ const VendorView = () => {
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <TransactionTable />
+          <Grid item xs={12} md={8}>
+            <TransactionTable rows={transactions} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <MapView />
           </Grid>
         </Grid>

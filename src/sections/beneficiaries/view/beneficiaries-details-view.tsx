@@ -11,8 +11,11 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { Card, Grid, Stack, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
+import { CONTRACTS } from '@config';
+import useArbiscanAPI from '@hooks/useGoerliTransaction';
 import useProjectContract from '@services/contracts/useProject';
 import { memo, useCallback, useEffect } from 'react';
+import useAppStore from 'src/store/app';
 import useBeneficiaryStore from 'src/store/beneficiaries';
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
 import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card';
@@ -23,11 +26,40 @@ function BeneficiariesDetailsView() {
   const { uuid } = useParams();
   const { beneficiary } = useBeneficiary(uuid as string);
   const settings = useSettingsContext();
+  const appContracts = useAppStore((state) => state.contracts);
+
   const { getBeneficiaryChainData, projectContractWS: ProjectContractWS } = useProjectContract();
   const { chainData, setChainData } = useBeneficiaryStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+
+  // const { vendors } = useVendors();
+
+  const { data: transactions } = useArbiscanAPI({
+    action: 'getLogs',
+    fromBlock: '0',
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: ['ClaimAssigned', 'ClaimProcessed'],
+      },
+    ],
+    transform: (data) =>
+      data.filter(
+        (item) => item?.beneficiary?.toLowerCase() === beneficiary?.walletAddress?.toLowerCase()
+      ),
+    // .map((item) => ({
+    //   ...item,
+    //   vendor: vendors.find((v) => v.walletAddress?.toLowerCase() === vendor?.toLowerCase()),
+    // })),
+  });
+
+  console.log('first', transactions);
 
   const handleChainData = useCallback(async () => {
     if (!uuid) return;
@@ -98,7 +130,7 @@ function BeneficiariesDetailsView() {
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
           Transaction History
         </Typography>
-        <BeneficiaryDetailsTableView data={[]} />
+        <BeneficiaryDetailsTableView data={transactions} />
       </Card>
     </Container>
   );
