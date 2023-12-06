@@ -15,6 +15,7 @@ import { CONTRACTS } from '@config';
 import useArbiscanAPI from '@hooks/useGoerliTransaction';
 import useProjectContract from '@services/contracts/useProject';
 import { memo, useCallback, useEffect } from 'react';
+import { useVendors } from 'src/api/vendors';
 import useAppStore from 'src/store/app';
 import useBeneficiaryStore from 'src/store/beneficiaries';
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
@@ -34,7 +35,7 @@ function BeneficiariesDetailsView() {
     setChainData: state.setChainData,
   }));
 
-  // const { vendors } = useVendors();
+  const { vendors } = useVendors();
 
   const { data: transactions } = useArbiscanAPI({
     action: 'getLogs',
@@ -50,13 +51,19 @@ function BeneficiariesDetailsView() {
       },
     ],
     transform: (data) =>
-      data.filter(
-        (item) => item?.beneficiary?.toLowerCase() === beneficiary?.walletAddress?.toLowerCase()
-      ),
-    // .map((item) => ({
-    //   ...item,
-    //   vendor: vendors.find((v) => v.walletAddress?.toLowerCase() === vendor?.toLowerCase()),
-    // })),
+      data
+        .filter(
+          (item) => item?.beneficiary?.toLowerCase() === beneficiary?.walletAddress?.toLowerCase()
+        )
+        .map((item) => {
+          const vendor = vendors.find(
+            (v) => v.walletAddress?.toLowerCase() === item?.vendor?.toLowerCase()
+          );
+          return {
+            ...item,
+            vendor: vendor?.name || item?.vendor,
+          };
+        }),
   });
 
   console.log('first', transactions);

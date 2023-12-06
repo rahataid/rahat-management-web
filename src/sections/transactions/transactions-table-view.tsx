@@ -13,6 +13,7 @@ import Scrollbar from '@components/scrollbar';
 import { CONTRACTS } from '@config';
 import useArbiscanAPI from '@hooks/useGoerliTransaction';
 import { Stack, Table, TableBody, TableContainer } from '@mui/material';
+import { useBeneficiaries } from 'src/api/beneficiaries';
 import useAppStore from 'src/store/app';
 import TransactionsCards from './transaction-cards';
 import TransactionTableRow from './transaction-table-row';
@@ -56,6 +57,7 @@ export default function TransactionListView() {
   const appContracts = useAppStore((state) => state.contracts);
 
   const settings = useSettingsContext();
+  const { beneficiaries } = useBeneficiaries();
 
   const { data: transactions } = useArbiscanAPI({
     action: 'getLogs',
@@ -77,6 +79,16 @@ export default function TransactionListView() {
         ],
       },
     ],
+    transform: (data) =>
+      data.map((d) => {
+        const ben = beneficiaries.find(
+          (b) => b?.walletAddress.toLowerCase() === d?.beneficiary?.toLowerCase()
+        );
+        return {
+          ...d,
+          beneficiary: ben?.phone || d?.beneficiary,
+        };
+      }),
   });
 
   console.log('transactions', transactions);
@@ -191,7 +203,7 @@ export default function TransactionListView() {
               />
 
               <TableBody>
-                {transactions.map((row) => (
+                {transactions?.map((row) => (
                   <TransactionTableRow
                     key={`${row.timestamp}-${row.topic}-${row.contractName}`}
                     row={row}

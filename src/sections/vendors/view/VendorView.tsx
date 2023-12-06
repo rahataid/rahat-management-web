@@ -8,6 +8,7 @@ import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
 import useProjectContract from '@services/contracts/useProject';
 import { useCallback, useEffect } from 'react';
+import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
 import useAppStore from 'src/store/app';
@@ -21,6 +22,7 @@ const VendorView = () => {
   const { address } = useParams();
   const { vendor } = useVendor(address);
   const assignTokenDialog = useBoolean();
+  const { beneficiaries } = useBeneficiaries();
   const {
     getVendorChainData,
     activateVendor,
@@ -43,14 +45,16 @@ const VendorView = () => {
       },
     ],
     transform: (data) =>
-      data.filter((item) => item?.vendor?.toLowerCase() === vendor?.walletAddress?.toLowerCase()),
-    // .map((item) => ({
-    //   ...item,
-    //   vendor: vendors.find((v) => v.walletAddress?.toLowerCase() === vendor?.toLowerCase()),
-    // })),
+      data
+        .filter((item) => item?.vendor?.toLowerCase() === address?.toLowerCase())
+        .map((item) => {
+          const ben = beneficiaries.find(
+            (b) => b.walletAddress?.toLowerCase() === item?.beneficiary?.toLowerCase()
+          );
+          return { ...item, beneficiary: ben?.phone || item?.beneficiary };
+        }),
   });
 
-  // console.log('transactions', transactions);
   const { chainData, setChainData } = useVendorStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,

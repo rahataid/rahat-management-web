@@ -85,7 +85,7 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
     },
     {
       enabled: !!appContracts,
-      refetchInterval: 10000,
+      refetchInterval: 20000,
       refetchOnWindowFocus: true,
     }
   );
@@ -96,25 +96,28 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
         .map((event, index) => {
           const logData = data?.[index];
           return events[index].topic0s.map((topic) => {
-            return logData?.topic0s[topic]?.map((log) => {
-              const contract = new Contract(
-                appContracts[event.contractName].address as string,
-                appContracts[event.contractName].abi as InterfaceAbi
-              );
-              const interfaceData =
-                contract.interface.decodeEventLog(topic, log?.data, log?.topics)?.toObject() || {};
-              return {
-                topic,
-                blockNumber: log?.blockNumber,
-                txHash: log?.transactionHash,
-                gasUsed: log?.gasUsed,
-                gasPrice: log?.gasPrice,
-                contractName: event?.contractName,
-                timestampHash: log?.timeStamp,
-                timestamp: fDateTime(new Date(log?.timeStamp * 1000)),
-                ...interfaceData,
-              };
-            });
+            return logData?.topic0s?.[topic]
+              ? logData?.topic0s?.[topic]?.map((log) => {
+                  const contract = new Contract(
+                    appContracts[event.contractName].address as string,
+                    appContracts[event.contractName].abi as InterfaceAbi
+                  );
+                  const interfaceData =
+                    contract.interface.decodeEventLog(topic, log?.data, log?.topics)?.toObject() ||
+                    {};
+                  return {
+                    topic,
+                    blockNumber: log?.blockNumber,
+                    txHash: log?.transactionHash,
+                    gasUsed: log?.gasUsed,
+                    gasPrice: log?.gasPrice,
+                    contractName: event?.contractName,
+                    timestampHash: log?.timeStamp,
+                    timestamp: fDateTime(new Date(log?.timeStamp * 1000)),
+                    ...interfaceData,
+                  };
+                })
+              : [];
           });
         })
         .flat(2)

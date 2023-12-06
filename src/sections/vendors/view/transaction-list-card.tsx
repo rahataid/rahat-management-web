@@ -25,9 +25,9 @@ export default function TransactionTable({ rows = [] }: ITransactionTable) {
               <TableRow>
                 <TableCell>Topic</TableCell>
                 <TableCell>Timestamp</TableCell>
-                <TableCell align="right">Transaction Hash</TableCell>
-                <TableCell align="right">Beneficiary</TableCell>
-                <TableCell align="right">Amount</TableCell>
+                <TableCell>Transaction Hash</TableCell>
+                <TableCell>Beneficiary</TableCell>
+                <TableCell>Amount</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -39,9 +39,9 @@ export default function TransactionTable({ rows = [] }: ITransactionTable) {
                   <TableCell component="th" scope="row">
                     {row.timestamp}
                   </TableCell>
-                  <TableCell align="right">{truncateEthAddress(row.txHash, 6)}</TableCell>
-                  <TableCell align="right">{truncateEthAddress(row.beneficiary)}</TableCell>
-                  <TableCell align="right">{row.amount}</TableCell>
+                  <TableCell>{truncateEthAddress(row.txHash, 4)}</TableCell>
+                  <TableCell>{truncateEthAddress(row.beneficiary, 4)}</TableCell>
+                  <TableCell>{row.amount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
