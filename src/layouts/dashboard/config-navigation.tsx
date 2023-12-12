@@ -89,6 +89,12 @@ export function useNavData() {
                 icon: icon('material-symbols:call'),
                 show: true,
               },
+              {
+                title: 'SMS Logs',
+                path: paths.dashboard.general.campaigns.smsLogs,
+                icon: icon('material-symbols:sms'),
+                show: true,
+              },
             ],
           },
         ],
