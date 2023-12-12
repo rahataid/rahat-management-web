@@ -3,6 +3,6 @@ export const metadata = {
   title: 'Campaigns: Call Logs',
 };
 
-export default function CampaignLogsDetails() {
+export default function CampaignCallLogs() {
   return <CampaignsCallLogsView />;
 }

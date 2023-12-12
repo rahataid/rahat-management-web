@@ -1,13 +1,14 @@
 import Iconify from '@components/iconify';
 import Scrollbar from '@components/scrollbar';
 import {
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Tooltip,
+  Button,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
 } from '@mui/material';
 
 const TABLE_HEAD = [
@@ -67,7 +68,14 @@ export default function CampaignsCallLogsTable() {
               <TableCell>{bodyCell.ward}</TableCell>
               <TableCell>{bodyCell.date}</TableCell>
               <TableCell>{bodyCell.durations}</TableCell>
-              <TableCell>{bodyCell.status}</TableCell>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  color={bodyCell.status === 'fail' ? 'error' : 'success'}
+                >
+                  {bodyCell.status}
+                </Button>
+              </TableCell>
               <TableCell>{bodyCell.attempts}</TableCell>
               <TableCell>
                 <Tooltip title="View Details">
