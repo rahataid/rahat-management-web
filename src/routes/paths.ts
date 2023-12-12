@@ -72,6 +72,7 @@ export const paths = {
         logs: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/logs`,
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
         uploadMp3: `${ROOTS.CAMPAIGNS}/uploadMp3`,
+        callLogs: `${ROOTS.CAMPAIGNS}/callLogs`
       },
     },
     administration: {

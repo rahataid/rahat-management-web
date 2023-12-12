@@ -83,6 +83,12 @@ export function useNavData() {
                 icon: icon('cil:list'),
                 show: true,
               },
+              {
+                title: 'Call Logs',
+                path: paths.dashboard.general.campaigns.callLogs,
+                icon: icon('material-symbols:call'),
+                show: true,
+              },
             ],
           },
         ],
