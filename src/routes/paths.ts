@@ -75,6 +75,7 @@ export const paths = {
         callLogs: `${ROOTS.CAMPAIGNS}/callLogs`,
         callLogDetail: (id: number) => `${ROOTS.CAMPAIGNS}/callLogs/${id}`,
         smsLogs: `${ROOTS.CAMPAIGNS}/smsLogs`,
+        smsLogDetail: (id: number) => `${ROOTS.CAMPAIGNS}/smsLogs/${id}`
       },
     },
     administration: {

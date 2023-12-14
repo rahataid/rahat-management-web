@@ -2,29 +2,27 @@
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
 import { Card, Container, Stack } from '@mui/material';
+import { useParams } from '@routes/hook';
 import { paths } from '@routes/paths';
+import { useCampaignLogs } from 'src/api/campaigns';
 import CampaignsLogsToolbar from '../campaigns-logs-toolbar';
 import LogsCards from '../campaigns-sms-logs-card';
 import CampaignsSMSLogsTable from '../campaigns-sms-logs-table';
 
-type ILogsStats = {
-  totalSMSSent: number;
-  bankedBeneficiaries: number;
-  unbankedBeneficiaries: number;
-};
-
-const logStats: ILogsStats = {
-  totalSMSSent: 5,
-  bankedBeneficiaries: 7,
-  unbankedBeneficiaries: 9,
-};
 export default function CampaignsSMSLogsView() {
   const settings = useSettingsContext();
+  const params = useParams();
+  const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Campaigns: SMS Logs"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'SMS Logs' }]}
+        heading="Communications: SMS Logs"
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'SMS Campaigns', href: paths.dashboard.general.campaigns.smsLogs },
+          { name: 'SMS Logs' },
+        ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
@@ -32,10 +30,10 @@ export default function CampaignsSMSLogsView() {
 
       <Card>
         <Stack m={2}>
-          <LogsCards data={logStats} />
+          <LogsCards data={logs?.rows} />
         </Stack>
         <CampaignsLogsToolbar />
-        <CampaignsSMSLogsTable />
+        <CampaignsSMSLogsTable data={logs?.rows} />
       </Card>
     </Container>
   );

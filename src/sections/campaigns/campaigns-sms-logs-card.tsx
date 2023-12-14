@@ -1,16 +1,7 @@
 import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
-type Props = {
-  data: {
-    totalSMSSent: number;
-    bankedBeneficiaries: number;
-    unbankedBeneficiaries: number;
-  };
-};
-
-const SMSLogsCards = ({ data }: Props) => {
-  const { totalSMSSent, bankedBeneficiaries, unbankedBeneficiaries } = data;
+const SMSLogsCards = ({ data = [] }: any) => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -20,7 +11,7 @@ const SMSLogsCards = ({ data }: Props) => {
               color="warning"
               icon="material-symbols:sms"
               title=""
-              total={totalSMSSent}
+              total={data?.length}
               subtitle="Total SMS Sent"
             />
           </Grid>
@@ -29,7 +20,7 @@ const SMSLogsCards = ({ data }: Props) => {
               color="warning"
               icon="material-symbols:sms"
               title=""
-              total={bankedBeneficiaries}
+              total={0}
               subtitle="Banked Beneficiaries"
             />
           </Grid>
@@ -38,7 +29,7 @@ const SMSLogsCards = ({ data }: Props) => {
               color="warning"
               icon="material-symbols:sms"
               title=""
-              total={unbankedBeneficiaries}
+              total={0}
               subtitle="Unbanked Beneficiaries"
             />
           </Grid>

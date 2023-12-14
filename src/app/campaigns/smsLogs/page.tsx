@@ -1,8 +1,8 @@
-import { CampaignsSMSLogsView } from '@sections/campaigns/view';
+import { CampaignsSMSLogsList } from '@sections/campaigns/view';
 export const metadata = {
-  title: 'Campaigns: SMS Logs',
+  title: 'SMS Campaigns: List',
 };
 
 export default function CampaignSMSLogs() {
-  return <CampaignsSMSLogsView />;
+  return <CampaignsSMSLogsList />;
 }

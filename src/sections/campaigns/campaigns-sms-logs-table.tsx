@@ -1,13 +1,14 @@
 import Iconify from '@components/iconify';
 import Scrollbar from '@components/scrollbar';
+import { TablePaginationCustom, useTable } from '@components/table';
 import {
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Tooltip,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
 } from '@mui/material';
 
 const TABLE_HEAD = [
@@ -17,54 +18,48 @@ const TABLE_HEAD = [
   { id: 'actions', label: 'Actions', width: 20 },
 ];
 
-const TABLE_BODY = [
-  {
-    to: +9771234567890,
-    ward: 5,
-    date: '17/03/23, 11:50 am',
-  },
-  {
-    to: +9771234567111,
-    ward: 4,
-    date: '7/03/23, 10:54 am',
-  },
-  {
-    to: +9771234567222,
-    ward: 1,
-    date: '19/05/23, 2:50 pm',
-  },
-];
-
-export default function CampaignsSMSLogsTable() {
+export default function CampaignsSMSLogsTable({ data = [] }: any) {
+  const table = useTable();
   return (
-    <Scrollbar>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {TABLE_HEAD.map((headCell) => (
-              <TableCell key={headCell.id} width={headCell.width}>
-                {headCell.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {TABLE_BODY.map((bodyCell) => (
+    <>
+      <Scrollbar>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell>{bodyCell.to}</TableCell>
-              <TableCell>{bodyCell.ward}</TableCell>
-              <TableCell>{bodyCell.date}</TableCell>
-              <TableCell>
-                <Tooltip title="View Details">
-                  <IconButton>
-                    <Iconify color="#118D57" icon="iconamoon:eye-light" />
-                  </IconButton>
-                </Tooltip>
-              </TableCell>
+              {TABLE_HEAD.map((headCell) => (
+                <TableCell key={headCell.id} width={headCell.width}>
+                  {headCell.label}
+                </TableCell>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Scrollbar>
+          </TableHead>
+          <TableBody>
+            {data?.map((bodyCell: any) => (
+              <TableRow>
+                <TableCell>{bodyCell.audience?.details?.phone}</TableCell>
+                <TableCell>{bodyCell.audience?.details?.ward ?? '-'}</TableCell>
+                <TableCell>{bodyCell.audience?.details?.smsDate ?? '-'}</TableCell>
+                <TableCell>
+                  <Tooltip title="View Details">
+                    <IconButton>
+                      <Iconify color="#118D57" icon="iconamoon:eye-light" />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Scrollbar>
+      <TablePaginationCustom
+        count={data?.length || 0}
+        page={table.page}
+        rowsPerPage={table?.rowsPerPage}
+        onPageChange={table.onChangePage}
+        onRowsPerPageChange={table.onChangeRowsPerPage}
+        dense={table.dense}
+        onChangeDense={table.onChangeDense}
+      />
+    </>
   );
 }
