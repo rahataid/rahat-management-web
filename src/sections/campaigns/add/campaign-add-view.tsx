@@ -16,7 +16,7 @@ const CampaignAddView = () => {
         heading="Campaign: Add"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Campaign', href: paths.dashboard.general.campaigns.list },
+          // { name: 'Campaign', href: paths.dashboard.general.campaigns.list },
           { name: 'Add' },
         ]}
         sx={{

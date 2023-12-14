@@ -77,12 +77,12 @@ export function useNavData() {
             show: true,
 
             children: [
-              {
-                title: 'List',
-                path: paths.dashboard.general.campaigns.list,
-                icon: icon('cil:list'),
-                show: true,
-              },
+              // {
+              //   title: 'List',
+              //   path: paths.dashboard.general.campaigns.list,
+              //   icon: icon('cil:list'),
+              //   show: true,
+              // },
               {
                 title: 'Call Logs',
                 path: paths.dashboard.general.campaigns.callLogs,
