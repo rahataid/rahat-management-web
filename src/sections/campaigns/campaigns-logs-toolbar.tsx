@@ -1,13 +1,13 @@
 import Iconify from '@components/iconify/iconify';
 import {
-    Button,
-    FormControl,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
-    Select,
-    Stack,
-    TextField,
+  Button,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Select,
+  Stack,
+  TextField,
 } from '@mui/material';
 
 export default function CampaignsLogsToolbar() {
@@ -39,6 +39,7 @@ export default function CampaignsLogsToolbar() {
               sx: { maxHeight: 240 },
             },
           }}
+          disabled
         />
       </FormControl>
 
@@ -57,6 +58,7 @@ export default function CampaignsLogsToolbar() {
               sx: { maxHeight: 240 },
             },
           }}
+          disabled
         />
       </FormControl>
 
@@ -75,6 +77,7 @@ export default function CampaignsLogsToolbar() {
               sx: { maxHeight: 240 },
             },
           }}
+          disabled
         />
       </FormControl>
 
@@ -89,6 +92,7 @@ export default function CampaignsLogsToolbar() {
               </InputAdornment>
             ),
           }}
+          disabled
         />
         <Button color="primary">Clear</Button>
       </Stack>

@@ -73,6 +73,7 @@ export const paths = {
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
         uploadMp3: `${ROOTS.CAMPAIGNS}/uploadMp3`,
         callLogs: `${ROOTS.CAMPAIGNS}/callLogs`,
+        callLogDetail: (id: number) => `${ROOTS.CAMPAIGNS}/callLogs/${id}`,
         smsLogs: `${ROOTS.CAMPAIGNS}/smsLogs`,
       },
     },

@@ -2,29 +2,26 @@
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
 import { Card, Container, Stack } from '@mui/material';
+import { useParams } from '@routes/hook';
 import { paths } from '@routes/paths';
+import { useCampaignLogs } from 'src/api/campaigns';
 import LogsCards from '../campaigns-call-logs-card';
 import CampaignsCallLogsTable from '../campaigns-call-logs-table';
 import CampaignsLogsToolbar from '../campaigns-logs-toolbar';
 
-type ILogsStats = {
-  totalIVRSent: number;
-  successfulIVR: number;
-  failedIVR: number;
-};
-
-const logStats: ILogsStats = {
-  totalIVRSent: 5,
-  successfulIVR: 7,
-  failedIVR: 9,
-};
 export default function CampaignsCallLogsView() {
   const settings = useSettingsContext();
+  const params = useParams();
+  const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Campaigns: Call Logs"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Call Logs' }]}
+        heading="Communications: Call Logs"
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'IVR Campaigns', href: paths.dashboard.general.campaigns.callLogs },
+          { name: 'Call Logs' },
+        ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
@@ -32,10 +29,10 @@ export default function CampaignsCallLogsView() {
 
       <Card>
         <Stack m={2}>
-          <LogsCards data={logStats} />
+          <LogsCards data={logs?.rows?.[0]?.details} />
         </Stack>
         <CampaignsLogsToolbar />
-        <CampaignsCallLogsTable />
+        <CampaignsCallLogsTable data={logs?.rows?.[0]?.details} />
       </Card>
     </Container>
   );

@@ -1,8 +1,8 @@
-import { CampaignsCallLogsView } from '@sections/campaigns/view';
+import { CampaignsCallLogsList } from '@sections/campaigns/view';
 export const metadata = {
-  title: 'Campaigns: Call Logs',
+  title: 'IVR Campaigns: List',
 };
 
 export default function CampaignCallLogs() {
-  return <CampaignsCallLogsView />;
+  return <CampaignsCallLogsList />;
 }

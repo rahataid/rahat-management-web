@@ -10,9 +10,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
+import { Checkbox } from '@mui/material';
 import { fDateTime } from '@utils/format-time';
 import { ICampaignItem } from 'src/types/campaigns';
-import { Checkbox } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -51,9 +51,9 @@ export default function CampaignsTableRow({
         />{' '}
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         <Label variant="soft">{type}</Label>
-      </TableCell>
+      </TableCell> */}
       <TableCell>
         {' '}
         <Label variant="soft">{status}</Label>
