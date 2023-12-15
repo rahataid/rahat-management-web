@@ -5,7 +5,6 @@ import { Card, Container, Stack } from '@mui/material';
 import { useParams } from '@routes/hook';
 import { paths } from '@routes/paths';
 import { useCampaignLogs } from 'src/api/campaigns';
-import CampaignsLogsToolbar from '../campaigns-logs-toolbar';
 import LogsCards from '../campaigns-sms-logs-card';
 import CampaignsSMSLogsTable from '../campaigns-sms-logs-table';
 
@@ -17,11 +16,11 @@ export default function CampaignsSMSLogsView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Communications: SMS Logs"
+        heading="Text: Logs"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'SMS Campaigns', href: paths.dashboard.general.campaigns.smsLogs },
-          { name: 'SMS Logs' },
+          { name: 'Text', href: paths.dashboard.general.campaigns.smsLogs },
+          { name: 'Logs' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
@@ -32,7 +31,7 @@ export default function CampaignsSMSLogsView() {
         <Stack m={2}>
           <LogsCards data={logs?.rows} />
         </Stack>
-        <CampaignsLogsToolbar />
+        {/* <CampaignsLogsToolbar /> */}
         <CampaignsSMSLogsTable data={logs?.rows} />
       </Card>
     </Container>

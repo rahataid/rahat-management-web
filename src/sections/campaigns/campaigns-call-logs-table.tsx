@@ -1,25 +1,22 @@
-import Iconify from '@components/iconify';
 import Label from '@components/label/label';
 import Scrollbar from '@components/scrollbar';
 import { TablePaginationCustom, useTable } from '@components/table';
 import {
-  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
-  Tooltip,
+  TableRow
 } from '@mui/material';
 
 const TABLE_HEAD = [
   { id: 'to', label: 'To', width: 150 },
-  { id: 'ward', label: 'Ward', width: 20 },
+  // { id: 'ward', label: 'Ward', width: 20 },
   { id: 'date', label: 'Date', width: 150 },
   { id: 'duration', label: 'Duration', width: 100 },
   { id: 'status', label: 'Status', width: 100 },
   { id: 'attempts', label: 'Attempts', width: 20 },
-  { id: 'actions', label: 'Actions', width: 20 },
+  // { id: 'actions', label: 'Actions', width: 20 },
 ];
 
 export default function CampaignsCallLogsTable({ data = [] }: any) {
@@ -42,7 +39,7 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
               data?.map((bodyCell: any) => (
                 <TableRow key={bodyCell.id}>
                   <TableCell>{bodyCell.phoneNumber}</TableCell>
-                  <TableCell>{bodyCell.ward}</TableCell>
+                  {/* <TableCell>{bodyCell.ward}</TableCell> */}
                   <TableCell>{bodyCell.callDate}</TableCell>
                   <TableCell>{bodyCell.duration}</TableCell>
                   <TableCell>
@@ -55,13 +52,13 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
                     <Label variant="soft">{bodyCell.disposition}</Label>
                   </TableCell>
                   <TableCell>{bodyCell.attempts}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <Tooltip title="View Details">
                       <IconButton>
                         <Iconify color="#118D57" icon="iconamoon:eye-light" />
                       </IconButton>
                     </Tooltip>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
           </TableBody>

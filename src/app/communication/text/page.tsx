@@ -1,6 +1,6 @@
 import { CampaignsSMSLogsList } from '@sections/campaigns/view';
 export const metadata = {
-  title: 'SMS Campaigns: List',
+  title: 'Communication: Text',
 };
 
 export default function CampaignSMSLogs() {

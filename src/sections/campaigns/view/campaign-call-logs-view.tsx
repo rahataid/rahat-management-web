@@ -7,7 +7,6 @@ import { paths } from '@routes/paths';
 import { useCampaignLogs } from 'src/api/campaigns';
 import LogsCards from '../campaigns-call-logs-card';
 import CampaignsCallLogsTable from '../campaigns-call-logs-table';
-import CampaignsLogsToolbar from '../campaigns-logs-toolbar';
 
 export default function CampaignsCallLogsView() {
   const settings = useSettingsContext();
@@ -16,11 +15,11 @@ export default function CampaignsCallLogsView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Communications: Call Logs"
+        heading="Voice: Logs"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'IVR Campaigns', href: paths.dashboard.general.campaigns.callLogs },
-          { name: 'Call Logs' },
+          { name: 'Voice', href: paths.dashboard.general.campaigns.callLogs },
+          { name: 'Logs' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
@@ -31,7 +30,7 @@ export default function CampaignsCallLogsView() {
         <Stack m={2}>
           <LogsCards data={logs?.rows?.[0]?.details} />
         </Stack>
-        <CampaignsLogsToolbar />
+        {/* <CampaignsLogsToolbar /> */}
         <CampaignsCallLogsTable data={logs?.rows?.[0]?.details} />
       </Card>
     </Container>

@@ -5,29 +5,29 @@ import Iconify from '@components/iconify/iconify';
 import Scrollbar from '@components/scrollbar';
 import { useSettingsContext } from '@components/settings';
 import {
-    TableEmptyRows,
-    TableHeadCustom,
-    TableNoData,
-    TablePaginationCustom,
-    TableSelectedAction,
-    emptyRows,
-    useTable,
+  TableEmptyRows,
+  TableHeadCustom,
+  TableNoData,
+  TablePaginationCustom,
+  TableSelectedAction,
+  emptyRows,
+  useTable,
 } from '@components/table';
 import { useBoolean } from '@hooks/use-boolean';
 import {
-    Button,
-    Card,
-    Container,
-    IconButton,
-    ListItemIcon,
-    Menu,
-    MenuItem,
-    Stack,
-    Table,
-    TableBody,
-    TableContainer,
-    Tooltip,
-    Typography,
+  Button,
+  Card,
+  Container,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Stack,
+  Table,
+  TableBody,
+  TableContainer,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useRouter } from '@routes/hook';
@@ -119,8 +119,8 @@ export default function SMSLogsList() {
         }}
       />
       <CustomBreadcrumbs
-        heading="SMS Campaigns: List"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
+        heading="Communication: Text"
+        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Text' }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}

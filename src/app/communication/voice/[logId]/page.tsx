@@ -1,6 +1,6 @@
 import { CampaignsCallLogsView } from '@sections/campaigns/view';
 export const metadata = {
-  title: 'Call Logs',
+  title: 'Voice: Logs',
 };
 
 export default function CampaignCallLogs() {

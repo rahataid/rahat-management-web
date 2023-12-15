@@ -71,7 +71,7 @@ export function useNavData() {
             show: true,
           },
           {
-            title: 'Campaigns',
+            title: 'Communication',
             path: paths.dashboard.general.campaigns.list,
             icon: ICONS.campaigns,
             show: true,
@@ -84,13 +84,13 @@ export function useNavData() {
               //   show: true,
               // },
               {
-                title: 'Call Logs',
+                title: 'Voice',
                 path: paths.dashboard.general.campaigns.callLogs,
                 icon: icon('material-symbols:call'),
                 show: true,
               },
               {
-                title: 'SMS Logs',
+                title: 'Text',
                 path: paths.dashboard.general.campaigns.smsLogs,
                 icon: icon('material-symbols:sms'),
                 show: true,

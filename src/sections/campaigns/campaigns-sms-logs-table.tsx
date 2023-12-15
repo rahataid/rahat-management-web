@@ -1,21 +1,18 @@
-import Iconify from '@components/iconify';
 import Scrollbar from '@components/scrollbar';
 import { TablePaginationCustom, useTable } from '@components/table';
 import {
-  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
-  Tooltip,
+  TableRow
 } from '@mui/material';
 
 const TABLE_HEAD = [
   { id: 'to', label: 'To', width: 150 },
-  { id: 'ward', label: 'Ward', width: 20 },
+  // { id: 'ward', label: 'Ward', width: 20 },
   { id: 'date', label: 'Date', width: 150 },
-  { id: 'actions', label: 'Actions', width: 20 },
+  // { id: 'actions', label: 'Actions', width: 20 },
 ];
 
 export default function CampaignsSMSLogsTable({ data = [] }: any) {
@@ -37,15 +34,15 @@ export default function CampaignsSMSLogsTable({ data = [] }: any) {
             {data?.map((bodyCell: any, index: number) => (
               <TableRow key={index}>
                 <TableCell>{bodyCell.audience?.details?.phone}</TableCell>
-                <TableCell>{bodyCell.audience?.details?.ward ?? '-'}</TableCell>
+                {/* <TableCell>{bodyCell.audience?.details?.ward ?? '-'}</TableCell> */}
                 <TableCell>{bodyCell.audience?.details?.smsDate ?? '-'}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Tooltip title="View Details">
                     <IconButton>
                       <Iconify color="#118D57" icon="iconamoon:eye-light" />
                     </IconButton>
                   </Tooltip>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

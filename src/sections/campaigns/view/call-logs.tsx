@@ -119,8 +119,8 @@ export default function CallLogsList() {
         }}
       />
       <CustomBreadcrumbs
-        heading="IVR Campaigns: List"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
+        heading="Communication: Voice"
+        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Voice' }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
