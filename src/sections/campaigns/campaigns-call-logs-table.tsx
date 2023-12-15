@@ -38,31 +38,32 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((bodyCell: any) => (
-              <TableRow>
-                <TableCell>{bodyCell.phoneNumber}</TableCell>
-                <TableCell>{bodyCell.ward}</TableCell>
-                <TableCell>{bodyCell.callDate}</TableCell>
-                <TableCell>{bodyCell.duration}</TableCell>
-                <TableCell>
-                  {/* <Button
+            {data.length &&
+              data?.map((bodyCell: any) => (
+                <TableRow key={bodyCell.id}>
+                  <TableCell>{bodyCell.phoneNumber}</TableCell>
+                  <TableCell>{bodyCell.ward}</TableCell>
+                  <TableCell>{bodyCell.callDate}</TableCell>
+                  <TableCell>{bodyCell.duration}</TableCell>
+                  <TableCell>
+                    {/* <Button
                     variant="contained"
                     color={bodyCell.disposition === 'NO ANSWER' ? 'error' : 'success'}
                   >
                     {bodyCell.disposition === 'NO ANSWER' ? 'fail' : 'success'}
                   </Button> */}
-                  <Label variant="soft">{bodyCell.disposition}</Label>
-                </TableCell>
-                <TableCell>{bodyCell.attempts}</TableCell>
-                <TableCell>
-                  <Tooltip title="View Details">
-                    <IconButton>
-                      <Iconify color="#118D57" icon="iconamoon:eye-light" />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            ))}
+                    <Label variant="soft">{bodyCell.disposition}</Label>
+                  </TableCell>
+                  <TableCell>{bodyCell.attempts}</TableCell>
+                  <TableCell>
+                    <Tooltip title="View Details">
+                      <IconButton>
+                        <Iconify color="#118D57" icon="iconamoon:eye-light" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Scrollbar>

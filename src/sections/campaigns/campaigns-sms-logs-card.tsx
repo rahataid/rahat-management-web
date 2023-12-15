@@ -11,7 +11,7 @@ const SMSLogsCards = ({ data = [] }: any) => {
               color="warning"
               icon="material-symbols:sms"
               title=""
-              total={data?.length}
+              total={data?.length ?? 0}
               subtitle="Total SMS Sent"
             />
           </Grid>

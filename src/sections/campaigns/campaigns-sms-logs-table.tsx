@@ -34,8 +34,8 @@ export default function CampaignsSMSLogsTable({ data = [] }: any) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((bodyCell: any) => (
-              <TableRow>
+            {data?.map((bodyCell: any, index: number) => (
+              <TableRow key={index}>
                 <TableCell>{bodyCell.audience?.details?.phone}</TableCell>
                 <TableCell>{bodyCell.audience?.details?.ward ?? '-'}</TableCell>
                 <TableCell>{bodyCell.audience?.details?.smsDate ?? '-'}</TableCell>

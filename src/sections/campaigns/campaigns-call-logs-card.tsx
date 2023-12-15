@@ -2,8 +2,12 @@ import SummaryCard from '@components/summary-card';
 import { Grid } from '@mui/material';
 
 const LogsCards = ({ data = [] }: any) => {
-  const successfulIVR = data?.filter((log: any) => log.disposition === 'ANSWERED');
-  const failedIVR = data?.filter((log: any) => log.disposition === 'NO ANSWER');
+  const successfulIVR = data.length
+    ? data?.filter((log: any) => log.disposition === 'ANSWERED')
+    : [];
+  const failedIVR = data.length
+    ? data?.filter((log: any) => log.disposition === 'NO ANSWER' || log.disposition === 'BUSY')
+    : [];
 
   return (
     <Grid container spacing={3}>
@@ -14,7 +18,7 @@ const LogsCards = ({ data = [] }: any) => {
               color="warning"
               icon="material-symbols:call"
               title=""
-              total={data?.length}
+              total={data?.length ?? 0}
               subtitle="Total IVR Sent"
             />
           </Grid>
@@ -23,7 +27,7 @@ const LogsCards = ({ data = [] }: any) => {
               color="warning"
               icon="material-symbols:call"
               title=""
-              total={successfulIVR?.length}
+              total={successfulIVR?.length ?? 0}
               subtitle="Successful IVR"
             />
           </Grid>
@@ -32,7 +36,7 @@ const LogsCards = ({ data = [] }: any) => {
               color="warning"
               icon="material-symbols:call"
               title=""
-              total={failedIVR?.length}
+              total={failedIVR?.length ?? 0}
               subtitle="Failed IVR"
             />
           </Grid>
