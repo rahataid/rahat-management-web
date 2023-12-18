@@ -30,6 +30,7 @@ const VendorView = () => {
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
   const appContracts = useAppStore((state) => state.contracts);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
 
   const { data: transactions } = useChainTransactions({
     action: 'getLogs',
@@ -37,6 +38,8 @@ const VendorView = () => {
     toBlock: 'latest',
     module: 'logs',
     appContracts,
+    source: 'rpcCall',
+    rpcUrl,
 
     events: [
       {

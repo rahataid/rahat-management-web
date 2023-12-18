@@ -55,7 +55,7 @@ const TABLE_HEAD = [
 export default function TransactionListView() {
   const table = useTable();
   const appContracts = useAppStore((state) => state.contracts);
-  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
 
   const settings = useSettingsContext();
   const { beneficiaries } = useBeneficiaries();

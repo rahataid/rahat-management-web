@@ -34,6 +34,7 @@ function BeneficiariesDetailsView() {
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
 
   const { vendors } = useVendors();
 
@@ -43,7 +44,8 @@ function BeneficiariesDetailsView() {
     toBlock: 'latest',
     module: 'logs',
     appContracts,
-
+    source: 'rpcCall',
+    rpcUrl,
     events: [
       {
         contractName: CONTRACTS.CVAPROJECT,

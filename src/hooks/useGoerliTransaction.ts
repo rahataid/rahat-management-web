@@ -18,7 +18,7 @@ interface Params {
   address?: string;
   transform?: (data: any) => any;
   source: 'rpcCall' | 'explorer' | 'subgraph';
-  rpcUrl?: string;
+  rpcUrl: string;
   appContracts?: {
     [key: string]: {
       address: string;
