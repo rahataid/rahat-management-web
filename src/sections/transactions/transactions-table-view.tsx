@@ -81,14 +81,14 @@ export default function TransactionListView() {
           // 'ProjectLocked',
         ],
       },
-      {
-        contractName: CONTRACTS.RAHATTOKEN,
-        topic0s: [
-          'TokenMintedAndApproved',
-          // 'ProjectUnlocked',
-          // 'ProjectLocked',
-        ],
-      },
+      // {
+      //   contractName: CONTRACTS.RAHATTOKEN,
+      //   topic0s: [
+      //     'TokenMintedAndApproved',
+      //     // 'ProjectUnlocked',
+      //     // 'ProjectLocked',
+      //   ],
+      // },
     ],
     transform: (data) =>
       data.map((d) => {
