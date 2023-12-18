@@ -11,7 +11,7 @@ import { TableHeadCustom, TableNoData, useTable } from 'src/components/table';
 //
 import Scrollbar from '@components/scrollbar';
 import { CONTRACTS } from '@config';
-import useChainTransactions from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useChainTransactions';
 import { Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import useAppStore from 'src/store/app';

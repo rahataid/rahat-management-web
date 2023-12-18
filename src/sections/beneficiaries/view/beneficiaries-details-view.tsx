@@ -12,7 +12,7 @@ import { Card, Grid, Stack, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
 import { CONTRACTS } from '@config';
-import useChainTransactions from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useChainTransactions';
 import useProjectContract from '@services/contracts/useProject';
 import { memo, useCallback, useEffect } from 'react';
 import { useVendors } from 'src/api/vendors';

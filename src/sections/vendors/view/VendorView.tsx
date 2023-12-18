@@ -2,7 +2,7 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { CONTRACTS } from '@config';
 import { useBoolean } from '@hooks/use-boolean';
-import useChainTransactions from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useChainTransactions';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
