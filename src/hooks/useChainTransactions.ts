@@ -99,11 +99,13 @@ const useChainTransactions = ({
     async () => {
       const results = await Promise.all(
         events.map(async (event) => {
+          console.log('event', event);
           const topic0sData = await Promise.all(
             event.topic0s.map(async (topic) => {
               if (!appContracts?.[event.contractName]) {
                 return null;
               }
+              console.log('topic', topic);
 
               const contract = new Contract(
                 appContracts[event.contractName].address,
@@ -121,24 +123,30 @@ const useChainTransactions = ({
               });
             })
           );
+          console.log('topic0sData', topic0sData);
+          console.log('event', event);
           const topic0sObject = event.topic0s.reduce((acc, topic, index) => {
             acc[topic] = topic0sData[index];
             return acc;
           }, {} as { [key: string]: Data[] });
+          console.log('topic0sObject', topic0sObject);
           return {
             event: event.contractName,
             topic0s: topic0sObject,
           };
         })
       );
+      console.log('results', results);
       return results;
     },
     {
       enabled: !!appContracts,
-      refetchInterval: 20000,
+      // refetchInterval: 20000,
       refetchOnWindowFocus: true,
     }
   );
+
+  console.log('data', data);
 
   let decodedLogs: Log[] =
     (data?.[0] &&
