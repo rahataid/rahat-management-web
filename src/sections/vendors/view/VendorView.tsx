@@ -34,7 +34,7 @@ const VendorView = () => {
 
   const { data: transactions } = useChainTransactions({
     action: 'getLogs',
-    fromBlock: '0',
+    fromBlock: 0,
     toBlock: 'latest',
     module: 'logs',
     appContracts,
