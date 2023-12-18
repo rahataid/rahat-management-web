@@ -5,13 +5,33 @@ import { Card, Container, Stack } from '@mui/material';
 import { useParams } from '@routes/hook';
 import { paths } from '@routes/paths';
 import { useCampaignLogs } from 'src/api/campaigns';
-import LogsCards from '../campaigns-sms-logs-card';
 import CampaignsSMSLogsTable from '../campaigns-sms-logs-table';
+import LogsCards from '../logs-card';
 
 export default function CampaignsSMSLogsView() {
   const settings = useSettingsContext();
   const params = useParams();
   const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
+
+  const smsLogsList: any = logs?.rows;
+
+  const smsLogsCardDetail = [
+    {
+      icon: 'material-symbols:sms',
+      total: smsLogsList?.length,
+      subTitle: 'Total SMS Sent',
+    },
+    {
+      icon: 'material-symbols:sms',
+      total: 0,
+      subTitle: 'Banked Beneficiaries',
+    },
+    {
+      icon: 'material-symbols:sms',
+      total: 0,
+      subTitle: 'Unbanked Beneficiaries',
+    },
+  ];
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -29,7 +49,7 @@ export default function CampaignsSMSLogsView() {
 
       <Card>
         <Stack m={2}>
-          <LogsCards data={logs?.rows} />
+          <LogsCards data={smsLogsCardDetail} />
         </Stack>
         {/* <CampaignsLogsToolbar /> */}
         <CampaignsSMSLogsTable data={logs?.rows} />
