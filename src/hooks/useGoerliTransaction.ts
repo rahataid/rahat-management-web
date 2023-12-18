@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fDateTime } from '@utils/format-time';
 import axios from 'axios';
-import { Contract, InterfaceAbi } from 'ethers';
+import { Contract, InterfaceAbi, JsonRpcProvider } from 'ethers';
 
 interface Event {
   contractName: any;
@@ -10,13 +10,15 @@ interface Event {
 
 interface Params {
   action: string;
-  fromBlock: string;
+  fromBlock: string | number;
   toBlock: string;
   module: string;
   events: Event[];
   topic0?: string;
   address?: string;
   transform?: (data: any) => any;
+  source: 'rpcCall' | 'explorer' | 'subgraph';
+  rpcUrl?: string;
   appContracts?: {
     [key: string]: {
       address: string;
@@ -44,7 +46,26 @@ const fetchArbiscanAPI = async (params: Params): Promise<Data> => {
   return response.data?.result;
 };
 
-const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
+const useChainTransactions = ({
+  events,
+  appContracts,
+  transform: transformResponse,
+  ...params
+}: Params) => {
+  const provider = new JsonRpcProvider(params?.rpcUrl);
+
+  const handleTransactionSources = {
+    rpcCall: async (rpcParam: any) => {
+      const trans = await rpcParam.contract?.queryFilter(
+        rpcParam.topic0Name,
+        rpcParam.fromBlock,
+        rpcParam.toBlock
+      );
+      return trans;
+    },
+    explorer: fetchArbiscanAPI,
+    subgraph: fetchArbiscanAPI,
+  };
   const { data, isLoading, error } = useQuery<
     { event: string; topic0s: { [key: string]: Data[] } }[],
     Error
@@ -58,16 +79,20 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
               if (!appContracts?.[event.contractName]) {
                 return null;
               }
+
               const contract = new Contract(
                 appContracts[event.contractName].address as string,
-                appContracts[event.contractName].abi as InterfaceAbi
+                appContracts[event.contractName].abi as InterfaceAbi,
+                provider
               );
               const topic0 = contract.interface.getEvent(topic).topicHash;
               const address = contract.target;
-              return fetchArbiscanAPI({
+              return handleTransactionSources[params.source]({
                 ...params,
                 topic0,
                 address,
+                contract,
+                topic0Name: topic,
               });
             })
           );
@@ -113,7 +138,7 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
                     gasPrice: log?.gasPrice,
                     contractName: event?.contractName,
                     timestampHash: log?.timeStamp,
-                    timestamp: fDateTime(new Date(log?.timeStamp * 1000)),
+                    timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : 'N/A',
                     ...interfaceData,
                   };
                 })
@@ -129,8 +154,8 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
         })) ||
     [];
 
-  if (params.transform) {
-    decodedLogs = params.transform(decodedLogs);
+  if (transformResponse) {
+    decodedLogs = transformResponse(decodedLogs);
   }
   return {
     data: decodedLogs,
@@ -138,4 +163,4 @@ const useArbiscanAPI = ({ events, appContracts, ...params }: Params) => {
     error,
   };
 };
-export default useArbiscanAPI;
+export default useChainTransactions;

@@ -2,7 +2,7 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { useSettingsContext } from '@components/settings';
 import { CONTRACTS } from '@config';
 import { useBoolean } from '@hooks/use-boolean';
-import useArbiscanAPI from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useGoerliTransaction';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
@@ -31,7 +31,7 @@ const VendorView = () => {
   } = useProjectContract();
   const appContracts = useAppStore((state) => state.contracts);
 
-  const { data: transactions } = useArbiscanAPI({
+  const { data: transactions } = useChainTransactions({
     action: 'getLogs',
     fromBlock: '0',
     toBlock: 'latest',

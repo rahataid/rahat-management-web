@@ -12,7 +12,7 @@ import { Card, Grid, Stack, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
 import { CONTRACTS } from '@config';
-import useArbiscanAPI from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useGoerliTransaction';
 import useProjectContract from '@services/contracts/useProject';
 import { memo, useCallback, useEffect } from 'react';
 import { useVendors } from 'src/api/vendors';
@@ -37,7 +37,7 @@ function BeneficiariesDetailsView() {
 
   const { vendors } = useVendors();
 
-  const { data: transactions } = useArbiscanAPI({
+  const { data: transactions } = useChainTransactions({
     action: 'getLogs',
     fromBlock: '0',
     toBlock: 'latest',

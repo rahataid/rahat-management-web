@@ -11,7 +11,7 @@ import { TableHeadCustom, TableNoData, useTable } from 'src/components/table';
 //
 import Scrollbar from '@components/scrollbar';
 import { CONTRACTS } from '@config';
-import useArbiscanAPI from '@hooks/useGoerliTransaction';
+import useChainTransactions from '@hooks/useGoerliTransaction';
 import { Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import useAppStore from 'src/store/app';
@@ -55,16 +55,19 @@ const TABLE_HEAD = [
 export default function TransactionListView() {
   const table = useTable();
   const appContracts = useAppStore((state) => state.contracts);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]);
 
   const settings = useSettingsContext();
   const { beneficiaries } = useBeneficiaries();
 
-  const { data: transactions } = useArbiscanAPI({
+  const { data: transactions } = useChainTransactions({
     action: 'getLogs',
-    fromBlock: '0',
+    fromBlock: 0,
     toBlock: 'latest',
     module: 'logs',
     appContracts,
+    source: 'rpcCall',
+    rpcUrl,
     events: [
       {
         contractName: CONTRACTS.CVAPROJECT,
