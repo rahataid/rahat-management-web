@@ -1,7 +1,7 @@
+import WalletAddressButton from '@components/wallet-address-button';
 import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { truncateEthAddress } from '@utils/strings';
 
 type Props = {
   selected: boolean;
@@ -28,10 +28,11 @@ export default function BeneficiaryDetailsTableRow({ row, selected }: Props) {
       </TableCell>
 
       <TableCell>
-        <ListItemText
+        <WalletAddressButton address={txHash} />
+        {/* <ListItemText
           primary={truncateEthAddress(txHash, 6)}
           primaryTypographyProps={{ typography: 'body2' }}
-        />
+        /> */}
       </TableCell>
 
       <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>

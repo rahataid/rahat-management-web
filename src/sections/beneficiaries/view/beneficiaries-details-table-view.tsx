@@ -1,6 +1,5 @@
 import Scrollbar from '@components/scrollbar/scrollbar';
 import { Card, Table, TableBody, TableContainer } from '@mui/material';
-import { useState } from 'react';
 import {
   TableEmptyRows,
   TableHeadCustom,
@@ -9,15 +8,12 @@ import {
   emptyRows,
   useTable,
 } from 'src/components/table';
-import {
-  IBeneficiaryDetailsTableItem,
-  IBeneficiaryDetailsTableList,
-} from 'src/types/beneficiaries';
+import { IBeneficiaryDetailsTableItem } from 'src/types/beneficiaries';
 
 import BeneficiariesDetailsTableRow from './beneficiaries-details-table-row';
 
 type Props = {
-  data: IBeneficiaryDetailsTableList;
+  data: any[];
 };
 
 const TABLE_HEAD = [
@@ -36,11 +32,9 @@ const TABLE_HEAD = [
 
 export default function BeneficiariesDetailsTableView({ data }: Props) {
   const table = useTable();
-  const [tableData, setTableData] = useState(data);
-  const dataFiltered = tableData;
   const denseHeight = table.dense ? 52 : 72;
 
-  const notFound = !dataFiltered.length;
+  const notFound = !data.length;
 
   return (
     <Card>
@@ -51,28 +45,23 @@ export default function BeneficiariesDetailsTableView({ data }: Props) {
               order={table.order}
               orderBy={table.orderBy}
               headLabel={TABLE_HEAD}
-              rowCount={tableData.length}
+              rowCount={data.length}
               numSelected={table.selected.length}
               onSort={table.onSort}
             />
 
             <TableBody>
-              {dataFiltered
-                .slice(
-                  table.page * table.rowsPerPage,
-                  table.page * table.rowsPerPage + table.rowsPerPage
-                )
-                .map((row: IBeneficiaryDetailsTableItem) => (
-                  <BeneficiariesDetailsTableRow
-                    key={row.hash}
-                    row={row}
-                    selected={table.selected.includes(row.hash)}
-                  />
-                ))}
+              {data.map((row: IBeneficiaryDetailsTableItem) => (
+                <BeneficiariesDetailsTableRow
+                  key={row.hash}
+                  row={row}
+                  selected={table.selected.includes(row.hash)}
+                />
+              ))}
 
               <TableEmptyRows
                 height={denseHeight}
-                emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                emptyRows={emptyRows(table.page, table.rowsPerPage, data.length)}
               />
 
               <TableNoData notFound={notFound} />
@@ -82,7 +71,7 @@ export default function BeneficiariesDetailsTableView({ data }: Props) {
       </TableContainer>
 
       <TablePaginationCustom
-        count={dataFiltered.length}
+        count={data.length}
         page={table.page}
         rowsPerPage={table.rowsPerPage}
         onPageChange={table.onChangePage}

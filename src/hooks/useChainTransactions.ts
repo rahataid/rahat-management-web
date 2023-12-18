@@ -1,11 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { fDateTime } from '@utils/format-time';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Contract, InterfaceAbi, JsonRpcProvider } from 'ethers';
 
 interface Event {
-  contractName: any;
+  contractName: string;
   topic0s: string[];
+}
+
+interface AppContract {
+  address: string;
+  abi: InterfaceAbi;
 }
 
 interface Params {
@@ -16,27 +21,46 @@ interface Params {
   events: Event[];
   topic0?: string;
   address?: string;
-  transform?: (data: any) => any;
+  transform?: (data: Log[]) => Log[];
   source: 'rpcCall' | 'explorer' | 'subgraph';
   rpcUrl: string;
-  appContracts?: {
-    [key: string]: {
-      address: string;
-      abi: any;
-    };
-  };
+  appContracts?: Record<string, AppContract>;
+}
+
+interface Log {
+  blockNumber: string;
+  transactionHash: string;
+  gasUsed: string;
+  gasPrice: string;
+  timeStamp: string;
+  data: string;
+  topics: string[];
+  topic: string;
+  contractName: string;
+  timestampHash: string;
+  timestamp: string;
+  amount?: string;
 }
 
 interface Data {
   status: string;
   message: string;
-  result: any;
+  result: Log[];
+}
+
+interface RpcParams {
+  topic0: string;
+  address: string;
+  contract: Contract;
+  topic0Name: string;
+  fromBlock: string | number;
+  toBlock: string | number | 'latest';
 }
 
 const apiKey = '9DAUQ6ZJQNSY2WHYGTUC6B7Z8WSKCCTF6S';
 
-const fetchArbiscanAPI = async (params: Params): Promise<Data> => {
-  const response = await axios.get('https://api-goerli.arbiscan.io/api', {
+const fetchArbiscanAPI = async (params: Params): Promise<Log[]> => {
+  const response: AxiosResponse<Data> = await axios.get('https://api-goerli.arbiscan.io/api', {
     params: {
       ...params,
       apikey: apiKey,
@@ -55,7 +79,7 @@ const useChainTransactions = ({
   const provider = new JsonRpcProvider(params?.rpcUrl);
 
   const handleTransactionSources = {
-    rpcCall: async (rpcParam: any) => {
+    rpcCall: async (rpcParam: RpcParams) => {
       const trans = await rpcParam.contract?.queryFilter(
         rpcParam.topic0Name,
         rpcParam.fromBlock,
@@ -66,6 +90,7 @@ const useChainTransactions = ({
     explorer: fetchArbiscanAPI,
     subgraph: fetchArbiscanAPI,
   };
+
   const { data, isLoading, error } = useQuery<
     { event: string; topic0s: { [key: string]: Data[] } }[],
     Error
@@ -81,8 +106,8 @@ const useChainTransactions = ({
               }
 
               const contract = new Contract(
-                appContracts[event.contractName].address as string,
-                appContracts[event.contractName].abi as InterfaceAbi,
+                appContracts[event.contractName].address,
+                appContracts[event.contractName].abi,
                 provider
               );
               const topic0 = contract.interface.getEvent(topic).topicHash;
@@ -115,7 +140,7 @@ const useChainTransactions = ({
     }
   );
 
-  let decodedLogs =
+  let decodedLogs: Log[] =
     (data?.[0] &&
       events
         .map((event, index) => {
@@ -124,8 +149,8 @@ const useChainTransactions = ({
             return logData?.topic0s?.[topic]
               ? logData?.topic0s?.[topic]?.map((log) => {
                   const contract = new Contract(
-                    appContracts[event.contractName].address as string,
-                    appContracts[event.contractName].abi as InterfaceAbi
+                    appContracts[event.contractName].address,
+                    appContracts[event.contractName].abi
                   );
                   const interfaceData =
                     contract.interface.decodeEventLog(topic, log?.data, log?.topics)?.toObject() ||
@@ -146,7 +171,7 @@ const useChainTransactions = ({
           });
         })
         .flat(2)
-        .map((log: any) => ({ ...log, amount: log?.amount?.toString() || 'N/A' }))
+        .map((log: Log) => ({ ...log, amount: log?.amount?.toString() || 'N/A' }))
         ?.sort((a, b) => {
           const aDate = new Date(a?.timestampHash * 1000);
           const bDate = new Date(b?.timestampHash * 1000);

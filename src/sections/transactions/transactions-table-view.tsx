@@ -94,8 +94,6 @@ export default function TransactionListView() {
       }),
   });
 
-  console.log('transactions', transactions);
-
   // const router = useRouter();
 
   // const denseHeight = table.dense ? 52 : 72;

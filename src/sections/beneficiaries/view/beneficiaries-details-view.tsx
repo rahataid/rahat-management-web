@@ -68,8 +68,6 @@ function BeneficiariesDetailsView() {
         }),
   });
 
-  console.log('first', transactions);
-
   const handleChainData = useCallback(async () => {
     if (!uuid) return;
     if (!beneficiary.walletAddress) return;

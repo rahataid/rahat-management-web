@@ -1,3 +1,4 @@
+import WalletAddressButton from '@components/wallet-address-button';
 import { Card, CardContent, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -6,7 +7,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { truncateEthAddress } from '@utils/strings';
 
 interface ITransactionTable {
   rows: any[];
@@ -39,8 +39,10 @@ export default function TransactionTable({ rows = [] }: ITransactionTable) {
                   <TableCell component="th" scope="row">
                     {row.timestamp}
                   </TableCell>
-                  <TableCell>{truncateEthAddress(row.txHash, 4)}</TableCell>
-                  <TableCell>{truncateEthAddress(row.beneficiary, 4)}</TableCell>
+                  <TableCell>
+                    <WalletAddressButton address={row.txHash} type="txHash" />
+                  </TableCell>
+                  <TableCell>{row.beneficiary}</TableCell>
                   <TableCell>{row.amount}</TableCell>
                 </TableRow>
               ))}

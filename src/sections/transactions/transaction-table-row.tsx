@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
-import { truncateEthAddress } from '@utils/strings';
+import WalletAddressButton from '@components/wallet-address-button';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -48,10 +48,7 @@ export default function TransactionTableRow({ row, selected, onViewRow }: Props)
       </TableCell>
 
       <TableCell>
-        <ListItemText
-          primary={txHash?.length ? truncateEthAddress(txHash, 6) : '-'}
-          primaryTypographyProps={{ typography: 'body2' }}
-        />
+        <WalletAddressButton address={txHash} type="txHash" />
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
