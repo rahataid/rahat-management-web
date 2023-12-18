@@ -1,123 +1,173 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
 // routes
-import { usePathname, useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // components
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
-import {
-  emptyRows,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableNoData,
-  TablePaginationCustom,
-  useTable,
-} from 'src/components/table';
+import { TableHeadCustom, TableNoData, useTable } from 'src/components/table';
 //
-import { Stack } from '@mui/material';
-import { isEqual } from 'lodash';
-import { useTransactions } from 'src/api/transactions';
-import { ITransactionApiFilters, ITransactionTableFilterValue } from 'src/types/transactions';
+import Scrollbar from '@components/scrollbar';
+import { CONTRACTS } from '@config';
+import useChainTransactions from '@hooks/useGoerliTransaction';
+import { Stack, Table, TableBody, TableContainer } from '@mui/material';
+import { useBeneficiaries } from 'src/api/beneficiaries';
+import useAppStore from 'src/store/app';
 import TransactionsCards from './transaction-cards';
 import TransactionTableRow from './transaction-table-row';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'timestamp', label: 'Timestamp' },
-  { id: 'txHash', label: 'TxHash' },
-  { id: 'method', label: 'Method' },
-  { id: '', width: '88px', align: 'center' },
+  {
+    id: 'topic',
+    label: 'Topic',
+  },
+
+  {
+    id: 'beneficiary',
+    label: 'Beneficiary',
+  },
+  {
+    id: 'amount',
+    label: 'Amount',
+  },
+  {
+    id: 'timestamp',
+    label: 'Timestamp',
+  },
+  {
+    id: 'txHash',
+    label: 'TxHash',
+  },
+
+  {
+    id: '',
+    width: '88px',
+    align: 'center',
+  },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function TransactionListView() {
   const table = useTable();
+  const appContracts = useAppStore((state) => state.contracts);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
 
   const settings = useSettingsContext();
+  const { beneficiaries } = useBeneficiaries();
 
-  const router = useRouter();
+  const { data: transactions } = useChainTransactions({
+    action: 'getLogs',
+    fromBlock: 0,
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+    source: 'rpcCall',
+    rpcUrl,
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: [
+          'TokenTransfer',
+          'ClaimAssigned',
+          'ClaimProcessed',
+          'VendorAllowance',
+          'VendorAllowanceAccept',
+          // 'ProjectUnlocked',
+          // 'ProjectLocked',
+        ],
+      },
+    ],
+    transform: (data) =>
+      data.map((d) => {
+        const ben = beneficiaries.find(
+          (b) => b?.walletAddress.toLowerCase() === d?.beneficiary?.toLowerCase()
+        );
+        return {
+          ...d,
+          beneficiary: ben?.phone || d?.beneficiary,
+        };
+      }),
+  });
 
-  const denseHeight = table.dense ? 52 : 72;
+  console.log('transactions', transactions);
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  // const router = useRouter();
 
-  const { push } = useRouter();
+  // const denseHeight = table.dense ? 52 : 72;
 
-  const defaultFilters: ITransactionApiFilters = useMemo(
-    () => ({
-      perPage: table.rowsPerPage,
-      page: table.page + 1,
-      orderBy: table.orderBy,
-      order: table.order,
-    }),
-    [table.order, table.orderBy, table.page, table.rowsPerPage]
-  );
+  // const searchParams = useSearchParams();
+  // const pathname = usePathname();
 
-  const [filters, setFilters] = useState(defaultFilters);
-  const { transactions, transactionStats, meta } = useTransactions(filters);
+  // const { push } = useRouter();
 
-  const canReset = !isEqual(defaultFilters, filters);
+  // const defaultFilters: ITransactionApiFilters = useMemo(
+  //   () => ({
+  //     perPage: table.rowsPerPage,
+  //     page: table.page + 1,
+  //     orderBy: table.orderBy,
+  //     order: table.order,
+  //   }),
+  //   [table.order, table.orderBy, table.page, table.rowsPerPage]
+  // );
 
-  const notFound = (!transactions.length && canReset) || !transactions.length;
+  // const [filters, setFilters] = useState(defaultFilters);
 
-  const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
-    const queryParams = Object.entries(params)
-      .filter(([_, value]) => Boolean(value))
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-      .join('&');
+  // const canReset = !isEqual(defaultFilters, filters);
 
-    return queryParams === '' ? '' : `${queryParams}`;
-  }, []);
+  const notFound = !transactions.length || !transactions.length;
 
-  const handleFilters = useCallback(
-    (name: string, value: ITransactionTableFilterValue) => {
-      table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+  // const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
+  //   const queryParams = Object.entries(params)
+  //     .filter(([_, value]) => Boolean(value))
+  //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+  //     .join('&');
 
-      const updatedParams = {
-        ...filters,
-        ...Object.fromEntries(searchParams.entries()),
-        [name]: value,
-      };
-      const queryString = createQueryString(updatedParams);
-      push(`${pathname}?${queryString}`);
-    },
-    [table, createQueryString, push, searchParams, filters, pathname]
-  );
+  //   return queryParams === '' ? '' : `${queryParams}`;
+  // }, []);
 
-  const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
-    push(pathname);
-  }, [push, defaultFilters, pathname]);
+  // const handleFilters = useCallback(
+  //   (name: string, value: ITransactionTableFilterValue) => {
+  //     table.onResetPage();
+  //     setFilters((prevState) => ({
+  //       ...prevState,
+  //       [name]: value,
+  //     }));
 
-  const handleViewRow = useCallback(
-    (txHash: string) => {
-      router.push(paths.dashboard.general.transactions.details(txHash));
-    },
-    [router]
-  );
+  //     const updatedParams = {
+  //       ...filters,
+  //       ...Object.fromEntries(searchParams.entries()),
+  //       [name]: value,
+  //     };
+  //     const queryString = createQueryString(updatedParams);
+  //     push(`${pathname}?${queryString}`);
+  //   },
+  //   [table, createQueryString, push, searchParams, filters, pathname]
+  // );
 
-  useEffect(() => {
-    const searchFilters: ITransactionApiFilters = {
-      ...defaultFilters,
-      ...Object.fromEntries(searchParams.entries()),
-    };
-    setFilters(searchFilters);
-  }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
+  // const handleResetFilters = useCallback(() => {
+  //   setFilters(defaultFilters);
+  //   push(pathname);
+  // }, [push, defaultFilters, pathname]);
+
+  // const handleViewRow = useCallback(
+  //   (txHash: string) => {
+  //     router.push(paths.dashboard.general.transactions.details(txHash));
+  //   },
+  //   [router]
+  // );
+
+  // useEffect(() => {
+  //   const searchFilters: ITransactionApiFilters = {
+  //     ...defaultFilters,
+  //     ...Object.fromEntries(searchParams.entries()),
+  //   };
+  //   setFilters(searchFilters);
+  // }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -130,7 +180,16 @@ export default function TransactionListView() {
       />
 
       <Stack mb={2}>
-        <TransactionsCards data={transactionStats} />
+        <TransactionsCards
+          data={
+            {
+              // bankedCash: 0,
+              // bankedToken: 0,
+              // unbankedCash: 0,
+              // unbankedToken: 0,
+            }
+          }
+        />
       </Stack>
 
       <Card>
@@ -147,40 +206,23 @@ export default function TransactionListView() {
               />
 
               <TableBody>
-                {transactions
-                  ?.slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <TransactionTableRow
-                      key={row.txHash}
-                      row={row}
-                      selected={table.selected.includes(row.txHash)}
-                      onViewRow={() => handleViewRow(row.txHash)}
-                    />
-                  ))}
+                {transactions?.map((row) => (
+                  <TransactionTableRow
+                    key={`${row.timestamp}-${row.topic}-${row.contractName}`}
+                    row={row}
+                  />
+                ))}
 
-                <TableEmptyRows
+                {/* <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table?.page, table?.rowsPerPage, meta?.total || 0)}
-                />
+                  emptyRows={emptyRows(table?.page, table?.rowsPerPage)}
+                /> */}
 
                 <TableNoData notFound={notFound} />
               </TableBody>
             </Table>
           </Scrollbar>
         </TableContainer>
-
-        <TablePaginationCustom
-          count={meta?.total || 0}
-          page={table.page}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
-          dense={table.dense}
-          onChangeDense={table.onChangeDense}
-        />
       </Card>
     </Container>
   );

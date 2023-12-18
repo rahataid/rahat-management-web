@@ -2,14 +2,17 @@ import Scrollbar from '@components/scrollbar/scrollbar';
 import { Card, Table, TableBody, TableContainer } from '@mui/material';
 import { useState } from 'react';
 import {
-    TableEmptyRows,
-    TableHeadCustom,
-    TableNoData,
-    TablePaginationCustom,
-    emptyRows,
-    useTable,
+  TableEmptyRows,
+  TableHeadCustom,
+  TableNoData,
+  TablePaginationCustom,
+  emptyRows,
+  useTable,
 } from 'src/components/table';
-import { IBeneficiaryDetailsTableItem, IBeneficiaryDetailsTableList } from 'src/types/beneficiaries';
+import {
+  IBeneficiaryDetailsTableItem,
+  IBeneficiaryDetailsTableList,
+} from 'src/types/beneficiaries';
 
 import BeneficiariesDetailsTableRow from './beneficiaries-details-table-row';
 
@@ -18,9 +21,16 @@ type Props = {
 };
 
 const TABLE_HEAD = [
+  {
+    id: 'Topic',
+    label: 'Topic',
+  },
+  {
+    id: 'Processed By',
+    label: 'Processed By',
+  },
   { id: 'timestamp', label: 'Timestamp' },
-  { id: 'hash', label: 'Transaction Hash' },
-  { id: 'event', label: 'Event' },
+  { id: 'txHash', label: 'Transaction Hash' },
   { id: 'amount', label: 'Amount' },
 ];
 

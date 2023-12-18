@@ -1,13 +1,17 @@
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
+import { CONTRACTS } from '@config';
 import { useBoolean } from '@hooks/use-boolean';
+import useChainTransactions from '@hooks/useGoerliTransaction';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
 import useProjectContract from '@services/contracts/useProject';
 import { useCallback, useEffect } from 'react';
+import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
+import useAppStore from 'src/store/app';
 import useVendorStore from 'src/store/vendors';
 import BasicInfoCard from './basic-info-card';
 import VendorsCards from './transaction-info-card';
@@ -18,12 +22,41 @@ const VendorView = () => {
   const { address } = useParams();
   const { vendor } = useVendor(address);
   const assignTokenDialog = useBoolean();
+  const { beneficiaries } = useBeneficiaries();
   const {
     getVendorChainData,
     activateVendor,
     sendTokensToVendor,
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
+  const appContracts = useAppStore((state) => state.contracts);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
+
+  const { data: transactions } = useChainTransactions({
+    action: 'getLogs',
+    fromBlock: '0',
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+    source: 'rpcCall',
+    rpcUrl,
+
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: ['ClaimAssigned', 'ClaimProcessed', 'VendorAllowanceAccept', 'VendorAllowance'],
+      },
+    ],
+    transform: (data) =>
+      data
+        .filter((item) => item?.vendor?.toLowerCase() === address?.toLowerCase())
+        .map((item) => {
+          const ben = beneficiaries.find(
+            (b) => b.walletAddress?.toLowerCase() === item?.beneficiary?.toLowerCase()
+          );
+          return { ...item, beneficiary: ben?.phone || item?.beneficiary };
+        }),
+  });
 
   const { chainData, setChainData } = useVendorStore((state) => ({
     chainData: state.chainData,
@@ -90,10 +123,10 @@ const VendorView = () => {
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <TransactionTable />
+          <Grid item xs={12} md={8}>
+            <TransactionTable rows={transactions} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <MapView />
           </Grid>
         </Grid>
