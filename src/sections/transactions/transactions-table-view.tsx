@@ -77,18 +77,12 @@ export default function TransactionListView() {
           'ClaimProcessed',
           'VendorAllowance',
           'VendorAllowanceAccept',
-          // 'ProjectUnlocked',
-          // 'ProjectLocked',
         ],
       },
-      // {
-      //   contractName: CONTRACTS.RAHATTOKEN,
-      //   topic0s: [
-      //     'TokenMintedAndApproved',
-      //     // 'ProjectUnlocked',
-      //     // 'ProjectLocked',
-      //   ],
-      // },
+      {
+        contractName: CONTRACTS.DONOR,
+        topic0s: ['TokenMintedAndApproved'],
+      },
     ],
     transform: (data) =>
       data.map((d) => {

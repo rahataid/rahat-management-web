@@ -1,7 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
-import { fDateTime } from '@utils/format-time';
 import axios, { AxiosResponse } from 'axios';
 import { Contract, InterfaceAbi, JsonRpcProvider } from 'ethers';
+
+export function fDateTime(date: string | number | Date, newFormat?: string): string {
+  const d = new Date(date);
+
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0'); //January is 0!
+  const yyyy = d.getFullYear();
+
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+
+  const formattedDate = `${dd} ${mm} ${yyyy} ${hours}:${minutes}`;
+
+  return formattedDate;
+}
 
 interface Event {
   contractName: string;
@@ -99,21 +113,21 @@ const useChainTransactions = ({
     async () => {
       const results = await Promise.all(
         events.map(async (event) => {
-          console.log('event', event);
+          if (!appContracts?.[event.contractName]) {
+            return null;
+          }
+
+          const contract = new Contract(
+            appContracts[event.contractName].address,
+            appContracts[event.contractName].abi,
+            provider
+          );
+
           const topic0sData = await Promise.all(
             event.topic0s.map(async (topic) => {
-              if (!appContracts?.[event.contractName]) {
-                return null;
-              }
-              console.log('topic', topic);
-
-              const contract = new Contract(
-                appContracts[event.contractName].address,
-                appContracts[event.contractName].abi,
-                provider
-              );
               const topic0 = contract.interface.getEvent(topic).topicHash;
               const address = contract.target;
+
               return handleTransactionSources[params.source]({
                 ...params,
                 topic0,
@@ -123,20 +137,19 @@ const useChainTransactions = ({
               });
             })
           );
-          console.log('topic0sData', topic0sData);
-          console.log('event', event);
-          const topic0sObject = event.topic0s.reduce((acc, topic, index) => {
-            acc[topic] = topic0sData[index];
-            return acc;
-          }, {} as { [key: string]: Data[] });
-          console.log('topic0sObject', topic0sObject);
+
+          // Use Object.fromEntries to create an object from an array of key-value pairs
+          const topic0sObject = Object.fromEntries(
+            event.topic0s.map((topic, index) => [topic, topic0sData[index]])
+          );
+
           return {
             event: event.contractName,
             topic0s: topic0sObject,
           };
         })
       );
-      console.log('results', results);
+
       return results;
     },
     {
@@ -146,19 +159,18 @@ const useChainTransactions = ({
     }
   );
 
-  console.log('data', data);
-
   let decodedLogs: Log[] =
     (data?.[0] &&
       events
         .map((event, index) => {
           const logData = data?.[index];
-          return events[index].topic0s.map((topic) => {
-            return logData?.topic0s?.[topic]
-              ? logData?.topic0s?.[topic]?.map((log) => {
+          return events[index].topic0s.map((topic) =>
+            logData?.topic0s?.[topic]
+              ? logData?.topic0s?.[topic]?.map((log: Log) => {
                   const contract = new Contract(
-                    appContracts[event.contractName].address,
-                    appContracts[event.contractName].abi
+                    appContracts?.[event.contractName].address,
+                    appContracts?.[event.contractName].abi,
+                    provider
                   );
                   const interfaceData =
                     contract.interface.decodeEventLog(topic, log?.data, log?.topics)?.toObject() ||
@@ -175,8 +187,8 @@ const useChainTransactions = ({
                     ...interfaceData,
                   };
                 })
-              : [];
-          });
+              : []
+          );
         })
         .flat(2)
         .map((log: Log) => ({ ...log, amount: log?.amount?.toString() || 'N/A' }))
