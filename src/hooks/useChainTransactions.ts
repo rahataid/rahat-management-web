@@ -71,13 +71,13 @@ interface RpcParams {
   toBlock: string | number | 'latest';
 }
 
-const apiKey = '9DAUQ6ZJQNSY2WHYGTUC6B7Z8WSKCCTF6S';
+const apikey = '9DAUQ6ZJQNSY2WHYGTUC6B7Z8WSKCCTF6S';
 
 const fetchArbiscanAPI = async (params: Params): Promise<Log[]> => {
   const response: AxiosResponse<Data> = await axios.get('https://api-goerli.arbiscan.io/api', {
     params: {
       ...params,
-      apikey: apiKey,
+      apikey,
     },
   });
 
