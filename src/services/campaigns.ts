@@ -37,6 +37,9 @@ export const endpoints = {
     audiences: `/audiences`,
     removeAudience: (id: string) => `/audiences/${id}`,
   },
+  communicationLogs: {
+    listLogDetail: (id: number) => `/communication-logs/${id}/details`
+  }
 };
 
 const CampaignsService = {
@@ -52,6 +55,12 @@ const CampaignsService = {
   details: (id: string) => axiosInstance.get(endpoints.campaigns.details(id)),
   trigger: (id: string) => axiosInstance.get(endpoints.campaigns.trigger(id)),
   logs: (id: number) => axiosInstance.get(endpoints.campaigns.logs(id)),
+  logsDetail: (id: number, key: string, value: string) => axiosInstance.get(endpoints.communicationLogs.listLogDetail(id), {
+    params: {
+      key: key,
+      value: value
+    }
+  }),
   transports: () => axiosInstance.get(endpoints.campaigns.transports),
   getByIds: (ids: number[]) =>
     axiosInstance.get(endpoints.campaigns.getByIds, {
