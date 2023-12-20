@@ -7,50 +7,48 @@ import Tooltip from '@mui/material/Tooltip';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
-import { ITransactionItem } from 'src/types/transactions';
 // components
-import { truncateEthAddress } from '@utils/strings';
+import WalletAddressButton from '@components/wallet-address-button';
 import Iconify from 'src/components/iconify';
-import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   selected: boolean;
-  row: ITransactionItem;
+  row: any;
   onViewRow: VoidFunction;
 };
 
 export default function TransactionTableRow({ row, selected, onViewRow }: Props) {
-  const { txHash, timestamp, method } = row;
+  const { txHash, timestamp, topic, contractName, amount, beneficiary, vendor } = row;
 
   const quickEdit = useBoolean();
 
   return (
     <TableRow hover selected={selected}>
       <TableCell>
+        <ListItemText
+          primary={topic || '-'}
+          secondary={contractName || '-'}
+          primaryTypographyProps={{ typography: 'body2' }}
+        />
+      </TableCell>
+      <TableCell>
+        <ListItemText
+          primary={beneficiary || '-'}
+          primaryTypographyProps={{ typography: 'body2' }}
+        />
+      </TableCell>
+      <TableCell>
+        <ListItemText primary={amount || '-'} primaryTypographyProps={{ typography: 'body2' }} />
+      </TableCell>
+
+      <TableCell>
         <ListItemText primary={timestamp || '-'} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
-        <ListItemText
-          primary={txHash?.length ? truncateEthAddress(txHash, 6) : '-'}
-          primaryTypographyProps={{ typography: 'body2' }}
-        />
-      </TableCell>
-
-      <TableCell>
-        <Label
-          variant="soft"
-          color={
-            (method === 'SMS' && 'success') ||
-            (method === 'EMAIL' && 'warning') ||
-            (method === 'QR' && 'error') ||
-            'default'
-          }
-        >
-          {method || '-'}
-        </Label>
+        <WalletAddressButton address={txHash} type="txHash" />
       </TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>

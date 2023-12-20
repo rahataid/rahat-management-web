@@ -102,6 +102,7 @@ const useAuthStore = create<AuthStoreType>((set) => ({
   logout: async () => {
     setSession(null);
     removeUser();
+    clearToken();
     set({
       user: null,
       loading: false,
