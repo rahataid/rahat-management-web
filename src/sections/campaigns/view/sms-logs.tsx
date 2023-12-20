@@ -1,7 +1,6 @@
 'use client';
 
 import CustomBreadcrumbs from '@components/custom-breadcrumbs';
-import Iconify from '@components/iconify/iconify';
 import Scrollbar from '@components/scrollbar';
 import { useSettingsContext } from '@components/settings';
 import {
@@ -15,27 +14,25 @@ import {
 } from '@components/table';
 import { useBoolean } from '@hooks/use-boolean';
 import {
-  Button,
+  // Button,
   Card,
   Container,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Stack,
+  // IconButton,
+  // ListItemIcon,
+  // Menu,
+  // MenuItem,
+  // Stack,
   Table,
   TableBody,
   TableContainer,
-  Tooltip,
-  Typography,
 } from '@mui/material';
-import { RouterLink } from '@routes/components';
+// import { RouterLink } from '@routes/components';
 import { useRouter } from '@routes/hook';
 import { paths } from '@routes/paths';
 import { useSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useCampaigns, useRemoveCampaign } from 'src/api/campaigns';
-import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
+import { ICampaignItem } from 'src/types/campaigns';
 import CampaignDeleteModal from '../campaigns-delete-modal';
 import CampaignsTableRow from '../campaigns-table-row';
 
@@ -49,10 +46,10 @@ const TABLE_HEAD = [
 ];
 
 export default function SMSLogsList() {
-  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
+  // const [isOpen, setOpen] = useState<null | HTMLElement>(null);
   const settings = useSettingsContext();
   const { push } = useRouter();
-  const router = useRouter();
+  // const router = useRouter();
   const table = useTable();
   const denseHeight = table.dense ? 52 : 72;
   const { enqueueSnackbar } = useSnackbar();
@@ -90,24 +87,24 @@ export default function SMSLogsList() {
     table.onSelectAllRows(false, []);
   };
 
-  const options: MenuOptions = [
-    {
-      title: 'Upload Audio',
-      onClick: () => {
-        router.push(paths.dashboard.general.campaigns.uploadMp3);
-      },
-      icon: 'mdi:upload',
-      show: true,
-    },
-  ];
+  // const options: MenuOptions = [
+  //   {
+  //     title: 'Upload Audio',
+  //     onClick: () => {
+  //       router.push(paths.dashboard.general.campaigns.uploadMp3);
+  //     },
+  //     icon: 'mdi:upload',
+  //     show: true,
+  //   },
+  // ];
 
-  const handleClose = useCallback(() => {
-    setOpen(null);
-  }, []);
+  // const handleClose = useCallback(() => {
+  //   setOpen(null);
+  // }, []);
 
-  const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(event.currentTarget);
-  }, []);
+  // const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setOpen(event.currentTarget);
+  // }, []);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -124,41 +121,41 @@ export default function SMSLogsList() {
         sx={{
           mb: { xs: 3, md: 5 },
         }}
-        action={
-          <Stack direction="row" spacing={3}>
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.general.campaigns.add}
-              variant="outlined"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              color="success"
-            >
-              Add Campaign
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={handleOpen}
-              endIcon={
-                isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
-              }
-              color="success"
-            >
-              Campaign Settings
-            </Button>
-            <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
-              {options
-                .filter((o: any) => o.show)
-                .map((option: any) => (
-                  <MenuItem key={option.title} onClick={option.onClick}>
-                    <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
-                    <Typography variant="body2" color="text.secondary">
-                      {option.title}
-                    </Typography>
-                  </MenuItem>
-                ))}
-            </Menu>
-          </Stack>
-        }
+        // action={
+        //   <Stack direction="row" spacing={3}>
+        //     <Button
+        //       component={RouterLink}
+        //       href={paths.dashboard.general.campaigns.add}
+        //       variant="outlined"
+        //       startIcon={<Iconify icon="mingcute:add-line" />}
+        //       color="success"
+        //     >
+        //       Add Campaign
+        //     </Button>
+        //     <Button
+        //       variant="outlined"
+        //       onClick={handleOpen}
+        //       endIcon={
+        //         isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
+        //       }
+        //       color="success"
+        //     >
+        //       Campaign Settings
+        //     </Button>
+        //     <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
+        //       {options
+        //         .filter((o: any) => o.show)
+        //         .map((option: any) => (
+        //           <MenuItem key={option.title} onClick={option.onClick}>
+        //             <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
+        //             <Typography variant="body2" color="text.secondary">
+        //               {option.title}
+        //             </Typography>
+        //           </MenuItem>
+        //         ))}
+        //     </Menu>
+        //   </Stack>
+        // }
       />
 
       <Card>
@@ -173,13 +170,13 @@ export default function SMSLogsList() {
                 campaigns.map((row: ICampaignItem) => row.name.toString())
               )
             }
-            action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={assignCampaignDialog.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
-            }
+            // action={
+            //   <Tooltip title="Delete">
+            //     <IconButton color="primary" onClick={assignCampaignDialog.onTrue}>
+            //       <Iconify icon="solar:trash-bin-trash-bold" />
+            //     </IconButton>
+            //   </Tooltip>
+            // }
           />
 
           <Scrollbar>

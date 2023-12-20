@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from '@routes/hook';
 import { paths } from '@routes/paths';
+import { fDateTime } from '@utils/format-time';
 
 const TABLE_HEAD = [
   { id: 'to', label: 'To', width: 150 },
@@ -47,8 +48,10 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
               data?.map((bodyCell: any, index: number) => (
                 <TableRow key={bodyCell.id}>
                   <TableCell>{bodyCell.phoneNumber}</TableCell>
-                  <TableCell>{bodyCell.callDate}</TableCell>
-                  <TableCell>{bodyCell.duration}</TableCell>
+                  <TableCell>{fDateTime(bodyCell?.callDate, 'dd MMM, yyyy p')}</TableCell>
+                  <TableCell>
+                    {bodyCell.duration} {bodyCell.duration === '1' ? 'second' : 'seconds'}
+                  </TableCell>
                   <TableCell>
                     <Chip
                       label={bodyCell.disposition === 'ANSWERED' ? 'Success' : 'Fail'}
@@ -59,7 +62,9 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
                   <TableCell>{bodyCell.attempts}</TableCell>
                   <TableCell>
                     <Tooltip title="View Details">
-                      <IconButton onClick={() => handleViewLogDetail(params.logId, index)}>
+                      <IconButton
+                        onClick={() => handleViewLogDetail(params.logId, bodyCell.phoneNumber)}
+                      >
                         <Iconify color="#118D57" icon="iconamoon:eye-light" />
                       </IconButton>
                     </Tooltip>

@@ -28,7 +28,7 @@ type Props = {
 export default function CampaignsTableRow({
   row,
   onViewRow,
-  onEditRow,
+  // onEditRow,
   selected,
   onSelectRow,
 }: Props) {
@@ -77,11 +77,11 @@ export default function CampaignsTableRow({
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Edit" placement="top" arrow>
+        {/* <Tooltip title="Edit" placement="top" arrow>
           <IconButton onClick={onEditRow}>
             <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
       </TableCell>
     </TableRow>
   );
