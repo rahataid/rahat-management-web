@@ -12,15 +12,7 @@ export default function CampaignsCallLogsView() {
   const settings = useSettingsContext();
   const params = useParams();
   const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
-
   const callLogsList: any = logs?.rows?.[0]?.details;
-
-  const successfulIVRList = callLogsList?.length
-    ? callLogsList?.filter((log: any) => log.disposition === 'ANSWERED')
-    : [];
-  const failedIVRList: any = callLogsList?.length
-    ? callLogsList.filter((log: any) => log.disposition !== 'ANSWERED')
-    : [];
 
   const callLogsCardDetail = [
     {
@@ -30,12 +22,12 @@ export default function CampaignsCallLogsView() {
     },
     {
       icon: 'material-symbols:call',
-      total: successfulIVRList?.length,
+      total: logs?.rows?.[0]?.totalSuccessfulAnswer,
       subTitle: 'Successful IVR',
     },
     {
       icon: 'material-symbols:call',
-      total: failedIVRList?.length,
+      total: logs?.rows?.[0]?.totalFailure,
       subTitle: 'Failed IVR',
     },
   ];
