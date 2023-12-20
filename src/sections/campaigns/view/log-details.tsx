@@ -3,13 +3,22 @@
 import Iconify from '@components/iconify';
 import { useSettingsContext } from '@components/settings';
 import { Container, Stack, Typography } from '@mui/material';
-import { useRouter } from '@routes/hook';
+import { useParams, useRouter } from '@routes/hook';
+import { useCampaignLogs, useCampaignLogsDetail } from 'src/api/campaigns';
 import LogsDetailsInfoCard from '../logs-details-info-card';
 import LogsDetailsTable from '../logs-details-table';
 
 export default function LogDetails() {
   const settings = useSettingsContext();
   const router = useRouter();
+  const params = useParams();
+  const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
+  const logsDetail =
+    useCampaignLogsDetail(
+      logs?.rows?.[0]?.id as unknown as number,
+      'phoneNumber',
+      params.id as unknown as string
+    ) || {};
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -23,8 +32,8 @@ export default function LogDetails() {
         <Typography variant="h3">Logs Detail</Typography>
       </Stack>
       <Stack spacing={3}>
-        <LogsDetailsInfoCard />
-        <LogsDetailsTable />
+        <LogsDetailsInfoCard latestLog={logsDetail?.latestSummary} />
+        <LogsDetailsTable data={logsDetail?.logs} />
       </Stack>
     </Container>
   );

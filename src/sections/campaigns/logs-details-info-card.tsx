@@ -1,13 +1,7 @@
 import { Box, Card, CardContent, CardHeader, Chip, Stack, Typography } from '@mui/material';
+import { fDateTime } from '@utils/format-time';
 
-const logsInfo = {
-  date: '29 Nov, 2023',
-  duration: 4,
-  method: 'Call',
-  attempts: 5,
-};
-
-export default function LogsDetailsInfoCard() {
+export default function LogsDetailsInfoCard({ latestLog }: any) {
   return (
     <Card>
       <CardHeader title="Latest Log" />
@@ -21,23 +15,29 @@ export default function LogsDetailsInfoCard() {
           flexWrap={'wrap'}
         >
           <Box>
-            <Typography variant="body1">{logsInfo.date}</Typography>
+            <Typography variant="body1">
+              {fDateTime(latestLog?.callDate, 'dd MMM, yyyy p')}
+            </Typography>
             <Typography variant="caption">Date</Typography>
           </Box>
           <Box>
-            <Typography variant="body1">{logsInfo.duration} seconds</Typography>
+            <Typography variant="body1">{latestLog?.duration} seconds</Typography>
             <Typography variant="caption">Duration</Typography>
           </Box>
           <Box>
-            <Typography variant="body1">{logsInfo.method}</Typography>
+            <Typography variant="body1">Call</Typography>
             <Typography variant="caption">Method</Typography>
           </Box>
           <Box>
-            <Typography variant="body1">{logsInfo.attempts}</Typography>
+            <Typography variant="body1">{latestLog?.attempts}</Typography>
             <Typography variant="caption">Total Attempts</Typography>
           </Box>
           <Box>
-            <Chip sx={{ fontWeight: 'bold' }} label="Success" color="success" />
+            <Chip
+              sx={{ fontWeight: 'bold' }}
+              label={latestLog?.disposition === 'ANSWERED' ? 'Success' : 'Fail'}
+              color={latestLog?.disposition === 'ANSWERED' ? 'success' : 'error'}
+            />
           </Box>
         </Stack>
       </CardContent>

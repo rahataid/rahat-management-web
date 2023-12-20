@@ -227,3 +227,12 @@ export function useCampaignAudio() {
     error: error as IApiResponseError,
   };
 }
+
+export function useCampaignLogsDetail(id: number, key: string, value: string) {
+  const { data } = useQuery(['communication-logs/id/details'], async () => {
+    const res = await CampaignsService.logsDetail(id, key, value);
+    return res?.data;
+  })
+  const logsDetail = useMemo(() => data || [], [data])
+  return logsDetail;
+}                   

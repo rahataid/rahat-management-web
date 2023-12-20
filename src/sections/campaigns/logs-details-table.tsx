@@ -1,4 +1,5 @@
 import Scrollbar from '@components/scrollbar';
+import { TableNoData } from '@components/table';
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { fDateTime } from '@utils/format-time';
 
 const TABLE_HEAD = [
   { id: 'date', label: 'Date', width: 150 },
@@ -18,28 +20,7 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Status', width: 100 },
 ];
 
-const data = [
-  {
-    date: '29 Nov, 2023',
-    duration: 5,
-    type: 'Call',
-    status: 'Success',
-  },
-  {
-    date: '8 Jan, 2023',
-    duration: 0,
-    type: 'Call',
-    status: 'Fail',
-  },
-  {
-    date: '15 Sep, 2023',
-    duration: 16,
-    type: 'Call',
-    status: 'Success',
-  },
-];
-
-export default function LogsDetailsTable() {
+export default function LogsDetailsTable({ data = [] }: any) {
   return (
     <Card>
       <CardHeader title="All Logs" />
@@ -56,21 +37,26 @@ export default function LogsDetailsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.length &&
+              {data.length ? (
                 data?.map((bodyCell: any, index: number) => (
                   <TableRow key={index}>
-                    <TableCell>{bodyCell.date}</TableCell>
-                    <TableCell>{bodyCell.duration} seconds</TableCell>
-                    <TableCell>{bodyCell.type}</TableCell>
+                    <TableCell>{fDateTime(bodyCell?.callDate, 'dd MMM, yyyy p')}</TableCell>
+                    <TableCell>
+                      {bodyCell.duration} {bodyCell.duration === '1' ? 'second' : 'seconds'}
+                    </TableCell>
+                    <TableCell>Call</TableCell>
                     <TableCell>
                       <Chip
-                        label={bodyCell.status}
-                        color={bodyCell.status === 'Success' ? 'success' : 'error'}
+                        label={bodyCell.disposition === 'ANSWERED' ? 'Success' : 'Fail'}
+                        color={bodyCell.disposition === 'ANSWERED' ? 'success' : 'error'}
                         sx={{ fontWeight: 'bold', width: 80 }}
                       />
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              ) : (
+                <TableNoData notFound={!data.length} />
+              )}
             </TableBody>
           </Table>
         </Scrollbar>
