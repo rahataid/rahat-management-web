@@ -124,6 +124,13 @@ function BeneficiariesDetailsView() {
           <BeneficiariesDetailsClaimsCard
             walletAddress={beneficiary?.walletAddress}
             balance={chainData.balance}
+            // claimed={
+            //   chainData.claimed !== null
+            //     ? chainData.claimed
+            //     : transactions
+            //         .filter((item) => item. === 'ClaimProcessed')
+            //         .reduce((acc, item) => acc + item.amount, 0)
+            // }
             claimed={chainData.claimed}
           />
         </Grid>
