@@ -9,21 +9,33 @@ const axiosInstance = axios.create({
   baseURL: HOST_API,
 });
 
-// axiosInstance.interceptors.response.use(
-//   (res) => res,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       const token = await AuthService.refreshToken();
-//       if (token) {
-//         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-//         return axiosInstance(originalRequest);
-//       }
-//     }
-//     return Promise.reject((error.response && error.response.data) || 'Something went wrong');
-//   }
-// );
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const response = await axiosInstance.post(
+        endpoints.auth.refreshToken,
+        {},
+        {
+          headers: {
+            user: JSON.stringify(user),
+          },
+        }
+      );
+      if (response.status === 200 && response.data) {
+        const newToken = response.data.token;
+        localStorage.setItem('accessToken', newToken); // Save the new token to local storage
+        axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`; // Set the new token in the retry request
+        return axiosInstance(originalRequest);
+      }
+    }
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  }
+);
 
 axiosInstance.interceptors.request.use(
   async (config) => {
