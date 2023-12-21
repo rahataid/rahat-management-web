@@ -1,7 +1,6 @@
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { Button, Stack, Tooltip } from '@mui/material';
 import { truncateEthAddress } from '@utils/strings';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface IProps {
@@ -9,8 +8,7 @@ interface IProps {
   type?: 'address' | 'txHash';
 }
 
-const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' }) => {
-  const router = useRouter();
+const WalletAddressButton: React.FC<IProps> = ({ address, type = 'address' }) => {
   const { copiedText, copy } = useCopyToClipboard();
 
   const handleClick = () => {
@@ -33,4 +31,4 @@ const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' })
   );
 };
 
-export default TruncatedAddressButton;
+export default WalletAddressButton;

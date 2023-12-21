@@ -276,7 +276,7 @@ const useProjectContract = (): ProjectContract => {
     async (contractAddress: string) => {
       const [balance, isLocked, isApproved] = await Promise.all([
         getProjectBalance(contractAddress),
-        // getTokenAllowance(),
+        getTokenAllowance(),
         isProjectLocked(),
         isProjectApproved(contractAddress),
       ]);
@@ -288,7 +288,7 @@ const useProjectContract = (): ProjectContract => {
         isApproved,
       };
     },
-    [getProjectBalance, isProjectApproved, isProjectLocked]
+    [getProjectBalance, isProjectApproved, getTokenAllowance, isProjectLocked]
   );
 
   return useMemo(

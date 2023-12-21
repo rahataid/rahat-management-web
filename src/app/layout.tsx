@@ -80,8 +80,8 @@ export default function RootLayout({ children }: Props) {
     <html lang="en" className={primaryFont.className}>
       <body>
         <Web3Provider>
-          <AuthProvider>
-            <QueryProvider>
+          <QueryProvider>
+            <AuthProvider>
               <LocalizationProvider>
                 <SettingsProvider
                   defaultSettings={{
@@ -104,8 +104,8 @@ export default function RootLayout({ children }: Props) {
                   </ThemeProvider>
                 </SettingsProvider>
               </LocalizationProvider>
-            </QueryProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </QueryProvider>
         </Web3Provider>
       </body>
     </html>

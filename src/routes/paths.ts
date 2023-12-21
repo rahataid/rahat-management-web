@@ -12,7 +12,7 @@ const ROOTS = {
   PROJECTS: '/projects',
   PHOTO_GALLERY: '/photo-gallery',
   VENDORS: '/vendors',
-  CAMPAIGNS: '/campaigns',
+  CAMPAIGNS: '/communication',
   ADMINISTATION: '/administration',
 };
 
@@ -72,6 +72,12 @@ export const paths = {
         logs: (id: number) => `${ROOTS.CAMPAIGNS}/${id}/logs`,
         details: (id: number) => `${ROOTS.CAMPAIGNS}/${id}`,
         uploadMp3: `${ROOTS.CAMPAIGNS}/uploadMp3`,
+        callLogs: `${ROOTS.CAMPAIGNS}/voice`,
+        callLogDetail: (id: number) => `${ROOTS.CAMPAIGNS}/voice/${id}`,
+        smsLogs: `${ROOTS.CAMPAIGNS}/text`,
+        smsLogDetail: (id: number) => `${ROOTS.CAMPAIGNS}/text/${id}`,
+        logDetails: (id: string, logId: number) => `${ROOTS.CAMPAIGNS}/voice/${id}/logs/${logId}`
+
       },
     },
     administration: {

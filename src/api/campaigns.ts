@@ -54,45 +54,45 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
 
   const logs = useMemo(
     () =>
-      ({
-        ...data,
-        rows: data?.rows?.map((row) => {
-          console.log('row?.details', row?.details);
-          const detailsWithAttempts = row?.details[0]?.phoneNumber
-            ? row?.details?.reduce((acc, detail) => {
-                const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
+    ({
+      ...data,
+      rows: data?.rows?.map((row) => {
+        console.log('row?.details', row?.details);
+        const detailsWithAttempts = row?.details[0]?.phoneNumber
+          ? row?.details?.reduce((acc, detail) => {
+            const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
 
-                if (existingDetail) {
-                  existingDetail.attempts += 1;
-                } else {
-                  acc.push({ ...detail, attempts: 1 });
-                }
+            if (existingDetail) {
+              existingDetail.attempts += 1;
+            } else {
+              acc.push({ ...detail, attempts: 1 });
+            }
 
-                return acc;
-              }, [])
-            : {};
-          console.log('detailsWithAttempts', detailsWithAttempts);
-          const totalSuccessfulAnswer =
-            !isEmpty(detailsWithAttempts) &&
-            detailsWithAttempts.reduce(
-              (acc, detail) => (detail.disposition === 'ANSWERED' ? acc + 1 : acc),
-              0
-            );
-          const totalFailure =
-            !isEmpty(detailsWithAttempts) &&
-            detailsWithAttempts.reduce(
-              (acc, detail) => (detail.disposition === 'NO ANSWER' ? acc + 1 : acc),
-              0
-            );
+            return acc;
+          }, [])
+          : {};
+        console.log('detailsWithAttempts', detailsWithAttempts);
+        const totalSuccessfulAnswer =
+          !isEmpty(detailsWithAttempts) &&
+          detailsWithAttempts.reduce(
+            (acc, detail) => (detail.disposition === 'ANSWERED' ? acc + 1 : acc),
+            0
+          );
+        const totalFailure =
+          !isEmpty(detailsWithAttempts) &&
+          detailsWithAttempts.reduce(
+            (acc, detail) => (detail.disposition !== 'ANSWERED' ? acc + 1 : acc),
+            0
+          );
 
-          return {
-            ...row,
-            details: detailsWithAttempts,
-            totalSuccessfulAnswer,
-            totalFailure,
-          };
-        }),
-      } || ({} as ICampaignLogsApiResponse)),
+        return {
+          ...row,
+          details: detailsWithAttempts,
+          totalSuccessfulAnswer,
+          totalFailure,
+        };
+      }),
+    } || ({} as ICampaignLogsApiResponse)),
     [data]
   );
 
@@ -227,3 +227,12 @@ export function useCampaignAudio() {
     error: error as IApiResponseError,
   };
 }
+
+export function useCampaignLogsDetail(id: number, key: string, value: string) {
+  const { data } = useQuery(['communication-logs/id/details'], async () => {
+    const res = await CampaignsService.logsDetail(id, key, value);
+    return res?.data;
+  })
+  const logsDetail = useMemo(() => data || [], [data])
+  return logsDetail;
+}                   
