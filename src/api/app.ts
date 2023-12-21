@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getToken } from '@utils/storage-available';
+import { isEmpty } from 'lodash';
 import AppSettingService from '../services/app-settings';
 import useAppStore from '../store/app';
 
@@ -25,7 +26,7 @@ export const useAppSettings = () => {
         appStore.setContracts(data.contracts);
         appStore.setBlockchain(data.blockchain);
       },
-      enabled: !!token,
+      enabled: !!token && isEmpty(appStore.blockchain && appStore.contracts),
     }
   );
 

@@ -20,5 +20,9 @@ export function createStore<T extends object>(
     store = create(devtools(createState));
   }
 
+  if (options?.devtoolsEnabled && options?.persistOptions) {
+    store = create(devtools(persist(createState, options.persistOptions)));
+  }
+
   return store;
 }
