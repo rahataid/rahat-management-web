@@ -61,7 +61,7 @@ export default function BeneficiariesTableRow({
         <Label variant="soft">{bankStatus}</Label>
       </TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton onClick={onViewRow}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />

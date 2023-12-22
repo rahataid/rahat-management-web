@@ -8,7 +8,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
-import Label from '@components/label/label';
 import { truncateEthAddress } from '@utils/strings';
 import Iconify from 'src/components/iconify';
 import { IVendorItem } from 'src/types/vendors';
@@ -38,11 +37,11 @@ export default function VendorTableRow({ row, onViewRow, onEditRow }: Props) {
         <ListItemText primary={name} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         <Label variant="soft" color={isApproved ? 'success' : 'error'}>
           {isApproved ? 'Approved' : 'Not Approved'}
         </Label>
-      </TableCell>
+      </TableCell> */}
 
       <TableCell>
         <ListItemText
@@ -57,7 +56,7 @@ export default function VendorTableRow({ row, onViewRow, onEditRow }: Props) {
         </Label>
       </TableCell> */}
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
