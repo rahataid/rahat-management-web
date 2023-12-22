@@ -102,8 +102,8 @@ export default function TransactionListView() {
   const claimAssigned = transactions.filter((t) => t.topic === 'ClaimAssigned');
   const claimProcessed = transactions.filter((t) => t.topic === 'ClaimProcessed');
 
+  //TODO: the count should count the number of unique beneficiaries but for now we are counting the number of transactions
   const transactionReport = {
-    //TODO: the count should count the number of unique beneficiaries but for now we are counting the number of transactions
     cashDistributed: claimAssigned.reduce((a, b) => +a + +b.amount, 0),
     cashIssued: claimProcessed.reduce((a, b) => +a + +b.amount, 0),
     distributedCount: claimProcessed.length,
