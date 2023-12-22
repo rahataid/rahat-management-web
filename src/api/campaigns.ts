@@ -58,36 +58,76 @@ export function useCampaignLogs(id: number): ICampaignLogsHookReturn {
       ...data,
       rows: data?.rows?.map((row) => {
         console.log('row?.details', row?.details);
-        const detailsWithAttempts = row?.details[0]?.phoneNumber
-          ? row?.details?.reduce((acc, detail) => {
-            const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
+        // const detailsWithAttempts = row?.details[0]?.phoneNumber
+        //   ? row?.details?.reduce((acc, detail) => {
+        //     const existingDetail = acc.find((item) => item.phoneNumber === detail.phoneNumber);
 
-            if (existingDetail) {
-              existingDetail.attempts += 1;
-            } else {
-              acc.push({ ...detail, attempts: 1 });
-            }
+        //     if (existingDetail) {
+        //       existingDetail.attempts += 1;
+        //     } else {
+        //       acc.push({ ...detail, attempts: 1 });
+        //     }
 
-            return acc;
-          }, [])
-          : {};
-        console.log('detailsWithAttempts', detailsWithAttempts);
+        //     return acc;
+        //   }, [])
+        //   : {};
+        // console.log('detailsWithAttempts', detailsWithAttempts);
+        // const totalSuccessfulAnswer =
+        //   !isEmpty(detailsWithAttempts) &&
+        //   detailsWithAttempts.reduce(
+        //     (acc, detail) => (detail.disposition === 'ANSWERED' ? acc + 1 : acc),
+        //     0
+        //   );
+        // const totalFailure =
+        //   !isEmpty(detailsWithAttempts) &&
+        //   detailsWithAttempts.reduce(
+        //     (acc, detail) => (detail.disposition !== 'ANSWERED' ? acc + 1 : acc),
+        //     0
+        //   );
+
+        const logsGroupedByPhoneNumber = Object.values(
+          row?.details[0]?.phoneNumber ?
+            row?.details?.reduce((acc, log) => {
+              const phoneNumber = log.phoneNumber;
+              acc[phoneNumber] = acc[phoneNumber] || [];
+              acc[phoneNumber].push(log);
+              return acc;
+            }, {}) : {}
+        );
+
+        logsGroupedByPhoneNumber.forEach(logGroup => {
+          const attempts = logGroup.length;
+          logGroup.forEach(log => {
+            log.attempts = attempts;
+          });
+        });
+
+        const latestLogsWithAttempts = [];
+        for (const phoneNumber in logsGroupedByPhoneNumber) {
+          if (logsGroupedByPhoneNumber.hasOwnProperty(phoneNumber)) {
+            const logsArray = logsGroupedByPhoneNumber[phoneNumber];
+            const latestLog = logsArray.reduce((latest, log) => (log.callDate > latest.callDate ? log : latest), logsArray[0]);
+            latestLogsWithAttempts.push(latestLog);
+          }
+        }
+        console.log("latestLogsWithAttempts::", latestLogsWithAttempts);
+
         const totalSuccessfulAnswer =
-          !isEmpty(detailsWithAttempts) &&
-          detailsWithAttempts.reduce(
+          !isEmpty(latestLogsWithAttempts) &&
+          latestLogsWithAttempts.reduce(
             (acc, detail) => (detail.disposition === 'ANSWERED' ? acc + 1 : acc),
             0
           );
         const totalFailure =
-          !isEmpty(detailsWithAttempts) &&
-          detailsWithAttempts.reduce(
+          !isEmpty(latestLogsWithAttempts) &&
+          latestLogsWithAttempts.reduce(
             (acc, detail) => (detail.disposition !== 'ANSWERED' ? acc + 1 : acc),
             0
           );
 
         return {
           ...row,
-          details: detailsWithAttempts,
+          details: latestLogsWithAttempts,
           totalSuccessfulAnswer,
           totalFailure,
         };
