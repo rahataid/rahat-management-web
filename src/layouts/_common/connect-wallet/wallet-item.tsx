@@ -12,7 +12,6 @@ import { truncateEthAddress } from 'src/utils/strings';
 
 import { MetaMask } from '@web3-react/metamask';
 import useAppStore from 'src/store/app';
-import useAuthStore from 'src/store/auths';
 
 // const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
@@ -41,10 +40,7 @@ export default function WalletItem({
   error,
   activeChainId,
 }: WalletItemProps) {
-  const authStore = useAuthStore();
   const networkSettings = useAppStore((state) => state.blockchain);
-  console.log('networkSettings', networkSettings);
-
   const renderAvatar = (
     <ListItemAvatar>
       {walletAvatar && (
@@ -81,7 +77,7 @@ export default function WalletItem({
     } else {
       connector.resetState();
     }
-    authStore.disconnectWallet();
+    // authStore.disconnectWallet();
   };
 
   const walletAction = (
