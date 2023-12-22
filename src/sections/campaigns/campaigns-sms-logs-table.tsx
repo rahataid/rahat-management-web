@@ -1,4 +1,5 @@
 import Scrollbar from '@components/scrollbar';
+import { TableNoData } from '@components/table';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { fDateTime } from '@utils/format-time';
 
@@ -28,6 +29,7 @@ export default function CampaignsSMSLogsTable({ data = [] }: any) {
                 <TableCell>{fDateTime(bodyCell.createdAt, 'dd MMM, yyyy p')}</TableCell>
               </TableRow>
             ))}
+            <TableNoData notFound={!data?.length} />
           </TableBody>
         </Table>
       </Scrollbar>
