@@ -1,6 +1,6 @@
+import { localPersistStorage } from '@utils/state-storage';
 import { createStore } from '@utils/store-tools';
 import { IAppSettingsContractsApiResponse, IAppSettingsNetwork } from 'src/types/app-settings';
-import { PersistStorage } from 'zustand/middleware';
 
 export type AppStateType = {
   contracts: IAppSettingsContractsApiResponse | undefined;
@@ -13,18 +13,6 @@ type AppActionsType = {
 };
 
 export type AppStoreType = AppStateType & AppActionsType;
-
-const storage: PersistStorage<AppStoreType> = {
-  getItem: (name) => {
-    const str = localStorage.getItem(name);
-    if (!str) return null;
-    return JSON.parse(str);
-  },
-  setItem: (name, value) => {
-    localStorage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name) => localStorage.removeItem(name),
-};
 
 const useAppStore = createStore<AppStoreType>(
   (set) => ({
@@ -57,9 +45,8 @@ const useAppStore = createStore<AppStoreType>(
     devtoolsEnabled: true,
     persistOptions: {
       name: 'app-network-settings',
-      storage,
+      storage: localPersistStorage,
     },
   }
 );
-
 export default useAppStore;
