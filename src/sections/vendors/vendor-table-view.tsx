@@ -33,10 +33,10 @@ import VendorTableRow from './vendor-table-row';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
-  { id: 'isApproved', label: 'Is Approved' },
+  // { id: 'isApproved', label: 'Is Approved' },
   { id: 'walletAddress', label: 'Wallet Address' },
   { id: 'Action', label: 'Actions' },
-  { id: '', label: '', width: '20', align: 'center' },
+  // { id: '', label: '', width: '20', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
