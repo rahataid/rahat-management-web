@@ -38,6 +38,7 @@ export const useLogin = () => {
       onSuccess: (data) => {
         notify.enqueueSnackbar('Login successful', { variant: 'success' });
         const { refresh_token, access_token, ...user } = data;
+        console.log('user', user);
         saveLogin({ user, refresh_token, access_token });
         return data;
       },

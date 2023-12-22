@@ -14,7 +14,7 @@ type Props = {
 
 const user = getUser();
 const AuthProvider = ({ children }: Props) => {
-  const { isInitialized, isAuthenticated, tokens } = useAuthStore();
+  const { isInitialized, tokens } = useAuthStore();
 
   const appSettings = useAppSettings();
 
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }: Props) => {
         walletName: '',
       });
     }
-  }, []);
+  }, [tokens.access_token]);
 
   // useEffect(() => {
   //   setBlockchain();

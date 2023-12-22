@@ -1,6 +1,6 @@
 import { WebSocketProvider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { Contract, ContractRunner, InterfaceAbi } from 'ethers';
+import { Contract, ContractRunner, InterfaceAbi, JsonRpcApiProvider } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import useAppStore from 'src/store/app';
 
@@ -36,7 +36,9 @@ const useContract: UseContract = (contractName, options = {}) => {
       return new Contract(
         options?.contractAddress || contracts[contractName].address,
         contracts[contractName].abi,
-        provider?.getSigner() as unknown as ContractRunner
+        provider
+          ? (provider?.getSigner() as unknown as ContractRunner)
+          : new JsonRpcApiProvider(networks?.rpcUrls[0] as string)
       );
     }
     return null;
@@ -45,8 +47,9 @@ const useContract: UseContract = (contractName, options = {}) => {
     contractName,
     options?.isWebsocket,
     options?.contractAddress,
-    networks?.chainWebSocket,
     provider,
+    networks?.rpcUrls,
+    networks?.chainWebSocket,
   ]);
 
   useEffect(() => {

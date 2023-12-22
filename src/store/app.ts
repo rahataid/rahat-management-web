@@ -19,14 +19,9 @@ const useAppStore = createStore<AppStoreType>(
     contracts: undefined,
     blockchain: undefined,
     setContracts: async (value) => {
-      // const { data } = await AppSettingService.getContracts();
-
       set({ contracts: value });
     },
     setBlockchain: async (value: any) => {
-      // const {
-      //   data: { value },
-      // } = await AppSettingService.getBlockchainSettings();
       const blockchain = {
         chainId: value?.chainId,
         chainName: value?.chainName,

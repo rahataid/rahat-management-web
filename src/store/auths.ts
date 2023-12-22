@@ -120,6 +120,10 @@ const useAuthStore = createStore<AuthStoreType>(
         loading: false,
         isAuthenticated: false,
         isInitialized: true,
+        tokens: {
+          access_token: '',
+          refresh_token: '',
+        },
       });
     },
     disconnectWallet: () => {
@@ -153,14 +157,7 @@ const useAuthStore = createStore<AuthStoreType>(
     devtoolsEnabled: true,
     persistOptions: {
       name: 'auth',
-      partialize(state) {
-        return {
-          ...state,
-          loading: true,
-          isAuthenticated: false,
-          isInitialized: false,
-        };
-      },
+    
       storage: localPersistStorage,
     },
   }

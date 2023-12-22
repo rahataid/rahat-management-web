@@ -27,6 +27,7 @@ export type IProjectItem = {
   coverImage?: string;
   description: string;
   extras?: string;
+  projectManager: string;
 };
 
 export type IProjectsPagination = {
@@ -69,8 +70,6 @@ export interface ProjectsListHookReturn {
   meta: IProjectsList['meta'];
 }
 
-
-
 export interface IProjectDetailsHookReturn {
   project: IProjectItem;
   loading: boolean;
@@ -88,7 +87,7 @@ export type IProjectCreateItem = {
   projectType?: string;
   contractAddress: string;
   owner: number;
-  extras?:string;
+  extras?: string;
 };
 
 export type IProjectUpdateItem = {

@@ -96,78 +96,18 @@ export default function TransactionListView() {
       }),
   });
 
-  // const router = useRouter();
-
-  // const denseHeight = table.dense ? 52 : 72;
-
-  // const searchParams = useSearchParams();
-  // const pathname = usePathname();
-
-  // const { push } = useRouter();
-
-  // const defaultFilters: ITransactionApiFilters = useMemo(
-  //   () => ({
-  //     perPage: table.rowsPerPage,
-  //     page: table.page + 1,
-  //     orderBy: table.orderBy,
-  //     order: table.order,
-  //   }),
-  //   [table.order, table.orderBy, table.page, table.rowsPerPage]
-  // );
-
-  // const [filters, setFilters] = useState(defaultFilters);
-
-  // const canReset = !isEqual(defaultFilters, filters);
-
   const notFound = !transactions.length || !transactions.length;
 
-  // const createQueryString = useCallback((params: Record<string, string | number | boolean>) => {
-  //   const queryParams = Object.entries(params)
-  //     .filter(([_, value]) => Boolean(value))
-  //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-  //     .join('&');
+  const claimAssigned = transactions.filter((t) => t.topic === 'ClaimAssigned');
+  const claimProcessed = transactions.filter((t) => t.topic === 'ClaimProcessed');
 
-  //   return queryParams === '' ? '' : `${queryParams}`;
-  // }, []);
-
-  // const handleFilters = useCallback(
-  //   (name: string, value: ITransactionTableFilterValue) => {
-  //     table.onResetPage();
-  //     setFilters((prevState) => ({
-  //       ...prevState,
-  //       [name]: value,
-  //     }));
-
-  //     const updatedParams = {
-  //       ...filters,
-  //       ...Object.fromEntries(searchParams.entries()),
-  //       [name]: value,
-  //     };
-  //     const queryString = createQueryString(updatedParams);
-  //     push(`${pathname}?${queryString}`);
-  //   },
-  //   [table, createQueryString, push, searchParams, filters, pathname]
-  // );
-
-  // const handleResetFilters = useCallback(() => {
-  //   setFilters(defaultFilters);
-  //   push(pathname);
-  // }, [push, defaultFilters, pathname]);
-
-  // const handleViewRow = useCallback(
-  //   (txHash: string) => {
-  //     router.push(paths.dashboard.general.transactions.details(txHash));
-  //   },
-  //   [router]
-  // );
-
-  // useEffect(() => {
-  //   const searchFilters: ITransactionApiFilters = {
-  //     ...defaultFilters,
-  //     ...Object.fromEntries(searchParams.entries()),
-  //   };
-  //   setFilters(searchFilters);
-  // }, [searchParams, table.order, table.orderBy, table.page, table.rowsPerPage, defaultFilters]);
+  const transactionReport = {
+    //TODO: the count should count the number of unique beneficiaries but for now we are counting the number of transactions
+    cashDistributed: claimAssigned.reduce((a, b) => +a + +b.amount, 0),
+    cashIssued: claimProcessed.reduce((a, b) => +a + +b.amount, 0),
+    distributedCount: claimProcessed.length,
+    issuedCount: claimAssigned.length,
+  };
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -180,16 +120,7 @@ export default function TransactionListView() {
       />
 
       <Stack mb={2}>
-        <TransactionsCards
-          data={
-            {
-              // bankedCash: 0,
-              // bankedToken: 0,
-              // unbankedCash: 0,
-              // unbankedToken: 0,
-            }
-          }
-        />
+        <TransactionsCards {...transactionReport} />
       </Stack>
 
       <Card>

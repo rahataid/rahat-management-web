@@ -14,12 +14,10 @@ import { useRouter } from 'src/routes/hook';
 // auth
 // components
 import { paths } from '@routes/paths';
-import { getUser } from '@utils/storage-available';
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useSnackbar } from 'src/components/snackbar';
 import useAuthStore from 'src/store/auths';
-import { IUserDetails } from 'src/types/user';
 
 // ----------------------------------------------------------------------
 
@@ -35,8 +33,7 @@ const OPTIONS = [
 export default function AccountPopover() {
   const router = useRouter();
 
-  const user: IUserDetails = getUser();
-  const logout = useAuthStore((state) => state.logout);
+  const { user, logout } = useAuthStore();
 
   // const { logout } = useAuthContext();
 
