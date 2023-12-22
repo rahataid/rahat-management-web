@@ -40,14 +40,15 @@ const TABLE_HEAD = [
   },
   {
     id: 'txHash',
+    width: '250px',
     label: 'TxHash',
   },
 
-  {
-    id: '',
-    width: '88px',
-    align: 'center',
-  },
+  // {
+  //   id: '',
+  //   width: '88px',
+  //   align: 'center',
+  // },
 ];
 
 // ----------------------------------------------------------------------

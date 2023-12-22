@@ -1,5 +1,6 @@
 import Iconify from '@components/iconify/iconify';
 import Scrollbar from '@components/scrollbar';
+import { TableNoData } from '@components/table';
 import {
   Chip,
   IconButton,
@@ -44,7 +45,7 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length &&
+            {data.length ? (
               data?.map((bodyCell: any, index: number) => (
                 <TableRow key={bodyCell.id}>
                   <TableCell>{bodyCell.phoneNumber}</TableCell>
@@ -70,7 +71,10 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableNoData notFound={!data?.length} />
+            )}
           </TableBody>
         </Table>
       </Scrollbar>
