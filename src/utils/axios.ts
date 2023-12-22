@@ -1,7 +1,7 @@
 import axios from 'axios';
 // config
 import { HOST_API } from '@config';
-import { getToken } from './storage-available';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
@@ -9,27 +9,47 @@ const axiosInstance = axios.create({
   baseURL: HOST_API,
 });
 
-// axiosInstance.interceptors.response.use(
-//   (res) => res,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       const token = await AuthService.refreshToken();
-//       if (token) {
-//         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-//         return axiosInstance(originalRequest);
-//       }
-//     }
-//     return Promise.reject((error.response && error.response.data) || 'Something went wrong');
-//   }
-// );
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const { tokens } = useAuthStore.getState();
+      console.log('tokens', tokens);
+      const response = await axiosInstance.post(
+        endpoints.auth.refreshToken,
+        {
+          refresh: tokens.refresh_token,
+        }
+        // {
+        //   headers: {
+        //     user: JSON.stringify(user),
+        //   },
+        // }
+      );
+      if (response.status === 201 && response.data) {
+        const newToken = response.data.access_token;
+        const { saveAccessToken } = useAuthStore.getState();
+        saveAccessToken(newToken);
+        // useAuthStore.setState((state) => {
+        //   state.tokens.access_token = newToken;
+        // });
+        // localStorage.setItem('accessToken', newToken); // Save the new token to local storage
+        axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`; // Set the new token in the retry request
+        return axiosInstance(originalRequest);
+      }
+    }
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  }
+);
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+    const { tokens } = useAuthStore.getState();
+    if (tokens.access_token) {
+      config.headers.Authorization = `Bearer ${tokens.access_token}`;
     }
     return config;
   },

@@ -15,7 +15,6 @@ export const useAppSettings = () => {
         AppSettingService.getContracts(),
         AppSettingService.getBlockchainSettings(),
       ]);
-
       return {
         contracts: contractsResponse.data?.value,
         blockchain: blockchainResponse.data?.value,

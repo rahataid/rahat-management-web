@@ -1,9 +1,10 @@
 import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
+import { localPersistStorage } from '@utils/state-storage';
 import { clearToken, removeUser, removeWalletName, setToken } from '@utils/storage-available';
+import { createStore } from '@utils/store-tools';
 import { AuthUserType } from 'src/auth/types';
 import { IUserRoles, Role } from 'src/types/user';
-import { create } from 'zustand';
 
 export type IApiResponseError = {
   group: string;
@@ -23,6 +24,10 @@ type AuthStateType = {
   isInitialized: boolean;
   error?: IApiResponseError | null;
   role: IUserRoles;
+  tokens: {
+    access_token: string;
+    refresh_token: string;
+  };
 };
 
 type AuthActionsType = {
@@ -30,6 +35,8 @@ type AuthActionsType = {
   loginWallet: (walletAddress: string) => Promise<void>;
   disconnectWallet: () => void;
   setUser: (user: AuthUserType) => void;
+  saveLogin: (data: { user: AuthUserType; access_token: string; refresh_token: string }) => void;
+  saveAccessToken: (access_token: string) => void;
   // register:()=>Promise<void>
 };
 
@@ -41,6 +48,10 @@ const initialState: AuthStateType = {
   walletName: undefined,
   isAuthenticated: false,
   isInitialized: false,
+  tokens: {
+    access_token: '',
+    refresh_token: '',
+  },
   role: {
     isAdmin: false,
     isUser: false,
@@ -51,76 +62,108 @@ const initialState: AuthStateType = {
   },
 };
 
-const useAuthStore = create<AuthStoreType>((set) => ({
-  ...initialState,
-  loginWallet: async (walletAddress: string) => {
-    try {
-      const user = await AuthService.loginWallet(walletAddress);
-      console.log(user.data);
-      if (user.data) {
+const useAuthStore = createStore<AuthStoreType>(
+  (set) => ({
+    ...initialState,
+    loginWallet: async (walletAddress: string) => {
+      try {
+        const user = await AuthService.loginWallet(walletAddress);
+        console.log(user.data);
+        if (user.data) {
+          set({
+            user: user.data,
+            loading: false,
+            isAuthenticated: true,
+            isInitialized: true,
+            error: null,
+          });
+        } else {
+          set({
+            user: null,
+            loading: false,
+            isAuthenticated: false,
+            isInitialized: true,
+            error: null,
+          });
+        }
+
+        setToken(user.data?.walletAddress);
+
+        // return user.data;
+      } catch (error) {
         set({
-          user: user.data,
-          loading: false,
-          isAuthenticated: true,
-          isInitialized: true,
-          error: null,
+          error,
         });
-      } else {
-        set({
-          user: null,
-          loading: false,
-          isAuthenticated: false,
-          isInitialized: true,
-          error: null,
-        });
+        console.log(error);
       }
-
-      setToken(user.data?.walletAddress);
-
-      // return user.data;
-    } catch (error) {
+    },
+    setUser(user: AuthUserType) {
       set({
-        error,
+        user,
+        loading: false,
+        isAuthenticated: true,
+        isInitialized: true,
+        error: null,
+        role: {
+          isAdmin: user?.roles.includes(Role.ADMIN),
+          isUser: user?.roles.includes(Role.USER),
+        },
       });
-      console.log(error);
-    }
-  },
-  setUser(user: AuthUserType) {
-    set({
-      user,
-      loading: false,
-      isAuthenticated: true,
-      isInitialized: true,
-      error: null,
-      role: {
-        isAdmin: user?.roles.includes(Role.ADMIN),
-        isUser: user?.roles.includes(Role.USER),
-      },
-    });
-  },
+    },
 
-  logout: async () => {
-    setSession(null);
-    removeUser();
-    clearToken();
-    set({
-      user: null,
-      loading: false,
-      isAuthenticated: false,
-      isInitialized: true,
-    });
-  },
-  disconnectWallet: () => {
-    setSession(null);
-    set({
-      user: null,
-      loading: false,
-      isAuthenticated: false,
-      isInitialized: true,
-    });
-    removeWalletName();
-    clearToken();
-  },
-}));
+    logout: async () => {
+      setSession(null);
+      removeUser();
+      clearToken();
+      set({
+        user: null,
+        loading: false,
+        isAuthenticated: false,
+        isInitialized: true,
+      });
+    },
+    disconnectWallet: () => {
+      setSession(null);
+      set({
+        user: null,
+        loading: false,
+        isAuthenticated: false,
+        isInitialized: true,
+      });
+      removeWalletName();
+      clearToken();
+    },
+    saveLogin: ({ user, access_token, refresh_token }) => {
+      set({
+        user,
+        tokens: { access_token, refresh_token },
+        loading: false,
+        isAuthenticated: true,
+        isInitialized: true,
+        error: null,
+      });
+    },
+    saveAccessToken: (access_token: string) => {
+      set({
+        tokens: { ...initialState.tokens, access_token },
+      });
+    },
+  }),
+  {
+    devtoolsEnabled: true,
+    persistOptions: {
+      name: 'auth',
+      partialize(state) {
+        return {
+          ...state,
+          loading: true,
+          isAuthenticated: false,
+          isInitialized: false,
+        };
+      },
+      storage: localPersistStorage,
+    },
+  }
+);
 
 export default useAuthStore;
