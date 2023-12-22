@@ -1,15 +1,12 @@
 // @mui
-import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
 import WalletAddressButton from '@components/wallet-address-button';
-import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -51,13 +48,13 @@ export default function TransactionTableRow({ row, selected, onViewRow }: Props)
         <WalletAddressButton address={txHash} type="txHash" />
       </TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      {/* <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }
