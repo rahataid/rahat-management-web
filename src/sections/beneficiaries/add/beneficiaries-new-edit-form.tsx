@@ -11,6 +11,7 @@ import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { generateWalletAddress } from '@web3/utils';
 import { useSnackbar } from 'notistack';
 import { memo, useCallback, useMemo } from 'react';
@@ -29,7 +30,6 @@ import {
   IBeneficiariesCreateItem,
   IBeneficiaryDetails,
 } from 'src/types/beneficiaries';
-import { CAMPAIGN_TYPES } from 'src/types/campaigns';
 import * as Yup from 'yup';
 
 interface FormValues extends IBeneficiariesCreateItem {}
@@ -103,7 +103,10 @@ const BeneficiariesForm: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: IBeneficiariesCreateItem) => {
-      const activateToChain = await activateBeneficiary(data.walletAddress);
+      // TODO:Interrupted chain actions temporarily disabled
+
+      const activateToChain = await interruptChainActions(activateBeneficiary, data.walletAddress);
+      // const activateToChain = await activateBeneficiary(data.walletAddress);
       if (activateToChain) mutate(data);
     },
     [activateBeneficiary, mutate]

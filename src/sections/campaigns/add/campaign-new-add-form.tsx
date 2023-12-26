@@ -27,6 +27,7 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import {
@@ -211,7 +212,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         audienceIds,
         details: mergedDetails,
       };
-      mutate(formatted as ICampaignCreateItem);
+      // TODO:Interrupted chain actions temporarily disabled
+      // mutate(formatted as ICampaignCreateItem);
+      interruptChainActions(mutate, formatted as ICampaignCreateItem);
+      // mutate(formatted as ICampaignCreateItem);
     },
     [audiences, mutate, selectedBeneficiaries, setValue]
   );

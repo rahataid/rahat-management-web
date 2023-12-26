@@ -7,6 +7,7 @@ import { paths } from '@routes/paths';
 import useProjectContract from '@services/contracts/useProject';
 import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useRahatToken } from '@services/contracts/useRahatToken';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useProject } from 'src/api/project';
@@ -165,7 +166,9 @@ export default function ProjectDetailsView() {
   ];
 
   const handleCreateToken = async (token: string) => {
-    const sent = await sendTokenToProject(token);
+    // const sent = await sendTokenToProject(token);
+    // TODO:Interrupted chain actions temporarily disabled
+    const sent = await interruptChainActions(sendTokenToProject, token);
     if (sent) {
       createTokenModal.onFalse();
     }
