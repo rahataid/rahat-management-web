@@ -10,6 +10,7 @@ import { useRahatToken } from '@services/contracts/useRahatToken';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
+import { useFlickr } from 'src/api/flickr';
 import { useProject } from 'src/api/project';
 import { useProjectBasedReport } from 'src/api/reports';
 import { useVendors } from 'src/api/vendors';
@@ -61,6 +62,11 @@ export default function ProjectDetailsView() {
   } = useProjectContract();
   const { sendTokenToProject, donorContractWS: DonorContractWS } = useRahatDonor();
   const { contractWS: RahatTokenWS } = useRahatToken();
+
+  const { flickr } = useFlickr({
+    per_page: 3,
+    page: 1,
+  });
 
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
@@ -209,9 +215,14 @@ export default function ProjectDetailsView() {
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
     useProjectBasedReport(params.address);
 
-  const carouselsExample = [...Array(1)].map((_, index) => ({
-    id: index,
-    coverUrl: `${project?.coverImage}`,
+  // const carouselsExample = [...Array(1)].map((_, index) => ({
+  //   id: index,
+  //   coverUrl: `${project?.coverImage}`,
+  // }));
+
+  const carouselsExample = flickr?.map((item) => ({
+    id: item.id,
+    coverUrl: item.coverUrl,
   }));
 
   return (
