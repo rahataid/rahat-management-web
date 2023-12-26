@@ -7,6 +7,7 @@ import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
 import useProjectContract from '@services/contracts/useProject';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useCallback, useEffect } from 'react';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useVendor } from 'src/api/vendors';
@@ -85,12 +86,19 @@ const VendorView = () => {
   }, [ProjectContractWS, handleVendorChainData]);
 
   const handleActivateVendor = async (walletAddress: string) => {
-    const activated = await activateVendor(walletAddress);
-    console.log('actiavat', activated);
+    // TODO:Interrupted chain actions temporarily disabled
+    interruptChainActions(activateVendor, walletAddress);
+
+    // activateVendor(walletAddress).then(() => {
+    handleVendorChainData();
+    // });
   };
 
   const handleTokenSend = async (walletAddress: string, tokenAmount: string) => {
-    await sendTokensToVendor(walletAddress, tokenAmount);
+    // TODO:Interrupted chain actions temporarily disabled
+
+    await interruptChainActions(sendTokensToVendor, walletAddress, tokenAmount);
+    // await sendTokensToVendor(walletAddress, tokenAmount);
     assignTokenDialog.onFalse();
   };
 
