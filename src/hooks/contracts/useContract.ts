@@ -1,6 +1,6 @@
 import { WebSocketProvider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { Contract, ContractRunner, InterfaceAbi, JsonRpcApiProvider } from 'ethers';
+import { Contract, ContractRunner, InterfaceAbi, JsonRpcProvider } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import useAppStore from 'src/store/app';
 
@@ -15,7 +15,7 @@ type UseContract = (contractName: string, options?: UseContractOptions) => UseCo
 
 const useContract: UseContract = (contractName, options = {}) => {
   const [contract, setContract] = useState<Contract | null>(null);
-  const { provider } = useWeb3React();
+  const { provider, isActive: isWalletActive } = useWeb3React();
   const { contracts, networks } = useAppStore((state) => ({
     contracts: state.contracts,
     networks: state.blockchain,
@@ -36,9 +36,9 @@ const useContract: UseContract = (contractName, options = {}) => {
       return new Contract(
         options?.contractAddress || contracts[contractName].address,
         contracts[contractName].abi,
-        provider
+        isWalletActive
           ? (provider?.getSigner() as unknown as ContractRunner)
-          : new JsonRpcApiProvider(networks?.rpcUrls[0] as string)
+          : new JsonRpcProvider(networks?.rpcUrls[0] as string)
       );
     }
     return null;
@@ -47,6 +47,7 @@ const useContract: UseContract = (contractName, options = {}) => {
     contractName,
     options?.isWebsocket,
     options?.contractAddress,
+    isWalletActive,
     provider,
     networks?.rpcUrls,
     networks?.chainWebSocket,
