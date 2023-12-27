@@ -221,6 +221,9 @@ const useChainTransactions = ({
             };
           })
         );
+        decodedLogsRef.current = decodedLogsRef.current.sort(
+          (a: Log, b: Log) => b.timestampInt - a.timestampInt
+        );
         setFetchedAndDecodedLogs(true);
       },
     }
