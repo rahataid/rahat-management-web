@@ -231,7 +231,7 @@ const useChainTransactions = ({
   }
 
   const summary: Summary = decodedLogsRef.current.reduce(
-    (acc, log) => {
+    (acc: any, log: any) => {
       const {
         totalEvents,
         totalAmounts,
