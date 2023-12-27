@@ -6,6 +6,7 @@ type Props = {
   cashIssued: number;
   issuedCount: number;
   distributedCount: number;
+  currency: string;
 };
 
 const TransactionsCards = ({
@@ -13,13 +14,14 @@ const TransactionsCards = ({
   cashIssued,
   distributedCount,
   issuedCount,
+  currency,
 }: Props) => (
   <Stack direction="row" spacing={2}>
     <SummaryCard
       color="success"
       icon="material-symbols:paid"
       title="Cash Issued"
-      total={'Rs.' + cashIssued}
+      total={currency + cashIssued}
       subtitle="To Banked Beneficiary"
     />
     <SummaryCard
@@ -33,7 +35,7 @@ const TransactionsCards = ({
       color="warning"
       icon="material-symbols:token"
       title="Distributed Beneficiaries"
-      total={'Rs.' + cashDistributed}
+      total={currency + cashDistributed}
       subtitle="To Banked Beneficiary"
     />
 

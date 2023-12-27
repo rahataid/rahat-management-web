@@ -56,7 +56,10 @@ const TABLE_HEAD = [
 export default function TransactionListView() {
   const table = useTable();
   const appContracts = useAppStore((state) => state.contracts);
-  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
+  const { rpcUrl, currency } = useAppStore((state) => ({
+    rpcUrl: state.blockchain?.rpcUrls[0],
+    currency: state.blockchain?.nativeCurrency?.symbol || 'Rs.',
+  }));
 
   const settings = useSettingsContext();
   const { beneficiaries } = useBeneficiaries();
@@ -96,8 +99,9 @@ export default function TransactionListView() {
         };
       }),
   });
+  console.log('transactions', transactions);
 
-  const notFound = !transactions.length || !transactions.length;
+  const notFound = !transactions?.length || !transactions.length;
 
   const claimAssigned = transactions.filter((t) => t.topic === 'ClaimAssigned');
   const claimProcessed = transactions.filter((t) => t.topic === 'ClaimProcessed');
@@ -108,6 +112,7 @@ export default function TransactionListView() {
     cashIssued: claimProcessed.reduce((a, b) => +a + +b.amount, 0),
     distributedCount: claimProcessed.length,
     issuedCount: claimAssigned.length,
+    currency,
   };
 
   return (
