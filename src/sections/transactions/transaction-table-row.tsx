@@ -3,7 +3,6 @@ import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // types
 // components
 import WalletAddressButton from '@components/wallet-address-button';
@@ -17,9 +16,7 @@ type Props = {
 };
 
 export default function TransactionTableRow({ row, selected, onViewRow }: Props) {
-  const { txHash, timestamp, topic, contractName, amount, beneficiary, vendor } = row;
-
-  const quickEdit = useBoolean();
+  const { txHash, timestamp, topic, contractName, amount, beneficiary } = row;
 
   return (
     <TableRow hover selected={selected}>

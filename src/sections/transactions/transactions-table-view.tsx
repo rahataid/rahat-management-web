@@ -16,6 +16,7 @@ import { Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import useAppStore from 'src/store/app';
 import TransactionsCards from './transaction-cards';
+import TransactionLoadingSkeleton from './transaction-skeleton';
 import TransactionTableRow from './transaction-table-row';
 
 // ----------------------------------------------------------------------
@@ -57,14 +58,18 @@ export default function TransactionListView() {
   const table = useTable();
   const appContracts = useAppStore((state) => state.contracts);
   const { rpcUrl, currency } = useAppStore((state) => ({
-    rpcUrl: state.blockchain?.rpcUrls[0],
+    rpcUrl: state.blockchain?.rpcUrls[0] as string,
     currency: state.blockchain?.nativeCurrency?.symbol || 'Rs.',
   }));
 
   const settings = useSettingsContext();
   const { beneficiaries } = useBeneficiaries();
 
-  const { data: transactions } = useChainTransactions({
+  const {
+    data: transactions,
+    isLoading,
+    summary,
+  } = useChainTransactions({
     action: 'getLogs',
     fromBlock: 0,
     toBlock: 'latest',
@@ -89,7 +94,7 @@ export default function TransactionListView() {
       },
     ],
     transform: (data) =>
-      data.map((d) => {
+      data?.map((d) => {
         const ben = beneficiaries.find(
           (b) => b?.walletAddress.toLowerCase() === d?.beneficiary?.toLowerCase()
         );
@@ -99,19 +104,13 @@ export default function TransactionListView() {
         };
       }),
   });
-  console.log('transactions', transactions);
-
   const notFound = !transactions?.length || !transactions.length;
 
-  const claimAssigned = transactions.filter((t) => t.topic === 'ClaimAssigned');
-  const claimProcessed = transactions.filter((t) => t.topic === 'ClaimProcessed');
-
-  //TODO: the count should count the number of unique beneficiaries but for now we are counting the number of transactions
   const transactionReport = {
-    cashDistributed: claimAssigned.reduce((a, b) => +a + +b.amount, 0),
-    cashIssued: claimProcessed.reduce((a, b) => +a + +b.amount, 0),
-    distributedCount: claimProcessed.length,
-    issuedCount: claimAssigned.length,
+    cashDistributed: summary?.totalAmountsByTopic?.ClaimProcessed || 0,
+    cashIssued: summary?.totalAmountsByTopic?.ClaimAssigned || 0,
+    distributedCount: summary?.totalCountByTopics.ClaimProcessed || 0,
+    issuedCount: summary?.totalCountByTopics?.ClaimAssigned || 0,
     currency,
   };
 
@@ -124,6 +123,11 @@ export default function TransactionListView() {
           mb: { xs: 3, md: 5 },
         }}
       />
+      {isLoading && (
+        <Stack mb={2}>
+          <TransactionLoadingSkeleton />;
+        </Stack>
+      )}
 
       <Stack mb={2}>
         <TransactionsCards {...transactionReport} />

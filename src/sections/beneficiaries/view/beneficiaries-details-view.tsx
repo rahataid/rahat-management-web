@@ -38,7 +38,7 @@ function BeneficiariesDetailsView() {
 
   const { vendors } = useVendors();
 
-  const { data: transactions } = useChainTransactions({
+  const { data: transactions, summary } = useChainTransactions({
     action: 'getLogs',
     fromBlock: 0,
     toBlock: 'latest',
@@ -87,8 +87,6 @@ function BeneficiariesDetailsView() {
     handleChainData();
   }, [handleChainData, beneficiary.walletAddress]);
 
-  console.log('transactions', transactions);
-
   // useEffect(() => {
   //   ProjectContractWS?.on('BeneficiaryAdded', handleChainData);
   //   ProjectContractWS?.on('BeneficiaryRemoved', handleChainData);
@@ -129,9 +127,7 @@ function BeneficiariesDetailsView() {
             claimed={
               chainData.claimed
                 ? chainData.claimed
-                : transactions
-                    .filter((item) => item.topic === 'ClaimProcessed')
-                    .reduce((acc, item) => acc + +item?.amount, 0)
+                : summary?.totalAmountsByTopic?.ClaimProcessed || 0
             }
             // claimed={chainData.claimed}
           />

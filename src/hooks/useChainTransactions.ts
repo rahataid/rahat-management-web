@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
 import { Contract, InterfaceAbi, JsonRpcProvider } from 'ethers';
+import { useMemo, useRef, useState } from 'react';
 
 export function fDateTime(date: string | number | Date, newFormat?: string): string {
-  const d = new Date(date);
+  const d = new Date(typeof date === 'number' ? date * 1000 : date);
 
   const dd = String(d.getDate()).padStart(2, '0');
   const mm = String(d.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -12,11 +13,18 @@ export function fDateTime(date: string | number | Date, newFormat?: string): str
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
 
-  const formattedDate = `${dd} ${mm} ${yyyy} ${hours}:${minutes}`;
+  const formattedDate =
+    (newFormat &&
+      newFormat
+        .replace('dd', dd)
+        .replace('mm', mm)
+        .replace('yyyy', yyyy)
+        .replace('HH', hours)
+        .replace('mm', minutes)) ||
+    `${dd} ${mm} ${yyyy} ${hours}:${minutes}`;
 
   return formattedDate;
 }
-
 interface Event {
   contractName: string;
   topic0s: string[];
@@ -71,6 +79,15 @@ interface RpcParams {
   toBlock: string | number | 'latest';
 }
 
+interface Summary {
+  totalEvents: Record<string, number>;
+  totalAmounts: Record<string, number>;
+  totalTransactions: Record<string, number>;
+  topics: Record<string, string[]>;
+  totalCountByTopics: Record<string, number>;
+  totalAmountsByTopic: Record<string, number>;
+}
+
 const apikey = '9DAUQ6ZJQNSY2WHYGTUC6B7Z8WSKCCTF6S';
 
 const fetchArbiscanAPI = async (params: Params): Promise<Log[]> => {
@@ -90,7 +107,9 @@ const useChainTransactions = ({
   transform: transformResponse,
   ...params
 }: Params) => {
-  const provider = new JsonRpcProvider(params?.rpcUrl);
+  const decodedLogsRef = useRef<any>([]);
+  const provider = useMemo(() => new JsonRpcProvider(params?.rpcUrl), [params?.rpcUrl]);
+  const [fetchedAndDecodedLogs, setFetchedAndDecodedLogs] = useState<boolean>(false);
 
   const handleTransactionSources = {
     rpcCall: async (rpcParam: RpcParams) => {
@@ -105,7 +124,7 @@ const useChainTransactions = ({
     subgraph: fetchArbiscanAPI,
   };
 
-  const { data, isLoading, error } = useQuery<
+  const { isLoading, error } = useQuery<
     { event: string; topic0s: { [key: string]: Data[] } }[],
     Error
   >(
@@ -153,59 +172,123 @@ const useChainTransactions = ({
       return results;
     },
     {
-      enabled: !!appContracts,
+      enabled:
+        !!appContracts || !!events || decodedLogsRef.current.length === 0 || !fetchedAndDecodedLogs,
       // refetchInterval: 20000,
-      refetchOnWindowFocus: true,
+      // refetchOnWindowFocus: true,
+      async onSuccess(res) {
+        const formattedData =
+          events
+            .map((event, index) => {
+              const logData = res?.[index];
+              return events[index].topic0s.map((topic) =>
+                logData?.topic0s?.[topic]
+                  ? logData?.topic0s?.[topic]?.map((log: Log) => {
+                      const contract = new Contract(
+                        appContracts?.[event.contractName].address,
+                        appContracts?.[event.contractName].abi,
+                        provider
+                      );
+                      const interfaceData =
+                        contract.interface
+                          .decodeEventLog(topic, log?.data, log?.topics)
+                          ?.toObject() || {};
+                      return {
+                        topic,
+                        blockNumber: log?.blockNumber,
+                        txHash: log?.transactionHash,
+                        gasUsed: log?.gasUsed,
+                        gasPrice: log?.gasPrice,
+                        contractName: event?.contractName,
+                        // timestampHash: log?.timeStamp,
+                        // timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : '-',
+                        ...interfaceData,
+                      };
+                    })
+                  : []
+              );
+            })
+            .flat(2)
+            .map((log: Log) => ({ ...log, amount: log?.amount?.toString() || '0' })) || [];
+        decodedLogsRef.current = await Promise.all(
+          formattedData.map(async (log: Log) => {
+            const block = await provider.getBlock(log?.blockNumber);
+            return {
+              ...log,
+              ...block?.toJSON(),
+              timestamp: fDateTime(block?.timestamp ?? 0 * 1000, 'dd/mm/yyyy HH:mm'),
+              timestampInt: block?.timestamp,
+            };
+          })
+        );
+        setFetchedAndDecodedLogs(true);
+      },
     }
   );
 
-  let decodedLogs: Log[] =
-    (data?.[0] &&
-      events
-        .map((event, index) => {
-          const logData = data?.[index];
-          return events[index].topic0s.map((topic) =>
-            logData?.topic0s?.[topic]
-              ? logData?.topic0s?.[topic]?.map((log: Log) => {
-                  const contract = new Contract(
-                    appContracts?.[event.contractName].address,
-                    appContracts?.[event.contractName].abi,
-                    provider
-                  );
-                  const interfaceData =
-                    contract.interface.decodeEventLog(topic, log?.data, log?.topics)?.toObject() ||
-                    {};
-                  return {
-                    topic,
-                    blockNumber: log?.blockNumber,
-                    txHash: log?.transactionHash,
-                    gasUsed: log?.gasUsed,
-                    gasPrice: log?.gasPrice,
-                    contractName: event?.contractName,
-                    timestampHash: log?.timeStamp,
-                    timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : 'N/A',
-                    ...interfaceData,
-                  };
-                })
-              : []
-          );
-        })
-        .flat(2)
-        .map((log: Log) => ({ ...log, amount: log?.amount?.toString() || 'N/A' }))
-        ?.sort((a, b) => {
-          const aDate = new Date(a?.timestampHash * 1000);
-          const bDate = new Date(b?.timestampHash * 1000);
-          return bDate.getTime() - aDate.getTime();
-        })) ||
-    [];
-
   if (transformResponse) {
-    decodedLogs = transformResponse(decodedLogs);
+    decodedLogsRef.current = transformResponse(decodedLogsRef.current);
   }
+
+  const summary: Summary = decodedLogsRef.current.reduce(
+    (acc, log) => {
+      const {
+        totalEvents,
+        totalAmounts,
+        totalTransactions,
+        topics,
+        totalCountByTopics,
+        totalAmountsByTopic,
+      } = acc;
+      const eventName = log.contractName;
+      const topicName = log.topic;
+
+      // Increment the total number of events
+      totalEvents[eventName] = (totalEvents[eventName] || 0) + 1;
+
+      // Increment the total amount for the event
+      totalAmounts[eventName] = (totalAmounts[eventName] || 0) + Number(log.amount);
+
+      // Increment the total number of transactions for the event
+      totalTransactions[eventName] = (totalTransactions[eventName] || 0) + 1;
+
+      // Add the topic to the list of topics for the event
+      topics[eventName] = topics[eventName] || [];
+      if (!topics[eventName].includes(topicName)) {
+        topics[eventName].push(topicName);
+      }
+
+      // Increment the total number of occurrences of the topic
+      totalCountByTopics[topicName] = (totalCountByTopics[topicName] || 0) + 1;
+
+      // Increment the total amount for the topic
+      totalAmountsByTopic[topicName] = (totalAmountsByTopic[topicName] || 0) + Number(log.amount);
+
+      return {
+        totalEvents,
+        totalAmounts,
+        totalTransactions,
+        topics,
+        totalCountByTopics,
+        totalAmountsByTopic,
+      };
+    },
+    {
+      totalEvents: {},
+      totalAmounts: {},
+      totalTransactions: {},
+      topics: {},
+      totalCountByTopics: {},
+      totalAmountsByTopic: {},
+    }
+  );
+
   return {
-    data: decodedLogs,
+    data: decodedLogsRef.current || [],
+    summary,
     isLoading,
     error,
   };
 };
+
 export default useChainTransactions;
