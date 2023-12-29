@@ -61,6 +61,7 @@ interface Log {
   contractName: string;
   timestampHash: string;
   timestamp: string;
+  timestampInt: number;
   amount?: string;
 }
 
@@ -222,7 +223,7 @@ const useChainTransactions = ({
           })
         );
         decodedLogsRef.current = decodedLogsRef.current.sort(
-          (a: Log, b: Log) => b.timestampInt - a.timestampInt
+          (a: Log, b: Log) => b?.timestampInt - a?.timestampInt
         );
         setFetchedAndDecodedLogs(true);
       },

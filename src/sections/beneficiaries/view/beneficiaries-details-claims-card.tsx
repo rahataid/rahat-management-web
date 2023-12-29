@@ -9,6 +9,7 @@ import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
@@ -59,9 +60,9 @@ export default function BeneficiariesDetailsCard({
     const project = projects?.find((p) => p.id === Number(data.projectId));
 
     if (project?.extras === 'isNotBlockchain') {
-      await mutateAsync(data);
+      await interruptChainActions(mutateAsync, data);
     } else {
-      const added = await addBeneficiaryToProject(walletAddress);
+      const added = await interruptChainActions(addBeneficiaryToProject, walletAddress);
 
       if (added) {
         await mutateAsync(data);
