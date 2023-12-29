@@ -32,6 +32,7 @@ import ProgressBar from 'src/components/progress-bar';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // auth
+import WrongNetworkSwitcher from '@layouts/wrong-network-switcher';
 import Web3Provider from '@web3/components/Provider';
 import AuthProvider from 'src/app/auth-provider';
 import { LocalizationProvider } from 'src/locales';
@@ -98,6 +99,7 @@ export default function RootLayout({ children }: Props) {
                       <SnackbarProvider>
                         <SettingsDrawer />
                         <ProgressBar />
+                        <WrongNetworkSwitcher />
                         {children}
                       </SnackbarProvider>
                     </MotionLazy>
