@@ -45,6 +45,8 @@ export default function ProjectDetailsView() {
   const lockProjectModal = useBoolean();
   const unlockProjectModal = useBoolean();
   const [isCreatingToken, setIsCreatingToken] = useState(false);
+  const [isUnLockingProject, setIsUnLockingProject] = useState(false);
+  const [isLockingProject, setIsLockingProject] = useState(false);
 
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
@@ -189,12 +191,26 @@ export default function ProjectDetailsView() {
   };
 
   const handleLockProject = async () => {
-    const locked = await lockProject(project.contractAddress);
-    if (locked) lockProjectModal.onFalse();
+    setIsLockingProject(true);
+    try {
+      const locked = await lockProject(project.contractAddress);
+      if (locked) lockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLockingProject(false);
+    }
   };
   const handleUnlockProject = async () => {
-    const unlocked = await unLockProject(project.contractAddress);
-    if (unlocked) unlockProjectModal.onFalse();
+    setIsUnLockingProject(true);
+    try {
+      const unlocked = await unLockProject(project.contractAddress);
+      if (unlocked) unlockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsUnLockingProject(false);
+    }
   };
 
   const handleTokenAccept = async () => {
@@ -209,6 +225,7 @@ export default function ProjectDetailsView() {
     open: lockProjectModal.value,
     onClose: lockProjectModal.onFalse,
     onOk: handleLockProject,
+    loading: isLockingProject,
   };
 
   const unlockProjectProp = {
@@ -218,6 +235,7 @@ export default function ProjectDetailsView() {
     open: unlockProjectModal.value,
     onClose: unlockProjectModal.onFalse,
     onOk: handleUnlockProject,
+    loading: isUnLockingProject,
   };
 
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
