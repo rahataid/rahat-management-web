@@ -13,7 +13,7 @@ const ProjectStatsCard = ({
   balance = 0,
   tokenName = '',
   totalBeneficiaries,
-  distributedTokens,
+  distributedTokens = 0,
   onCreateToken,
 }: Props) => (
   <Grid container spacing={3}>
@@ -56,7 +56,7 @@ const ProjectStatsCard = ({
             color="warning"
             icon="material-symbols:token"
             title="Distributed"
-            total={distributedTokens || '-'}
+            total={distributedTokens}
             subtitle={tokenName}
           />
         </Grid>

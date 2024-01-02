@@ -214,8 +214,8 @@ export default function ProjectDetailsView() {
   };
 
   const handleTokenAccept = async () => {
-    if (!chainData?.balance) throw new Error('Token Allowance should not be empty');
-    const accpeted = await acceptToken(chainData?.balance?.toString() || '');
+    if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
+    await acceptToken(chainData?.tokenAllowance?.toString() || '');
   };
 
   const lockProjectProp = {

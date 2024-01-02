@@ -37,6 +37,7 @@ type AuthActionsType = {
   setUser: (user: AuthUserType) => void;
   saveLogin: (data: { user: AuthUserType; access_token: string; refresh_token: string }) => void;
   saveAccessToken: (access_token: string) => void;
+  setState: (state: Partial<AuthStateType>) => void;
   // register:()=>Promise<void>
 };
 
@@ -152,12 +153,14 @@ const useAuthStore = createStore<AuthStoreType>(
         tokens: { ...initialState.tokens, access_token },
       });
     },
+    setState: (state) => {
+      set(state);
+    },
   }),
   {
     devtoolsEnabled: true,
     persistOptions: {
       name: 'auth',
-    
       storage: localPersistStorage,
     },
   }
