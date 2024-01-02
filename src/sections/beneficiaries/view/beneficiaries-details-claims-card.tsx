@@ -42,6 +42,7 @@ export default function BeneficiariesDetailsCard({
   const { assignClaimsToBeneficiaries, addBeneficiaryToProject } = useProjectContract();
   const disableBeneficiary = useDisableBeneficiaries();
   const router = useRouter();
+  const [isAssigningToken, setIsAssigningToken] = useState(false);
 
   const { mutateAsync } = useMutation<IAssignProjectDetails, RSErrorData, IAssignProjectItem>({
     mutationFn: async (updateData: IAssignProjectItem) => {
@@ -72,9 +73,15 @@ export default function BeneficiariesDetailsCard({
   };
 
   const handleBeneficiaryTokenAssign = async (token: string) => {
-    const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
-    if (assigned) assignTokenDialog.onFalse();
-    // }
+    setIsAssigningToken(true);
+    try {
+      const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
+      if (assigned) assignTokenDialog.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsAssigningToken(false);
+    }
   };
   const handleBeneficiaryDelete = () => {
     disableBeneficiary.mutate(walletAddress);
@@ -101,6 +108,7 @@ export default function BeneficiariesDetailsCard({
         onClose={assignTokenDialog.onFalse}
         open={assignTokenDialog.value}
         onOk={handleBeneficiaryTokenAssign}
+        loading={isAssigningToken}
       />
 
       <CardContent>
