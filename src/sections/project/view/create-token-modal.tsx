@@ -14,9 +14,10 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onOk: (v: any) => void;
+  loading: boolean;
 };
 
-const CreateTokenModal = ({ open, onClose, onOk }: Props) => {
+const CreateTokenModal = ({ open, onClose, onOk, loading }: Props) => {
   const [token, setToken] = useState('');
   return (
     <Dialog open={open} onClose={onClose}>
@@ -39,7 +40,7 @@ const CreateTokenModal = ({ open, onClose, onOk }: Props) => {
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <LoadingButton onClick={() => onOk(token)} type="submit" autoFocus>
+        <LoadingButton onClick={() => onOk(token)} type="submit" autoFocus loading={loading}>
           Create
         </LoadingButton>
       </DialogActions>

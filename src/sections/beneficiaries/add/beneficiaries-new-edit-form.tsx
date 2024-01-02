@@ -58,14 +58,14 @@ const BeneficiariesForm: React.FC = () => {
       push(`${paths.dashboard.general.beneficiaries.list}/${data?.uuid}`);
     },
   });
-
+  
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phone: Yup.string().nullable().optional(),
-    gender: Yup.mixed<GENDER>().nullable().optional(),
-    phoneOwnership: Yup.string().nullable().optional(),
-    bankStatus: Yup.string().nullable().optional(),
-    internetAccess: Yup.string().nullable().optional(),
+    gender: Yup.mixed<GENDER>().required('Select your gender'),
+    phoneOwnership: Yup.string().required('Select your phone type'),
+    bankStatus: Yup.string().required('Select your bank status'),
+    internetAccess: Yup.string().required('Select your internet type'),
     dob: Yup.date().nullable().optional(),
     walletAddress: Yup.string().nullable().required('Wallet address is required'),
     longitude: Yup.number().nullable().optional(),

@@ -9,7 +9,7 @@ import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useRahatToken } from '@services/contracts/useRahatToken';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFlickr } from 'src/api/flickr';
 import { useProject } from 'src/api/project';
 import { useProjectBasedReport } from 'src/api/reports';
@@ -44,6 +44,9 @@ export default function ProjectDetailsView() {
   const createTokenModal = useBoolean();
   const lockProjectModal = useBoolean();
   const unlockProjectModal = useBoolean();
+  const [isCreatingToken, setIsCreatingToken] = useState(false);
+  const [isUnLockingProject, setIsUnLockingProject] = useState(false);
+  const [isLockingProject, setIsLockingProject] = useState(false);
 
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
@@ -174,19 +177,40 @@ export default function ProjectDetailsView() {
   const handleCreateToken = async (token: string) => {
     // const sent = await sendTokenToProject(token);
     // TODO:Interrupted chain actions temporarily disabled
-    const sent = await interruptChainActions(sendTokenToProject, token);
-    if (sent) {
-      createTokenModal.onFalse();
+    setIsCreatingToken(true);
+    try {
+      const sent = await interruptChainActions(sendTokenToProject, token);
+      if (sent) {
+        createTokenModal.onFalse();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsCreatingToken(false);
     }
   };
 
   const handleLockProject = async () => {
-    const locked = await lockProject(project.contractAddress);
-    if (locked) lockProjectModal.onFalse();
+    setIsLockingProject(true);
+    try {
+      const locked = await lockProject(project.contractAddress);
+      if (locked) lockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLockingProject(false);
+    }
   };
   const handleUnlockProject = async () => {
-    const unlocked = await unLockProject(project.contractAddress);
-    if (unlocked) unlockProjectModal.onFalse();
+    setIsUnLockingProject(true);
+    try {
+      const unlocked = await unLockProject(project.contractAddress);
+      if (unlocked) unlockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsUnLockingProject(false);
+    }
   };
 
   const handleTokenAccept = async () => {
@@ -201,6 +225,7 @@ export default function ProjectDetailsView() {
     open: lockProjectModal.value,
     onClose: lockProjectModal.onFalse,
     onOk: handleLockProject,
+    loading: isLockingProject,
   };
 
   const unlockProjectProp = {
@@ -210,6 +235,7 @@ export default function ProjectDetailsView() {
     open: unlockProjectModal.value,
     onClose: unlockProjectModal.onFalse,
     onOk: handleUnlockProject,
+    loading: isUnLockingProject,
   };
 
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
@@ -231,6 +257,7 @@ export default function ProjectDetailsView() {
         open={createTokenModal.value}
         onClose={createTokenModal.onFalse}
         onOk={handleCreateToken}
+        loading={isCreatingToken}
       />
       <LockUnlockModal {...(!chainData.isLocked ? lockProjectProp : unlockProjectProp)} />
       <Grid container spacing={2}>
