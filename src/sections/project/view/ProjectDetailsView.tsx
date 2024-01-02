@@ -9,7 +9,7 @@ import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useRahatToken } from '@services/contracts/useRahatToken';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFlickr } from 'src/api/flickr';
 import { useProject } from 'src/api/project';
 import { useProjectBasedReport } from 'src/api/reports';
@@ -44,6 +44,7 @@ export default function ProjectDetailsView() {
   const createTokenModal = useBoolean();
   const lockProjectModal = useBoolean();
   const unlockProjectModal = useBoolean();
+  const [isCreatingToken, setIsCreatingToken] = useState(false);
 
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
@@ -174,9 +175,16 @@ export default function ProjectDetailsView() {
   const handleCreateToken = async (token: string) => {
     // const sent = await sendTokenToProject(token);
     // TODO:Interrupted chain actions temporarily disabled
-    const sent = await interruptChainActions(sendTokenToProject, token);
-    if (sent) {
-      createTokenModal.onFalse();
+    setIsCreatingToken(true);
+    try {
+      const sent = await interruptChainActions(sendTokenToProject, token);
+      if (sent) {
+        createTokenModal.onFalse();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsCreatingToken(false);
     }
   };
 
@@ -231,6 +239,7 @@ export default function ProjectDetailsView() {
         open={createTokenModal.value}
         onClose={createTokenModal.onFalse}
         onOk={handleCreateToken}
+        loading={isCreatingToken}
       />
       <LockUnlockModal {...(!chainData.isLocked ? lockProjectProp : unlockProjectProp)} />
       <Grid container spacing={2}>
