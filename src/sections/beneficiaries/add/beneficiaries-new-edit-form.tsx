@@ -14,7 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { generateWalletAddress } from '@web3/utils';
 import { useSnackbar } from 'notistack';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   bankStatusOptions,
@@ -38,6 +38,7 @@ const BeneficiariesForm: React.FC = () => {
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { activateBeneficiary } = useProjectContract();
+  const [isActivatingToChain, setIsActivatingToChain] = useState(false);
 
   const { error, isLoading, mutate } = useMutation<
     IBeneficiaryDetails,
@@ -58,7 +59,7 @@ const BeneficiariesForm: React.FC = () => {
       push(`${paths.dashboard.general.beneficiaries.list}/${data?.uuid}`);
     },
   });
-  
+
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phone: Yup.string().nullable().optional(),
@@ -103,11 +104,21 @@ const BeneficiariesForm: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: IBeneficiariesCreateItem) => {
-      // TODO:Interrupted chain actions temporarily disabled
+      setIsActivatingToChain(true);
+      try {
+        // TODO:Interrupted chain actions temporarily disabled
 
-      const activateToChain = await interruptChainActions(activateBeneficiary, data.walletAddress);
-      // const activateToChain = await activateBeneficiary(data.walletAddress);
-      if (activateToChain) mutate(data);
+        const activateToChain = await interruptChainActions(
+          activateBeneficiary,
+          data.walletAddress
+        );
+        // const activateToChain = await activateBeneficiary(data.walletAddress);
+        if (activateToChain) mutate(data);
+      } catch (error) {
+        console.error('Error', error);
+      } finally {
+        setIsActivatingToChain(false);
+      }
     },
     [activateBeneficiary, mutate]
   );
@@ -233,7 +244,12 @@ const BeneficiariesForm: React.FC = () => {
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+              <LoadingButton
+                type="submit"
+                variant="outlined"
+                color="success"
+                loading={isActivatingToChain || isLoading}
+              >
                 Create Beneficiary
               </LoadingButton>
             </Stack>
