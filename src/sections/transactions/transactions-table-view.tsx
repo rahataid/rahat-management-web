@@ -12,7 +12,7 @@ import { TableHeadCustom, TableNoData, useTable } from 'src/components/table';
 import Scrollbar from '@components/scrollbar';
 import { CONTRACTS } from '@config';
 import useChainTransactions from '@hooks/useChainTransactions';
-import { Stack, Table, TableBody, TableContainer } from '@mui/material';
+import { Alert, Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import useAppStore from 'src/store/app';
 import TransactionsCards from './transaction-cards';
@@ -69,29 +69,31 @@ export default function TransactionListView() {
     data: transactions,
     isLoading,
     summary,
+    error,
   } = useChainTransactions({
     action: 'getLogs',
-    fromBlock: 0,
+    fromBlock: 3938394,
     toBlock: 'latest',
     module: 'logs',
     appContracts,
-    source: 'rpcCall',
+    source: 'explorer',
+    // source: 'rpcCall',
     rpcUrl,
     events: [
       {
         contractName: CONTRACTS.CVAPROJECT,
         topic0s: [
-          'TokenTransfer',
+          // 'TokenTransfer',
           'ClaimAssigned',
           'ClaimProcessed',
-          'VendorAllowance',
-          'VendorAllowanceAccept',
+          // 'VendorAllowance',
+          // 'VendorAllowanceAccept',
         ],
       },
-      {
-        contractName: CONTRACTS.DONOR,
-        topic0s: ['TokenMintedAndApproved'],
-      },
+      // {
+      //   contractName: CONTRACTS.DONOR,
+      //   topic0s: ['TokenMintedAndApproved'],
+      // },
     ],
     transform: (data) =>
       data?.map((d) => {
@@ -126,6 +128,12 @@ export default function TransactionListView() {
       {isLoading && (
         <Stack mb={2}>
           <TransactionLoadingSkeleton />;
+        </Stack>
+      )}
+
+      {error?.message && (
+        <Stack mb={2}>
+          <Alert severity="error">{error.message}</Alert>
         </Stack>
       )}
 

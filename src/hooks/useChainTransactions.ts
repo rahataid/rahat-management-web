@@ -47,6 +47,8 @@ interface Params {
   source: 'rpcCall' | 'explorer' | 'subgraph';
   rpcUrl: string;
   appContracts?: Record<string, AppContract>;
+  contract?: Contract;
+  topic0Name?: string;
 }
 
 interface Log {
@@ -91,15 +93,15 @@ interface Summary {
 
 const apikey = '9DAUQ6ZJQNSY2WHYGTUC6B7Z8WSKCCTF6S';
 
-const fetchArbiscanAPI = async (params: Params): Promise<Log[]> => {
-  const response: AxiosResponse<Data> = await axios.get('https://api-goerli.arbiscan.io/api', {
+const fetchArbiscanAPI = async ({ contract, topic0Name, ...params }: Params): Promise<Log[]> => {
+  const response: AxiosResponse<Data> = await axios.get('https://api-sepolia.arbiscan.io/api', {
     params: {
       ...params,
       apikey,
     },
   });
 
-  return response.data?.result;
+  return response.data ? response.data.result : [];
 };
 
 const useChainTransactions = ({
@@ -177,6 +179,9 @@ const useChainTransactions = ({
         !!appContracts || !!events || decodedLogsRef.current.length === 0 || !fetchedAndDecodedLogs,
       // refetchInterval: 20000,
       // refetchOnWindowFocus: true,
+      onError: (err) => {
+        console.log('Error Occured \n Source: Transactions :=>', err);
+      },
       async onSuccess(res) {
         const formattedData =
           events
@@ -201,6 +206,10 @@ const useChainTransactions = ({
                         gasUsed: log?.gasUsed,
                         gasPrice: log?.gasPrice,
                         contractName: event?.contractName,
+                        timeStampHash: log?.timeStamp,
+                        timeStamp: log?.timeStamp
+                          ? fDateTime(new Date(log?.timeStamp * 1000))
+                          : '-',
                         // timestampHash: log?.timeStamp,
                         // timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : '-',
                         ...interfaceData,
@@ -223,8 +232,9 @@ const useChainTransactions = ({
           })
         );
         decodedLogsRef.current = decodedLogsRef.current.sort(
-          (a: Log, b: Log) => b?.timestampInt - a?.timestampInt
+          (a: Log, b: Log) => (b.timestampInt || 0) - (a.timestampInt || 0)
         );
+
         setFetchedAndDecodedLogs(true);
       },
     }
