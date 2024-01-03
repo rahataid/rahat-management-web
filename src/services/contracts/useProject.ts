@@ -127,6 +127,16 @@ const useProjectContract = (): ProjectContract => {
     [communityContract, handleContractError]
   );
 
+  const sendAllowanceToVendor = useCallback(
+    async (vendorAddress: string, amount: string): Promise<void> => {
+      if (!projectContract) {
+        return;
+      }
+      await projectContract.sendAllowanceToVendor(vendorAddress, amount).catch(handleContractError);
+    },
+    [projectContract, handleContractError]
+  );
+
   const sendTokensToVendor = useCallback(
     async (vendorAddress: string, amount: string): Promise<void> => {
       if (!projectContract) {
@@ -310,6 +320,7 @@ const useProjectContract = (): ProjectContract => {
       getVendorAllowance,
       checkActiveVendor,
       activateVendor,
+      sendAllowanceToVendor,
       sendTokensToVendor,
       pendingVendorAllowance,
       acceptTokensByVendors,
@@ -343,6 +354,7 @@ const useProjectContract = (): ProjectContract => {
       getVendorAllowance,
       checkActiveVendor,
       activateVendor,
+      sendAllowanceToVendor,
       sendTokensToVendor,
       pendingVendorAllowance,
       acceptTokensByVendors,

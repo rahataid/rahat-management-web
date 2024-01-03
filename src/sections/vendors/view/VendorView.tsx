@@ -27,7 +27,7 @@ const VendorView = () => {
   const {
     getVendorChainData,
     activateVendor,
-    sendTokensToVendor,
+    sendAllowanceToVendor,
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
   const appContracts = useAppStore((state) => state.contracts);
@@ -108,7 +108,7 @@ const VendorView = () => {
     try {
       // TODO:Interrupted chain actions temporarily disabled
 
-      await interruptChainActions(sendTokensToVendor, walletAddress, tokenAmount);
+      await interruptChainActions(sendAllowanceToVendor, walletAddress, tokenAmount);
       // await sendTokensToVendor(walletAddress, tokenAmount);
       assignTokenDialog.onFalse();
     } catch (error) {
