@@ -15,9 +15,10 @@ type Props = {
   onClose: () => void;
   onOk: (walletAddress: string, token: string) => void;
   walletAddress: string;
+  isSendingToken: boolean;
 };
 
-const SendTokenModal = ({ open, onClose, onOk, walletAddress }: Props) => {
+const SendTokenModal = ({ open, onClose, onOk, walletAddress, isSendingToken }: Props) => {
   const [token, setToken] = useState('');
   return (
     <Dialog open={open} onClose={onClose}>
@@ -38,7 +39,13 @@ const SendTokenModal = ({ open, onClose, onOk, walletAddress }: Props) => {
         <Button variant="text" color="success" onClick={onClose}>
           Cancel
         </Button>
-        <LoadingButton onClick={() => onOk(walletAddress, token)} type="submit" autoFocus>
+        <LoadingButton
+          onClick={() => onOk(walletAddress, token)}
+          type="submit"
+          autoFocus
+          loading={isSendingToken}
+          disabled={isSendingToken}
+        >
           Send
         </LoadingButton>
       </DialogActions>

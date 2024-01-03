@@ -8,7 +8,7 @@ import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
 import useProjectContract from '@services/contracts/useProject';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
@@ -32,6 +32,8 @@ const VendorView = () => {
   } = useProjectContract();
   const appContracts = useAppStore((state) => state.contracts);
   const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
+  const [isSendingToken, setIsSendingToken] = useState(false);
+  const [isActivatingVendor, setIsActivatingVendor] = useState(false);
 
   const { data: transactions } = useChainTransactions({
     action: 'getLogs',
@@ -86,20 +88,34 @@ const VendorView = () => {
   }, [ProjectContractWS, handleVendorChainData]);
 
   const handleActivateVendor = async (walletAddress: string) => {
-    // TODO:Interrupted chain actions temporarily disabled
-    interruptChainActions(activateVendor, walletAddress);
+    setIsActivatingVendor(true);
+    try {
+      // TODO:Interrupted chain actions temporarily disabled
+      interruptChainActions(activateVendor, walletAddress);
 
-    // activateVendor(walletAddress).then(() => {
-    handleVendorChainData();
-    // });
+      // activateVendor(walletAddress).then(() => {
+      handleVendorChainData();
+      // });
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsActivatingVendor(false);
+    }
   };
 
   const handleTokenSend = async (walletAddress: string, tokenAmount: string) => {
-    // TODO:Interrupted chain actions temporarily disabled
+    setIsSendingToken(true);
+    try {
+      // TODO:Interrupted chain actions temporarily disabled
 
-    await interruptChainActions(sendTokensToVendor, walletAddress, tokenAmount);
-    // await sendTokensToVendor(walletAddress, tokenAmount);
-    assignTokenDialog.onFalse();
+      await interruptChainActions(sendTokensToVendor, walletAddress, tokenAmount);
+      // await sendTokensToVendor(walletAddress, tokenAmount);
+      assignTokenDialog.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsSendingToken(false);
+    }
   };
 
   return (
@@ -127,6 +143,8 @@ const VendorView = () => {
               assignTokenModal={assignTokenDialog}
               onActivateVendor={handleActivateVendor}
               onSendToken={handleTokenSend}
+              sendingToken={isSendingToken}
+              activatingVendor={isActivatingVendor}
             />
           </Grid>
         </Grid>

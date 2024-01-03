@@ -1,5 +1,6 @@
 import Iconify from '@components/iconify/iconify';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
+import LoadingButton from '@mui/lab/LoadingButton';
 import {
   Button,
   Card,
@@ -22,6 +23,8 @@ type Props = {
   assignTokenModal: any;
   onActivateVendor: (address: string) => void;
   onSendToken: (address: string) => void;
+  sendingToken: boolean;
+  activatingVendor: boolean;
 };
 const copyBtn = {
   padding: '0 0 0 6px',
@@ -33,6 +36,8 @@ const BasicInfoCard = ({
   assignTokenModal,
   onActivateVendor,
   onSendToken,
+  sendingToken,
+  activatingVendor,
 }: Props) => {
   const { phone, walletAddress, name } = data;
   const { enqueueSnackbar } = useSnackbar();
@@ -56,6 +61,7 @@ const BasicInfoCard = ({
           open={assignTokenModal.value}
           walletAddress={walletAddress}
           onOk={onSendToken}
+          isSendingToken={sendingToken}
         />
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Typography variant="subtitle1">{name || '-'}</Typography>
@@ -69,9 +75,15 @@ const BasicInfoCard = ({
               Send Token
             </Button>
           ) : (
-            <Button variant="outlined" size="small" onClick={() => onActivateVendor(walletAddress)}>
+            <LoadingButton
+              variant="outlined"
+              size="small"
+              onClick={() => onActivateVendor(walletAddress)}
+              loading={activatingVendor}
+              disabled={activatingVendor}
+            >
               Activate Vendor
-            </Button>
+            </LoadingButton>
           )}
         </Stack>
 
