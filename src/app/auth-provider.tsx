@@ -1,7 +1,6 @@
 'use client';
 
 import { LoadingScreen } from '@components/loading-screen';
-import { getUser } from '@utils/storage-available';
 import { metaMask } from '@web3/connectors/metaMask';
 import { useEffect } from 'react';
 import { useAppSettings } from 'src/api/app';
@@ -12,9 +11,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-const user = getUser();
 const AuthProvider = ({ children }: Props) => {
-  const { isInitialized, tokens } = useAuthStore();
+  const { isInitialized, tokens, user } = useAuthStore();
 
   const appSettings = useAppSettings();
 
@@ -28,7 +26,7 @@ const AuthProvider = ({ children }: Props) => {
           isAdmin: user?.roles?.includes(Role.ADMIN),
           isUser: user?.roles?.includes(Role.USER),
         },
-        // walletName: user?.wallet_name,
+        walletName: user?.wallet_name,
       });
     } else {
       useAuthStore.setState({
@@ -37,7 +35,7 @@ const AuthProvider = ({ children }: Props) => {
         walletName: '',
       });
     }
-  }, [tokens.access_token]);
+  }, [tokens.access_token, user]);
 
   // useEffect(() => {
   //   setBlockchain();

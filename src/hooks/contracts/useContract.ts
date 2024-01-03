@@ -1,6 +1,5 @@
-import { WebSocketProvider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { Contract, ContractRunner, InterfaceAbi, JsonRpcProvider } from 'ethers';
+import { Contract, ContractRunner, InterfaceAbi, JsonRpcProvider, WebSocketProvider } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import useAppStore from 'src/store/app';
 
@@ -20,17 +19,13 @@ const useContract: UseContract = (contractName, options = {}) => {
     contracts: state.contracts,
     networks: state.blockchain,
   }));
-
   const contractInstance = useMemo(() => {
     if (contracts && contractName) {
       if (options?.isWebsocket) {
-        const websocketProvider = new WebSocketProvider(
-          networks?.chainWebSocket as string
-        ) as unknown as ContractRunner;
         return new Contract(
           (options?.contractAddress || contracts[contractName].address) as string,
           contracts[contractName].abi,
-          websocketProvider
+          new WebSocketProvider(networks?.chainWebSocket as string)
         );
       }
       return new Contract(
