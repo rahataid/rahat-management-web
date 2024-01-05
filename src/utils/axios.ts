@@ -93,6 +93,8 @@ export const endpoints = {
     beneficiaries: {
       list: (address: string) => `/projects/${address}/beneficiaries`,
       remove: (contractAddress: string) => `/projects/remove/${contractAddress}/beneficiaries`,
+      setOfflineBeneficiaries: (contractAddress: string) =>
+        `/projects/${contractAddress}/offlineBeneficiaries`,
     },
   },
 
