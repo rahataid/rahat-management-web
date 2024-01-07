@@ -122,7 +122,7 @@ const useProjectContract = (): ProjectContract => {
         return;
       }
       const role = await communityContract.VENDOR_ROLE();
-      await communityContract.grantRoleWithEth(role, address).catch(handleContractError);
+      await communityContract.grantRole(role, address).catch(handleContractError);
     },
     [communityContract, handleContractError]
   );

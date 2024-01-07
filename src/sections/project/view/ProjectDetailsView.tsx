@@ -7,6 +7,7 @@ import { paths } from '@routes/paths';
 import useProjectContract from '@services/contracts/useProject';
 import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useRahatToken } from '@services/contracts/useRahatToken';
+import ProjectsService from '@services/projects';
 import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -90,6 +91,10 @@ export default function ProjectDetailsView() {
     });
   }, [chainData, getVendorBalance, setChainData, vendors]);
 
+  const handleSetOfflineBeneficiaries = async () => {
+    await ProjectsService.setOfflineBeneficiaries(params.address);
+  };
+
   useEffect(() => {
     if (chainData?.distributed !== undefined) return;
     getVendorDisbursedBalance();
@@ -143,6 +148,12 @@ export default function ProjectDetailsView() {
       onClick: () =>
         router.push(paths.dashboard.general.projects.edit(params.address as unknown as string)),
       icon: 'tabler:edit',
+      show: true,
+    },
+    {
+      title: 'Set Offline Beneficiaries',
+      onClick: handleSetOfflineBeneficiaries,
+      icon: 'ion:people-outline',
       show: true,
     },
   ];
