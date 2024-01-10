@@ -1,6 +1,7 @@
 'use client';
 
 import CustomBreadcrumbs from '@components/custom-breadcrumbs';
+import Iconify from '@components/iconify/iconify';
 import Scrollbar from '@components/scrollbar';
 import { useSettingsContext } from '@components/settings';
 import {
@@ -14,19 +15,19 @@ import {
 } from '@components/table';
 import { useBoolean } from '@hooks/use-boolean';
 import {
-  // Button,
+  Button,
   Card,
   Container,
   // IconButton,
   // ListItemIcon,
   // Menu,
   // MenuItem,
-  // Stack,
+  Stack,
   Table,
   TableBody,
   TableContainer,
 } from '@mui/material';
-// import { RouterLink } from '@routes/components';
+import { RouterLink } from '@routes/components';
 import { useRouter } from '@routes/hook';
 import { paths } from '@routes/paths';
 import { useSnackbar } from 'notistack';
@@ -121,41 +122,41 @@ export default function SMSLogsList() {
         sx={{
           mb: { xs: 3, md: 5 },
         }}
-        // action={
-        //   <Stack direction="row" spacing={3}>
-        //     <Button
-        //       component={RouterLink}
-        //       href={paths.dashboard.general.campaigns.add}
-        //       variant="outlined"
-        //       startIcon={<Iconify icon="mingcute:add-line" />}
-        //       color="success"
-        //     >
-        //       Add Campaign
-        //     </Button>
-        //     <Button
-        //       variant="outlined"
-        //       onClick={handleOpen}
-        //       endIcon={
-        //         isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
-        //       }
-        //       color="success"
-        //     >
-        //       Campaign Settings
-        //     </Button>
-        //     <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
-        //       {options
-        //         .filter((o: any) => o.show)
-        //         .map((option: any) => (
-        //           <MenuItem key={option.title} onClick={option.onClick}>
-        //             <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
-        //             <Typography variant="body2" color="text.secondary">
-        //               {option.title}
-        //             </Typography>
-        //           </MenuItem>
-        //         ))}
-        //     </Menu>
-        //   </Stack>
-        // }
+        action={
+          <Stack direction="row" spacing={3}>
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.general.campaigns.add}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              color="success"
+            >
+              Add Campaign
+            </Button>
+            {/* <Button
+              variant="outlined"
+              onClick={handleOpen}
+              endIcon={
+                isOpen ? <Iconify icon="mingcute:up-line" /> : <Iconify icon="mingcute:down-line" />
+              }
+              color="success"
+            >
+              Campaign Settings
+            </Button>
+            <Menu id="simple-menu" anchorEl={isOpen} onClose={handleClose} open={Boolean(isOpen)}>
+              {options
+                .filter((o: any) => o.show)
+                .map((option: any) => (
+                  <MenuItem key={option.title} onClick={option.onClick}>
+                    <ListItemIcon>{option.icon && <Iconify icon={option.icon} />}</ListItemIcon>
+                    <Typography variant="body2" color="text.secondary">
+                      {option.title}
+                    </Typography>
+                  </MenuItem>
+                ))}
+            </Menu> */}
+          </Stack>
+        }
       />
 
       <Card>
