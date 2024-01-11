@@ -7,7 +7,7 @@ interface CampaignInfoProps {
 }
 
 const CampaignInfoCard = ({ campaign }: CampaignInfoProps) => (
-  <Card>
+  <Card sx={{ mb: 3 }}>
     <CardHeader
       title={campaign?.name}
       // action={
