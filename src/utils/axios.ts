@@ -119,6 +119,7 @@ export const endpoints = {
       disable: (id: number) => `/users/${id}`,
       updateRole: (walletAddress: string) => `/users/${walletAddress}/role`,
       approve: (walletAddress: string) => `/users/${walletAddress}/approve`,
+      update: (id: number) => `/users/${id}`,
     },
   },
   reports: {
