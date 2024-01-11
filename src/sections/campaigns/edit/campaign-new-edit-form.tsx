@@ -24,7 +24,6 @@ import {
   MenuItem,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
@@ -51,8 +50,6 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const { campaignAudio } = useCampaignAudio();
   const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<any[]>([]);
 
-  console.log('selectedBeneficiaries', selectedBeneficiaries);
-
   const [showAudiences, setShowAudiences] = useState(false);
   const { beneficiaries } = useBeneficiaries({
     perPage: 1000,
@@ -63,7 +60,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setShowAudiences((prev) => !prev);
   };
 
-  const { push } = useRouter();
+  const router = useRouter();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
   const { audiences } = useAudiences();
@@ -82,7 +79,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     onSuccess: () => {
       enqueueSnackbar('Campaign created successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.campaigns.list}`);
+      router.back();
+      // push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
 

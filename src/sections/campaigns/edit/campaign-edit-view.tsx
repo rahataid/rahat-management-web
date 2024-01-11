@@ -13,14 +13,13 @@ const CampaignEditView = () => {
   const settings = useSettingsContext();
   const query = useParams();
   const { campaign } = useCampaign(query?.id as unknown as string);
-  console.log('campaign', campaign);
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <CustomBreadcrumbs
         heading="Campaign: Edit"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Campaign', href: paths.dashboard.general.campaigns.list },
+          // { name: 'Campaign', href: paths.dashboard.general.campaigns.list },
           { name: 'Edit' },
         ]}
         sx={{
