@@ -4,7 +4,7 @@ import { fDateTime } from '@utils/format-time';
 export default function LogsDetailsInfoCard({ latestLog }: any) {
   return (
     <Card>
-      <CardHeader title="Latest Log" />
+      <CardHeader title="Latest Attempt" />
       <CardContent>
         <Stack
           sx={{ p: 2 }}

@@ -12,12 +12,12 @@ export default function LogDetails() {
   const settings = useSettingsContext();
   const router = useRouter();
   const params = useParams();
-  const { logs } = useCampaignLogs(params.logId as unknown as number) || {};
+  const { logs } = useCampaignLogs(params.id as unknown as number) || {};
   const logsDetail =
     useCampaignLogsDetail(
       logs?.rows?.[0]?.id as unknown as number,
       'phoneNumber',
-      params.id as unknown as string
+      params.logId as unknown as string
     ) || {};
 
   return (
