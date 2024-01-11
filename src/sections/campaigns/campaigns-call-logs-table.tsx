@@ -9,7 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 import { useParams, useRouter } from '@routes/hook';
 import { paths } from '@routes/paths';
@@ -64,7 +64,7 @@ export default function CampaignsCallLogsTable({ data = [] }: any) {
                   <TableCell>
                     <Tooltip title="View Details">
                       <IconButton
-                        onClick={() => handleViewLogDetail(params.logId, bodyCell.phoneNumber)}
+                        onClick={() => handleViewLogDetail(params.id, bodyCell.phoneNumber)}
                       >
                         <Iconify color="#118D57" icon="iconamoon:eye-light" />
                       </IconButton>
