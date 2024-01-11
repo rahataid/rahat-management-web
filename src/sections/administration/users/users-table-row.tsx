@@ -18,9 +18,10 @@ import { IUserItem } from 'src/types/administration';
 type Props = {
   row: IUserItem;
   onViewRow: VoidFunction;
+  onEditRow: VoidFunction
 };
 
-export default function UsersTableRow({ row, onViewRow }: Props) {
+export default function UsersTableRow({ row, onViewRow, onEditRow }: Props) {
   const { name, roles, walletAddress, isApproved, status } = row;
 
   const quickEdit = useBoolean();
@@ -49,6 +50,11 @@ export default function UsersTableRow({ row, onViewRow }: Props) {
         <Tooltip title="View Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit" placement="top" arrow>
+          <IconButton onClick={()=>onEditRow()}>
+            <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
         </Tooltip>
       </TableCell>
