@@ -73,12 +73,14 @@
     "firebase": "^9.22.2",
     "framer-motion": "^10.12.16",
     "highlight.js": "^11.8.0",
+    "husky": "^8.0.3",
     "i18next": "^23.1.0",
     "i18next-browser-languagedetector": "^7.0.2",
     "lodash": "^4.17.21",
     "mapbox-gl": "^2.15.0",
     "mui-one-time-password-input": "^1.1.1",
     "next": "^13.4.6",
+    "next-runtime-env": "^3.2.0",
     "notistack": "^3.0.1",
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
@@ -106,8 +108,7 @@
     "utf-8-validate": "^6.0.3",
     "yet-another-react-lightbox": "^3.11.1",
     "yup": "^1.2.0",
-    "zustand": "^4.3.9",
-    "husky": "^8.0.3"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
