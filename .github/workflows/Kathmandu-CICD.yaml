@@ -1,16 +1,16 @@
-name: Kailali CI/CD
+name: Kathmandu CI/CD
 on:
   push:
     branches:
-      - 'kailali'
+      - 'kathmandu'
 
   pull_request:
     branches:
-      - 'kailali'
+      - 'kathmandu'
 
 env:
   CI: false
-  env_kailali: ${{ secrets.ENV_KAILALI }}
+  env_kathmandu: ${{ secrets.ENV_KATHMANDU }}
 
 jobs:
   deploy:
@@ -19,11 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: kailali
+          ref: kathmandu
 
       - name: create environment file
         run: |
-          touch ./.env && echo "$env_kailali" >> ./.env
+          touch ./.env && echo "$env_kathmandu" >> ./.env
 
       - name: setup docker buildx
         uses: docker/setup-buildx-action@v2
@@ -42,7 +42,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: esatya/rahat-frontend-web:kailali
+          tags: esatya/rahat-frontend-web:kathmandu
 
       - name: Build Docker image
         if: github.event_name == 'pull_request'
