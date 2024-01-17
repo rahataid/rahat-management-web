@@ -1,0 +1,49 @@
+name: Babai CI/CD
+on:
+  push:
+    branches:
+      - 'babai'
+
+  pull_request:
+    branches:
+      - 'babai'
+
+env:
+  CI: false
+  env_babai: ${{ secrets.ENV_BABAI }}
+
+jobs:
+  deploy:
+    name: build docker image and push to docker hub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: babai
+
+      - name: create environment file
+        run: |
+          touch ./.env && echo "$env_babai" >> ./.env
+
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build and push web
+        id: build-push-web
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: esatya/rahat-frontend-web:babai
+
+      - name: Build Docker image
+        if: github.event_name == 'pull_request'
+        run: docker build -t myimage:${{ github.sha }} .
