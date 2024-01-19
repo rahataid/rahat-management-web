@@ -100,7 +100,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentCampaign?.name || '',
-      startTime: currentCampaign?.startTime || '',
+      startTime: currentCampaign?.startTime || null,
       details: currentCampaign?.details || '',
       transportId: null,
       type: currentCampaign?.type as CAMPAIGN_TYPES,

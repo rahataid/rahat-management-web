@@ -76,10 +76,13 @@ export default function BeneficiariesDetailsCard({
     setIsAssigningToken(true);
     try {
       const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
-      if (assigned) assignTokenDialog.onFalse();
+      if (assigned) {
+        assignTokenDialog.onFalse();
+        enqueueSnackbar('Token Assigned Successfully', { variant: 'success' });
+      }
     } catch (error) {
       console.error('Error:', error);
-    } finally {
+          } finally {
       setIsAssigningToken(false);
     }
   };
