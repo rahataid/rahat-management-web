@@ -1,7 +1,13 @@
 import AuthService from '@services/auths';
 import { setSession } from '@utils/session';
 import { localPersistStorage } from '@utils/state-storage';
-import { clearToken, removeUser, removeWalletName, setToken } from '@utils/storage-available';
+import {
+  clearLocalStorage,
+  clearToken,
+  removeUser,
+  removeWalletName,
+  setToken,
+} from '@utils/storage-available';
 import { createStore } from '@utils/store-tools';
 import { AuthUserType } from 'src/auth/types';
 import { IUserRoles, Role } from 'src/types/user';
@@ -116,6 +122,8 @@ const useAuthStore = createStore<AuthStoreType>(
       setSession(null);
       removeUser();
       clearToken();
+      clearLocalStorage();
+
       set({
         user: null,
         loading: false,

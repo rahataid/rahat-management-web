@@ -24,9 +24,9 @@ import {
   MenuItem,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
+import { parseISO } from 'date-fns';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import {
@@ -46,12 +46,10 @@ type Props = {
 interface FormValues extends ICampaignCreateItem {}
 
 const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
-  const [showSelectAudio, setShowSelectAudio] = useState(false);
+    const [showSelectAudio, setShowSelectAudio] = useState(false);
   const [showSelectMessage, setShowSelectMessage] = useState(false);
   const { campaignAudio } = useCampaignAudio();
   const [selectedBeneficiaries, setSelectedBeneficiaries] = useState<any[]>([]);
-
-  console.log('selectedBeneficiaries', selectedBeneficiaries);
 
   const [showAudiences, setShowAudiences] = useState(false);
   const { beneficiaries } = useBeneficiaries({
@@ -63,7 +61,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setShowAudiences((prev) => !prev);
   };
 
-  const { push } = useRouter();
+  const router = useRouter();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
   const { audiences } = useAudiences();
@@ -80,9 +78,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
       enqueueSnackbar('Error creating Campaign', { variant: 'error' });
     },
     onSuccess: () => {
-      enqueueSnackbar('Campaign created successfully', { variant: 'success' });
+      enqueueSnackbar('Campaign updated successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.campaigns.list}`);
+      router.back();
+      // push(`${paths.dashboard.general.campaigns.list}`);
     },
   });
 
@@ -101,7 +100,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentCampaign?.name || '',
-      startTime: currentCampaign?.startTime || '',
+      startTime: currentCampaign?.startTime ? parseISO(currentCampaign.startTime as string) : null,
       details: currentCampaign?.details || '',
       transportId: null,
       type: currentCampaign?.type as CAMPAIGN_TYPES,

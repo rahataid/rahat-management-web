@@ -93,6 +93,8 @@ export const endpoints = {
     beneficiaries: {
       list: (address: string) => `/projects/${address}/beneficiaries`,
       remove: (contractAddress: string) => `/projects/remove/${contractAddress}/beneficiaries`,
+      setOfflineBeneficiaries: (contractAddress: string) =>
+        `/projects/${contractAddress}/offlineBeneficiaries`,
     },
   },
 
@@ -117,6 +119,7 @@ export const endpoints = {
       disable: (id: number) => `/users/${id}`,
       updateRole: (walletAddress: string) => `/users/${walletAddress}/role`,
       approve: (walletAddress: string) => `/users/${walletAddress}/approve`,
+      update: (id: number) => `/users/${id}`,
     },
   },
   reports: {

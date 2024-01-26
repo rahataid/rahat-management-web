@@ -22,7 +22,7 @@ const SendTokenModal = ({ open, onClose, onOk, walletAddress, isSendingToken }: 
   const [token, setToken] = useState('');
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Assing Token</DialogTitle>
+      <DialogTitle>Assign Token</DialogTitle>
 
       <DialogContent sx={{ color: 'text.secondary' }}>Enter Token To the beneficiary</DialogContent>
 

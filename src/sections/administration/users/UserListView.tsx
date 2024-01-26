@@ -39,6 +39,7 @@ import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useApproveUserFunc, useUpdateRoleFunc, useUsers } from 'src/api/administration';
 import { IUserItem, IUsersApiFilters, IUsersTableFilterValue } from 'src/types/administration';
 import UserDetails from './user-details-modal';
+import UserEdit from './user-edit-modal';
 import UsersTableFiltersResult from './users-table-filters-result';
 import UsersTableRow from './users-table-row';
 import UsersTableToolbar from './users-table-toolbar';
@@ -76,8 +77,9 @@ export default function UsersListView() {
     [table.order, table.orderBy, table.page, table.rowsPerPage]
   );
   const [filters, setFilters] = useState(defaultFilters);
-  const { users, meta } = useUsers(filters);
+  const { users, meta, refetchUser } = useUsers(filters);
   const userDetailsModal = useBoolean();
+  const userEditModal = useBoolean();
   const [viewUser, setViewUser] = useState<IUserItem>({});
 
   const searchParams = useSearchParams();
@@ -136,6 +138,13 @@ export default function UsersListView() {
     [userDetailsModal]
   );
 
+  const handleEditRow = useCallback(
+    (user: IUserItem) => {
+      userEditModal.onTrue();
+      setViewUser(user);
+    },
+    [userEditModal]
+  );
   const handleUserActivate = async (walletAddress: string) => {
     await approveUser.mutateAsync(walletAddress);
   };
@@ -177,6 +186,15 @@ export default function UsersListView() {
         onActivate={handleUserActivate}
         onChangeRole={handleUserChangeRole}
         onMakeOwner={handleMakeOwner}
+      />
+      <UserEdit
+        open={userEditModal.value}
+        onClose={userEditModal.onFalse}
+        user={viewUser}
+        onActivate={handleUserActivate}
+        onChangeRole={handleUserChangeRole}
+        onMakeOwner={handleMakeOwner}
+        refetch={refetchUser}
       />
       <CustomBreadcrumbs
         heading="Users: List"
@@ -252,6 +270,7 @@ export default function UsersListView() {
                     key={row.walletAddress}
                     row={row}
                     onViewRow={() => handleViewRow(row)}
+                    onEditRow={() => handleEditRow(row)}
                   />
                 ))}
 

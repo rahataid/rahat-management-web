@@ -16,11 +16,13 @@ const ProjectsService = {
     axiosInstance.patch(endpoints.projects.beneficiaries.remove(contractAddress), beneficiaries),
   details: (contractAddress: string) =>
     axiosInstance.get(endpoints.projects.details(contractAddress)),
+  setOfflineBeneficiaries: (contractAddress: string) =>
+    axiosInstance.post(endpoints.projects.beneficiaries.setOfflineBeneficiaries(contractAddress)),
 };
 
 export const ProjectBeneficiariesService = {
-  list: (contractAddress: string,params?: IBeneficiaryApiFilters) =>
-    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress),{ params }),
+  list: (contractAddress: string, params?: IBeneficiaryApiFilters) =>
+    axiosInstance.get(endpoints.projects.beneficiaries.list(contractAddress), { params }),
 };
 
 export default ProjectsService;

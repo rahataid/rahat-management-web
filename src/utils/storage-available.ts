@@ -76,3 +76,7 @@ export function getUser(): any | undefined {
 export function removeUser(): void {
   localStorageRemoveItem('user');
 }
+
+export function clearLocalStorage(): void {
+  localStorage.clear();
+}

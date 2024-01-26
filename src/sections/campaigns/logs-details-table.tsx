@@ -23,7 +23,7 @@ const TABLE_HEAD = [
 export default function LogsDetailsTable({ data = [] }: any) {
   return (
     <Card>
-      <CardHeader title="All Logs" />
+      <CardHeader title="All Attempts" />
       <CardContent>
         <Scrollbar>
           <Table>
