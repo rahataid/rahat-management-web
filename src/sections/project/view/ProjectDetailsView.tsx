@@ -193,6 +193,7 @@ export default function ProjectDetailsView() {
       const sent = await interruptChainActions(sendTokenToProject, token);
       if (sent) {
         createTokenModal.onFalse();
+        handleChainData();
       }
     } catch (error) {
       console.error('Error:', error);
