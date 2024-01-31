@@ -1,11 +1,13 @@
 import Iconify from '@components/iconify/iconify';
-import { Button, Card, CardContent, CardHeader, Stack, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Card, CardContent, CardHeader, Stack, Typography } from '@mui/material';
 
 interface IProjectAlert {
   isApproved: boolean | undefined;
   tokenAllowance: number | undefined;
   tokenName: string | undefined;
   onTokenAccept: VoidFunction;
+  loading: boolean;
 }
 
 const ProjectAlerts = ({
@@ -13,6 +15,7 @@ const ProjectAlerts = ({
   tokenAllowance = 0,
   tokenName = '',
   onTokenAccept,
+  loading,
 }: IProjectAlert) => {
   // if (!isApproved) {
   //   return (
@@ -29,9 +32,9 @@ const ProjectAlerts = ({
         <CardHeader
           action={
             <Stack>
-              <Button variant="contained" onClick={onTokenAccept}>
+              <LoadingButton variant="contained" onClick={onTokenAccept} loading={loading}>
                 Accept
-              </Button>
+              </LoadingButton>
             </Stack>
           }
           title={

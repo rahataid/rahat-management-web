@@ -48,6 +48,7 @@ export default function ProjectDetailsView() {
   const [isCreatingToken, setIsCreatingToken] = useState(false);
   const [isUnLockingProject, setIsUnLockingProject] = useState(false);
   const [isLockingProject, setIsLockingProject] = useState(false);
+  const [isAcceptingToken, setIsAcceptingToken] = useState(false);
 
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
@@ -226,8 +227,15 @@ export default function ProjectDetailsView() {
   };
 
   const handleTokenAccept = async () => {
-    if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
-    await acceptToken(chainData?.tokenAllowance?.toString() || '');
+    setIsAcceptingToken(true);
+    try {
+      if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
+      await acceptToken(chainData?.tokenAllowance?.toString() || '');
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsAcceptingToken(false);
+    }
   };
 
   const lockProjectProp = {
@@ -283,6 +291,7 @@ export default function ProjectDetailsView() {
             tokenName={blockchainNetworkData?.nativeCurrency.name}
             tokenAllowance={chainData.tokenAllowance}
             onTokenAccept={handleTokenAccept}
+            loading={isAcceptingToken}
           />
           <ProjectDetailsCard
             isLocked={Boolean(chainData.isLocked)}
