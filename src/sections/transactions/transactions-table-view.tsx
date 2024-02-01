@@ -72,7 +72,7 @@ export default function TransactionListView() {
     error,
   } = useChainTransactions({
     action: 'getLogs',
-    fromBlock: 3938394,
+    fromBlock: 10986550,
     toBlock: 'latest',
     module: 'logs',
     appContracts,
