@@ -190,47 +190,52 @@ const useChainTransactions = ({
               return events[index].topic0s.map((topic) =>
                 logData?.topic0s?.[topic]
                   ? logData?.topic0s?.[topic]?.map((log: Log) => {
-                      const contract = new Contract(
-                        appContracts?.[event.contractName].address,
-                        appContracts?.[event.contractName].abi,
-                        provider
-                      );
-                      const interfaceData =
-                        contract.interface
-                          .decodeEventLog(topic, log?.data, log?.topics)
-                          ?.toObject() || {};
-                      return {
-                        topic,
-                        blockNumber: log?.blockNumber,
-                        txHash: log?.transactionHash,
-                        gasUsed: log?.gasUsed,
-                        gasPrice: log?.gasPrice,
-                        contractName: event?.contractName,
-                        timeStampHash: log?.timeStamp,
-                        timeStamp: log?.timeStamp
-                          ? fDateTime(new Date(log?.timeStamp * 1000))
-                          : '-',
-                        // timestampHash: log?.timeStamp,
-                        // timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : '-',
-                        ...interfaceData,
-                      };
-                    })
+                    const contract = new Contract(
+                      appContracts?.[event.contractName].address,
+                      appContracts?.[event.contractName].abi,
+                      provider
+                    );
+                    const interfaceData =
+                      contract.interface
+                        .decodeEventLog(topic, log?.data, log?.topics)
+                        ?.toObject() || {};
+                    return {
+                      topic,
+                      blockNumber: log?.blockNumber,
+                      txHash: log?.transactionHash,
+                      gasUsed: log?.gasUsed,
+                      gasPrice: log?.gasPrice,
+                      contractName: event?.contractName,
+                      timeStampHash: log?.timeStamp,
+                      timeStamp: log?.timeStamp
+                        ? fDateTime(new Date(log?.timeStamp * 1000))
+                        : '-',
+                      // timestampHash: log?.timeStamp,
+                      // timestamp: log?.timeStamp ? fDateTime(new Date(log?.timeStamp * 1000)) : '-',
+                      ...interfaceData,
+                    };
+                  })
                   : []
               );
             })
             .flat(2)
             .map((log: Log) => ({ ...log, amount: log?.amount?.toString() || '0' })) || [];
-        decodedLogsRef.current = await Promise.all(
-          formattedData.map(async (log: Log) => {
-            const block = await provider.getBlock(log?.blockNumber);
-            return {
-              ...log,
-              ...block?.toJSON(),
-              timestamp: fDateTime(block?.timestamp ?? 0 * 1000, 'dd/mm/yyyy HH:mm'),
-              timestampInt: block?.timestamp,
-            };
-          })
-        );
+
+        //TODO: Add block timestamp to the logs   
+        decodedLogsRef.current = formattedData;
+        console.log(decodedLogsRef.current)
+        // decodedLogsRef.current = await Promise.all(
+        //   formattedData.map(async (log: Log) => {
+        //     const block = await provider.getBlock(log?.blockNumber);
+        //     console.log({ block })
+        //     return {
+        //       ...log,
+        //       ...block?.toJSON(),
+        //       timestamp: fDateTime(block?.timestamp ?? 0 * 1000, 'dd/mm/yyyy HH:mm'),
+        //       timestampInt: block?.timestamp,
+        //     };
+        //   })
+        // );
         decodedLogsRef.current = decodedLogsRef.current.sort(
           (a: Log, b: Log) => (b.timestampInt || 0) - (a.timestampInt || 0)
         );

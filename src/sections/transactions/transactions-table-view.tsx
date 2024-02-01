@@ -157,7 +157,7 @@ export default function TransactionListView() {
               <TableBody>
                 {transactions?.map((row) => (
                   <TransactionTableRow
-                    key={`${row.timestamp}-${row.topic}-${row.contractName}`}
+                    key={`${row.timeStamp}-${row.topic}-${row.contractName}-${row.txHash}`}
                     row={row}
                   />
                 ))}
