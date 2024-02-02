@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function TransactionTableRow({ row, selected, onViewRow }: Props) {
-  const { txHash, timestamp, topic, contractName, amount, beneficiary } = row;
+  const { txHash, timeStamp, topic, contractName, amount, beneficiary } = row;
 
   return (
     <TableRow hover selected={selected}>
@@ -38,7 +38,7 @@ export default function TransactionTableRow({ row, selected, onViewRow }: Props)
       </TableCell>
 
       <TableCell>
-        <ListItemText primary={timestamp || '-'} primaryTypographyProps={{ typography: 'body2' }} />
+        <ListItemText primary={timeStamp || '-'} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
       <TableCell>
