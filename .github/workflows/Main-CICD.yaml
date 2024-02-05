@@ -2,11 +2,11 @@ name: Main CI/CD
 on:
   push:
     branches:
-      - "main"
+      - 'main'
 
   pull_request:
     branches:
-      - "main"
+      - 'main'
 
 env:
   CI: false
@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: main
 
       - name: create environment file
         run: |
@@ -36,14 +34,9 @@ jobs:
 
       - name: build and push web
         id: build-push-web
-        if: github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
-          push: true
+          push: ${{ github.event_name == 'push' && 'true' || 'false' }}
           tags: esatya/rahat-frontend-web:main
-
-      - name: Build Docker image
-        if: github.event_name == 'pull_request'
-        run: docker build -t myimage:${{ github.sha }} .
