@@ -11,9 +11,10 @@ import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { generateWalletAddress } from '@web3/utils';
 import { useSnackbar } from 'notistack';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   bankStatusOptions,
@@ -29,7 +30,6 @@ import {
   IBeneficiariesCreateItem,
   IBeneficiaryDetails,
 } from 'src/types/beneficiaries';
-import { CAMPAIGN_TYPES } from 'src/types/campaigns';
 import * as Yup from 'yup';
 
 interface FormValues extends IBeneficiariesCreateItem {}
@@ -38,6 +38,7 @@ const BeneficiariesForm: React.FC = () => {
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { activateBeneficiary } = useProjectContract();
+  const [isActivatingToChain, setIsActivatingToChain] = useState(false);
 
   const { error, isLoading, mutate } = useMutation<
     IBeneficiaryDetails,
@@ -62,10 +63,10 @@ const BeneficiariesForm: React.FC = () => {
   const NewBeneficiarySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phone: Yup.string().nullable().optional(),
-    gender: Yup.mixed<GENDER>().nullable().optional(),
-    phoneOwnership: Yup.string().nullable().optional(),
-    bankStatus: Yup.string().nullable().optional(),
-    internetAccess: Yup.string().nullable().optional(),
+    gender: Yup.mixed<GENDER>().required('Select your gender'),
+    phoneOwnership: Yup.string().required('Select your phone type'),
+    bankStatus: Yup.string().required('Select your bank status'),
+    internetAccess: Yup.string().required('Select your internet type'),
     dob: Yup.date().nullable().optional(),
     walletAddress: Yup.string().nullable().required('Wallet address is required'),
     longitude: Yup.number().nullable().optional(),
@@ -103,8 +104,21 @@ const BeneficiariesForm: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: IBeneficiariesCreateItem) => {
-      const activateToChain = await activateBeneficiary(data.walletAddress);
-      if (activateToChain) mutate(data);
+      setIsActivatingToChain(true);
+      try {
+        // TODO:Interrupted chain actions temporarily disabled
+
+        const activateToChain = await interruptChainActions(
+          activateBeneficiary,
+          data.walletAddress
+        );
+        // const activateToChain = await activateBeneficiary(data.walletAddress);
+        if (activateToChain) mutate(data);
+      } catch (error) {
+        console.error('Error', error);
+      } finally {
+        setIsActivatingToChain(false);
+      }
     },
     [activateBeneficiary, mutate]
   );
@@ -230,7 +244,12 @@ const BeneficiariesForm: React.FC = () => {
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="outlined" color="success" loading={isLoading}>
+              <LoadingButton
+                type="submit"
+                variant="outlined"
+                color="success"
+                loading={isActivatingToChain || isLoading}
+              >
                 Create Beneficiary
               </LoadingButton>
             </Stack>

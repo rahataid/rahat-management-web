@@ -3,6 +3,7 @@ import { Contract, ContractTransactionResponse, InterfaceAbi, TransactionReceipt
 export type IProjectChainData = {
   balance: number | undefined;
   tokenAllowance: number | undefined;
+  distributed: number | undefined;
   isLocked: boolean | undefined;
   isApproved: boolean | undefined;
 };
@@ -37,6 +38,7 @@ export interface ProjectContract {
   getVendorAllowance: (vendorAddress: string) => Promise<number | undefined>;
   checkActiveVendor: (address: string) => Promise<boolean>;
   activateVendor: (address: string) => Promise<void>;
+  sendAllowanceToVendor: (vendorAddress: string, amount: string) => Promise<void>;
   sendTokensToVendor: (vendorAddress: string, amount: string) => Promise<void>;
   pendingVendorAllowance: (vendorAddress: string) => Promise<number | undefined>;
   acceptTokensByVendors: (numberOfTokens: string) => Promise<void>;

@@ -11,8 +11,12 @@ import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs
 import { Card, Grid, Stack, Typography } from '@mui/material';
 import { useSettingsContext } from 'src/components/settings';
 
+import { CONTRACTS } from '@config';
+import useChainTransactions from '@hooks/useChainTransactions';
 import useProjectContract from '@services/contracts/useProject';
 import { memo, useCallback, useEffect } from 'react';
+import { useVendors } from 'src/api/vendors';
+import useAppStore from 'src/store/app';
 import useBeneficiaryStore from 'src/store/beneficiaries';
 import BeneficiariesDetailsCard from './beneficiaries-details-card';
 import BeneficiariesDetailsClaimsCard from './beneficiaries-details-claims-card';
@@ -23,11 +27,46 @@ function BeneficiariesDetailsView() {
   const { uuid } = useParams();
   const { beneficiary } = useBeneficiary(uuid as string);
   const settings = useSettingsContext();
+  const appContracts = useAppStore((state) => state.contracts);
+
   const { getBeneficiaryChainData, projectContractWS: ProjectContractWS } = useProjectContract();
   const { chainData, setChainData } = useBeneficiaryStore((state) => ({
     chainData: state.chainData,
     setChainData: state.setChainData,
   }));
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
+
+  const { vendors } = useVendors();
+
+  const { data: transactions, summary } = useChainTransactions({
+    action: 'getLogs',
+    fromBlock: 0,
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+    source: 'rpcCall',
+    rpcUrl,
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: ['ClaimAssigned', 'ClaimProcessed'],
+      },
+    ],
+    transform: (data) =>
+      data
+        .filter(
+          (item) => item?.beneficiary?.toLowerCase() === beneficiary?.walletAddress?.toLowerCase()
+        )
+        .map((item) => {
+          const vendor = vendors.find(
+            (v) => v.walletAddress?.toLowerCase() === item?.vendor?.toLowerCase()
+          );
+          return {
+            ...item,
+            vendor: vendor?.name || item?.vendor,
+          };
+        }),
+  });
 
   const handleChainData = useCallback(async () => {
     if (!uuid) return;
@@ -85,7 +124,12 @@ function BeneficiariesDetailsView() {
           <BeneficiariesDetailsClaimsCard
             walletAddress={beneficiary?.walletAddress}
             balance={chainData.balance}
-            claimed={chainData.claimed}
+            claimed={
+              chainData.claimed
+                ? chainData.claimed
+                : summary?.totalAmountsByTopic?.ClaimProcessed || 0
+            }
+            // claimed={chainData.claimed}
           />
         </Grid>
       </Grid>
@@ -98,7 +142,7 @@ function BeneficiariesDetailsView() {
         <Typography variant="subtitle2" sx={{ pl: 5, pt: 3, mb: 2 }}>
           Transaction History
         </Typography>
-        <BeneficiaryDetailsTableView data={[]} />
+        <BeneficiaryDetailsTableView data={transactions} />
       </Card>
     </Container>
   );

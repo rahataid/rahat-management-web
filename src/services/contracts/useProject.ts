@@ -122,9 +122,19 @@ const useProjectContract = (): ProjectContract => {
         return;
       }
       const role = await communityContract.VENDOR_ROLE();
-      await communityContract.grantRoleWithEth(role, address).catch(handleContractError);
+      await communityContract.grantRole(role, address).catch(handleContractError);
     },
     [communityContract, handleContractError]
+  );
+
+  const sendAllowanceToVendor = useCallback(
+    async (vendorAddress: string, amount: string): Promise<void> => {
+      if (!projectContract) {
+        return;
+      }
+      await projectContract.sendAllowanceToVendor(vendorAddress, amount).catch(handleContractError);
+    },
+    [projectContract, handleContractError]
   );
 
   const sendTokensToVendor = useCallback(
@@ -274,21 +284,21 @@ const useProjectContract = (): ProjectContract => {
 
   const getProjectChainData = useCallback(
     async (contractAddress: string) => {
-      const [balance, isLocked, isApproved] = await Promise.all([
+      const [balance, tokenAllowance, isLocked, isApproved] = await Promise.all([
         getProjectBalance(contractAddress),
-        // getTokenAllowance(),
+        getTokenAllowance(),
         isProjectLocked(),
         isProjectApproved(contractAddress),
       ]);
 
       return {
         balance,
-        distributed: undefined,
+        tokenAllowance,
         isLocked,
         isApproved,
       };
     },
-    [getProjectBalance, isProjectApproved, isProjectLocked]
+    [getProjectBalance, isProjectApproved, getTokenAllowance, isProjectLocked]
   );
 
   return useMemo(
@@ -310,6 +320,7 @@ const useProjectContract = (): ProjectContract => {
       getVendorAllowance,
       checkActiveVendor,
       activateVendor,
+      sendAllowanceToVendor,
       sendTokensToVendor,
       pendingVendorAllowance,
       acceptTokensByVendors,
@@ -343,6 +354,7 @@ const useProjectContract = (): ProjectContract => {
       getVendorAllowance,
       checkActiveVendor,
       activateVendor,
+      sendAllowanceToVendor,
       sendTokensToVendor,
       pendingVendorAllowance,
       acceptTokensByVendors,

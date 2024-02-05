@@ -78,8 +78,8 @@ const ProjectForm: React.FC = () => {
       location: project?.location || '',
       projectManager: project?.projectManager || '',
       description: project?.description || '',
-      startDate: String(project?.startDate) || null,
-      endDate: String(project?.endDate) || null,
+      startDate: project?.startDate ? new Date(project.startDate) : null,
+      endDate: project?.endDate ? new Date(project.endDate) : null,
     }),
     [
       project?.description,

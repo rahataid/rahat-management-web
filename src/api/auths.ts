@@ -1,7 +1,5 @@
 import AuthService from '@services/auths';
 import { useMutation } from '@tanstack/react-query';
-import { setSession } from '@utils/session';
-import { setToken, setUser } from '@utils/storage-available';
 import { useSnackbar } from 'notistack';
 import useAuthStore from 'src/store/auths';
 
@@ -27,7 +25,7 @@ export const useRequestOtp = () => {
 };
 export const useLogin = () => {
   const notify = useSnackbar();
-  const setUserinStore = useAuthStore((state) => state.setUser);
+  const saveLogin = useAuthStore((state) => state.saveLogin);
 
   return useMutation(
     ['login/verify'],
@@ -40,10 +38,8 @@ export const useLogin = () => {
       onSuccess: (data) => {
         notify.enqueueSnackbar('Login successful', { variant: 'success' });
         const { refresh_token, access_token, ...user } = data;
-        setUser(user);
-        setUserinStore(user);
-        setSession(access_token);
-        setToken(access_token);
+        console.log('user', user);
+        saveLogin({ user, refresh_token, access_token });
         return data;
       },
       onError: (error) => {

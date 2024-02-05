@@ -172,6 +172,8 @@ export type ICampaignLogItem = {
   details: null;
   createdAt: string;
   audience: Audience;
+  totalFailure: number;
+  totalSuccessfulAnswer: number;
 };
 
 export type ICampaignLogsApiResponse = {

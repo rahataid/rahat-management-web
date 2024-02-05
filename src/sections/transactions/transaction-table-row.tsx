@@ -1,65 +1,57 @@
 // @mui
-import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // types
-import { ITransactionItem } from 'src/types/transactions';
 // components
-import { truncateEthAddress } from '@utils/strings';
-import Iconify from 'src/components/iconify';
-import Label from 'src/components/label';
+import WalletAddressButton from '@components/wallet-address-button';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   selected: boolean;
-  row: ITransactionItem;
+  row: any;
   onViewRow: VoidFunction;
 };
 
 export default function TransactionTableRow({ row, selected, onViewRow }: Props) {
-  const { txHash, timestamp, method } = row;
-
-  const quickEdit = useBoolean();
+  const { txHash, timeStamp, topic, contractName, amount, beneficiary } = row;
 
   return (
     <TableRow hover selected={selected}>
       <TableCell>
-        <ListItemText primary={timestamp || '-'} primaryTypographyProps={{ typography: 'body2' }} />
-      </TableCell>
-
-      <TableCell>
         <ListItemText
-          primary={txHash?.length ? truncateEthAddress(txHash, 6) : '-'}
+          primary={topic || '-'}
+          secondary={contractName || '-'}
           primaryTypographyProps={{ typography: 'body2' }}
         />
       </TableCell>
-
       <TableCell>
-        <Label
-          variant="soft"
-          color={
-            (method === 'SMS' && 'success') ||
-            (method === 'EMAIL' && 'warning') ||
-            (method === 'QR' && 'error') ||
-            'default'
-          }
-        >
-          {method || '-'}
-        </Label>
+        <ListItemText
+          primary={beneficiary || '-'}
+          primaryTypographyProps={{ typography: 'body2' }}
+        />
+      </TableCell>
+      <TableCell>
+        <ListItemText primary={amount || '-'} primaryTypographyProps={{ typography: 'body2' }} />
       </TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell>
+        <ListItemText primary={timeStamp || '-'} primaryTypographyProps={{ typography: 'body2' }} />
+      </TableCell>
+
+      <TableCell>
+        <WalletAddressButton address={txHash} type="txHash" />
+      </TableCell>
+
+      {/* <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <Tooltip title="Details" placement="top" arrow>
           <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={() => onViewRow()}>
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }

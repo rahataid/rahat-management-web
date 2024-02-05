@@ -1,6 +1,6 @@
-import AppSettingService from '@services/app-settings';
+import { localPersistStorage } from '@utils/state-storage';
+import { createStore } from '@utils/store-tools';
 import { IAppSettingsContractsApiResponse, IAppSettingsNetwork } from 'src/types/app-settings';
-import { create } from 'zustand';
 
 export type AppStateType = {
   contracts: IAppSettingsContractsApiResponse | undefined;
@@ -8,37 +8,40 @@ export type AppStateType = {
 };
 
 type AppActionsType = {
-  setContracts: () => Promise<void>;
-  setBlockchain: () => Promise<void>;
+  setContracts: (data: any) => Promise<void>;
+  setBlockchain: (data: any) => Promise<void>;
 };
 
 export type AppStoreType = AppStateType & AppActionsType;
 
-const useAppStore = create<AppStoreType>((set) => ({
-  contracts: undefined,
-  blockchain: undefined,
-  setContracts: async () => {
-    const { data } = await AppSettingService.getContracts();
-
-    set({ contracts: data?.value });
-  },
-  setBlockchain: async () => {
-    const {
-      data: { value },
-    } = await AppSettingService.getBlockchainSettings();
-    const blockchain = {
-      chainId: value?.chainId,
-      chainName: value?.chainName,
-      chainWebSocket: value?.chainWebSocket,
-      rpcUrls: [value?.rpcUrl],
-      nativeCurrency: {
-        name: value.nativeCurrency.name as string,
-        symbol: value?.nativeCurrency?.symbol,
-        decimals: value?.nativeCurrency?.decimals,
-      },
-    };
-    set({ blockchain });
-  },
-}));
-
+const useAppStore = createStore<AppStoreType>(
+  (set) => ({
+    contracts: undefined,
+    blockchain: undefined,
+    setContracts: async (value) => {
+      set({ contracts: value });
+    },
+    setBlockchain: async (value: any) => {
+      const blockchain = {
+        chainId: value?.chainId,
+        chainName: value?.chainName,
+        chainWebSocket: value?.chainWebSocket,
+        rpcUrls: [value?.rpcUrl],
+        nativeCurrency: {
+          name: value.nativeCurrency.name as string,
+          symbol: value?.nativeCurrency?.symbol,
+          decimals: value?.nativeCurrency?.decimals,
+        },
+      };
+      set({ blockchain });
+    },
+  }),
+  {
+    devtoolsEnabled: true,
+    persistOptions: {
+      name: 'app-network-settings',
+      storage: localPersistStorage,
+    },
+  }
+);
 export default useAppStore;

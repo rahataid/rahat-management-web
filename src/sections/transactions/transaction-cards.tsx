@@ -1,44 +1,52 @@
-import { ITransactionStats } from 'src/types/transactions';
-
 import SummaryCard from '@components/summary-card';
-import { Grid } from '@mui/material';
+import { Stack } from '@mui/material';
 
 type Props = {
-  data: ITransactionStats
-}
+  cashDistributed: number;
+  cashIssued: number;
+  issuedCount: number;
+  distributedCount: number;
+  currency: string;
+};
 
-const TransactionsCards = ({ data } : Props) => {
-  const { bankedCash, unbankedCash, bankedToken, unbankedToken } = data;
-  return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <SummaryCard
-              color="success"
-              icon="material-symbols:paid"
-              title="Cash Distributed"
-              total={bankedCash}
-              subtitle="Banked Beneficiary"
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <SummaryCard
-              color="success"
-              icon="material-symbols:paid"
-              title="Cash Distributed"
-              total={unbankedCash}
-              subtitle="Unbanked Beneficiary"
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <SummaryCard
-              color="warning"
-              icon="material-symbols:token"
-              title="Token Issued"
-              total={bankedToken}
-              subtitle="Banked Beneficiary"
-            />
+const TransactionsCards = ({
+  cashDistributed,
+  cashIssued,
+  distributedCount,
+  issuedCount,
+  currency,
+}: Props) => (
+  <Stack direction="row" spacing={2}>
+    <SummaryCard
+      color="success"
+      icon="material-symbols:paid"
+      title="Cash Issued"
+      total={currency + cashIssued}
+      subtitle="To Banked Beneficiary"
+    />
+    <SummaryCard
+      color="warning"
+      icon="material-symbols:token"
+      title="Issued To"
+      total={distributedCount}
+      subtitle="Banked Beneficiaries"
+    />
+    <SummaryCard
+      color="warning"
+      icon="material-symbols:token"
+      title="Distributed Beneficiaries"
+      total={currency + cashDistributed}
+      subtitle="To Banked Beneficiary"
+    />
+
+    <SummaryCard
+      color="success"
+      icon="material-symbols:paid"
+      title="Distributed To"
+      total={issuedCount}
+      subtitle="Banked Beneficiaries"
+    />
+    {/* <Grid item xs={12} md={3}>
           </Grid>
           <Grid item xs={12} md={3}>
             <SummaryCard
@@ -48,11 +56,8 @@ const TransactionsCards = ({ data } : Props) => {
               total={unbankedToken}
               subtitle="Unbanked Beneficiary"
             />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-};
+          </Grid> */}
+  </Stack>
+);
 
 export default TransactionsCards;

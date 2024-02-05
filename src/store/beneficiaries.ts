@@ -1,5 +1,5 @@
+import { createStore } from '@utils/store-tools';
 import { IBeneficiaryChainData } from 'src/types/contract-hooks/useProject';
-import { create } from 'zustand';
 
 export type BeneficiaryStateType = {
   chainData: IBeneficiaryChainData;
@@ -11,15 +11,20 @@ type BeneficiaryActionsType = {
 
 export type BeneficiaryStoreType = BeneficiaryStateType & BeneficiaryActionsType;
 
-const useBeneficiaryStore = create<BeneficiaryStoreType>((set) => ({
-  chainData: {
-    isBeneficiary: null,
-    claimed: 0,
-    balance: 0,
-  },
-  setChainData: (chainData: IBeneficiaryChainData) => {
-    set({ chainData });
-  },
-}));
+const useBeneficiaryStore = createStore<BeneficiaryStoreType>(
+  (set) => ({
+    chainData: {
+      isBeneficiary: null,
+      claimed: 0,
+      balance: 0,
+    },
+    setChainData: (chainData: IBeneficiaryChainData) => {
+      set({ chainData });
+    },
+  }),
+  {
+    devtoolsEnabled: true,
+  }
+);
 
 export default useBeneficiaryStore;

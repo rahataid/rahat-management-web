@@ -7,8 +7,11 @@ import { paths } from '@routes/paths';
 import useProjectContract from '@services/contracts/useProject';
 import useRahatDonor from '@services/contracts/useRahatDonor';
 import { useRahatToken } from '@services/contracts/useRahatToken';
+import ProjectsService from '@services/projects';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFlickr } from 'src/api/flickr';
 import { useProject } from 'src/api/project';
 import { useProjectBasedReport } from 'src/api/reports';
 import { useVendors } from 'src/api/vendors';
@@ -42,6 +45,9 @@ export default function ProjectDetailsView() {
   const createTokenModal = useBoolean();
   const lockProjectModal = useBoolean();
   const unlockProjectModal = useBoolean();
+  const [isCreatingToken, setIsCreatingToken] = useState(false);
+  const [isUnLockingProject, setIsUnLockingProject] = useState(false);
+  const [isLockingProject, setIsLockingProject] = useState(false);
 
   const { chainData, setChainData } = useProjectStore((state) => ({
     chainData: state.chainData,
@@ -61,6 +67,11 @@ export default function ProjectDetailsView() {
   const { sendTokenToProject, donorContractWS: DonorContractWS } = useRahatDonor();
   const { contractWS: RahatTokenWS } = useRahatToken();
 
+  const { flickr } = useFlickr({
+    per_page: 3,
+    page: 1,
+  });
+
   const handleChainData = useCallback(async () => {
     const data = await getProjectChainData(params.address);
     setChainData(data);
@@ -79,6 +90,10 @@ export default function ProjectDetailsView() {
       distributed: totalBalance,
     });
   }, [chainData, getVendorBalance, setChainData, vendors]);
+
+  const handleSetOfflineBeneficiaries = async () => {
+    await ProjectsService.setOfflineBeneficiaries(params.address);
+  };
 
   useEffect(() => {
     if (chainData?.distributed !== undefined) return;
@@ -135,6 +150,12 @@ export default function ProjectDetailsView() {
       icon: 'tabler:edit',
       show: true,
     },
+    {
+      title: 'Set Offline Beneficiaries',
+      onClick: handleSetOfflineBeneficiaries,
+      icon: 'ion:people-outline',
+      show: true,
+    },
   ];
   const leftActionOptions: MenuOptions = [
     {
@@ -165,24 +186,47 @@ export default function ProjectDetailsView() {
   ];
 
   const handleCreateToken = async (token: string) => {
-    const sent = await sendTokenToProject(token);
-    if (sent) {
-      createTokenModal.onFalse();
+    // const sent = await sendTokenToProject(token);
+    // TODO:Interrupted chain actions temporarily disabled
+    setIsCreatingToken(true);
+    try {
+      const sent = await interruptChainActions(sendTokenToProject, token);
+      if (sent) {
+        createTokenModal.onFalse();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsCreatingToken(false);
     }
   };
 
   const handleLockProject = async () => {
-    const locked = await lockProject(project.contractAddress);
-    if (locked) lockProjectModal.onFalse();
+    setIsLockingProject(true);
+    try {
+      const locked = await lockProject(project.contractAddress);
+      if (locked) lockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLockingProject(false);
+    }
   };
   const handleUnlockProject = async () => {
-    const unlocked = await unLockProject(project.contractAddress);
-    if (unlocked) unlockProjectModal.onFalse();
+    setIsUnLockingProject(true);
+    try {
+      const unlocked = await unLockProject(project.contractAddress);
+      if (unlocked) unlockProjectModal.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsUnLockingProject(false);
+    }
   };
 
   const handleTokenAccept = async () => {
     if (!chainData?.tokenAllowance) throw new Error('Token Allowance should not be empty');
-    const accpeted = await acceptToken(chainData?.tokenAllowance?.toString() || '');
+    await acceptToken(chainData?.tokenAllowance?.toString() || '');
   };
 
   const lockProjectProp = {
@@ -192,6 +236,7 @@ export default function ProjectDetailsView() {
     open: lockProjectModal.value,
     onClose: lockProjectModal.onFalse,
     onOk: handleLockProject,
+    loading: isLockingProject,
   };
 
   const unlockProjectProp = {
@@ -201,14 +246,20 @@ export default function ProjectDetailsView() {
     open: unlockProjectModal.value,
     onClose: unlockProjectModal.onFalse,
     onOk: handleUnlockProject,
+    loading: isUnLockingProject,
   };
 
   const { genderData, internetAccessData, phoneOwnershipData, bankStatusData } =
     useProjectBasedReport(params.address);
 
-  const carouselsExample = [...Array(1)].map((_, index) => ({
-    id: index,
-    coverUrl: `${project?.coverImage}`,
+  // const carouselsExample = [...Array(1)].map((_, index) => ({
+  //   id: index,
+  //   coverUrl: `${project?.coverImage}`,
+  // }));
+
+  const carouselsExample = flickr?.map((item) => ({
+    id: item.id,
+    coverUrl: item.coverUrl,
   }));
 
   return (
@@ -217,6 +268,7 @@ export default function ProjectDetailsView() {
         open={createTokenModal.value}
         onClose={createTokenModal.onFalse}
         onOk={handleCreateToken}
+        loading={isCreatingToken}
       />
       <LockUnlockModal {...(!chainData.isLocked ? lockProjectProp : unlockProjectProp)} />
       <Grid container spacing={2}>

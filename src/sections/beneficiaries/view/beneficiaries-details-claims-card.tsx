@@ -9,6 +9,7 @@ import { paths } from '@routes/paths';
 import BeneficiaryService from '@services/beneficiaries';
 import useProjectContract from '@services/contracts/useProject';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
@@ -41,6 +42,7 @@ export default function BeneficiariesDetailsCard({
   const { assignClaimsToBeneficiaries, addBeneficiaryToProject } = useProjectContract();
   const disableBeneficiary = useDisableBeneficiaries();
   const router = useRouter();
+  const [isAssigningToken, setIsAssigningToken] = useState(false);
 
   const { mutateAsync } = useMutation<IAssignProjectDetails, RSErrorData, IAssignProjectItem>({
     mutationFn: async (updateData: IAssignProjectItem) => {
@@ -59,9 +61,9 @@ export default function BeneficiariesDetailsCard({
     const project = projects?.find((p) => p.id === Number(data.projectId));
 
     if (project?.extras === 'isNotBlockchain') {
-      await mutateAsync(data);
+      await interruptChainActions(mutateAsync, data);
     } else {
-      const added = await addBeneficiaryToProject(walletAddress);
+      const added = await interruptChainActions(addBeneficiaryToProject, walletAddress);
 
       if (added) {
         await mutateAsync(data);
@@ -71,9 +73,18 @@ export default function BeneficiariesDetailsCard({
   };
 
   const handleBeneficiaryTokenAssign = async (token: string) => {
-    const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
-    if (assigned) assignTokenDialog.onFalse();
-    // }
+    setIsAssigningToken(true);
+    try {
+      const assigned = await assignClaimsToBeneficiaries(walletAddress, token);
+      if (assigned) {
+        assignTokenDialog.onFalse();
+        enqueueSnackbar('Token Assigned Successfully', { variant: 'success' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+          } finally {
+      setIsAssigningToken(false);
+    }
   };
   const handleBeneficiaryDelete = () => {
     disableBeneficiary.mutate(walletAddress);
@@ -100,6 +111,7 @@ export default function BeneficiariesDetailsCard({
         onClose={assignTokenDialog.onFalse}
         open={assignTokenDialog.value}
         onOk={handleBeneficiaryTokenAssign}
+        loading={isAssigningToken}
       />
 
       <CardContent>

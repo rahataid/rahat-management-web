@@ -1,14 +1,5 @@
 import Iconify from '@components/iconify/iconify';
-import {
-  Alert,
-  AlertTitle,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Stack, Typography } from '@mui/material';
 
 interface IProjectAlert {
   isApproved: boolean | undefined;
@@ -23,14 +14,14 @@ const ProjectAlerts = ({
   tokenName = '',
   onTokenAccept,
 }: IProjectAlert) => {
-  if (!isApproved) {
-    return (
-      <Alert sx={{ mb: 2 }} title="" severity="warning">
-        <AlertTitle>Waiting for approval</AlertTitle>
-        Project has not yet been approved by the community.
-      </Alert>
-    );
-  }
+  // if (!isApproved) {
+  //   return (
+  //     <Alert sx={{ mb: 2 }} title="" severity="warning">
+  //       <AlertTitle>Waiting for approval</AlertTitle>
+  //       Project has not yet been approved by the community.
+  //     </Alert>
+  //   );
+  // }
 
   if (tokenAllowance > 0) {
     return (

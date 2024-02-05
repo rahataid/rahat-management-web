@@ -65,7 +65,7 @@ const TABLE_HEAD = [
   { id: 'internetAccess', label: 'Internet Access', width: 150 },
   { id: 'phoneOwnership', label: 'Phone', width: 150 },
   { id: 'bankStatus', label: 'Bank', width: 150 },
-  { id: '', width: 20 },
+  { id: 'actions', label: 'Actions', width: 20 },
 ];
 
 // ----------------------------------------------------------------------
@@ -313,7 +313,7 @@ export default function BeneficiariesListView() {
                 headLabel={TABLE_HEAD}
                 rowCount={beneficiaries.length}
                 numSelected={table.selected.length}
-                onSort={table.onSort}
+                // onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,

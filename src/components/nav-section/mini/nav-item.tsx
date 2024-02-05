@@ -1,16 +1,16 @@
 import { forwardRef } from 'react';
 // @mui
-import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
 // routes
 import { RouterLink } from 'src/routes/components';
 //
 import Iconify from '../../iconify';
 //
-import { NavItemProps, NavConfigProps } from '../types';
-import { StyledItem, StyledIcon } from './styles';
+import { NavConfigProps, NavItemProps } from '../types';
+import { StyledIcon, StyledItem } from './styles';
 
 // ----------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ const NavItem = forwardRef<HTMLDivElement, Props>(
     return (
       <Link
         component={RouterLink}
-        href={path}
+        href={children ? '' : path}
         underline="none"
         sx={{
           width: 1,

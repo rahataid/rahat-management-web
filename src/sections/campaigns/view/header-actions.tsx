@@ -6,7 +6,6 @@ import Iconify from 'src/components/iconify';
 // types
 //
 import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import { RouterLink } from '@routes/components';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
@@ -76,7 +75,7 @@ const HeaderActions = ({ campaign }: any) => {
 
   return (
     <Stack direction="row" spacing={2}>
-      <Button
+      {/* <Button
         component={RouterLink}
         href={paths.dashboard.general.campaigns.list}
         variant="outlined"
@@ -84,7 +83,7 @@ const HeaderActions = ({ campaign }: any) => {
         color="success"
       >
         All Campaigns
-      </Button>
+      </Button> */}
       <Button
         variant="outlined"
         onClick={handleOpen}

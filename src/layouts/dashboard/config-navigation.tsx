@@ -71,16 +71,28 @@ export function useNavData() {
             show: true,
           },
           {
-            title: 'Campaigns',
+            title: 'Communication',
             path: paths.dashboard.general.campaigns.list,
             icon: ICONS.campaigns,
             show: true,
 
             children: [
+              // {
+              //   title: 'List',
+              //   path: paths.dashboard.general.campaigns.list,
+              //   icon: icon('cil:list'),
+              //   show: true,
+              // },
               {
-                title: 'List',
-                path: paths.dashboard.general.campaigns.list,
-                icon: icon('cil:list'),
+                title: 'Voice',
+                path: paths.dashboard.general.campaigns.callLogs,
+                icon: icon('material-symbols:call'),
+                show: true,
+              },
+              {
+                title: 'Text',
+                path: paths.dashboard.general.campaigns.smsLogs,
+                icon: icon('material-symbols:sms'),
                 show: true,
               },
             ],

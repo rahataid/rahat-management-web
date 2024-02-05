@@ -9,7 +9,7 @@ const AuthService = {
     axiosInstance.post(endpoints.auth.sendOtp, {
       email,
     }),
-  refreshToken: () => axiosInstance.post(endpoints.auth.refreshToken),
+  refreshToken: (user: any) => axiosInstance.post(endpoints.auth.refreshToken, user),
 };
 
 export default AuthService;

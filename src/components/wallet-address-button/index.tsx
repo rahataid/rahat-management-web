@@ -1,7 +1,6 @@
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { Button, Stack, Tooltip } from '@mui/material';
 import { truncateEthAddress } from '@utils/strings';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface IProps {
@@ -9,13 +8,13 @@ interface IProps {
   type?: 'address' | 'txHash';
 }
 
-const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' }) => {
-  const router = useRouter();
+const WalletAddressButton: React.FC<IProps> = ({ address, type = 'address' }) => {
   const { copiedText, copy } = useCopyToClipboard();
+  const baseUrl = 'https://goerli.arbiscan.io';
 
   const handleClick = () => {
-    const url = type === 'address' ? `/address/${address}` : `/tx/${address}`;
-    window.open(`${url}?txHash=${address}`, '_blank');
+    const url = type === 'address' ? `${baseUrl}/address/${address}` : `${baseUrl}/tx/${address}`;
+    window.open(`${url}`, '_blank');
   };
   // const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
@@ -33,4 +32,4 @@ const TruncatedAddressButton: React.FC<IProps> = ({ address, type = 'address' })
   );
 };
 
-export default TruncatedAddressButton;
+export default WalletAddressButton;

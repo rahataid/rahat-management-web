@@ -9,15 +9,15 @@ Visit our website at [rahat.io](https://rahat.io) for more information and updat
 1. **Getting Started:** To set up and configure Rahat for your projects, follow these steps:
 
    - Clone the repository:
-
+ 
      ```bash
      git clone <repository-url>
 
      ```
 
    - Install dependencies using yarn:
-
-     ```bash
+ 
+     ```bash 
      yarn install
      ```
 

@@ -1,12 +1,24 @@
+'use client';
+
+import { useRouter } from '@routes/hook';
+import { useEffect } from 'react';
+
 // sections
-import { HomeView } from '@sections/home/view';
+import { paths } from '@routes/paths';
+import useAuthStore from 'src/store/auths';
 
 // ----------------------------------------------------------------------
 
-export const metadata = {
-  title: 'Rahat',
-};
-
 export default function HomePage() {
-  return <HomeView />;
+  const router = useRouter();
+  const { tokens } = useAuthStore.getState();
+  useEffect(() => {
+    const session = tokens.access_token;
+
+    if (!session) {
+      router.push(paths.auth.login);
+    } else {
+      router.push(paths.dashboard.root);
+    }
+  }, []);
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import Iconify from '@components/iconify/iconify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, Divider } from '@mui/material';
@@ -8,9 +7,7 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useWeb3React } from '@web3-react/core';
-import MetaMaskCard, {
-  MetamaskCardWalletProps,
-} from '@web3/components/connectorCards/MetaMaskCard';
+import { MetamaskCardWalletProps } from '@web3/components/connectorCards/MetaMaskCard';
 import { hooks as metamaskHooks } from '@web3/connectors/metaMask';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -138,31 +135,31 @@ export default function JwtLoginView() {
     </Stack>
   );
 
-  const renderWalletLogin = (
-    <Stack spacing={0.5}>
-      {!!error && isMetamaskActive && <Alert severity="error">{error.message}</Alert>}
+  // const renderWalletLogin = (
+  //   <Stack spacing={0.5}>
+  //     {!!error && isMetamaskActive && <Alert severity="error">{error.message}</Alert>}
 
-      <MetaMaskCard
-        component={LoadingButton}
-        title="Metamask"
-        description="MetaMask is the leading self-custodial wallet. The safe and simple way to access blockchain applications and  web3."
-        walletAvatar="logos:metamask-icon"
-        onClick={onWalletButtonClick}
-        props={{
-          fullWidth: true,
-          color: 'inherit',
-          size: 'large',
-          variant: 'outlined',
-          sx: {
-            mt: 2,
-          },
-          startIcon: <Iconify icon="logos:metamask-icon" />,
-        }}
-      >
-        {isMetamaskActive ? 'Disconnect Metamask' : 'Login with Metamask'}
-      </MetaMaskCard>
-    </Stack>
-  );
+  //     <MetaMaskCard
+  //       component={LoadingButton}
+  //       title="Metamask"
+  //       description="MetaMask is the leading self-custodial wallet. The safe and simple way to access blockchain applications and  web3."
+  //       walletAvatar="logos:metamask-icon"
+  //       onClick={onWalletButtonClick}
+  //       props={{
+  //         fullWidth: true,
+  //         color: 'inherit',
+  //         size: 'large',
+  //         variant: 'outlined',
+  //         sx: {
+  //           mt: 2,
+  //         },
+  //         startIcon: <Iconify icon="logos:metamask-icon" />,
+  //       }}
+  //     >
+  //       {isMetamaskActive ? 'Disconnect Metamask' : 'Login with Metamask'}
+  //     </MetaMaskCard>
+  //   </Stack>
+  // );
 
   const renderEmailForm = (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -223,11 +220,29 @@ export default function JwtLoginView() {
       </Divider>
     </Stack>
   );
+
+  const renderRegister = (
+    <Stack spacing={2}>
+      <Typography variant="body2" align="center">
+        Don’t have an account?&nbsp;
+        <Button
+          variant="text"
+          onClick={() => {
+            router.push('/auth/register');
+          }}
+        >
+          Get started
+        </Button>
+      </Typography>
+    </Stack>
+  );
+
   return (
     <>
       {renderHead}
       {!loginEmail && renderEmailForm}
       {loginEmail && renderOtpForm}
+      {renderRegister}
       {/* {dividerView} */}
       {/* {renderWalletLogin} */}
     </>

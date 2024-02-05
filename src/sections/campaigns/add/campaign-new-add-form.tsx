@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 // utils
 // routes
-import { useRouter } from 'src/routes/hook';
+import { useRouter } from '@routes/hook';
 // types
 // assets
 // components
@@ -24,9 +24,9 @@ import {
   MenuItem,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import { useMutation } from '@tanstack/react-query';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
 import { campaignTypeOptions } from 'src/_mock/campaigns';
 import { useBeneficiaries } from 'src/api/beneficiaries';
 import {
@@ -62,7 +62,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     setShowAudiences((prev) => !prev);
   };
 
-  const { push } = useRouter();
+  const router = useRouter();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
   const { audiences } = useAudiences();
@@ -81,7 +81,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     onSuccess: () => {
       enqueueSnackbar('Campaign created successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.campaigns.list}`);
+      router.back();
     },
   });
 
@@ -100,7 +100,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentCampaign?.name || '',
-      startTime: currentCampaign?.startTime || '',
+      startTime: currentCampaign?.startTime || null,
       details: currentCampaign?.details || '',
       transportId: null,
       type: currentCampaign?.type as CAMPAIGN_TYPES,
@@ -211,7 +211,10 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
         audienceIds,
         details: mergedDetails,
       };
-      mutate(formatted as ICampaignCreateItem);
+      // TODO:Interrupted chain actions temporarily disabled
+      // mutate(formatted as ICampaignCreateItem);
+      interruptChainActions(mutate, formatted as ICampaignCreateItem);
+      // mutate(formatted as ICampaignCreateItem);
     },
     [audiences, mutate, selectedBeneficiaries, setValue]
   );

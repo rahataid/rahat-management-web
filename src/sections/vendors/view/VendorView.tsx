@@ -1,13 +1,18 @@
 import CustomBreadcrumbs from '@components/custom-breadcrumbs/custom-breadcrumbs';
 import { useSettingsContext } from '@components/settings';
+import { CONTRACTS } from '@config';
 import { useBoolean } from '@hooks/use-boolean';
+import useChainTransactions from '@hooks/useChainTransactions';
 import { Container, Grid, Stack } from '@mui/material';
 import { paths } from '@routes/paths';
 import MapView from '@sections/map-view';
 import useProjectContract from '@services/contracts/useProject';
-import { useCallback, useEffect } from 'react';
+import { interruptChainActions } from '@utils/chainActionInterrupt';
+import { useCallback, useEffect, useState } from 'react';
+import { useBeneficiaries } from 'src/api/beneficiaries';
 import { useVendor } from 'src/api/vendors';
 import { useParams } from 'src/routes/hook';
+import useAppStore from 'src/store/app';
 import useVendorStore from 'src/store/vendors';
 import BasicInfoCard from './basic-info-card';
 import VendorsCards from './transaction-info-card';
@@ -18,12 +23,43 @@ const VendorView = () => {
   const { address } = useParams();
   const { vendor } = useVendor(address);
   const assignTokenDialog = useBoolean();
+  const { beneficiaries } = useBeneficiaries();
   const {
     getVendorChainData,
     activateVendor,
-    sendTokensToVendor,
+    sendAllowanceToVendor,
     projectContractWS: ProjectContractWS,
   } = useProjectContract();
+  const appContracts = useAppStore((state) => state.contracts);
+  const rpcUrl = useAppStore((state) => state.blockchain?.rpcUrls[0]) as string;
+  const [isSendingToken, setIsSendingToken] = useState(false);
+  const [isActivatingVendor, setIsActivatingVendor] = useState(false);
+
+  const { data: transactions } = useChainTransactions({
+    action: 'getLogs',
+    fromBlock: 0,
+    toBlock: 'latest',
+    module: 'logs',
+    appContracts,
+    source: 'rpcCall',
+    rpcUrl,
+
+    events: [
+      {
+        contractName: CONTRACTS.CVAPROJECT,
+        topic0s: ['ClaimAssigned', 'ClaimProcessed', 'VendorAllowanceAccept', 'VendorAllowance'],
+      },
+    ],
+    transform: (data) =>
+      data
+        .filter((item) => item?.vendor?.toLowerCase() === address?.toLowerCase())
+        .map((item) => {
+          const ben = beneficiaries.find(
+            (b) => b.walletAddress?.toLowerCase() === item?.beneficiary?.toLowerCase()
+          );
+          return { ...item, beneficiary: ben?.phone || item?.beneficiary };
+        }),
+  });
 
   const { chainData, setChainData } = useVendorStore((state) => ({
     chainData: state.chainData,
@@ -52,13 +88,34 @@ const VendorView = () => {
   }, [ProjectContractWS, handleVendorChainData]);
 
   const handleActivateVendor = async (walletAddress: string) => {
-    const activated = await activateVendor(walletAddress);
-    console.log('actiavat', activated);
+    setIsActivatingVendor(true);
+    try {
+      // TODO:Interrupted chain actions temporarily disabled
+      interruptChainActions(activateVendor, walletAddress);
+
+      // activateVendor(walletAddress).then(() => {
+      handleVendorChainData();
+      // });
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsActivatingVendor(false);
+    }
   };
 
   const handleTokenSend = async (walletAddress: string, tokenAmount: string) => {
-    await sendTokensToVendor(walletAddress, tokenAmount);
-    assignTokenDialog.onFalse();
+    setIsSendingToken(true);
+    try {
+      // TODO:Interrupted chain actions temporarily disabled
+
+      await interruptChainActions(sendAllowanceToVendor, walletAddress, tokenAmount);
+      // await sendTokensToVendor(walletAddress, tokenAmount);
+      assignTokenDialog.onFalse();
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsSendingToken(false);
+    }
   };
 
   return (
@@ -86,14 +143,16 @@ const VendorView = () => {
               assignTokenModal={assignTokenDialog}
               onActivateVendor={handleActivateVendor}
               onSendToken={handleTokenSend}
+              sendingToken={isSendingToken}
+              activatingVendor={isActivatingVendor}
             />
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <TransactionTable />
+          <Grid item xs={12} md={8}>
+            <TransactionTable rows={transactions} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <MapView />
           </Grid>
         </Grid>

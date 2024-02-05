@@ -10,9 +10,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Iconify from 'src/components/iconify';
 //
 import Label from '@components/label/label';
+import { Checkbox } from '@mui/material';
 import { fDateTime } from '@utils/format-time';
 import { ICampaignItem } from 'src/types/campaigns';
-import { Checkbox } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ type Props = {
 export default function CampaignsTableRow({
   row,
   onViewRow,
-  onEditRow,
+  // onEditRow,
   selected,
   onSelectRow,
 }: Props) {
@@ -51,9 +51,9 @@ export default function CampaignsTableRow({
         />{' '}
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         <Label variant="soft">{type}</Label>
-      </TableCell>
+      </TableCell> */}
       <TableCell>
         {' '}
         <Label variant="soft">{status}</Label>
@@ -77,11 +77,11 @@ export default function CampaignsTableRow({
             <Iconify color="#118D57" icon="iconamoon:eye-light" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Edit" placement="top" arrow>
+        {/* <Tooltip title="Edit" placement="top" arrow>
           <IconButton onClick={onEditRow}>
             <Iconify color="#118D57" icon="material-symbols:edit-sharp" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
       </TableCell>
     </TableRow>
   );
