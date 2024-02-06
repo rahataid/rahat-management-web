@@ -20,17 +20,17 @@ export default function CampaignsCallLogsView() {
   const callLogsCardDetail = [
     {
       icon: 'material-symbols:call',
-      total: callLogsList?.length,
+      total: callLogsList?.length ?? 0,
       subTitle: 'Total IVR Sent',
     },
     {
       icon: 'material-symbols:call',
-      total: logs?.rows?.[0]?.totalSuccessfulAnswer,
+      total: logs?.rows?.[0]?.totalSuccessfulAnswer ?? 0,
       subTitle: 'Successful IVR',
     },
     {
       icon: 'material-symbols:call',
-      total: logs?.rows?.[0]?.totalFailure,
+      total: logs?.rows?.[0]?.totalFailure ?? 0,
       subTitle: 'Failed IVR',
     },
   ];
