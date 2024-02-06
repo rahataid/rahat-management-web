@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
 // routes
-import { useParams, useRouter } from 'src/routes/hook';
+import { useParams, useRouter, useSearchParams } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 // _mock
 // hooks
@@ -30,11 +30,11 @@ import {
 // types
 //
 import { useBoolean } from '@hooks/use-boolean';
-import { Button, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { RouterLink } from '@routes/components';
 import { useCampaigns } from 'src/api/campaigns';
 import { useProject, useProjectRemoveCampaign } from 'src/api/project';
-import { ICampaignItem, MenuOptions } from 'src/types/campaigns';
+import { ICampaignItem } from 'src/types/campaigns';
 import CampaignsTableRow from './campaigns-table-row';
 import ProjectCampaignDeleteModal from './project-campaigns-delete-modal';
 
@@ -53,11 +53,15 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function BeneficiariesListView() {
-  const [isOpen, setOpen] = useState<null | HTMLElement>(null);
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type');
+
+  // const [isOpen, setOpen] = useState<null | HTMLElement>(null);
   const table = useTable();
   const { address } = useParams();
   const { project } = useProject(address);
   const { campaigns, meta } = useCampaigns(project?.campaigns);
+  const resCampaigns = campaigns?.filter((campaign) => campaign.type === type);
 
   const params = useParams();
 
@@ -68,11 +72,12 @@ export default function BeneficiariesListView() {
 
   const denseHeight = table.dense ? 52 : 72;
 
-  const notFound = !campaigns.length;
+  const notFound = !resCampaigns.length;
 
   const handleViewRow = useCallback(
     (id: number) => {
-      router.push(paths.dashboard.general.campaigns.details(id));
+      type === 'PHONE' && router.push(paths.dashboard.general.campaigns.callLogDetail(id));
+      type === 'SMS' && router.push(paths.dashboard.general.campaigns.smsLogDetail(id));
     },
     [router]
   );
@@ -92,24 +97,24 @@ export default function BeneficiariesListView() {
     [router]
   );
 
-  const options: MenuOptions = [
-    {
-      title: 'Upload Audio',
-      onClick: () => {
-        router.push(paths.dashboard.general.projects.uploadMp3(address));
-      },
-      icon: 'mdi:upload',
-      show: true,
-    },
-  ];
+  // const options: MenuOptions = [
+  //   {
+  //     title: 'Upload Audio',
+  //     onClick: () => {
+  //       router.push(paths.dashboard.general.projects.uploadMp3(address));
+  //     },
+  //     icon: 'mdi:upload',
+  //     show: true,
+  //   },
+  // ];
 
-  const handleClose = useCallback(() => {
-    setOpen(null);
-  }, []);
+  // const handleClose = useCallback(() => {
+  //   setOpen(null);
+  // }, []);
 
-  const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(event.currentTarget);
-  }, []);
+  // const handleOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setOpen(event.currentTarget);
+  // }, []);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -143,7 +148,7 @@ export default function BeneficiariesListView() {
             >
               Add Campaign
             </Button>
-            <Button
+            {/* <Button
               variant="outlined"
               onClick={handleOpen}
               endIcon={
@@ -164,7 +169,7 @@ export default function BeneficiariesListView() {
                     </Typography>
                   </MenuItem>
                 ))}
-            </Menu>
+            </Menu> */}
           </Stack>
         }
       />
@@ -174,11 +179,11 @@ export default function BeneficiariesListView() {
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
-            rowCount={campaigns.length}
+            rowCount={resCampaigns.length}
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                campaigns.map((row: ICampaignItem) => row.name.toString())
+                resCampaigns.map((row: ICampaignItem) => row.name.toString())
               )
             }
             action={
@@ -198,19 +203,19 @@ export default function BeneficiariesListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={campaigns.length}
+                rowCount={resCampaigns.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    campaigns.map((row: ICampaignItem) => String(row.id))
+                    resCampaigns.map((row: ICampaignItem) => String(row.id))
                   )
                 }
               />
 
               <TableBody>
-                {campaigns.map((row: ICampaignItem) => (
+                {resCampaigns.map((row: ICampaignItem) => (
                   <CampaignsTableRow
                     key={row.id}
                     row={row}
