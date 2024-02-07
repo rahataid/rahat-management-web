@@ -59,7 +59,7 @@ export const useErrorHandler = (): ErrorHandler => {
       message = message.replace('Error: VM Exception while processing transaction: revert ', '');
       showError(message);
     } catch (e) {
-      showError('Error occurred calling contract. Please check logs for details.');
+      showError(error?.reason ?? 'Error occurred calling contract. Please check logs for details.');
       console.error(error);
     }
   };
