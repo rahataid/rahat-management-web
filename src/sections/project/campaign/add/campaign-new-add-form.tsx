@@ -28,7 +28,6 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { paths } from '@routes/paths';
 import CampaignsService from '@services/campaigns';
 import ProjectsService from '@services/projects';
 import { useMutation } from '@tanstack/react-query';
@@ -53,7 +52,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const [showSelectMessage, setShowSelectMessage] = useState(false);
   const { campaignAudio } = useCampaignAudio();
 
-  const { push } = useRouter();
+  const router = useRouter();
   const { address } = useParams();
   const { transports } = useTransports();
   const { enqueueSnackbar } = useSnackbar();
@@ -100,7 +99,8 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
     onSuccess: () => {
       enqueueSnackbar('Project Campaign Updated Successfully', { variant: 'success' });
       reset();
-      push(`${paths.dashboard.general.projects.campaigns(address)}`);
+      router.back();
+      // push(`${paths.dashboard.general.projects.campaigns(address)}`);
     },
   });
 
@@ -119,7 +119,7 @@ const CampaignForm: React.FC = ({ currentCampaign }: Props) => {
   const defaultValues = useMemo<FormValues>(
     () => ({
       name: currentCampaign?.name || '',
-      startTime: currentCampaign?.startTime || '',
+      startTime: currentCampaign?.startTime || null,
       details: currentCampaign?.details || '',
       transportId: null,
       type: currentCampaign?.type as CAMPAIGN_TYPES,
